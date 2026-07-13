@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:PiliPlus/http/loading_state.dart';
 import 'package:PiliPlus/http/member.dart';
+import 'package:PiliPlus/http/search.dart';
 import 'package:PiliPlus/http/user.dart';
 import 'package:PiliPlus/http/video.dart';
 import 'package:PiliPlus/models/common/member/tab_type.dart';
@@ -15,6 +16,7 @@ import 'package:PiliPlus/models_new/space/space/tab2.dart';
 import 'package:PiliPlus/pages/common/common_data_controller.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/extension/nested_scroll_ext.dart';
+import 'package:PiliPlus/utils/page_utils.dart';
 import 'package:PiliPlus/utils/request_utils.dart';
 import 'package:PiliPlus/utils/share_utils.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
@@ -61,6 +63,7 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
   final fromViewAid = Get.parameters['from_view_aid'];
 
   final scrollKey = GlobalKey<ExtendedNestedScrollViewState>();
+  final randomVideoLoading = false.obs;
 
   @override
   void onInit() {
@@ -267,6 +270,81 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
       SmartDialog.showToast('领取成功');
     } else {
       res.toast();
+    }
+  }
+
+  Future<void> playRandomVideo() async {
+    if (randomVideoLoading.value) return;
+    randomVideoLoading.value = true;
+    try {
+      const pageSize = 30;
+      var result = await MemberHttp.searchArchive(
+        mid: mid,
+        ps: pageSize,
+        pn: 1,
+      );
+      final response = result.dataOrNull;
+      if (response == null) {
+        await result.toast();
+        return;
+      }
+
+      final count = response.page?.count ?? 0;
+      if (count == 0) {
+        await SmartDialog.showToast('该UP主暂无可播放视频');
+        return;
+      }
+
+      final randomIndex = Random().nextInt(count);
+      final targetPage = randomIndex ~/ pageSize + 1;
+      if (targetPage != 1) {
+        result = await MemberHttp.searchArchive(
+          mid: mid,
+          ps: pageSize,
+          pn: targetPage,
+        );
+        if (!result.isSuccess) {
+          await result.toast();
+          return;
+        }
+      }
+
+      final videos = result.data.list?.vlist;
+      if (videos == null || videos.isEmpty) {
+        await SmartDialog.showToast('该UP主暂无可播放视频');
+        return;
+      }
+      final video = videos[min(randomIndex % pageSize, videos.length - 1)];
+
+      if (video.isPugv == true && video.seasonId != null) {
+        PageUtils.viewPugv(seasonId: video.seasonId);
+        return;
+      }
+      if (video.redirectUrl?.isNotEmpty == true &&
+          PageUtils.viewPgcFromUri(video.redirectUrl!)) {
+        return;
+      }
+
+      final playInfo = await SearchHttp.ab2cWithDimension(
+        aid: video.aid,
+        bvid: video.bvid,
+      );
+      if (playInfo?.cid case final cid?) {
+        PageUtils.toVideoPage(
+          aid: video.aid,
+          bvid: video.bvid,
+          cid: cid,
+          cover: video.cover,
+          title: video.title,
+          dimension: playInfo?.dimension,
+        );
+      } else {
+        await SmartDialog.showToast('无法获取视频播放信息');
+      }
+    } catch (e) {
+      await SmartDialog.showToast('随机视频获取失败: $e');
+    } finally {
+      randomVideoLoading.value = false;
     }
   }
 }
