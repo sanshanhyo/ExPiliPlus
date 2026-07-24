@@ -35,13 +35,13 @@
 
 - [x] 继承 [PiliPlus](https://github.com/bggRGjQaUbCoE/PiliPlus#feat) 的主要功能
 - [x] 自定义应用字体
+- [x] 随机播放
 
 ## To-Do
 
 - [ ] i18n 支持
 - [ ] 自动点赞
 - [ ] 自动投币
-- [ ] 随机播放
 - [ ] 更多新功能
 
 欢迎前往 [Issues](https://github.com/sanshanhyo/ExPiliPlus/issues) 提交问题、建议，或分享你的新功能构想。
