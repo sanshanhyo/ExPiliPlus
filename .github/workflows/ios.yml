@@ -45,10 +45,14 @@ jobs:
       - name: Build iOS
         run: |
           flutter build ios --release --no-codesign --dart-define-from-file=pili_release.json
-          ln -sf ./build/ios/iphoneos Payload
-          # make AltSign happy...
-          find Payload/Runner.app/Frameworks -type d -name "*.framework" -exec codesign --force --sign - --preserve-metadata=identifier,entitlements {} \;
-          zip -r9 ExPiliplus_ios_${{ env.version }}.ipa Payload/Runner.app
+          rm -rf Payload
+          mkdir -p Payload
+          ditto build/ios/iphoneos/Runner.app Payload/Runner.app
+          # Keep the unsigned payload structurally valid for downstream IPA resigning tools.
+          find Payload/Runner.app/Frameworks -type d -name "*.framework" -exec codesign --force --sign - --timestamp=none --preserve-metadata=identifier,entitlements {} \;
+          codesign --force --sign - --timestamp=none --preserve-metadata=identifier,entitlements Payload/Runner.app
+          codesign --verify --deep --strict --verbose=2 Payload/Runner.app
+          ditto -c -k --sequesterRsrc --keepParent Payload ExPiliplus_ios_${{ env.version }}.ipa
 
       - name: Release
         if: ${{ inputs.tag != '' }}
