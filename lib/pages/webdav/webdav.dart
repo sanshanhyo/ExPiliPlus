@@ -9,6 +9,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
 
 class WebDav {
+  late String _webdavBaseDirectory;
   late String _webdavDirectory;
   String? _fileName;
 
@@ -22,11 +23,11 @@ class WebDav {
     final webDavUri = Pref.webdavUri;
     final webDavUsername = Pref.webdavUsername;
     final webDavPassword = Pref.webdavPassword;
-    _webdavDirectory = Pref.webdavDirectory;
-    if (!_webdavDirectory.endsWith('/')) {
-      _webdavDirectory += '/';
+    _webdavBaseDirectory = Pref.webdavDirectory;
+    if (!_webdavBaseDirectory.endsWith('/')) {
+      _webdavBaseDirectory += '/';
     }
-    _webdavDirectory += Constants.appName;
+    _webdavDirectory = _getAppDirectory(Constants.appName);
 
     try {
       _client = null;
@@ -54,6 +55,8 @@ class WebDav {
     return 'piliplus_settings_${DeviceUtils.platformName}.json';
   }
 
+  String _getAppDirectory(String appName) => '$_webdavBaseDirectory$appName';
+
   Future<void> backup() async {
     if (_client == null) {
       final res = await init();
@@ -77,21 +80,36 @@ class WebDav {
   }
 
   Future<void> restore() async {
-    if (_client == null) {
-      final res = await init();
-      if (!res.first) {
-        SmartDialog.showToast('恢复失败，请检查配置: ${res.second}');
-        return;
-      }
-    }
     try {
-      _fileName ??= _getFileName();
-      final path = '$_webdavDirectory/$_fileName';
-      final data = await _client!.read(path);
-      await GStorage.importAllSettings(utf8.decode(data));
+      final data = await readSettingsBackup();
+      await GStorage.importAllSettings(data);
       SmartDialog.showToast('恢复成功');
     } catch (e) {
       SmartDialog.showToast('恢复失败: $e');
     }
+  }
+
+  Future<String> readSettingsBackup({
+    Iterable<String> appNames = const [Constants.appName],
+  }) async {
+    if (_client == null) {
+      final res = await init();
+      if (!res.first) {
+        throw '请检查配置: ${res.second}';
+      }
+    }
+
+    _fileName ??= _getFileName();
+    Object? lastError;
+    final names = appNames.toSet();
+    for (final appName in names) {
+      final path = '${_getAppDirectory(appName)}/$_fileName';
+      try {
+        return utf8.decode(await _client!.read(path));
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    throw lastError ?? '未找到备份文件';
   }
 }

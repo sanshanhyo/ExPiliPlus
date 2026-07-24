@@ -47,6 +47,7 @@ import 'package:ex_piliplus/pages/msg_feed_top/reply_me/view.dart';
 import 'package:ex_piliplus/pages/msg_feed_top/sys_msg/view.dart';
 import 'package:ex_piliplus/pages/music/view.dart';
 import 'package:ex_piliplus/pages/my_reply/view.dart';
+import 'package:ex_piliplus/pages/onboarding/view.dart';
 import 'package:ex_piliplus/pages/popular_precious/view.dart';
 import 'package:ex_piliplus/pages/popular_series/view.dart';
 import 'package:ex_piliplus/pages/search/view.dart';
@@ -73,6 +74,7 @@ import 'package:get/get.dart';
 class Routes {
   static final List<GetPage<dynamic>> getPages = [
     GetPage(name: '/', page: () => const MainApp()),
+    GetPage(name: '/onboarding', page: () => const OnboardingPage()),
     // 首页(推荐)
     GetPage(name: '/home', page: () => const HomePage()),
     // 热门

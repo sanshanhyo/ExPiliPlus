@@ -104,6 +104,9 @@ abstract final class Pref {
     _ => ThemeMode.system,
   };
 
+  static int get onboardingVersion =>
+      _setting.get(SettingBoxKey.onboardingVersion, defaultValue: 0);
+
   static List<double> get springDescription => List<double>.from(
     _setting.get(SettingBoxKey.springDescription) ??
         // duration: 0.3, bounce: 0.0
