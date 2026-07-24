@@ -29,7 +29,6 @@ import 'package:ex_piliplus/pages/later_search/view.dart';
 import 'package:ex_piliplus/pages/live_dm_block/view.dart';
 import 'package:ex_piliplus/pages/live_room/view.dart';
 import 'package:ex_piliplus/pages/login/view.dart';
-import 'package:ex_piliplus/pages/main/view.dart';
 import 'package:ex_piliplus/pages/main_reply/view.dart';
 import 'package:ex_piliplus/pages/match_info/view.dart';
 import 'package:ex_piliplus/pages/member/view.dart';
@@ -50,6 +49,7 @@ import 'package:ex_piliplus/pages/my_reply/view.dart';
 import 'package:ex_piliplus/pages/onboarding/view.dart';
 import 'package:ex_piliplus/pages/popular_precious/view.dart';
 import 'package:ex_piliplus/pages/popular_series/view.dart';
+import 'package:ex_piliplus/pages/root/view.dart';
 import 'package:ex_piliplus/pages/search/view.dart';
 import 'package:ex_piliplus/pages/search_result/view.dart';
 import 'package:ex_piliplus/pages/search_trending/view.dart';
@@ -73,7 +73,7 @@ import 'package:get/get.dart';
 
 class Routes {
   static final List<GetPage<dynamic>> getPages = [
-    GetPage(name: '/', page: () => const MainApp()),
+    GetPage(name: '/', page: () => const RootPage()),
     GetPage(name: '/onboarding', page: () => const OnboardingPage()),
     // 首页(推荐)
     GetPage(name: '/home', page: () => const HomePage()),

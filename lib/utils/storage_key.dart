@@ -215,7 +215,6 @@ abstract final class SettingBoxKey {
       systemProxyPort = 'systemProxyPort';
 
   static const String themeMode = 'themeMode',
-      onboardingVersion = 'onboardingVersion',
       defaultTextScale = 'textScale',
       dynamicColor = 'dynamicColor',
       customColor = 'customColor',
@@ -243,6 +242,7 @@ abstract final class SettingBoxKey {
 
 abstract final class LocalCacheKey {
   static const String historyPause = 'historyPause',
+      onboardingVersion = 'onboardingVersion',
       blackMids = 'blackMids',
       danmakuFilterRules = 'danmakuFilterRules',
       mixinKey = 'mixinKey',

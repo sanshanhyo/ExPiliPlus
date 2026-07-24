@@ -24,7 +24,9 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({super.key});
+  const OnboardingPage({super.key, this.onFinished});
+
+  final VoidCallback? onFinished;
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -587,11 +589,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _finish() async {
-    await GStorage.setting.put(
-      SettingBoxKey.onboardingVersion,
+    await GStorage.localCache.put(
+      LocalCacheKey.onboardingVersion,
       _onboardingVersion,
     );
-    Get.offAllNamed('/');
+    if (widget.onFinished != null) {
+      widget.onFinished!();
+    } else {
+      Get.offAllNamed('/');
+    }
   }
 
   Future<void> _runBusy(Future<void> Function() action) async {

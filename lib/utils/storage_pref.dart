@@ -105,7 +105,7 @@ abstract final class Pref {
   };
 
   static int get onboardingVersion =>
-      _setting.get(SettingBoxKey.onboardingVersion, defaultValue: 0);
+      _localCache.get(LocalCacheKey.onboardingVersion, defaultValue: 0);
 
   static List<double> get springDescription => List<double>.from(
     _setting.get(SettingBoxKey.springDescription) ??
