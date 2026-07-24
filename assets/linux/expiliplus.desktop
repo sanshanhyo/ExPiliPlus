@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=ExPiliPlus
+Comment=An unofficial PiliPlus build developed in Flutter
+Comment[zh_CN]=基于 PiliPlus 的非官方维护版
+Exec=expiliplus
+Icon=expiliplus
+Terminal=false
+StartupWMClass=com.example.piliplus
+Categories=Video;AudioVideo;Player;

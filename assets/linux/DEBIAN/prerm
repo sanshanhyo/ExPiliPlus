@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
-    echo "Stopping PiliPlus if running..."
-    pkill -x piliplus || true
+    echo "Stopping ExPiliPlus if running..."
+    pkill -f '/opt/ExPiliPlus/piliplus' || true
 fi
 
 exit 0

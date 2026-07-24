@@ -1,4 +1,4 @@
-name: Build for Mac
+name: Build ExPiliPlus for Mac
 
 on:
   workflow_call:
@@ -9,11 +9,19 @@ on:
         default: ""
         type: string
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, e.g. v2.1.0"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   build-mac-app:
     name: Release Mac
     runs-on: macos-26
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -44,20 +52,20 @@ jobs:
         continue-on-error: true
 
       - name: Rename DMG
-        run: mv PiliPlus*.dmg PiliPlus_macos_${{ env.version }}.dmg
+        run: mv PiliPlus*.dmg ExPiliPlus_macos_${{ env.version }}.dmg
 
       - name: Release
-        if: ${{ github.event.inputs.tag != '' }}
+        if: ${{ inputs.tag != '' }}
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.event.inputs.tag }}
-          name: ${{ github.event.inputs.tag }}
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
           files: |
-            PiliPlus_macos_*.dmg
+            ExPiliPlus_macos_*.dmg
 
       - name: Upload macos release
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: macOS-release
-          path: PiliPlus_macos_*.dmg
+          name: ExPiliPlus_macOS_release
+          path: ExPiliPlus_macos_*.dmg

@@ -1,4 +1,4 @@
-name: Build for Windows x64
+name: Build ExPiliPlus for Windows x64
 
 on:
   workflow_call:
@@ -9,11 +9,19 @@ on:
         default: ""
         type: string
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, e.g. v2.1.0"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   build-windows-app:
     name: Release Windows x64
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -50,36 +58,36 @@ jobs:
 
       - name: Prepare Upload
         run: |
-          mkdir -p Release/PiliPlus-Win
-          mkdir -p PiliPlus-Win-Setup
-          mv build/windows/x64/runner/Release/* Release/PiliPlus-Win/
-          mv dist/**/*.exe PiliPlus-Win-Setup/PiliPlus_windows_${{env.version}}_x64_setup.exe
+          mkdir -p Release/ExPiliPlus-Win
+          mkdir -p ExPiliPlus-Win-Setup
+          mv build/windows/x64/runner/Release/* Release/ExPiliPlus-Win/
+          mv dist/**/*.exe ExPiliPlus-Win-Setup/ExPiliPlus_windows_${{ env.version }}_x64_setup.exe
 
       - name: Compress
         run: |
-          Compress-Archive -Path "Release/PiliPlus-Win" -DestinationPath "PiliPlus_windows_${{env.version}}_x64_portable.zip"
+          Compress-Archive -Path "Release/ExPiliPlus-Win" -DestinationPath "ExPiliPlus_windows_${{ env.version }}_x64_portable.zip"
         shell: pwsh
 
       - name: Release
-        if: ${{ github.event.inputs.tag != '' }}
+        if: ${{ inputs.tag != '' }}
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ github.event.inputs.tag }}
-          name: ${{ github.event.inputs.tag }}
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
           files: |
-            PiliPlus_windows_*.zip
-            PiliPlus-Win-Setup/PiliPlus_windows_*.exe
+            ExPiliPlus_windows_*.zip
+            ExPiliPlus-Win-Setup/ExPiliPlus_windows_*.exe
 
       - name: Upload windows file release
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: Windows-file-x64-release
-          path: PiliPlus_windows_*.zip
+          name: ExPiliPlus_Windows_file_x64_release
+          path: ExPiliPlus_windows_*.zip
 
       - name: Upload windows setup release
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: Windows-setup-x64-release
-          path: PiliPlus-Win-Setup/PiliPlus_windows_*.exe
+          name: ExPiliPlus_Windows_setup_x64_release
+          path: ExPiliPlus-Win-Setup/ExPiliPlus_windows_*.exe
