@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/pages/setting/models/extra_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/ex_features_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/pages/setting/models/play_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/privacy_settings.dart';
@@ -13,6 +14,7 @@ enum SettingType {
   playSetting('播放器设置'),
   styleSetting('外观设置'),
   extraSetting('其它设置'),
+  exPiliPlusSetting('ExPiliplus功能'),
   webdavSetting('WebDAV 设置'),
   about('关于'),
   ;
@@ -27,6 +29,7 @@ enum SettingType {
     .playSetting => playSettings,
     .styleSetting => styleSettings,
     .extraSetting => extraSettings,
+    .exPiliPlusSetting => exFeatureSettings,
     _ => throw UnimplementedError(),
   };
 }

@@ -72,6 +72,11 @@ class _SettingPageState extends State<SettingPage> {
       icon: Icon(Icons.extension_outlined),
     ),
     _SettingsModel(
+      type: SettingType.exPiliPlusSetting,
+      subtitle: '字体、随机播放等分叉特色选项',
+      icon: Icon(Icons.auto_awesome_outlined),
+    ),
+    _SettingsModel(
       type: SettingType.webdavSetting,
       icon: Icon(MdiIcons.databaseCogOutline),
     ),
@@ -118,7 +123,8 @@ class _SettingPageState extends State<SettingPage> {
                       .videoSetting ||
                       .playSetting ||
                       .styleSetting ||
-                      .extraSetting => CommonSetting(
+                      .extraSetting ||
+                      .exPiliPlusSetting => CommonSetting(
                         settingType: _type,
                         showAppBar: false,
                       ),
@@ -149,7 +155,8 @@ class _SettingPageState extends State<SettingPage> {
           .videoSetting ||
           .playSetting ||
           .styleSetting ||
-          .extraSetting => CommonSetting(settingType: type),
+          .extraSetting ||
+          .exPiliPlusSetting => CommonSetting(settingType: type),
           .webdavSetting => const WebDavSettingPage(),
           .about => const AboutPage(),
         },

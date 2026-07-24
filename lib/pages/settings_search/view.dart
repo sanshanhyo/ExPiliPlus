@@ -2,6 +2,7 @@ import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
 import 'package:ex_piliplus/pages/search/controller.dart' show DebounceStreamState;
 import 'package:ex_piliplus/pages/setting/models/extra_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/ex_features_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/pages/setting/models/play_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/privacy_settings.dart';
@@ -33,6 +34,7 @@ class _SettingsSearchPageState
     ...videoSettings,
     ...playSettings,
     ...styleSettings,
+    ...exFeatureSettings,
   ];
 
   @override

@@ -7,7 +7,6 @@ import 'package:ex_piliplus/common/widgets/dialog/dialog.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/scale_app.dart';
 import 'package:ex_piliplus/common/widgets/stateful_builder.dart';
-import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/bar_hide_type.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_badge_mode.dart';
 import 'package:ex_piliplus/models/common/dynamic/up_panel_position.dart';
@@ -21,12 +20,10 @@ import 'package:ex_piliplus/pages/mine/controller.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
 import 'package:ex_piliplus/pages/setting/widgets/dual_slider_dialog.dart';
-import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/multi_select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/slider_dialog.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
-import 'package:ex_piliplus/services/app_font_manager.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
@@ -84,25 +81,6 @@ List<SettingsModel> get styleSettings => [
     setKey: SettingBoxKey.useSideBar,
     defaultVal: false,
     needReboot: true,
-  ),
-  NormalModel(
-    title: 'App字体',
-    getSubtitle: () => '当前：${Pref.appFontFamily.label}',
-    leading: const Icon(Icons.font_download_outlined),
-    onTap: _showAppFontFamilyDialog,
-  ),
-  SplitModel(
-    normalModel: const NormalModel.split(
-      title: 'App字体字重',
-      subtitle: '点击设置',
-      leading: Icon(Icons.text_fields),
-    ),
-    switchModel: SwitchModel.split(
-      defaultVal: false,
-      setKey: SettingBoxKey.appFontWeight,
-      onChanged: (_) => Get.updateMyAppTheme(),
-      onTap: _showFontWeightDialog,
-    ),
   ),
   NormalModel(
     title: '界面缩放',
@@ -638,50 +616,6 @@ void _showSpringDialog(BuildContext context, _) {
       ],
     ),
   );
-}
-
-Future<void> _showFontWeightDialog(BuildContext context) async {
-  final res = await showDialog<double>(
-    context: context,
-    builder: (context) => SliderDialog(
-      title: const Text('App字体字重'),
-      value: Pref.appFontWeight.toDouble() + 1,
-      min: 1,
-      max: FontWeight.values.length.toDouble(),
-      divisions: FontWeight.values.length - 1,
-    ),
-  );
-  if (res != null) {
-    await GStorage.setting.put(SettingBoxKey.appFontWeight, res.toInt() - 1);
-    Get.updateMyAppTheme();
-  }
-}
-
-Future<void> _showAppFontFamilyDialog(
-  BuildContext context,
-  VoidCallback setState,
-) async {
-  final current = Pref.appFontFamily;
-  final res = await showDialog<AppFontFamily>(
-    context: context,
-    builder: (context) => AppFontFamilyDialog(value: current),
-  );
-  if (res != null && res != current) {
-    if (!res.isSystem) {
-      SmartDialog.showLoading(msg: '正在加载字体');
-      try {
-        await AppFontManager.load(res);
-      } catch (error) {
-        SmartDialog.showToast(error.toString());
-        return;
-      } finally {
-        SmartDialog.dismiss(status: SmartStatus.loading);
-      }
-    }
-    await GStorage.setting.put(SettingBoxKey.appFontFamily, res.name);
-    if (context.mounted) setState();
-    Get.updateMyAppTheme();
-  }
 }
 
 Future<void> _showTransitionDialog(
