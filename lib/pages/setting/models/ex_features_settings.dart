@@ -37,6 +37,13 @@ List<SettingsModel> get exFeatureSettings => [
     setKey: SettingBoxKey.showRandomVideoButton,
     defaultVal: false,
   ),
+  const SwitchModel(
+    title: '自动点赞点开的视频',
+    subtitle: '进入视频详情后自动点赞一次，已点赞的视频会跳过',
+    leading: Icon(Icons.thumb_up_alt_outlined),
+    setKey: SettingBoxKey.autoLikeOpenedVideo,
+    defaultVal: false,
+  ),
 ];
 
 Future<void> _showFontWeightDialog(BuildContext context) async {

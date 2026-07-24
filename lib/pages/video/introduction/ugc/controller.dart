@@ -164,7 +164,11 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
   }
 
   Future<void> queryAllStatus() async {
-    final result = await VideoHttp.videoRelation(bvid: bvid);
+    final targetBvid = bvid;
+    final result = await VideoHttp.videoRelation(bvid: targetBvid);
+    if (isClosed || targetBvid != bvid) {
+      return;
+    }
     if (result case Success(:final response)) {
       late final stat = videoDetail.value.stat;
       if (response.like!) {
@@ -177,6 +181,9 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
       hasDislike.value = response.dislike!;
       coinNum.value = response.coin!;
       hasFav.value = response.favorite!;
+      if (await tryAutoLikeOpenedVideo(targetBvid: targetBvid, stat: stat)) {
+        hasDislike.value = false;
+      }
     }
   }
 

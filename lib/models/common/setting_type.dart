@@ -14,7 +14,7 @@ enum SettingType {
   playSetting('播放器设置'),
   styleSetting('外观设置'),
   extraSetting('其它设置'),
-  exPiliPlusSetting('ExPiliplus功能'),
+  exPiliPlusSetting('ExPiliPlus设置'),
   webdavSetting('WebDAV 设置'),
   about('关于'),
   ;

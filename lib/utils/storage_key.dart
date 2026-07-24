@@ -145,6 +145,7 @@ abstract final class SettingBoxKey {
       silentDownImg = 'silentDownImg',
       showMemberShop = 'showMemberShop',
       showRandomVideoButton = 'showRandomVideoButton',
+      autoLikeOpenedVideo = 'autoLikeOpenedVideo',
       enablePlayAll = 'enablePlayAll',
       enableTapDm = 'enableTapDm',
       setSystemBrightness = 'setSystemBrightness',

@@ -26,6 +26,8 @@ import 'package:get/get.dart';
 
 abstract class CommonIntroController extends GetxController
     with GetSingleTickerProviderStateMixin, TripleMixin, FavMixin {
+  static final Set<String> _autoLikedBvids = <String>{};
+
   late final String heroTag;
   late String bvid;
 
@@ -61,6 +63,35 @@ abstract class CommonIntroController extends GetxController
   bool nextPlay();
 
   void actionShareVideo(BuildContext context);
+
+  Future<bool> tryAutoLikeOpenedVideo({
+    String? targetBvid,
+    StatDetail? stat,
+  }) async {
+    final effectiveBvid = targetBvid ?? bvid;
+    if (!Pref.autoLikeOpenedVideo ||
+        !isLogin ||
+        hasLike.value ||
+        effectiveBvid.isEmpty ||
+        _autoLikedBvids.contains(effectiveBvid)) {
+      return false;
+    }
+    _autoLikedBvids.add(effectiveBvid);
+
+    final result = await VideoHttp.likeVideo(bvid: effectiveBvid, type: true);
+    if (isClosed || effectiveBvid != bvid) {
+      return false;
+    }
+    if (result.isSuccess) {
+      stat?.like++;
+      hasLike.value = true;
+      return true;
+    }
+    if (kDebugMode) {
+      debugPrint('auto like opened video failed: $result');
+    }
+    return false;
+  }
 
   // 同时观看
   final bool isShowOnlineTotal = Pref.enableOnlineTotal;

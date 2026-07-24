@@ -77,7 +77,12 @@ class PgcIntroController extends CommonIntroController {
 
   // 获取点赞/投币/收藏状态
   Future<void> queryPgcLikeCoinFav() async {
-    final result = await VideoHttp.pgcLikeCoinFav(epId: epId!);
+    final targetBvid = bvid;
+    final targetEpId = epId!;
+    final result = await VideoHttp.pgcLikeCoinFav(epId: targetEpId);
+    if (isClosed || targetBvid != bvid || targetEpId != epId) {
+      return;
+    }
     if (result case Success(:final response)) {
       final hasLike = response.like == 1;
       final hasFav = response.favorite == 1;
@@ -91,6 +96,7 @@ class PgcIntroController extends CommonIntroController {
       this.hasLike.value = hasLike;
       coinNum.value = response.coinNumber!;
       this.hasFav.value = hasFav;
+      await tryAutoLikeOpenedVideo(targetBvid: targetBvid, stat: stat);
     } else {
       result.toast();
     }

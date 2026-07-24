@@ -940,6 +940,9 @@ abstract final class Pref {
   static bool get showRandomVideoButton =>
       _setting.get(SettingBoxKey.showRandomVideoButton, defaultValue: false);
 
+  static bool get autoLikeOpenedVideo =>
+      _setting.get(SettingBoxKey.autoLikeOpenedVideo, defaultValue: false);
+
   static SuperChatType get superChatType =>
       SuperChatType.values[_setting.get(
         SettingBoxKey.superChatType,
