@@ -934,6 +934,9 @@ abstract final class Pref {
   static bool get showMemberShop =>
       _setting.get(SettingBoxKey.showMemberShop, defaultValue: false);
 
+  static bool get showRandomVideoButton =>
+      _setting.get(SettingBoxKey.showRandomVideoButton, defaultValue: false);
+
   static SuperChatType get superChatType =>
       SuperChatType.values[_setting.get(
         SettingBoxKey.superChatType,

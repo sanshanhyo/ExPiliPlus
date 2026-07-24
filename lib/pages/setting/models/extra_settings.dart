@@ -584,6 +584,12 @@ List<SettingsModel> get extraSettings => [
     defaultVal: false,
     onChanged: (value) => MemberTabType.showMemberShop = value,
   ),
+  const SwitchModel(
+    title: 'UP主页显示随机播放按钮',
+    leading: Icon(Icons.shuffle),
+    setKey: SettingBoxKey.showRandomVideoButton,
+    defaultVal: false,
+  ),
   const SplitModel(
     normalModel: NormalModel.split(
       title: '设置代理',

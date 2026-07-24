@@ -144,6 +144,7 @@ abstract final class SettingBoxKey {
       showFsLockBtn = 'showFsLockBtn',
       silentDownImg = 'silentDownImg',
       showMemberShop = 'showMemberShop',
+      showRandomVideoButton = 'showRandomVideoButton',
       enablePlayAll = 'enablePlayAll',
       enableTapDm = 'enableTapDm',
       setSystemBrightness = 'setSystemBrightness',
