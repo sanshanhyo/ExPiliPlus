@@ -1,11 +1,11 @@
 import 'dart:async' show FutureOr;
 import 'dart:convert' show utf8, jsonDecode;
 
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/dialog/simple_dialog_option.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
-import 'package:PiliPlus/utils/storage_utils.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/common/style.dart';
+import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/storage_utils.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard;

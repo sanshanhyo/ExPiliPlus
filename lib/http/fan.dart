@@ -1,8 +1,8 @@
-import 'package:PiliPlus/http/api.dart';
-import 'package:PiliPlus/http/error_msg.dart';
-import 'package:PiliPlus/http/init.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/models_new/follow/data.dart';
+import 'package:ex_piliplus/http/api.dart';
+import 'package:ex_piliplus/http/error_msg.dart';
+import 'package:ex_piliplus/http/init.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/models_new/follow/data.dart';
 
 abstract final class FanHttp {
   static Future<LoadingState<FollowData>> fans({

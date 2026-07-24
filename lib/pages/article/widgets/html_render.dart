@@ -1,9 +1,9 @@
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/widgets/image_viewer/hero.dart';
-import 'package:PiliPlus/models/common/image_preview_type.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
+import 'package:ex_piliplus/common/assets.dart';
+import 'package:ex_piliplus/common/widgets/image_viewer/hero.dart';
+import 'package:ex_piliplus/models/common/image_preview_type.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/image_utils.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/fav/fav_folder/list.dart';
+import 'package:ex_piliplus/models_new/fav/fav_folder/list.dart';
 
 class FavFolderData {
   int? count;

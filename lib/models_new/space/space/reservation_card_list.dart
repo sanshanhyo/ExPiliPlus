@@ -1,4 +1,4 @@
-import 'package:PiliPlus/utils/parse_string.dart';
+import 'package:ex_piliplus/utils/parse_string.dart';
 
 class ReservationCardItem {
   int? sid;

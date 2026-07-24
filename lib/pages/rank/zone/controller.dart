@@ -1,6 +1,6 @@
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/http/video.dart';
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/http/video.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 
 class ZoneController extends CommonListController {
   ZoneController({this.rid, this.seasonType});

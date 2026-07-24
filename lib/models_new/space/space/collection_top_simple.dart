@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/space/space/top.dart';
+import 'package:ex_piliplus/models_new/space/space/top.dart';
 
 class CollectionTopSimple {
   Top? top;

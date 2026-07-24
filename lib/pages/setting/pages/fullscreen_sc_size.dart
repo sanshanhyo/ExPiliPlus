@@ -1,15 +1,15 @@
 import 'dart:io' show Platform;
 import 'dart:math' as math;
 
-import 'package:PiliPlus/common/widgets/custom_icon.dart';
-import 'package:PiliPlus/common/widgets/extra_hittest_stack.dart';
-import 'package:PiliPlus/models_new/live/live_superchat/item.dart';
-import 'package:PiliPlus/pages/live_room/superchat/superchat_card.dart';
-import 'package:PiliPlus/plugin/pl_player/utils/fullscreen.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
-import 'package:PiliPlus/utils/storage.dart';
-import 'package:PiliPlus/utils/storage_key.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:ex_piliplus/common/widgets/custom_icon.dart';
+import 'package:ex_piliplus/common/widgets/extra_hittest_stack.dart';
+import 'package:ex_piliplus/models_new/live/live_superchat/item.dart';
+import 'package:ex_piliplus/pages/live_room/superchat/superchat_card.dart';
+import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
+import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 
 const kFullScreenSCWidth = 255.0;

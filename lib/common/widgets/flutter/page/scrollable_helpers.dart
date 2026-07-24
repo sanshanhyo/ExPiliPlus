@@ -11,7 +11,7 @@
 
 import 'dart:math' as math;
 
-import 'package:PiliPlus/common/widgets/flutter/page/scrollable.dart';
+import 'package:ex_piliplus/common/widgets/flutter/page/scrollable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     hide EdgeDraggingAutoScroller, Scrollable, ScrollableState;

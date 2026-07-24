@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models/model_owner.dart';
-import 'package:PiliPlus/models_new/fav/fav_detail/cnt_info.dart';
+import 'package:ex_piliplus/models/model_owner.dart';
+import 'package:ex_piliplus/models_new/fav/fav_detail/cnt_info.dart';
 
 class SubItemModel {
   int? id;

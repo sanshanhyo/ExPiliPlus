@@ -17,7 +17,7 @@
 
 import 'dart:math' as math;
 
-import 'package:PiliPlus/common/widgets/loading_widget/morphs.dart';
+import 'package:ex_piliplus/common/widgets/loading_widget/morphs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart' show SpringSimulation;
 import 'package:flutter/semantics.dart';

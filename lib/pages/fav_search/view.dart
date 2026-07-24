@@ -1,13 +1,13 @@
-import 'package:PiliPlus/models/common/fav_order_type.dart';
-import 'package:PiliPlus/models_new/fav/fav_detail/data.dart';
-import 'package:PiliPlus/models_new/fav/fav_detail/media.dart';
-import 'package:PiliPlus/pages/common/search/common_search_page.dart';
-import 'package:PiliPlus/pages/fav_detail/widget/fav_video_card.dart';
-import 'package:PiliPlus/pages/fav_search/controller.dart';
-import 'package:PiliPlus/utils/accounts.dart';
-import 'package:PiliPlus/utils/grid.dart';
-import 'package:PiliPlus/utils/request_utils.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/models/common/fav_order_type.dart';
+import 'package:ex_piliplus/models_new/fav/fav_detail/data.dart';
+import 'package:ex_piliplus/models_new/fav/fav_detail/media.dart';
+import 'package:ex_piliplus/pages/common/search/common_search_page.dart';
+import 'package:ex_piliplus/pages/fav_detail/widget/fav_video_card.dart';
+import 'package:ex_piliplus/pages/fav_search/controller.dart';
+import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/request_utils.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

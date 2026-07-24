@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models_new/fav/fav_detail/media.dart';
-import 'package:PiliPlus/models_new/fav/fav_folder/list.dart';
+import 'package:ex_piliplus/models_new/fav/fav_detail/media.dart';
+import 'package:ex_piliplus/models_new/fav/fav_folder/list.dart';
 
 class FavDetailData {
   FavFolderInfo? info;

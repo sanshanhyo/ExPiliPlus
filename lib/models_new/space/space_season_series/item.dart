@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models_new/space/space_season_series/page.dart';
-import 'package:PiliPlus/models_new/space/space_season_series/season.dart';
+import 'package:ex_piliplus/models_new/space/space_season_series/page.dart';
+import 'package:ex_piliplus/models_new/space/space_season_series/season.dart';
 
 class SpaceSsData {
   SpaceSsPage? page;

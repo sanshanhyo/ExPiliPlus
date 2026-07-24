@@ -1,15 +1,15 @@
-import 'package:PiliPlus/common/widgets/loading_widget/http_error.dart';
-import 'package:PiliPlus/common/widgets/view_sliver_safe_area.dart';
-import 'package:PiliPlus/pages/search/controller.dart' show DebounceStreamState;
-import 'package:PiliPlus/pages/setting/models/extra_settings.dart';
-import 'package:PiliPlus/pages/setting/models/model.dart';
-import 'package:PiliPlus/pages/setting/models/play_settings.dart';
-import 'package:PiliPlus/pages/setting/models/privacy_settings.dart';
-import 'package:PiliPlus/pages/setting/models/recommend_settings.dart';
-import 'package:PiliPlus/pages/setting/models/style_settings.dart';
-import 'package:PiliPlus/pages/setting/models/video_settings.dart';
-import 'package:PiliPlus/utils/grid.dart';
-import 'package:PiliPlus/utils/waterfall.dart';
+import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
+import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
+import 'package:ex_piliplus/pages/search/controller.dart' show DebounceStreamState;
+import 'package:ex_piliplus/pages/setting/models/extra_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/model.dart';
+import 'package:ex_piliplus/pages/setting/models/play_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/privacy_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/recommend_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/style_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/video_settings.dart';
+import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/waterfall.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'

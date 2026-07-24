@@ -1,10 +1,10 @@
-import 'package:PiliPlus/pages/setting/models/extra_settings.dart';
-import 'package:PiliPlus/pages/setting/models/model.dart';
-import 'package:PiliPlus/pages/setting/models/play_settings.dart';
-import 'package:PiliPlus/pages/setting/models/privacy_settings.dart';
-import 'package:PiliPlus/pages/setting/models/recommend_settings.dart';
-import 'package:PiliPlus/pages/setting/models/style_settings.dart';
-import 'package:PiliPlus/pages/setting/models/video_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/extra_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/model.dart';
+import 'package:ex_piliplus/pages/setting/models/play_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/privacy_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/recommend_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/style_settings.dart';
+import 'package:ex_piliplus/pages/setting/models/video_settings.dart';
 
 enum SettingType {
   privacySetting('隐私设置'),

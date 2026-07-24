@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models/common/setting_type.dart';
-import 'package:PiliPlus/pages/setting/models/model.dart';
+import 'package:ex_piliplus/models/common/setting_type.dart';
+import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:flutter/material.dart';
 
 class CommonSetting extends StatefulWidget {

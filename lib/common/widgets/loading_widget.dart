@@ -1,4 +1,4 @@
-import 'package:PiliPlus/common/widgets/custom_arc.dart';
+import 'package:ex_piliplus/common/widgets/custom_arc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -4,7 +4,7 @@
 
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:PiliPlus/common/widgets/flutter/page/page_view.dart';
+import 'package:ex_piliplus/common/widgets/flutter/page/page_view.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
 import 'package:flutter/gestures.dart'
     show DragStartBehavior, HorizontalDragGestureRecognizer;

@@ -1,6 +1,6 @@
-import 'package:PiliPlus/models/common/badge_type.dart';
-import 'package:PiliPlus/utils/extension/string_ext.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/models/common/badge_type.dart';
+import 'package:ex_piliplus/utils/extension/string_ext.dart';
+import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
 
 class PBadge extends StatelessWidget {

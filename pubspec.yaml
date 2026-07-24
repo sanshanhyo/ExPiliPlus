@@ -1,5 +1,5 @@
-name: PiliPlus
-description: A new Flutter project.
+name: ex_piliplus
+description: An unofficial PiliPlus build developed in Flutter.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-# update when release
+# ExPiliplus keeps the first three numbers in sync with upstream PiliPlus.
+# The build number after + is the ExPiliplus suffix, displayed as 2.1.0-ex.1
+# and tagged on GitHub as v2.1.0-ex.1.
 version: 2.1.0+1
 
 environment:

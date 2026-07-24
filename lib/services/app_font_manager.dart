@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:PiliPlus/models/common/app_font_family.dart';
-import 'package:PiliPlus/services/app_font_archive_extractor.dart';
-import 'package:PiliPlus/utils/path_utils.dart';
-import 'package:PiliPlus/utils/storage.dart';
-import 'package:PiliPlus/utils/storage_key.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:ex_piliplus/models/common/app_font_family.dart';
+import 'package:ex_piliplus/services/app_font_archive_extractor.dart';
+import 'package:ex_piliplus/utils/path_utils.dart';
+import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';

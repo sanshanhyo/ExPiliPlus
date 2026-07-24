@@ -1,8 +1,8 @@
-import 'package:PiliPlus/http/member.dart';
-import 'package:PiliPlus/models_new/follow/data.dart';
-import 'package:PiliPlus/models_new/follow/list.dart';
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
-import 'package:PiliPlus/utils/accounts.dart';
+import 'package:ex_piliplus/http/member.dart';
+import 'package:ex_piliplus/models_new/follow/data.dart';
+import 'package:ex_piliplus/models_new/follow/list.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:get/get.dart';
 
 abstract class FollowTypeController

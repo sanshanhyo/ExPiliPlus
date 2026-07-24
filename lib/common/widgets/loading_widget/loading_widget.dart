@@ -1,5 +1,5 @@
-import 'package:PiliPlus/common/widgets/loading_widget/http_error.dart';
-import 'package:PiliPlus/common/widgets/loading_widget/m3e_loading_indicator.dart';
+import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
+import 'package:ex_piliplus/common/widgets/loading_widget/m3e_loading_indicator.dart';
 import 'package:flutter/material.dart';
 
 const Widget m3eLoading = Center(child: M3ELoadingIndicator());

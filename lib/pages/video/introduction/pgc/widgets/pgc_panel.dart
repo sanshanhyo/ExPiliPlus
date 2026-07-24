@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/models_new/pgc/pgc_info_model/episode.dart';
-import 'package:PiliPlus/models_new/pgc/pgc_info_model/new_ep.dart';
-import 'package:PiliPlus/models_new/video/video_detail/episode.dart'
+import 'package:ex_piliplus/common/assets.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_info_model/episode.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_info_model/new_ep.dart';
+import 'package:ex_piliplus/models_new/video/video_detail/episode.dart'
     hide EpisodeItem;
-import 'package:PiliPlus/pages/video/controller.dart';
-import 'package:PiliPlus/utils/accounts.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/pages/video/controller.dart';
+import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/svg.dart';

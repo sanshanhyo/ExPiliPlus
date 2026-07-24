@@ -2,7 +2,7 @@
 
 import 'dart:convert' show ascii, base64;
 
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:uuid/v4.dart';
 

@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models/model_avatar.dart' show Vip;
+import 'package:ex_piliplus/models/model_avatar.dart' show Vip;
 
 class Author {
   String? avatar;

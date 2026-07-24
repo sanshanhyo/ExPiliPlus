@@ -1,4 +1,4 @@
-import 'package:PiliPlus/common/style.dart';
+import 'package:ex_piliplus/common/style.dart';
 import 'package:flutter/material.dart';
 
 Widget selectMask(

@@ -1,10 +1,10 @@
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/button/icon_button.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/selection_text.dart';
-import 'package:PiliPlus/http/user.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
+import 'package:ex_piliplus/common/style.dart';
+import 'package:ex_piliplus/common/widgets/button/icon_button.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/common/widgets/selection_text.dart';
+import 'package:ex_piliplus/http/user.dart';
+import 'package:ex_piliplus/utils/image_utils.dart';
+import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';

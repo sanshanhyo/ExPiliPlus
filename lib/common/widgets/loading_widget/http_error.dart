@@ -1,5 +1,5 @@
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/widgets/selection_text.dart';
+import 'package:ex_piliplus/common/assets.dart';
+import 'package:ex_piliplus/common/widgets/selection_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

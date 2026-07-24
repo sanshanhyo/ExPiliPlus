@@ -1,5 +1,5 @@
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/models/dynamics/result.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:flutter/material.dart';
 
 Widget livePanel(

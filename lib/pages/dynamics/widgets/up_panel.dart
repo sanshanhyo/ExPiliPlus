@@ -1,14 +1,14 @@
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/models/common/dynamic/up_panel_position.dart';
-import 'package:PiliPlus/models/dynamics/up.dart';
-import 'package:PiliPlus/pages/dynamics/controller.dart';
-import 'package:PiliPlus/pages/live_follow/view.dart';
-import 'package:PiliPlus/utils/accounts.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/feed_back.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
+import 'package:ex_piliplus/common/assets.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/models/common/dynamic/up_panel_position.dart';
+import 'package:ex_piliplus/models/dynamics/up.dart';
+import 'package:ex_piliplus/pages/dynamics/controller.dart';
+import 'package:ex_piliplus/pages/live_follow/view.dart';
+import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/feed_back.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

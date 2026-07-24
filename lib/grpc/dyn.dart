@@ -1,10 +1,10 @@
-import 'package:PiliPlus/grpc/bilibili/app/dynamic/v1.pb.dart'
+import 'package:ex_piliplus/grpc/bilibili/app/dynamic/v1.pb.dart'
     show DynRedReq, TabOffset, DynRedReply;
-import 'package:PiliPlus/grpc/bilibili/app/dynamic/v2.pb.dart'
+import 'package:ex_piliplus/grpc/bilibili/app/dynamic/v2.pb.dart'
     show OpusType, OpusDetailReq, OpusDetailResp;
-import 'package:PiliPlus/grpc/grpc_req.dart';
-import 'package:PiliPlus/grpc/url.dart';
-import 'package:PiliPlus/http/loading_state.dart';
+import 'package:ex_piliplus/grpc/grpc_req.dart';
+import 'package:ex_piliplus/grpc/url.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:fixnum/fixnum.dart';
 
 abstract final class DynGrpc {

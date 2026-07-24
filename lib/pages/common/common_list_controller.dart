@@ -1,5 +1,5 @@
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/pages/common/common_controller.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/pages/common/common_controller.dart';
 import 'package:get/get.dart';
 
 abstract class CommonListController<R, T> extends CommonController<R, T> {

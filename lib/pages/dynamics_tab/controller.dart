@@ -1,13 +1,13 @@
-import 'package:PiliPlus/http/dynamics.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/http/msg.dart';
-import 'package:PiliPlus/models/common/dynamic/dynamics_type.dart';
-import 'package:PiliPlus/models/dynamics/result.dart';
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
-import 'package:PiliPlus/pages/dynamics/controller.dart';
-import 'package:PiliPlus/pages/main/controller.dart';
-import 'package:PiliPlus/services/account_service.dart';
-import 'package:PiliPlus/utils/extension/scroll_controller_ext.dart';
+import 'package:ex_piliplus/http/dynamics.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/http/msg.dart';
+import 'package:ex_piliplus/models/common/dynamic/dynamics_type.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/pages/dynamics/controller.dart';
+import 'package:ex_piliplus/pages/main/controller.dart';
+import 'package:ex_piliplus/services/account_service.dart';
+import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 

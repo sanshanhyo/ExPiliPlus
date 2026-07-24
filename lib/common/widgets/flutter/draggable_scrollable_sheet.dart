@@ -11,8 +11,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide DraggableScrollableSheet;
 
-part 'package:PiliPlus/common/widgets/draggable_sheet/dyn.dart';
-part 'package:PiliPlus/common/widgets/draggable_sheet/topic.dart';
+part 'package:ex_piliplus/common/widgets/draggable_sheet/dyn.dart';
+part 'package:ex_piliplus/common/widgets/draggable_sheet/topic.dart';
 
 /// Controls a [DraggableScrollableSheet].
 ///

@@ -1,5 +1,5 @@
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
-import 'package:PiliPlus/pages/common/multi_select/base.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/pages/common/multi_select/base.dart';
 
 abstract class MultiSelectController<
   R,

@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/live/live_search/user_item.dart';
+import 'package:ex_piliplus/models_new/live/live_search/user_item.dart';
 
 class User {
   List<LiveSearchUserItemModel>? list;

@@ -1,4 +1,4 @@
-part of 'package:PiliPlus/pages/video/reply/widgets/reply_item_grpc.dart';
+part of 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 
 void showReplyCopyDialog(
   BuildContext context,

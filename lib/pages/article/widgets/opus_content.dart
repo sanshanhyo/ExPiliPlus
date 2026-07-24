@@ -1,24 +1,24 @@
 import 'dart:math' as math;
 
-import 'package:PiliPlus/common/assets.dart';
-import 'package:PiliPlus/common/widgets/dialog/simple_dialog_option.dart';
-import 'package:PiliPlus/common/widgets/gesture/tap_gesture_recognizer.dart';
-import 'package:PiliPlus/common/widgets/image/cached_network_svg_image.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/image_grid/image_grid_view.dart';
-import 'package:PiliPlus/common/widgets/image_viewer/hero.dart';
-import 'package:PiliPlus/http/constants.dart';
-import 'package:PiliPlus/models/common/image_preview_type.dart';
-import 'package:PiliPlus/models/common/image_type.dart';
-import 'package:PiliPlus/models/dynamics/article_content_model.dart'
+import 'package:ex_piliplus/common/assets.dart';
+import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
+import 'package:ex_piliplus/common/widgets/image/cached_network_svg_image.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
+import 'package:ex_piliplus/common/widgets/image_viewer/hero.dart';
+import 'package:ex_piliplus/http/constants.dart';
+import 'package:ex_piliplus/models/common/image_preview_type.dart';
+import 'package:ex_piliplus/models/common/image_type.dart';
+import 'package:ex_piliplus/models/dynamics/article_content_model.dart'
     show ArticleContentModel, Rich, Style, Word, Node;
-import 'package:PiliPlus/models/dynamics/result.dart';
-import 'package:PiliPlus/pages/dynamics/widgets/vote.dart';
-import 'package:PiliPlus/utils/app_scheme.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/extension/theme_ext.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
+import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
+import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/image_utils.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;

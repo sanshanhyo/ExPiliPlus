@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models_new/live/live_medal_wall/medal_info.dart';
-import 'package:PiliPlus/models_new/live/live_medal_wall/uinfo_medal.dart';
+import 'package:ex_piliplus/models_new/live/live_medal_wall/medal_info.dart';
+import 'package:ex_piliplus/models_new/live/live_medal_wall/uinfo_medal.dart';
 
 class MedalWallItem {
   MedalInfo? medalInfo;

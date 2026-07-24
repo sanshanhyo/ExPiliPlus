@@ -1,5 +1,5 @@
-import 'package:PiliPlus/common/skeleton/skeleton.dart';
-import 'package:PiliPlus/common/style.dart';
+import 'package:ex_piliplus/common/skeleton/skeleton.dart';
+import 'package:ex_piliplus/common/style.dart';
 import 'package:flutter/material.dart';
 
 class FavPgcItemSkeleton extends StatelessWidget {

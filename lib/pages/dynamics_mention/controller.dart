@@ -1,8 +1,8 @@
-import 'package:PiliPlus/http/dynamics.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/models_new/dynamic/dyn_mention/group.dart';
-import 'package:PiliPlus/models_new/dynamic/dyn_mention/item.dart';
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/http/dynamics.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/group.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

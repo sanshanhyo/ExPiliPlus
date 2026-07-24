@@ -1,4 +1,4 @@
-import 'package:PiliPlus/common/widgets/view_safe_area.dart';
+import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
 import 'package:flutter/material.dart';
 
 class AppBarAni extends StatelessWidget {

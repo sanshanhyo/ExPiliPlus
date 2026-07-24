@@ -2,26 +2,26 @@
 
 import 'dart:async' show StreamSubscription;
 
-import 'package:PiliPlus/common/widgets/view_safe_area.dart';
-import 'package:PiliPlus/grpc/bilibili/app/listener/v1.pbenum.dart'
+import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
+import 'package:ex_piliplus/grpc/bilibili/app/listener/v1.pbenum.dart'
     show PlaylistSource;
-import 'package:PiliPlus/http/search.dart';
-import 'package:PiliPlus/models/common/fav_type.dart';
-import 'package:PiliPlus/models/common/video/source_type.dart';
-import 'package:PiliPlus/pages/audio/view.dart';
-import 'package:PiliPlus/pages/dynamics/widgets/vote.dart';
-import 'package:PiliPlus/pages/fan/view.dart';
-import 'package:PiliPlus/pages/follow/view.dart';
-import 'package:PiliPlus/pages/follow_type/followed/view.dart';
-import 'package:PiliPlus/pages/live/view.dart';
-import 'package:PiliPlus/pages/rank/view.dart';
-import 'package:PiliPlus/pages/subscription_detail/view.dart';
-import 'package:PiliPlus/pages/video/reply_reply/view.dart';
-import 'package:PiliPlus/utils/id_utils.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/request_utils.dart';
-import 'package:PiliPlus/utils/url_utils.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/http/search.dart';
+import 'package:ex_piliplus/models/common/fav_type.dart';
+import 'package:ex_piliplus/models/common/video/source_type.dart';
+import 'package:ex_piliplus/pages/audio/view.dart';
+import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
+import 'package:ex_piliplus/pages/fan/view.dart';
+import 'package:ex_piliplus/pages/follow/view.dart';
+import 'package:ex_piliplus/pages/follow_type/followed/view.dart';
+import 'package:ex_piliplus/pages/live/view.dart';
+import 'package:ex_piliplus/pages/rank/view.dart';
+import 'package:ex_piliplus/pages/subscription_detail/view.dart';
+import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
+import 'package:ex_piliplus/utils/id_utils.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/utils/request_utils.dart';
+import 'package:ex_piliplus/utils/url_utils.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
-import 'package:PiliPlus/http/fav.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/models_new/fav/fav_article/data.dart';
-import 'package:PiliPlus/models_new/fav/fav_article/item.dart';
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/http/fav.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/models_new/fav/fav_article/data.dart';
+import 'package:ex_piliplus/models_new/fav/fav_article/item.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class FavArticleController

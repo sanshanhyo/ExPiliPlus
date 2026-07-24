@@ -1,5 +1,5 @@
-import 'package:PiliPlus/common/widgets/gesture/tap_gesture_recognizer.dart';
-import 'package:PiliPlus/models/dynamics/result.dart';
+import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

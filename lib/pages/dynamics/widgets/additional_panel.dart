@@ -1,13 +1,13 @@
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/gesture/tap_gesture_recognizer.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/selection_text.dart';
-import 'package:PiliPlus/http/dynamics.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/models/dynamics/result.dart';
-import 'package:PiliPlus/pages/dynamics/widgets/vote.dart';
-import 'package:PiliPlus/utils/app_scheme.dart';
-import 'package:PiliPlus/utils/num_utils.dart';
+import 'package:ex_piliplus/common/style.dart';
+import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/common/widgets/selection_text.dart';
+import 'package:ex_piliplus/http/dynamics.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
+import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
+import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

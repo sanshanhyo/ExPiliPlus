@@ -1,4 +1,4 @@
-name: Build ExPiliPlus for Windows x64
+name: Build ExPiliplus for Windows x64
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, e.g. v2.1.0"
+        description: "Release tag, e.g. v2.1.0-ex.1"
         required: false
         default: ""
         type: string
@@ -58,14 +58,14 @@ jobs:
 
       - name: Prepare Upload
         run: |
-          mkdir -p Release/ExPiliPlus-Win
-          mkdir -p ExPiliPlus-Win-Setup
-          mv build/windows/x64/runner/Release/* Release/ExPiliPlus-Win/
-          mv dist/**/*.exe ExPiliPlus-Win-Setup/ExPiliPlus_windows_${{ env.version }}_x64_setup.exe
+          mkdir -p Release/ExPiliplus-Win
+          mkdir -p ExPiliplus-Win-Setup
+          mv build/windows/x64/runner/Release/* Release/ExPiliplus-Win/
+          mv dist/**/*.exe ExPiliplus-Win-Setup/ExPiliplus_windows_${{ env.version }}_x64_setup.exe
 
       - name: Compress
         run: |
-          Compress-Archive -Path "Release/ExPiliPlus-Win" -DestinationPath "ExPiliPlus_windows_${{ env.version }}_x64_portable.zip"
+          Compress-Archive -Path "Release/ExPiliplus-Win" -DestinationPath "ExPiliplus_windows_${{ env.version }}_x64_portable.zip"
         shell: pwsh
 
       - name: Release
@@ -75,19 +75,19 @@ jobs:
           tag_name: ${{ inputs.tag }}
           name: ${{ inputs.tag }}
           files: |
-            ExPiliPlus_windows_*.zip
-            ExPiliPlus-Win-Setup/ExPiliPlus_windows_*.exe
+            ExPiliplus_windows_*.zip
+            ExPiliplus-Win-Setup/ExPiliplus_windows_*.exe
 
       - name: Upload windows file release
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: ExPiliPlus_Windows_file_x64_release
-          path: ExPiliPlus_windows_*.zip
+          name: ExPiliplus_Windows_file_x64_release
+          path: ExPiliplus_windows_*.zip
 
       - name: Upload windows setup release
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: ExPiliPlus_Windows_setup_x64_release
-          path: ExPiliPlus-Win-Setup/ExPiliPlus_windows_*.exe
+          name: ExPiliplus_Windows_setup_x64_release
+          path: ExPiliplus-Win-Setup/ExPiliplus_windows_*.exe

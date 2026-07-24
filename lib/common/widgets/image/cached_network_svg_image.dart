@@ -2,7 +2,7 @@
 
 import 'dart:developer';
 
-import 'package:PiliPlus/utils/cache_manager.dart';
+import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

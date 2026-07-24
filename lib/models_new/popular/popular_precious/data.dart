@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models/model_hot_video_item.dart';
+import 'package:ex_piliplus/models/model_hot_video_item.dart';
 
 class PopularPreciousData {
   int? mediaId;

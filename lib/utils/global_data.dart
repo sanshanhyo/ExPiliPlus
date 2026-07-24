@@ -1,4 +1,4 @@
-import 'package:PiliPlus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 
 class GlobalData {
   int imgQuality = Pref.picQuality;

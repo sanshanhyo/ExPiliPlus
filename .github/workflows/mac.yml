@@ -1,4 +1,4 @@
-name: Build ExPiliPlus for Mac
+name: Build ExPiliplus for Mac
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, e.g. v2.1.0"
+        description: "Release tag, e.g. v2.1.0-ex.1"
         required: false
         default: ""
         type: string
@@ -48,11 +48,11 @@ jobs:
       - name: Prepare Upload
         run: |
           npm install --global create-dmg
-          create-dmg build/macos/Build/Products/Release/PiliPlus.app || true
+          create-dmg build/macos/Build/Products/Release/ExPiliplus.app || true
         continue-on-error: true
 
       - name: Rename DMG
-        run: mv PiliPlus*.dmg ExPiliPlus_macos_${{ env.version }}.dmg
+        run: mv ExPiliplus*.dmg ExPiliplus_macos_${{ env.version }}.dmg
 
       - name: Release
         if: ${{ inputs.tag != '' }}
@@ -61,11 +61,11 @@ jobs:
           tag_name: ${{ inputs.tag }}
           name: ${{ inputs.tag }}
           files: |
-            ExPiliPlus_macos_*.dmg
+            ExPiliplus_macos_*.dmg
 
       - name: Upload macos release
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: ExPiliPlus_macOS_release
-          path: ExPiliPlus_macos_*.dmg
+          name: ExPiliplus_macOS_release
+          path: ExPiliplus_macos_*.dmg

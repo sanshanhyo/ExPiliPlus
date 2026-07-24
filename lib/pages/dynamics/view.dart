@@ -1,15 +1,15 @@
-import 'package:PiliPlus/common/widgets/scroll_physics.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/models/common/dynamic/dynamics_type.dart';
-import 'package:PiliPlus/models/common/dynamic/up_panel_position.dart';
-import 'package:PiliPlus/models/dynamics/up.dart';
-import 'package:PiliPlus/pages/common/common_page.dart';
-import 'package:PiliPlus/pages/dynamics/controller.dart';
-import 'package:PiliPlus/pages/dynamics/widgets/up_panel.dart';
-import 'package:PiliPlus/pages/dynamics_create/view.dart';
-import 'package:PiliPlus/pages/dynamics_tab/view.dart';
-import 'package:PiliPlus/pages/main/controller.dart';
-import 'package:PiliPlus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/models/common/dynamic/dynamics_type.dart';
+import 'package:ex_piliplus/models/common/dynamic/up_panel_position.dart';
+import 'package:ex_piliplus/models/dynamics/up.dart';
+import 'package:ex_piliplus/pages/common/common_page.dart';
+import 'package:ex_piliplus/pages/dynamics/controller.dart';
+import 'package:ex_piliplus/pages/dynamics/widgets/up_panel.dart';
+import 'package:ex_piliplus/pages/dynamics_create/view.dart';
+import 'package:ex_piliplus/pages/dynamics_tab/view.dart';
+import 'package:ex_piliplus/pages/main/controller.dart';
+import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:flutter/material.dart' hide DraggableScrollableSheet;
 import 'package:get/get.dart';
 

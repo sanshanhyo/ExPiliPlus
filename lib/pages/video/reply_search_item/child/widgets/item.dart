@@ -1,13 +1,13 @@
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/badge.dart';
-import 'package:PiliPlus/common/widgets/image/image_save.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/grpc/bilibili/main/community/reply/v1.pb.dart'
+import 'package:ex_piliplus/common/style.dart';
+import 'package:ex_piliplus/common/widgets/badge.dart';
+import 'package:ex_piliplus/common/widgets/image/image_save.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show SearchItem, SearchItemVideoSubType;
-import 'package:PiliPlus/models/common/badge_type.dart';
-import 'package:PiliPlus/models/common/reply/reply_search_type.dart';
-import 'package:PiliPlus/utils/duration_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
+import 'package:ex_piliplus/models/common/badge_type.dart';
+import 'package:ex_piliplus/models/common/reply/reply_search_type.dart';
+import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

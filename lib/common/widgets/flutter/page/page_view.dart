@@ -4,7 +4,7 @@
 
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:PiliPlus/common/widgets/flutter/page/scrollable.dart';
+import 'package:ex_piliplus/common/widgets/flutter/page/scrollable.dart';
 import 'package:flutter/gestures.dart'
     show DragStartBehavior, HorizontalDragGestureRecognizer;
 import 'package:flutter/material.dart'

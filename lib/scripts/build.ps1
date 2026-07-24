@@ -3,26 +3,30 @@ param(
 )
 
 try {
-    $versionName = $null
+    $flutterVersionName = $null
+    $displayVersionName = $null
+    $artifactVersionName = $null
 
     $versionCode = [int](git rev-list --count HEAD).Trim()
 
     $commitHash = (git rev-parse HEAD).Trim()
 
     $updatedContent = foreach ($line in (Get-Content -Path 'pubspec.yaml' -Encoding UTF8)) {
-        if ($line -match '^\s*version:\s*([\d\.]+)') {
-            $versionName = $matches[1]
+        if ($line -match '^\s*version:\s*([0-9]+(?:\.[0-9]+){2})\+([0-9]+)\s*$') {
+            $flutterVersionName = $matches[1]
+            $displayVersionName = "$flutterVersionName-ex.$($matches[2])"
+            $artifactVersionName = $displayVersionName
             if ($Arg -eq 'android') {
-                $versionName += '-' + $commitHash.Substring(0, 9)
+                $artifactVersionName += '-' + $commitHash.Substring(0, 9)
             }
-            "version: $versionName+$versionCode"
+            "version: $flutterVersionName+$versionCode"
         }
         else {
             $line
         }
     }
 
-    if ($null -eq $versionName) {
+    if ($null -eq $displayVersionName) {
         throw 'version not found'
     }
 
@@ -31,7 +35,7 @@ try {
     $buildTime = [int]([DateTimeOffset]::Now.ToUnixTimeSeconds())
 
     $data = @{
-        'pili.name' = $versionName
+        'pili.name' = $displayVersionName
         'pili.code' = $versionCode
         'pili.hash' = $commitHash
         'pili.time' = $buildTime
@@ -39,7 +43,7 @@ try {
 
     $data | ConvertTo-Json -Compress | Out-File 'pili_release.json' -Encoding UTF8
 
-    Add-Content -Path $env:GITHUB_ENV -Value "version=$versionName+$versionCode"
+    Add-Content -Path $env:GITHUB_ENV -Value "version=$artifactVersionName+$versionCode"
 }
 catch {
     Write-Error "Prebuild Error: $($_.Exception.Message)"

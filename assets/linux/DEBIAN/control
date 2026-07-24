@@ -7,7 +7,7 @@ Priority: optional
 Architecture: amd64
 Essential: no
 Installed-Size: size_need_change
-Description: unofficial PiliPlus build developed in Flutter
+Description: unofficial ExPiliplus build based on PiliPlus
 Homepage: https://github.com/sanshanhyo/PiliPlus
 Depends: libgtk-3-0t64,
          libmpv2,

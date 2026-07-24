@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/reply/picture.dart';
+import 'package:ex_piliplus/models_new/reply/picture.dart';
 
 class ReplyContent {
   String? message;

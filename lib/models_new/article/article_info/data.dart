@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models_new/article/article_info/stats.dart';
-import 'package:PiliPlus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/models_new/article/article_info/stats.dart';
+import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 
 class ArticleInfoData {
   bool? favorite;

@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/video/video_ai_conclusion/model_result.dart';
+import 'package:ex_piliplus/models_new/video/video_ai_conclusion/model_result.dart';
 
 class AiConclusionData {
   AiConclusionResult? modelResult;

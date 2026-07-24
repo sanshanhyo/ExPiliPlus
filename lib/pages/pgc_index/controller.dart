@@ -1,10 +1,10 @@
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/http/pgc.dart';
-import 'package:PiliPlus/models_new/pgc/pgc_index_condition/data.dart';
-import 'package:PiliPlus/models_new/pgc/pgc_index_condition/sort.dart';
-import 'package:PiliPlus/models_new/pgc/pgc_index_result/data.dart';
-import 'package:PiliPlus/models_new/pgc/pgc_index_result/list.dart';
-import 'package:PiliPlus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/http/pgc.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_index_condition/data.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_index_condition/sort.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_index_result/data.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_index_result/list.dart';
+import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:get/get.dart';
 
 class PgcIndexController

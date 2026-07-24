@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/live/live_contribution_rank/item.dart';
+import 'package:ex_piliplus/models_new/live/live_contribution_rank/item.dart';
 
 class LiveContributionRankData {
   List<LiveContributionRankItem>? item;

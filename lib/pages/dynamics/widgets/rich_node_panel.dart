@@ -1,18 +1,18 @@
 import 'dart:io' show Platform;
 
-import 'package:PiliPlus/common/widgets/emote_span.dart';
-import 'package:PiliPlus/common/widgets/gesture/tap_gesture_recognizer.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/image_grid/image_grid_view.dart';
-import 'package:PiliPlus/http/dynamics.dart';
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/http/search.dart';
-import 'package:PiliPlus/models/common/image_preview_type.dart'
+import 'package:ex_piliplus/common/widgets/emote_span.dart';
+import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
+import 'package:ex_piliplus/http/dynamics.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/http/search.dart';
+import 'package:ex_piliplus/models/common/image_preview_type.dart'
     show SourceModel;
-import 'package:PiliPlus/models/common/image_type.dart';
-import 'package:PiliPlus/models/dynamics/result.dart';
-import 'package:PiliPlus/pages/dynamics/widgets/vote.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
+import 'package:ex_piliplus/models/common/image_type.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
+import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';

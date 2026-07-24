@@ -7,7 +7,7 @@
 /// @docImport 'package:flutter/material.dart';
 library;
 
-import 'package:PiliPlus/common/widgets/flutter/text_field/editable_text.dart';
+import 'package:ex_piliplus/common/widgets/flutter/text_field/editable_text.dart';
 import 'package:flutter/cupertino.dart'
     hide EditableText, EditableTextState, CupertinoSpellCheckSuggestionsToolbar;
 import 'package:flutter/scheduler.dart';

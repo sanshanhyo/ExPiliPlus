@@ -1,6 +1,6 @@
-import 'package:PiliPlus/models/common/app_font_family.dart';
-import 'package:PiliPlus/services/app_font_manager.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
+import 'package:ex_piliplus/models/common/app_font_family.dart';
+import 'package:ex_piliplus/services/app_font_manager.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 

@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models_new/match/match_info/season.dart';
-import 'package:PiliPlus/models_new/match/match_info/team.dart';
+import 'package:ex_piliplus/models_new/match/match_info/season.dart';
+import 'package:ex_piliplus/models_new/match/match_info/team.dart';
 
 class MatchContest {
   String? gameStage;

@@ -1,16 +1,16 @@
 import 'dart:async' show FutureOr;
 import 'dart:io' show Platform;
 
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/http/user.dart';
-import 'package:PiliPlus/main.dart';
-import 'package:PiliPlus/services/account_service.dart';
-import 'package:PiliPlus/utils/accounts.dart';
-import 'package:PiliPlus/utils/accounts/account.dart';
-import 'package:PiliPlus/utils/request_utils.dart';
-import 'package:PiliPlus/utils/storage.dart';
-import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/http/user.dart';
+import 'package:ex_piliplus/main.dart';
+import 'package:ex_piliplus/services/account_service.dart';
+import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/accounts/account.dart';
+import 'package:ex_piliplus/utils/request_utils.dart';
+import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart' show Digest;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web;

@@ -1,4 +1,4 @@
-import 'package:PiliPlus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 
 class RelationData {
   int? attribute;

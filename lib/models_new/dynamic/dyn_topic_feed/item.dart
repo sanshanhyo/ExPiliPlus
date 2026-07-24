@@ -1,5 +1,5 @@
-import 'package:PiliPlus/models/dynamics/result.dart';
-import 'package:PiliPlus/models_new/dynamic/dyn_topic_feed/fold_card_item.dart';
+import 'package:ex_piliplus/models/dynamics/result.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_topic_feed/fold_card_item.dart';
 
 class TopicCardItem {
   FoldCardItem? foldCardItem;

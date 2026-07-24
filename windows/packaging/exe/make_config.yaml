@@ -4,7 +4,7 @@ script_template: inno_setup.iss
 app_id: d93c373c-8471-4fff-a5d0-9b73c0e37b4f
 publisher: SanshanHyO
 publisher_url: https://github.com/sanshanhyo/PiliPlus
-display_name: ExPiliPlus
+display_name: ExPiliplus
 # create_desktop_icon: true
 # See: https://jrsoftware.org/ishelp/index.php?topic=setup_defaultdirname
 # install_dir_name: "D:\\HELLO-WORLD"

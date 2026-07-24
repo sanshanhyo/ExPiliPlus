@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/live/live_medal_wall/item.dart';
+import 'package:ex_piliplus/models_new/live/live_medal_wall/item.dart';
 
 class MedalWallData {
   List<MedalWallItem>? list;

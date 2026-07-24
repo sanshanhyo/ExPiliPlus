@@ -1,15 +1,15 @@
 import 'dart:math';
 
-import 'package:PiliPlus/common/widgets/custom_tooltip.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/loading_widget/loading_widget.dart';
-import 'package:PiliPlus/common/widgets/scroll_physics.dart'
+import 'package:ex_piliplus/common/widgets/custom_tooltip.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/common/widgets/loading_widget/loading_widget.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
     show tabBarView, platformClampingPhysics;
-import 'package:PiliPlus/http/loading_state.dart';
-import 'package:PiliPlus/models/common/image_type.dart';
-import 'package:PiliPlus/models_new/live/live_emote/datum.dart';
-import 'package:PiliPlus/models_new/live/live_emote/emoticon.dart';
-import 'package:PiliPlus/pages/live_emote/controller.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/models/common/image_type.dart';
+import 'package:ex_piliplus/models_new/live/live_emote/datum.dart';
+import 'package:ex_piliplus/models_new/live/live_emote/emoticon.dart';
+import 'package:ex_piliplus/pages/live_emote/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

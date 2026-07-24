@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:PiliPlus/common/style.dart';
-import 'package:PiliPlus/common/widgets/badge.dart';
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/models/common/badge_type.dart';
-import 'package:PiliPlus/models/common/video/video_quality.dart';
-import 'package:PiliPlus/models_new/download/bili_download_entry_info.dart';
-import 'package:PiliPlus/pages/video/introduction/local/controller.dart';
-import 'package:PiliPlus/utils/duration_utils.dart';
-import 'package:PiliPlus/utils/extension/num_ext.dart';
-import 'package:PiliPlus/utils/path_utils.dart';
+import 'package:ex_piliplus/common/style.dart';
+import 'package:ex_piliplus/common/widgets/badge.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/models/common/badge_type.dart';
+import 'package:ex_piliplus/models/common/video/video_quality.dart';
+import 'package:ex_piliplus/models_new/download/bili_download_entry_info.dart';
+import 'package:ex_piliplus/pages/video/introduction/local/controller.dart';
+import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;

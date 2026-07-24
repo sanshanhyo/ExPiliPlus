@@ -19,8 +19,8 @@ fi
 
 if [ $1 = "purge" ]; then
     echo "Removing user data..."
-    rm -rf /home/*/.local/share/com.example.ExPiliPlus || true
-    rm -rf /root/.local/share/com.example.ExPiliPlus || true
+    rm -rf /home/*/.local/share/io.github.sanshanhyo.expiliplus || true
+    rm -rf /root/.local/share/io.github.sanshanhyo.expiliplus || true
 fi
 
 exit 0

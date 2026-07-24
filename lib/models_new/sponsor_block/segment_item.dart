@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models/common/sponsor_block/segment_type.dart';
+import 'package:ex_piliplus/models/common/sponsor_block/segment_type.dart';
 
 class SegmentItemModel {
   String? cid;

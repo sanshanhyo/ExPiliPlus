@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models_new/reply_interaction/interact_status.dart';
+import 'package:ex_piliplus/models_new/reply_interaction/interact_status.dart';
 
 class ReplyInteractData {
   InteractStatus upReplySelection;

@@ -1,24 +1,24 @@
 import 'dart:async' show Timer;
 
-import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
-import 'package:PiliPlus/common/widgets/selection_text.dart';
-import 'package:PiliPlus/models_new/live/live_superchat/item.dart';
-import 'package:PiliPlus/pages/member/widget/medal_widget.dart';
-import 'package:PiliPlus/utils/app_scheme.dart';
-import 'package:PiliPlus/utils/color_utils.dart';
-import 'package:PiliPlus/utils/date_utils.dart';
-import 'package:PiliPlus/utils/extension/iterable_ext.dart';
-import 'package:PiliPlus/utils/extension/selectable_region_ext.dart';
-import 'package:PiliPlus/utils/image_utils.dart';
-import 'package:PiliPlus/utils/page_utils.dart';
-import 'package:PiliPlus/utils/platform_utils.dart';
-import 'package:PiliPlus/utils/utils.dart';
+import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
+import 'package:ex_piliplus/common/widgets/selection_text.dart';
+import 'package:ex_piliplus/models_new/live/live_superchat/item.dart';
+import 'package:ex_piliplus/pages/member/widget/medal_widget.dart';
+import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/color_utils.dart';
+import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
+import 'package:ex_piliplus/utils/image_utils.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-part 'package:PiliPlus/common/widgets/context_menu/live_menu_helper.dart';
+part 'package:ex_piliplus/common/widgets/context_menu/live_menu_helper.dart';
 
 class SuperChatCard extends StatefulWidget {
   const SuperChatCard({

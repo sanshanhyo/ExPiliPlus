@@ -1,4 +1,4 @@
-import 'package:PiliPlus/models/dynamics/article_content_model.dart';
+import 'package:ex_piliplus/models/dynamics/article_content_model.dart';
 
 class ArticleOpus {
   List<ArticleContentModel>? content;

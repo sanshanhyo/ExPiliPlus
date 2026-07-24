@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:PiliPlus/plugin/pl_player/controller.dart';
+import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 
