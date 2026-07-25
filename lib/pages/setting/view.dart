@@ -73,7 +73,7 @@ class _SettingPageState extends State<SettingPage> {
     ),
     _SettingsModel(
       type: SettingType.exPiliPlusSetting,
-      subtitle: '字体、随机播放、自动点赞等分叉特色选项',
+      subtitle: '自定义主题色、字体、随机播放、自动点赞等分叉特色选项',
       icon: Icon(Icons.auto_awesome_outlined),
     ),
     _SettingsModel(

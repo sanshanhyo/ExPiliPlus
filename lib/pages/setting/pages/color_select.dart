@@ -149,11 +149,16 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                     (i, e) {
                       return GestureDetector(
                         behavior: .opaque,
-                        onTap: () {
+                        onTap: () async {
                           ctr.currentColor.value = i;
-                          GStorage.setting
-                              .put(SettingBoxKey.customColor, i)
-                              .whenComplete(Get.updateMyAppTheme);
+                          await Future.wait([
+                            GStorage.setting.put(SettingBoxKey.customColor, i),
+                            GStorage.setting.delete(
+                              SettingBoxKey.customThemeColor,
+                            ),
+                          ]);
+                          if (mounted) setState(() {});
+                          Get.updateMyAppTheme();
                         },
                         child: Column(
                           spacing: 3,
@@ -163,7 +168,9 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                                 _dynamicSchemeVariant,
                                 theme.brightness,
                               ),
-                              selected: ctr.currentColor.value == i,
+                              selected:
+                                  Pref.customThemeColor == null &&
+                                  ctr.currentColor.value == i,
                             ),
                             Text(
                               e.label,

@@ -1070,6 +1070,7 @@ final class _SettingsImportDraft {
         SettingBoxKey.appFontFamily,
         SettingBoxKey.appFontWeight,
         SettingBoxKey.customColor,
+        SettingBoxKey.customThemeColor,
       }))
         '外观',
       if (_containsAny(setting, const {

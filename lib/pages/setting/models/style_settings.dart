@@ -286,14 +286,21 @@ List<SettingsModel> get styleSettings => [
     onTap: (context, setState) => Get.toNamed('/colorSetting'),
     leading: const Icon(Icons.color_lens_outlined),
     title: '应用主题',
-    getSubtitle: () => '当前主题：${Pref.dynamicColor ? '动态取色' : '指定颜色'}',
+    getSubtitle: () =>
+        '当前主题：${Pref.dynamicColor
+            ? '动态取色'
+            : Pref.customThemeColor != null
+            ? 'ExPiliPlus 自定义颜色'
+            : '指定颜色'}',
     getTrailing: (theme) => Pref.dynamicColor
         ? Icon(Icons.color_lens_rounded, color: theme.colorScheme.primary)
         : SizedBox.square(
             dimension: 20,
             child: ColorPalette(
-              colorScheme: colorThemeTypes[Pref.customColor].color
-                  .asColorSchemeSeed(Pref.schemeVariant, theme.brightness),
+              colorScheme:
+                  (Pref.customThemeColor ??
+                          colorThemeTypes[Pref.customColor].color)
+                      .asColorSchemeSeed(Pref.schemeVariant, theme.brightness),
               selected: false,
               showBgColor: false,
             ),

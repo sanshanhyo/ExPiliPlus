@@ -738,6 +738,11 @@ abstract final class Pref {
   static int get customColor =>
       _setting.get(SettingBoxKey.customColor, defaultValue: 0);
 
+  static Color? get customThemeColor {
+    final value = _setting.get(SettingBoxKey.customThemeColor);
+    return value is int ? Color(value) : null;
+  }
+
   static bool get dynamicColor =>
       !Platform.isIOS &&
       _setting.get(SettingBoxKey.dynamicColor, defaultValue: true);
