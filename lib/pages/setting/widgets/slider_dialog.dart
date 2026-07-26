@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 class SliderDialog extends StatefulWidget {
@@ -59,13 +60,13 @@ class _SliderDialogState extends State<SliderDialog> {
         TextButton(
           onPressed: Navigator.of(context).pop,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: Theme.of(context).colorScheme.outline),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, _tempValue),
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     );

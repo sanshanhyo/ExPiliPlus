@@ -6,6 +6,7 @@ import 'package:ex_piliplus/models_new/sub/sub/list.dart';
 import 'package:ex_piliplus/pages/subscription/controller.dart';
 import 'package:ex_piliplus/pages/subscription/widgets/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +24,7 @@ class _SubPageState extends State<SubPage> with GridMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('我的订阅')),
+      appBar: AppBar(title: Text(context.l10n.mineSubscriptions)),
       body: refreshIndicator(
         onRefresh: _subController.onRefresh,
         child: CustomScrollView(

@@ -4,6 +4,7 @@ import 'package:ex_piliplus/common/widgets/flutter/list_tile.dart';
 import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
 import 'package:ex_piliplus/pages/setting/widgets/switch_item.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/filtering_text.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -25,10 +26,10 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
   late double longPressSpeedDefault = Pref.longPressSpeedDefault;
   late List<double> speedList = Pref.speedList;
   late bool enableAutoLongPressSpeed = Pref.enableAutoLongPressSpeed;
-  List<({int id, String title, Icon icon})> sheetMenu = [
+  List<({int id, String title, Icon icon})> get sheetMenu => [
     (
       id: 1,
-      title: '设置为默认倍速',
+      title: context.l10n.settingsPlaybackSpeedSetDefault,
       icon: const Icon(
         Icons.speed,
         size: 21,
@@ -36,7 +37,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
     ),
     (
       id: 2,
-      title: '设置为默认长按倍速',
+      title: context.l10n.settingsPlaybackSpeedSetLongPress,
       icon: const Icon(
         Icons.speed_sharp,
         size: 21,
@@ -44,7 +45,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
     ),
     (
       id: -1,
-      title: '删除该项',
+      title: context.l10n.settingsPlaybackSpeedDelete,
       icon: const Icon(
         Icons.delete_outline,
         size: 21,
@@ -60,7 +61,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('添加倍速'),
+        title: Text(context.l10n.settingsPlaybackSpeedAdd),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -69,9 +70,11 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
               autofocus: true,
               initialValue: initialValue,
               keyboardType: const .numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
-                labelText: '自定义倍速',
-                border: OutlineInputBorder(borderRadius: .all(.circular(6))),
+              decoration: InputDecoration(
+                labelText: context.l10n.settingsPlaybackSpeedCustom,
+                border: const OutlineInputBorder(
+                  borderRadius: .all(.circular(6)),
+                ),
               ),
               onChanged: (value) => initialValue = value,
               inputFormatters: FilteringText.decimal,
@@ -82,7 +85,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '取消',
+              context.l10n.commonCancel,
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
           ),
@@ -91,7 +94,9 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
               try {
                 final val = double.parse(initialValue);
                 if (speedList.contains(val)) {
-                  SmartDialog.showToast('该倍速已存在');
+                  SmartDialog.showToast(
+                    context.l10n.settingsPlaybackSpeedExists,
+                  );
                 } else {
                   Get.back();
                   speedList
@@ -104,7 +109,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
                 SmartDialog.showToast(e.toString());
               }
             },
-            child: const Text('确认'),
+            child: Text(context.l10n.commonConfirm),
           ),
         ],
       ),
@@ -169,7 +174,9 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
         playSpeedDefault,
         longPressSpeedDefault,
       ].contains(speed)) {
-        SmartDialog.showToast('不支持删除默认倍速');
+        SmartDialog.showToast(
+          context.l10n.settingsPlaybackSpeedDefaultCannotDelete,
+        );
         return;
       }
       speedList.removeAt(index);
@@ -184,7 +191,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('倍速设置'),
+        title: Text(context.l10n.settingsPlaybackSpeed),
         actions: [
           TextButton(
             onPressed: () async {
@@ -192,7 +199,7 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
               speedList = Pref.speedList;
               setState(() {});
             },
-            child: const Text('重置'),
+            child: Text(context.l10n.settingsReset),
           ),
           const SizedBox(width: 16),
         ],
@@ -208,17 +215,18 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
                 bottom: 0,
               ),
               child: Text(
-                '点击下方按钮设置默认（长按）倍速',
+                context.l10n.settingsPlaybackSpeedHint,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
             ),
             ListTile(
-              title: const Text('默认倍速'),
+              title: Text(context.l10n.settingsPlaybackSpeedDefault),
               subtitle: Text(playSpeedDefault.toString()),
             ),
             SetSwitchItem(
-              title: '动态长按倍速',
-              subtitle: '根据默认倍速长按时自动双倍',
+              title: context.l10n.settingsPlaybackSpeedDynamicLongPress,
+              subtitle:
+                  context.l10n.settingsPlaybackSpeedDynamicLongPressDescription,
               setKey: SettingBoxKey.enableAutoLongPressSpeed,
               defaultVal: enableAutoLongPressSpeed,
               onChanged: (val) =>
@@ -226,7 +234,9 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
             ),
             if (!enableAutoLongPressSpeed)
               ListTile(
-                title: const Text('默认长按倍速'),
+                title: Text(
+                  context.l10n.settingsPlaybackSpeedDefaultLongPress,
+                ),
                 subtitle: Text(longPressSpeedDefault.toString()),
               ),
             Padding(
@@ -239,13 +249,13 @@ class _PlaySpeedPageState extends State<PlaySpeedPage> {
               child: Row(
                 children: [
                   Text(
-                    '倍速列表',
+                    context.l10n.settingsPlaybackSpeedList,
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(width: 12),
                   TextButton(
                     onPressed: onAddSpeed,
-                    child: const Text('添加'),
+                    child: Text(context.l10n.settingsAdd),
                   ),
                 ],
               ),

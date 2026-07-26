@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/mine/controller.dart';
 import 'package:ex_piliplus/pages/setting/widgets/popup_item.dart';
 import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -48,7 +49,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
   Future<void> _onChanged([bool? val]) async {
     val ??= !ctr.dynamicColor.value;
     if (val && !await MyApp.initPlatformState()) {
-      SmartDialog.showToast('设备可能不支持动态取色');
+      SmartDialog.showToast(context.l10n.settingsDynamicColorUnsupported);
       return;
     }
     ctr.dynamicColor.value = val;
@@ -69,7 +70,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
     ).copyWith(top: 0, bottom: 0);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('选择应用主题')),
+      appBar: AppBar(title: Text(context.l10n.settingsChooseAppTheme)),
       body: ListView(
         children: [
           ListTile(
@@ -77,9 +78,11 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
               final result = await showDialog<ThemeType>(
                 context: context,
                 builder: (context) => SelectDialog<ThemeType>(
-                  title: '主题模式',
+                  title: context.l10n.settingsThemeMode,
                   value: ctr.themeType.value,
-                  values: ThemeType.values.map((e) => (e, e.desc)).toList(),
+                  values: ThemeType.values
+                      .map((e) => (e, e.localizedLabel(context.l10n)))
+                      .toList(),
                 ),
               );
               if (result != null) {
@@ -92,10 +95,12 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
               }
             },
             leading: const Icon(Icons.flashlight_on_outlined),
-            title: Text('主题模式', style: titleStyle),
+            title: Text(context.l10n.settingsThemeMode, style: titleStyle),
             subtitle: Obx(
               () => Text(
-                '当前模式：${ctr.themeType.value.desc}',
+                context.l10n.settingsCurrentMode(
+                  ctr.themeType.value.localizedLabel(context.l10n),
+                ),
                 style: subTitleStyle,
               ),
             ),
@@ -104,7 +109,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
             () => PopupListTile<FlexSchemeVariant>(
               enabled: !ctr.dynamicColor.value,
               leading: const Icon(Icons.palette_outlined),
-              title: const Text('调色板风格'),
+              title: Text(context.l10n.settingsPaletteStyle),
               value: () =>
                   (_dynamicSchemeVariant, _dynamicSchemeVariant.variantName),
               itemBuilder: (_) => FlexSchemeVariant.values
@@ -123,7 +128,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
           if (!Platform.isIOS)
             Obx(
               () => ListTile(
-                title: const Text('动态取色'),
+                title: Text(context.l10n.settingsDynamicColor),
                 leading: ExcludeFocus(
                   child: Checkbox(
                     value: ctr.dynamicColor.value,
@@ -173,7 +178,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                                   ctr.currentColor.value == i,
                             ),
                             Text(
-                              e.label,
+                              e.localizedLabel(context.l10n),
                               style: TextStyle(
                                 fontSize: 12,
                                 color: ctr.currentColor.value != i
@@ -210,7 +215,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                     .map(
                       (item) => NavigationDestination(
                         icon: item.icon,
-                        label: item.label,
+                        label: item.localizedLabel(context.l10n),
                       ),
                     )
                     .toList(),

@@ -45,12 +45,12 @@ enum SettingType {
   };
 
   List<SettingsModel> settings(BuildContext context) => switch (this) {
-    .privacySetting => privacySettings,
-    .recommendSetting => recommendSettings,
-    .videoSetting => videoSettings,
-    .playSetting => playSettings,
-    .styleSetting => styleSettings,
-    .extraSetting => extraSettings,
+    .privacySetting => privacySettings(context),
+    .recommendSetting => recommendSettings(context),
+    .videoSetting => videoSettings(context),
+    .playSetting => playSettings(context),
+    .styleSetting => styleSettings(context),
+    .extraSetting => extraSettings(context),
     .exPiliPlusSetting => exFeatureSettings(context),
     _ => throw UnimplementedError(),
   };

@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/login_devices/device.dart';
 import 'package:ex_piliplus/pages/login_devices/controller.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:get/get.dart';
 
@@ -24,7 +25,7 @@ class LoginDevicesPageState extends State<LoginDevicesPage> {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('登录设备')),
+      appBar: AppBar(title: Text(context.l10n.loginDevicesTitle)),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,
         child: CustomScrollView(
@@ -81,7 +82,7 @@ class LoginDevicesPageState extends State<LoginDevicesPage> {
         style: style,
       ),
       trailing: item.isCurrentDevice == true
-          ? Text('(本机)', style: style)
+          ? Text(context.l10n.loginDevicesCurrentDevice, style: style)
           : null,
     );
   }

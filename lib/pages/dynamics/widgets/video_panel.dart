@@ -6,6 +6,7 @@ import 'package:ex_piliplus/common/widgets/svg/play_icon.dart';
 import 'package:ex_piliplus/models/common/badge_type.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 Widget videoSeasonWidget(
@@ -59,7 +60,9 @@ Widget videoSeasonWidget(
               ),
               if (video.badge?.text case final badge?)
                 PBadge(
-                  text: badge,
+                  text: badge == '充电专属'
+                      ? context.l10n.feedSupporterOnly
+                      : badge,
                   top: 8.0,
                   right: 10.0,
                   bottom: null,
@@ -107,9 +110,17 @@ Widget videoSeasonWidget(
                           const SizedBox(width: 6),
                         ],
                         if (video.stat case final stat?) ...[
-                          Text('${NumUtils.numFormat(stat.play)}播放'),
+                          Text(
+                            context.l10n.feedPlayCount(
+                              NumUtils.numFormat(stat.play),
+                            ),
+                          ),
                           const SizedBox(width: 6),
-                          Text('${NumUtils.numFormat(stat.danmu)}弹幕'),
+                          Text(
+                            context.l10n.feedDanmakuCount(
+                              NumUtils.numFormat(stat.danmu),
+                            ),
+                          ),
                         ],
                         const Spacer(),
                         const PlayIcon(size: 50),

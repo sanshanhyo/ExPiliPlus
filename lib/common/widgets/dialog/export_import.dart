@@ -3,6 +3,7 @@ import 'dart:convert' show utf8, jsonDecode;
 
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/storage_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -45,6 +46,7 @@ Future<void> importFromClipBoard<T>(
   required FutureOr<void> Function(T json) onImport,
   bool showConfirmDialog = true,
 }) async {
+  final l10n = context.l10n;
   final data = await Clipboard.getData('text/plain');
   if (data?.text case final text? when (text.isNotEmpty)) {
     if (!context.mounted) return;
@@ -54,7 +56,7 @@ Future<void> importFromClipBoard<T>(
       json = jsonDecode(text);
       formatText = Utils.jsonEncoder.convert(json);
     } catch (e) {
-      SmartDialog.showToast('解析json失败：$e');
+      SmartDialog.showToast(l10n.importJsonParseFailed('$e'));
       return;
     }
     bool? executeImport;
@@ -80,18 +82,21 @@ Future<void> importFromClipBoard<T>(
             result.render(renderer);
           }
           return AlertDialog(
-            title: Text('是否导入如下$title？'),
+            title: Text(l10n.importConfirmPreview(title)),
             content: SingleChildScrollView(
               child: Text.rich(renderer.span!),
             ),
             actions: [
               TextButton(
                 onPressed: Get.back,
-                child: Text('取消', style: TextStyle(color: colorScheme.outline)),
+                child: Text(
+                  l10n.commonCancel,
+                  style: TextStyle(color: colorScheme.outline),
+                ),
               ),
               TextButton(
                 onPressed: () => Get.back(result: true),
-                child: const Text('确定'),
+                child: Text(l10n.commonConfirm),
               ),
             ],
           );
@@ -103,20 +108,22 @@ Future<void> importFromClipBoard<T>(
     if (executeImport ?? false) {
       try {
         await onImport(json);
-        SmartDialog.showToast('导入成功');
+        SmartDialog.showToast(l10n.importSucceeded);
       } catch (e) {
-        SmartDialog.showToast('导入失败：$e');
+        SmartDialog.showToast(l10n.importFailed('$e'));
       }
     }
   } else {
-    SmartDialog.showToast('剪贴板无数据');
+    SmartDialog.showToast(l10n.importClipboardEmpty);
     return;
   }
 }
 
-Future<void> importFromLocalFile<T>({
+Future<void> importFromLocalFile<T>(
+  BuildContext context, {
   required FutureOr<void> Function(T json) onImport,
 }) async {
+  final l10n = context.l10n;
   final result = await FilePicker.pickFile(
     type: .custom,
     allowedExtensions: const ['json', 'txt'],
@@ -127,14 +134,14 @@ Future<void> importFromLocalFile<T>({
     try {
       json = jsonDecode(data);
     } catch (e) {
-      SmartDialog.showToast('解析json失败：$e');
+      SmartDialog.showToast(l10n.importJsonParseFailed('$e'));
       return;
     }
     try {
       await onImport(json);
-      SmartDialog.showToast('导入成功');
+      SmartDialog.showToast(l10n.importSucceeded);
     } catch (e) {
-      SmartDialog.showToast('导入失败：$e');
+      SmartDialog.showToast(l10n.importFailed('$e'));
     }
   }
 }
@@ -144,6 +151,7 @@ void importFromInput<T>(
   required String title,
   required FutureOr<void> Function(T json) onImport,
 }) {
+  final l10n = context.l10n;
   final key = GlobalKey<FormFieldState<String>>();
   late T json;
   String? forceErrorText;
@@ -151,7 +159,7 @@ void importFromInput<T>(
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('输入$title'),
+      title: Text(l10n.importInputTitle(title)),
       constraints: Style.dialogFixedConstraints,
       content: TextFormField(
         key: key,
@@ -168,7 +176,7 @@ void importFromInput<T>(
             json = jsonDecode(value!) as T;
             return null;
           } catch (e) {
-            return '解析json失败：$e';
+            return l10n.importJsonParseFailed('$e');
           }
         },
       ),
@@ -176,7 +184,7 @@ void importFromInput<T>(
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            l10n.commonCancel,
             style: TextStyle(
               color: ColorScheme.of(context).outline,
             ),
@@ -188,16 +196,16 @@ void importFromInput<T>(
               try {
                 await onImport(json);
                 Get.back();
-                SmartDialog.showToast('导入成功');
+                SmartDialog.showToast(l10n.importSucceeded);
                 return;
               } catch (e) {
-                forceErrorText = '导入失败：$e';
+                forceErrorText = l10n.importFailed('$e');
               }
               key.currentState?.validate();
               forceErrorText = null;
             }
           },
-          child: const Text('确定'),
+          child: Text(l10n.commonConfirm),
         ),
       ],
     ),
@@ -213,20 +221,21 @@ Future<void> showImportExportDialog<T>(
 }) => showDialog(
   context: context,
   builder: (context) {
+    final l10n = context.l10n;
     const style = TextStyle(fontSize: 15);
     return SimpleDialog(
       clipBehavior: .hardEdge,
-      title: Text('导入/导出$title'),
+      title: Text(l10n.importExportTitle(title)),
       children: [
         DialogOption(
-          child: const Text('导出至剪贴板', style: style),
+          child: Text(l10n.exportToClipboard, style: style),
           onPressed: () {
             Get.back();
             exportToClipBoard(onExport: onExport);
           },
         ),
         DialogOption(
-          child: const Text('导出文件至本地', style: style),
+          child: Text(l10n.exportToLocalFile, style: style),
           onPressed: () {
             Get.back();
             exportToLocalFile(onExport: onExport, localFileName: localFileName);
@@ -237,14 +246,14 @@ Future<void> showImportExportDialog<T>(
           color: ColorScheme.of(context).outline.withValues(alpha: 0.1),
         ),
         DialogOption(
-          child: const Text('输入', style: style),
+          child: Text(l10n.importEnterManually, style: style),
           onPressed: () {
             Get.back();
             importFromInput<T>(context, title: title, onImport: onImport);
           },
         ),
         DialogOption(
-          child: const Text('从剪贴板导入', style: style),
+          child: Text(l10n.importFromClipboard, style: style),
           onPressed: () {
             Get.back();
             importFromClipBoard<T>(
@@ -256,10 +265,10 @@ Future<void> showImportExportDialog<T>(
           },
         ),
         DialogOption(
-          child: const Text('从本地文件导入', style: style),
+          child: Text(l10n.importFromLocalFile, style: style),
           onPressed: () {
             Get.back();
-            importFromLocalFile<T>(onImport: onImport);
+            importFromLocalFile<T>(context, onImport: onImport);
           },
         ),
       ],

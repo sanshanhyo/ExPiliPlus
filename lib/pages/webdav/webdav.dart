@@ -2,14 +2,17 @@ import 'dart:convert';
 
 import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/common/widgets/pair.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:webdav_client/webdav_client.dart' as webdav;
 
 class WebDav {
+  AppLocalizations get _l10n => AppLocalizations.of(Get.context!);
   late String _webdavBaseDirectory;
   late String _webdavDirectory;
   String? _fileName;
@@ -62,7 +65,9 @@ class WebDav {
     if (_client == null) {
       final res = await init();
       if (!res.first) {
-        SmartDialog.showToast('备份失败，请检查配置: ${res.second}');
+        SmartDialog.showToast(
+          _l10n.webDavBackupConfigurationFailed('${res.second}'),
+        );
         return;
       }
     }
@@ -74,9 +79,9 @@ class WebDav {
         await _client!.remove(path);
       } catch (_) {}
       await _client!.write(path, utf8.encode(data));
-      SmartDialog.showToast('备份成功');
+      SmartDialog.showToast(_l10n.webDavBackupSucceeded);
     } catch (e) {
-      SmartDialog.showToast('备份失败: $e');
+      SmartDialog.showToast(_l10n.webDavBackupFailed('$e'));
     }
   }
 
@@ -85,9 +90,9 @@ class WebDav {
       final data = await readSettingsBackup();
       await GStorage.importAllSettings(data);
       AppLocaleController.syncFromStorage();
-      SmartDialog.showToast('恢复成功');
+      SmartDialog.showToast(_l10n.webDavRestoreSucceeded);
     } catch (e) {
-      SmartDialog.showToast('恢复失败: $e');
+      SmartDialog.showToast(_l10n.webDavRestoreFailed('$e'));
     }
   }
 
@@ -97,7 +102,7 @@ class WebDav {
     if (_client == null) {
       final res = await init();
       if (!res.first) {
-        throw '请检查配置: ${res.second}';
+        throw _l10n.webDavCheckConfiguration('${res.second}');
       }
     }
 
@@ -112,6 +117,6 @@ class WebDav {
         lastError = e;
       }
     }
-    throw lastError ?? '未找到备份文件';
+    throw lastError ?? _l10n.webDavBackupNotFound;
   }
 }

@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 const double kScreenRatio = 1.2;
 
 // 全屏模式
@@ -18,4 +20,13 @@ enum FullScreenMode {
 
   final String desc;
   const FullScreenMode(this.desc);
+
+  String localizedDescription(AppLocalizations l10n) => switch (this) {
+    .auto => l10n.settingsFullscreenOrientationAuto,
+    .none => l10n.settingsFullscreenOrientationUnchanged,
+    .vertical => l10n.settingsFullscreenOrientationPortrait,
+    .horizontal => l10n.settingsFullscreenOrientationLandscape,
+    .ratio => l10n.settingsFullscreenOrientationRatio(kScreenRatio),
+    .gravity => l10n.settingsFullscreenOrientationGravity,
+  };
 }

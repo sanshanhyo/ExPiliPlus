@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/fav/article/view.dart';
 import 'package:ex_piliplus/pages/fav/cheese/view.dart';
 import 'package:ex_piliplus/pages/fav/note/view.dart';
@@ -19,4 +20,14 @@ enum FavTabType {
   final String title;
   final Widget page;
   const FavTabType(this.title, this.page);
+
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .video => l10n.favoriteTabVideos,
+    .bangumi => l10n.favoriteTabAnime,
+    .cinema => l10n.favoriteTabSeries,
+    .article => l10n.favoriteTabArticles,
+    .note => l10n.favoriteTabNotes,
+    .topic => l10n.favoriteTabTopics,
+    .cheese => l10n.favoriteTabCourses,
+  };
 }

@@ -8,6 +8,7 @@ import 'package:ex_piliplus/models_new/blacklist/list.dart';
 import 'package:ex_piliplus/pages/blacklist/controller.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,7 +40,13 @@ class _BlackListPageState extends State<BlackListPage> {
       appBar: AppBar(
         title: Obx(
           () => Text(
-            '黑名单管理${_blackListController.total.value == -1 ? '' : ': ${_blackListController.total.value}'}',
+            context.l10n.blacklistTitle(
+              _blackListController.total.value == -1
+                  ? ''
+                  : context.l10n.blacklistCountSuffix(
+                      _blackListController.total.value.toString(),
+                    ),
+            ),
           ),
         ),
       ),
@@ -95,7 +102,12 @@ class _BlackListPageState extends State<BlackListPage> {
                       style: const TextStyle(fontSize: 14),
                     ),
                     subtitle: Text(
-                      '添加时间: ${DateFormatUtils.format(item.mtime, format: DateFormatUtils.longFormatDs)}',
+                      context.l10n.blacklistAddedAt(
+                        DateFormatUtils.format(
+                          item.mtime,
+                          format: DateFormatUtils.longFormatDs,
+                        ),
+                      ),
                       maxLines: 1,
                       style: style,
                       overflow: TextOverflow.ellipsis,
@@ -108,7 +120,7 @@ class _BlackListPageState extends State<BlackListPage> {
                         item.uname,
                         item.mid,
                       ),
-                      child: const Text('移除'),
+                      child: Text(context.l10n.commonRemove),
                     ),
                   );
                 },

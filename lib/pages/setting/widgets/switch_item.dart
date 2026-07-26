@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/flutter/list_tile.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -72,8 +73,8 @@ class _SetSwitchItemState extends State<SetSwitchItem> {
     if (widget.setKey == SettingBoxKey.badCertificateCallback && val) {
       val = await showConfirmDialog(
         context: context,
-        title: const Text('确定禁用 SSL 证书验证？'),
-        content: const Text('禁用容易受到中间人攻击'),
+        title: Text(context.l10n.settingsDisableSslVerification),
+        content: Text(context.l10n.settingsDisableSslVerificationDescription),
       );
     }
 
@@ -85,7 +86,7 @@ class _SetSwitchItemState extends State<SetSwitchItem> {
 
     widget.onChanged?.call(val);
     if (widget.needReboot) {
-      SmartDialog.showToast('重启生效');
+      SmartDialog.showToast(context.l10n.settingsRestartRequired);
     }
     if (mounted) {
       setState(() {});

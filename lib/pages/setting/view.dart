@@ -229,7 +229,7 @@ class _SettingPageState extends State<SettingPage> {
     final result = await showDialog<Set<LoginAccount>>(
       context: context,
       builder: (context) => MultiSelectDialog<LoginAccount>(
-        title: '选择要登出的账号uid',
+        title: context.l10n.settingsChooseAccountsToSignOut,
         initValues: const Iterable.empty(),
         values: {
           for (final i in Accounts.account.values) i: i.mid.toString(),
@@ -247,15 +247,17 @@ class _SettingPageState extends State<SettingPage> {
       builder: (context) {
         final theme = Theme.of(context);
         return AlertDialog(
-          title: const Text('提示'),
+          title: Text(context.l10n.commonNotice),
           content: Text(
-            "确认要退出以下账号登录吗\n\n${result.map((i) => i.mid.toString()).join('\n')}",
+            context.l10n.settingsConfirmSignOutAccounts(
+              result.map((i) => i.mid.toString()).join('\n'),
+            ),
           ),
           actions: [
             TextButton(
               onPressed: Get.back,
               child: Text(
-                '点错了',
+                context.l10n.settingsSignOutCancel,
                 style: TextStyle(
                   color: theme.colorScheme.outline,
                 ),
@@ -267,7 +269,7 @@ class _SettingPageState extends State<SettingPage> {
                 logout();
               },
               child: Text(
-                '仅登出',
+                context.l10n.settingsSignOutOnly,
                 style: TextStyle(color: theme.colorScheme.error),
               ),
             ),
@@ -284,7 +286,7 @@ class _SettingPageState extends State<SettingPage> {
                   SmartDialog.showToast(res['msg'].toString());
                 }
               },
-              child: const Text('确认'),
+              child: Text(context.l10n.commonConfirm),
             ),
           ],
         );

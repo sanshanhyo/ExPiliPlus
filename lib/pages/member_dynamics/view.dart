@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:ex_piliplus/pages/member_dynamics/controller.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
     return widget.mid == null
         ? Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('我的动态')),
+            appBar: AppBar(title: Text(context.l10n.memberMyFeed)),
             body: Padding(
               padding: EdgeInsets.only(
                 left: padding.left,

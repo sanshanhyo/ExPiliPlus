@@ -1,11 +1,13 @@
 import 'package:ex_piliplus/common/widgets/pair.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/msg.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models_new/msg/msg_like/data.dart';
 import 'package:ex_piliplus/models_new/msg/msg_like/item.dart';
 import 'package:ex_piliplus/pages/common/common_data_controller.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 class LikeMeController
     extends
@@ -76,7 +78,9 @@ class LikeMeController
           pair.second.removeAt(index);
         }
         loadingState.refresh();
-        SmartDialog.showToast('删除成功');
+        SmartDialog.showToast(
+          AppLocalizations.of(Get.context!).commonDeleteSucceeded,
+        );
       } else {
         res.toast();
       }
@@ -92,7 +96,7 @@ class LikeMeController
     if (res.isSuccess) {
       item.noticeState = noticeState;
       loadingState.refresh();
-      SmartDialog.showToast('设置成功');
+      SmartDialog.showToast(AppLocalizations.of(Get.context!).settingsSaved);
     } else {
       res.toast();
     }

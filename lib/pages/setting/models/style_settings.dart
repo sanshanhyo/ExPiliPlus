@@ -26,6 +26,7 @@ import 'package:ex_piliplus/pages/setting/widgets/slider_dialog.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
@@ -42,336 +43,362 @@ import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as path;
 
-List<SettingsModel> get styleSettings => [
-  if (PlatformUtils.isDesktop) ...[
-    const SwitchModel(
-      title: '显示窗口标题栏',
-      leading: Icon(Icons.window),
-      setKey: SettingBoxKey.showWindowTitleBar,
+List<SettingsModel> styleSettings(BuildContext context) {
+  final l10n = context.l10n;
+  return [
+    if (PlatformUtils.isDesktop) ...[
+      SwitchModel(
+        title: l10n.settingsWindowTitleBar,
+        leading: const Icon(Icons.window),
+        setKey: SettingBoxKey.showWindowTitleBar,
+        defaultVal: true,
+        needReboot: true,
+      ),
+      SwitchModel(
+        title: l10n.settingsTrayIcon,
+        leading: const Icon(Icons.donut_large_rounded),
+        setKey: SettingBoxKey.showTrayIcon,
+        defaultVal: true,
+        needReboot: true,
+      ),
+    ],
+    if (Platform.isLinux) _useSSDModel(context),
+    SwitchModel(
+      title: l10n.settingsLandscapeLayout,
+      subtitle: l10n.settingsLandscapeLayoutDescription,
+      leading: const Icon(Icons.phonelink_outlined),
+      setKey: SettingBoxKey.horizontalScreen,
+      defaultVal: Pref.horizontalScreen,
+      onChanged: (value) {
+        if (value) {
+          fullMode();
+        } else {
+          portraitUpMode();
+        }
+      },
+    ),
+    SwitchModel(
+      title: l10n.settingsUseSidebar,
+      subtitle: l10n.settingsUseSidebarDescription,
+      leading: const Icon(Icons.chrome_reader_mode_outlined),
+      setKey: SettingBoxKey.useSideBar,
+      defaultVal: false,
+      needReboot: true,
+    ),
+    NormalModel(
+      title: l10n.settingsUiScale,
+      getSubtitle: () =>
+          l10n.settingsCurrentUiScale(Pref.uiScale.toStringAsFixed(2)),
+      leading: const Icon(Icons.zoom_in_outlined),
+      onTap: _showUiScaleDialog,
+    ),
+    NormalModel(
+      title: l10n.settingsPageTransition,
+      leading: const Icon(Icons.animation),
+      getSubtitle: () => l10n.settingsCurrentValue(Pref.pageTransition.name),
+      onTap: _showTransitionDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsOptimizeTabletNavigation,
+      leading: const Icon(Icons.auto_fix_high),
+      setKey: SettingBoxKey.optTabletNav,
       defaultVal: true,
       needReboot: true,
     ),
-    const SwitchModel(
-      title: '显示托盘图标',
-      leading: Icon(Icons.donut_large_rounded),
-      setKey: SettingBoxKey.showTrayIcon,
+    SwitchModel(
+      title: l10n.settingsMaterialYouBottomBar,
+      subtitle: l10n.settingsMaterialYouBottomBarDescription,
+      leading: const Icon(Icons.design_services_outlined),
+      setKey: SettingBoxKey.enableMYBar,
       defaultVal: true,
       needReboot: true,
     ),
-  ],
-  if (Platform.isLinux) _useSSDModel(),
-  SwitchModel(
-    title: '横屏适配',
-    subtitle: '启用横屏布局与逻辑，平板、折叠屏等可开启；建议全屏方向设为【不改变当前方向】',
-    leading: const Icon(Icons.phonelink_outlined),
-    setKey: SettingBoxKey.horizontalScreen,
-    defaultVal: Pref.horizontalScreen,
-    onChanged: (value) {
-      if (value) {
-        fullMode();
-      } else {
-        portraitUpMode();
-      }
-    },
-  ),
-  const SwitchModel(
-    title: '改用侧边栏',
-    subtitle: '开启后底栏与顶栏被替换，且相关设置失效',
-    leading: Icon(Icons.chrome_reader_mode_outlined),
-    setKey: SettingBoxKey.useSideBar,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  NormalModel(
-    title: '界面缩放',
-    getSubtitle: () => '当前缩放比例：${Pref.uiScale.toStringAsFixed(2)}',
-    leading: const Icon(Icons.zoom_in_outlined),
-    onTap: _showUiScaleDialog,
-  ),
-  NormalModel(
-    title: '页面过渡动画',
-    leading: const Icon(Icons.animation),
-    getSubtitle: () => '当前：${Pref.pageTransition.name}',
-    onTap: _showTransitionDialog,
-  ),
-  const SwitchModel(
-    title: '优化平板导航栏',
-    leading: Icon(Icons.auto_fix_high),
-    setKey: SettingBoxKey.optTabletNav,
-    defaultVal: true,
-    needReboot: true,
-  ),
-  const SwitchModel(
-    title: 'MD3样式底栏',
-    subtitle: 'Material You设计规范底栏，关闭可变窄',
-    leading: Icon(Icons.design_services_outlined),
-    setKey: SettingBoxKey.enableMYBar,
-    defaultVal: true,
-    needReboot: true,
-  ),
-  const SwitchModel(
-    title: '悬浮底栏',
-    leading: Icon(MdiIcons.soundbar),
-    setKey: SettingBoxKey.floatingNavBar,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  NormalModel(
-    leading: const Icon(Icons.calendar_view_week_outlined),
-    title: '列表宽度（dp）限制',
-    getSubtitle: () =>
-        '当前: 主页${Pref.recommendCardWidth.toInt()}dp 其他${Pref.smallCardWidth.toInt()}dp，屏幕宽度:${MediaQuery.widthOf(Get.context!).toPrecision(2)}dp。宽度越小列数越多。',
-    onTap: _showCardWidthDialog,
-  ),
-  const SwitchModel(
-    title: '播放页移除安全边距',
-    leading: Icon(Icons.fit_screen_outlined),
-    setKey: SettingBoxKey.removeSafeArea,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '视频播放页使用深色主题',
-    leading: Icon(Icons.dark_mode_outlined),
-    setKey: SettingBoxKey.darkVideoPage,
-    defaultVal: false,
-  ),
-  SwitchModel(
-    title: '动态页启用瀑布流',
-    subtitle: '关闭会显示为单列',
-    leading: const Icon(Icons.view_array_outlined),
-    setKey: SettingBoxKey.dynamicsWaterfallFlow,
-    defaultVal: Pref.horizontalScreen,
-    needReboot: true,
-  ),
-  NormalModel(
-    title: '动态页UP主显示位置',
-    leading: const Icon(Icons.person_outlined),
-    getSubtitle: () => '当前：${Pref.upPanelPosition.label}',
-    onTap: _showUpPosDialog,
-  ),
-  const SwitchModel(
-    title: '动态页显示所有已关注UP主',
-    leading: Icon(Icons.people_alt_outlined),
-    setKey: SettingBoxKey.dynamicsShowAllFollowedUp,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  const SwitchModel(
-    title: '动态页展开正在直播UP列表',
-    leading: Icon(Icons.live_tv),
-    setKey: SettingBoxKey.expandDynLivePanel,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  NormalModel(
-    title: '动态未读标记',
-    leading: const Icon(Icons.motion_photos_on_outlined),
-    getSubtitle: () => '当前标记样式：${Pref.dynamicBadgeType.desc}',
-    onTap: _showDynBadgeDialog,
-  ),
-  NormalModel(
-    title: '消息未读标记',
-    leading: const Icon(MdiIcons.bellBadgeOutline),
-    getSubtitle: () => '当前标记样式：${Pref.msgBadgeMode.desc}',
-    onTap: _showMsgBadgeDialog,
-  ),
-  NormalModel(
-    onTap: _showMsgUnReadDialog,
-    title: '消息未读类型',
-    leading: const Icon(MdiIcons.bellCogOutline),
-    getSubtitle: () =>
-        '当前消息类型：${Pref.msgUnReadTypeV2.map((item) => item.title).join('、')}',
-  ),
-  NormalModel(
-    onTap: _showBarHideTypeDialog,
-    title: '顶/底栏收起类型',
-    leading: const Icon(MdiIcons.arrowExpandVertical),
-    getSubtitle: () => '当前：${Pref.barHideType.label}',
-  ),
-  SwitchModel(
-    title: '首页顶栏收起',
-    subtitle: '首页列表滑动时，收起顶栏',
-    leading: const Icon(Icons.vertical_align_top_outlined),
-    setKey: SettingBoxKey.hideTopBar,
-    defaultVal: PlatformUtils.isMobile,
-    needReboot: true,
-  ),
-  SwitchModel(
-    title: '首页底栏收起',
-    subtitle: '首页列表滑动时，收起底栏',
-    leading: const Icon(Icons.vertical_align_bottom_outlined),
-    setKey: SettingBoxKey.hideBottomBar,
-    defaultVal: PlatformUtils.isMobile,
-    needReboot: true,
-  ),
-  NormalModel(
-    onTap: (context, setState) => _showQualityDialog(
-      context: context,
-      title: const Text('图片质量'),
-      initValue: Pref.picQuality,
-      onChanged: (picQuality) async {
-        GlobalData().imgQuality = picQuality;
-        await GStorage.setting.put(SettingBoxKey.defaultPicQa, picQuality);
-        setState();
-      },
+    SwitchModel(
+      title: l10n.settingsFloatingBottomBar,
+      leading: const Icon(MdiIcons.soundbar),
+      setKey: SettingBoxKey.floatingNavBar,
+      defaultVal: false,
+      needReboot: true,
     ),
-    title: '图片质量',
-    subtitle: '选择合适的图片清晰度，上限100%',
-    leading: const Icon(Icons.image_outlined),
-    getTrailing: (theme) => Text(
-      '${Pref.picQuality}%',
-      style: theme.textTheme.titleSmall,
+    NormalModel(
+      leading: const Icon(Icons.calendar_view_week_outlined),
+      title: l10n.settingsListWidthLimit,
+      getSubtitle: () => l10n.settingsListWidthDescription(
+        Pref.recommendCardWidth.toInt(),
+        Pref.smallCardWidth.toInt(),
+        MediaQuery.widthOf(Get.context!).toPrecision(2).toString(),
+      ),
+      onTap: _showCardWidthDialog,
     ),
-  ),
-  NormalModel(
-    onTap: (context, setState) => _showQualityDialog(
-      context: context,
-      title: const Text('查看大图质量'),
-      initValue: Pref.previewQ,
-      onChanged: (picQuality) async {
-        await GStorage.setting.put(SettingBoxKey.previewQuality, picQuality);
-        setState();
-      },
+    SwitchModel(
+      title: l10n.settingsRemovePlayerSafeArea,
+      leading: const Icon(Icons.fit_screen_outlined),
+      setKey: SettingBoxKey.removeSafeArea,
+      defaultVal: false,
     ),
-    title: '查看大图质量',
-    subtitle: '选择合适的图片清晰度，上限100%',
-    leading: const Icon(Icons.image_outlined),
-    getTrailing: (theme) => Text(
-      '${Pref.previewQ}%',
-      style: theme.textTheme.titleSmall,
+    SwitchModel(
+      title: l10n.settingsDarkVideoPage,
+      leading: const Icon(Icons.dark_mode_outlined),
+      setKey: SettingBoxKey.darkVideoPage,
+      defaultVal: false,
     ),
-  ),
-  NormalModel(
-    onTap: _showReduceColorDialog,
-    title: '深色下图片颜色叠加',
-    subtitle: '显示颜色=图片原色x所选颜色，大图查看不受影响',
-    leading: const Icon(Icons.format_color_fill_outlined),
-    getTrailing: (theme) => Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        color: Pref.reduceLuxColor ?? Colors.white,
-        shape: BoxShape.circle,
+    SwitchModel(
+      title: l10n.settingsFeedWaterfall,
+      subtitle: l10n.settingsFeedWaterfallDescription,
+      leading: const Icon(Icons.view_array_outlined),
+      setKey: SettingBoxKey.dynamicsWaterfallFlow,
+      defaultVal: Pref.horizontalScreen,
+      needReboot: true,
+    ),
+    NormalModel(
+      title: l10n.settingsFeedUploaderPosition,
+      leading: const Icon(Icons.person_outlined),
+      getSubtitle: () => l10n.settingsCurrentValue(
+        Pref.upPanelPosition.localizedLabel(l10n),
+      ),
+      onTap: _showUpPosDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsShowAllFollowedUploaders,
+      leading: const Icon(Icons.people_alt_outlined),
+      setKey: SettingBoxKey.dynamicsShowAllFollowedUp,
+      defaultVal: false,
+      needReboot: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsExpandLiveUploaders,
+      leading: const Icon(Icons.live_tv),
+      setKey: SettingBoxKey.expandDynLivePanel,
+      defaultVal: false,
+      needReboot: true,
+    ),
+    NormalModel(
+      title: l10n.settingsFeedUnreadBadge,
+      leading: const Icon(Icons.motion_photos_on_outlined),
+      getSubtitle: () => l10n.settingsCurrentBadgeStyle(
+        Pref.dynamicBadgeType.localizedDescription(l10n),
+      ),
+      onTap: _showDynBadgeDialog,
+    ),
+    NormalModel(
+      title: l10n.settingsMessageUnreadBadge,
+      leading: const Icon(MdiIcons.bellBadgeOutline),
+      getSubtitle: () => l10n.settingsCurrentBadgeStyle(
+        Pref.msgBadgeMode.localizedDescription(l10n),
+      ),
+      onTap: _showMsgBadgeDialog,
+    ),
+    NormalModel(
+      onTap: _showMsgUnReadDialog,
+      title: l10n.settingsMessageUnreadTypes,
+      leading: const Icon(MdiIcons.bellCogOutline),
+      getSubtitle: () => l10n.settingsCurrentMessageTypes(
+        Pref.msgUnReadTypeV2
+            .map((item) => item.localizedTitle(l10n))
+            .join(l10n.commonListSeparator),
       ),
     ),
-  ),
-  NormalModel(
-    leading: const Icon(Icons.opacity_outlined),
-    title: '气泡提示不透明度',
-    subtitle: '自定义气泡提示(Toast)不透明度',
-    getTrailing: (theme) => Text(
-      CustomToast.toastOpacity.toStringAsFixed(1),
-      style: theme.textTheme.titleSmall,
-    ),
-    onTap: _showToastDialog,
-  ),
-  NormalModel(
-    onTap: _showThemeTypeDialog,
-    leading: const Icon(Icons.flashlight_on_outlined),
-    title: '主题模式',
-    getSubtitle: () => '当前模式：${Pref.themeType.desc}',
-  ),
-  SwitchModel(
-    leading: const Icon(Icons.invert_colors),
-    title: '纯黑主题',
-    setKey: SettingBoxKey.isPureBlackTheme,
-    defaultVal: false,
-    onChanged: (value) {
-      if (ThemeUtils.isDarkMode || Pref.darkVideoPage) {
-        Get.updateMyAppTheme();
-      }
-    },
-  ),
-  NormalModel(
-    onTap: (context, setState) => Get.toNamed('/colorSetting'),
-    leading: const Icon(Icons.color_lens_outlined),
-    title: '应用主题',
-    getSubtitle: () =>
-        '当前主题：${Pref.dynamicColor
-            ? '动态取色'
-            : Pref.customThemeColor != null
-            ? 'ExPiliPlus 自定义颜色'
-            : '指定颜色'}',
-    getTrailing: (theme) => Pref.dynamicColor
-        ? Icon(Icons.color_lens_rounded, color: theme.colorScheme.primary)
-        : SizedBox.square(
-            dimension: 20,
-            child: ColorPalette(
-              colorScheme:
-                  (Pref.customThemeColor ??
-                          colorThemeTypes[Pref.customColor].color)
-                      .asColorSchemeSeed(Pref.schemeVariant, theme.brightness),
-              selected: false,
-              showBgColor: false,
-            ),
-          ),
-  ),
-  NormalModel(
-    leading: const Icon(Icons.home_outlined),
-    title: '默认启动页',
-    getSubtitle: () => '当前启动页：${Pref.defaultHomePage.label}',
-    onTap: _showDefHomeDialog,
-  ),
-  const NormalModel(
-    title: '滑动动画弹簧参数',
-    leading: Icon(Icons.chrome_reader_mode_outlined),
-    onTap: _showSpringDialog,
-  ),
-  NormalModel(
-    onTap: (context, setState) async {
-      final res = await Get.toNamed('/fontSizeSetting');
-      if (res != null) {
-        setState();
-      }
-    },
-    title: '字体大小',
-    leading: const Icon(Icons.format_size_outlined),
-    getSubtitle: () {
-      final scale = Pref.defaultTextScale;
-      return scale == 1.0 ? '默认' : scale.toString();
-    },
-  ),
-  NormalModel(
-    onTap: (context, setState) => Get.toNamed(
-      '/barSetting',
-      arguments: {
-        'key': SettingBoxKey.tabBarSort,
-        'defaultBars': HomeTabType.values,
-        'title': '首页标签页',
-      },
-    ),
-    title: '首页标签页',
-    subtitle: '删除或调换首页标签页',
-    leading: const Icon(Icons.toc_outlined),
-  ),
-  NormalModel(
-    onTap: (context, setState) => Get.toNamed(
-      '/barSetting',
-      arguments: {
-        'key': SettingBoxKey.navBarSort,
-        'defaultBars': NavigationBarType.values,
-        'title': 'Navbar',
-      },
-    ),
-    title: 'Navbar编辑',
-    subtitle: '删除或调换Navbar',
-    leading: const Icon(Icons.toc_outlined),
-  ),
-  SwitchModel(
-    title: '返回时直接退出',
-    subtitle: '开启后在主页任意tab按返回键都直接退出，关闭则先回到Navbar的第一个tab',
-    leading: const Icon(Icons.exit_to_app_outlined),
-    setKey: SettingBoxKey.directExitOnBack,
-    defaultVal: false,
-    onChanged: (value) => Get.find<MainController>().directExitOnBack = value,
-  ),
-  if (Platform.isAndroid)
     NormalModel(
-      onTap: (context, setState) => Get.toNamed('/displayModeSetting'),
-      title: '屏幕帧率',
-      leading: const Icon(Icons.autofps_select_outlined),
+      onTap: _showBarHideTypeDialog,
+      title: l10n.settingsBarCollapseBehavior,
+      leading: const Icon(MdiIcons.arrowExpandVertical),
+      getSubtitle: () => l10n.settingsCurrentValue(
+        Pref.barHideType.localizedLabel(l10n),
+      ),
     ),
-];
+    SwitchModel(
+      title: l10n.settingsCollapseHomeTopBar,
+      subtitle: l10n.settingsCollapseHomeTopBarDescription,
+      leading: const Icon(Icons.vertical_align_top_outlined),
+      setKey: SettingBoxKey.hideTopBar,
+      defaultVal: PlatformUtils.isMobile,
+      needReboot: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsCollapseHomeBottomBar,
+      subtitle: l10n.settingsCollapseHomeBottomBarDescription,
+      leading: const Icon(Icons.vertical_align_bottom_outlined),
+      setKey: SettingBoxKey.hideBottomBar,
+      defaultVal: PlatformUtils.isMobile,
+      needReboot: true,
+    ),
+    NormalModel(
+      onTap: (context, setState) => _showQualityDialog(
+        context: context,
+        title: Text(l10n.settingsImageQuality),
+        initValue: Pref.picQuality,
+        onChanged: (picQuality) async {
+          GlobalData().imgQuality = picQuality;
+          await GStorage.setting.put(SettingBoxKey.defaultPicQa, picQuality);
+          setState();
+        },
+      ),
+      title: l10n.settingsImageQuality,
+      subtitle: l10n.settingsImageQualityDescription,
+      leading: const Icon(Icons.image_outlined),
+      getTrailing: (theme) => Text(
+        '${Pref.picQuality}%',
+        style: theme.textTheme.titleSmall,
+      ),
+    ),
+    NormalModel(
+      onTap: (context, setState) => _showQualityDialog(
+        context: context,
+        title: Text(l10n.settingsImagePreviewQuality),
+        initValue: Pref.previewQ,
+        onChanged: (picQuality) async {
+          await GStorage.setting.put(SettingBoxKey.previewQuality, picQuality);
+          setState();
+        },
+      ),
+      title: l10n.settingsImagePreviewQuality,
+      subtitle: l10n.settingsImageQualityDescription,
+      leading: const Icon(Icons.image_outlined),
+      getTrailing: (theme) => Text(
+        '${Pref.previewQ}%',
+        style: theme.textTheme.titleSmall,
+      ),
+    ),
+    NormalModel(
+      onTap: _showReduceColorDialog,
+      title: l10n.settingsDarkImageOverlay,
+      subtitle: l10n.settingsDarkImageOverlayDescription,
+      leading: const Icon(Icons.format_color_fill_outlined),
+      getTrailing: (theme) => Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: Pref.reduceLuxColor ?? Colors.white,
+          shape: BoxShape.circle,
+        ),
+      ),
+    ),
+    NormalModel(
+      leading: const Icon(Icons.opacity_outlined),
+      title: l10n.settingsToastOpacity,
+      subtitle: l10n.settingsToastOpacityDescription,
+      getTrailing: (theme) => Text(
+        CustomToast.toastOpacity.toStringAsFixed(1),
+        style: theme.textTheme.titleSmall,
+      ),
+      onTap: _showToastDialog,
+    ),
+    NormalModel(
+      onTap: _showThemeTypeDialog,
+      leading: const Icon(Icons.flashlight_on_outlined),
+      title: l10n.settingsThemeMode,
+      getSubtitle: () => l10n.settingsCurrentMode(
+        Pref.themeType.localizedLabel(l10n),
+      ),
+    ),
+    SwitchModel(
+      leading: const Icon(Icons.invert_colors),
+      title: l10n.settingsPureBlackTheme,
+      setKey: SettingBoxKey.isPureBlackTheme,
+      defaultVal: false,
+      onChanged: (value) {
+        if (ThemeUtils.isDarkMode || Pref.darkVideoPage) {
+          Get.updateMyAppTheme();
+        }
+      },
+    ),
+    NormalModel(
+      onTap: (context, setState) => Get.toNamed('/colorSetting'),
+      leading: const Icon(Icons.color_lens_outlined),
+      title: l10n.settingsAppTheme,
+      getSubtitle: () => l10n.settingsCurrentTheme(
+        Pref.dynamicColor
+            ? l10n.settingsDynamicColor
+            : Pref.customThemeColor != null
+            ? l10n.settingsExPiliPlusCustomColor
+            : l10n.settingsSpecifiedColor,
+      ),
+      getTrailing: (theme) => Pref.dynamicColor
+          ? Icon(Icons.color_lens_rounded, color: theme.colorScheme.primary)
+          : SizedBox.square(
+              dimension: 20,
+              child: ColorPalette(
+                colorScheme:
+                    (Pref.customThemeColor ??
+                            colorThemeTypes[Pref.customColor].color)
+                        .asColorSchemeSeed(
+                          Pref.schemeVariant,
+                          theme.brightness,
+                        ),
+                selected: false,
+                showBgColor: false,
+              ),
+            ),
+    ),
+    NormalModel(
+      leading: const Icon(Icons.home_outlined),
+      title: l10n.settingsDefaultStartPage,
+      getSubtitle: () => l10n.settingsCurrentStartPage(
+        Pref.defaultHomePage.localizedLabel(l10n),
+      ),
+      onTap: _showDefHomeDialog,
+    ),
+    NormalModel(
+      title: l10n.settingsSpringParameters,
+      leading: const Icon(Icons.chrome_reader_mode_outlined),
+      onTap: _showSpringDialog,
+    ),
+    NormalModel(
+      onTap: (context, setState) async {
+        final res = await Get.toNamed('/fontSizeSetting');
+        if (res != null) {
+          setState();
+        }
+      },
+      title: l10n.settingsFontSize,
+      leading: const Icon(Icons.format_size_outlined),
+      getSubtitle: () {
+        final scale = Pref.defaultTextScale;
+        return scale == 1.0 ? l10n.commonDefault : scale.toString();
+      },
+    ),
+    NormalModel(
+      onTap: (context, setState) => Get.toNamed(
+        '/barSetting',
+        arguments: {
+          'key': SettingBoxKey.tabBarSort,
+          'defaultBars': HomeTabType.values,
+          'title': l10n.settingsHomeTabs,
+        },
+      ),
+      title: l10n.settingsHomeTabs,
+      subtitle: l10n.settingsHomeTabsDescription,
+      leading: const Icon(Icons.toc_outlined),
+    ),
+    NormalModel(
+      onTap: (context, setState) => Get.toNamed(
+        '/barSetting',
+        arguments: {
+          'key': SettingBoxKey.navBarSort,
+          'defaultBars': NavigationBarType.values,
+          'title': 'Navbar',
+        },
+      ),
+      title: l10n.settingsNavigationBarEditor,
+      subtitle: l10n.settingsNavigationBarEditorDescription,
+      leading: const Icon(Icons.toc_outlined),
+    ),
+    SwitchModel(
+      title: l10n.settingsExitDirectlyOnBack,
+      subtitle: l10n.settingsExitDirectlyOnBackDescription,
+      leading: const Icon(Icons.exit_to_app_outlined),
+      setKey: SettingBoxKey.directExitOnBack,
+      defaultVal: false,
+      onChanged: (value) => Get.find<MainController>().directExitOnBack = value,
+    ),
+    if (Platform.isAndroid)
+      NormalModel(
+        onTap: (context, setState) => Get.toNamed('/displayModeSetting'),
+        title: l10n.settingsScreenRefreshRate,
+        leading: const Icon(Icons.autofps_select_outlined),
+      ),
+  ];
+}
 
 void _showQualityDialog({
   required BuildContext context,
@@ -392,7 +419,7 @@ void _showQualityDialog({
     ),
   ).then((result) {
     if (result != null) {
-      SmartDialog.showToast('设置成功');
+      SmartDialog.showToast(context.l10n.settingsSucceeded);
       onChanged(result.toInt());
     }
   });
@@ -413,7 +440,7 @@ void _showUiScaleDialog(
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('界面缩放'),
+      title: Text(context.l10n.settingsUiScale),
       contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
       content: StatefulBuilder(
         onDispose: textController.dispose,
@@ -441,10 +468,10 @@ void _showUiScaleDialog(
                 LengthLimitingTextInputFormatter(4),
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.]+')),
               ],
-              decoration: const InputDecoration(
-                labelText: '缩放比例',
+              decoration: InputDecoration(
+                labelText: context.l10n.settingsScaleRatio,
                 hintText: '0.50 - 2.00',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
               onChanged: (value) {
                 final parsed = double.tryParse(value);
@@ -470,12 +497,12 @@ void _showUiScaleDialog(
               ScaledWidgetsFlutterBinding.instance.scaleFactor = 1.0;
             });
           },
-          child: const Text('重置'),
+          child: Text(context.l10n.settingsReset),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -490,7 +517,7 @@ void _showUiScaleDialog(
               },
             );
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -538,7 +565,7 @@ void _showSpringDialog(BuildContext context, _) {
       title: Row(
         mainAxisAlignment: .spaceBetween,
         children: [
-          const Text('弹簧参数'),
+          Text(context.l10n.settingsSpringParametersTitle),
           TextButton(
             style: TextButton.styleFrom(
               visualDensity: .compact,
@@ -557,7 +584,11 @@ void _showSpringDialog(BuildContext context, _) {
                 SmartDialog.showToast(e.toString());
               }
             },
-            child: Text(physicalMode ? '滑动时间' : '物理参数'),
+            child: Text(
+              physicalMode
+                  ? context.l10n.settingsSpringDurationMode
+                  : context.l10n.settingsSpringPhysicalMode,
+            ),
           ),
         ],
       ),
@@ -593,14 +624,16 @@ void _showSpringDialog(BuildContext context, _) {
           onPressed: () {
             Get.back();
             GStorage.setting.delete(SettingBoxKey.springDescription);
-            SmartDialog.showToast('重置成功，重启生效');
+            SmartDialog.showToast(
+              context.l10n.settingsResetSucceededRestartRequired,
+            );
           },
-          child: const Text('重置'),
+          child: Text(context.l10n.settingsReset),
         ),
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -613,12 +646,14 @@ void _showSpringDialog(BuildContext context, _) {
               final res = springDescription.map(double.parse).toList();
               Get.back();
               GStorage.setting.put(SettingBoxKey.springDescription, res);
-              SmartDialog.showToast('设置成功，重启生效');
+              SmartDialog.showToast(
+                context.l10n.settingsSucceededRestartRequired,
+              );
             } catch (e) {
               SmartDialog.showToast(e.toString());
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -632,7 +667,7 @@ Future<void> _showTransitionDialog(
   final res = await showDialog<Transition>(
     context: context,
     builder: (context) => SelectDialog<Transition>(
-      title: '页面过渡动画',
+      title: context.l10n.settingsPageTransition,
       value: Pref.pageTransition,
       values: Transition.values.map((e) => (e, e.name)).toList(),
     ),
@@ -651,11 +686,11 @@ Future<void> _showCardWidthDialog(
   final res = await showDialog<(double, double)>(
     context: context,
     builder: (context) => DualSliderDialog(
-      title: const Text('列表最大列宽度（默认240dp）'),
+      title: Text(context.l10n.settingsListMaxColumnWidth),
       value1: Pref.recommendCardWidth,
       value2: Pref.smallCardWidth,
-      description1: const Text('主页推荐流'),
-      description2: const Text('其他'),
+      description1: Text(context.l10n.settingsHomeRecommendationFeed),
+      description2: Text(context.l10n.commonOther),
       min: 150.0,
       max: 500.0,
       divisions: 35,
@@ -667,7 +702,7 @@ Future<void> _showCardWidthDialog(
       SettingBoxKey.recommendCardWidth: res.$1,
       SettingBoxKey.smallCardWidth: res.$2,
     });
-    SmartDialog.showToast('重启生效');
+    SmartDialog.showToast(context.l10n.settingsRestartRequired);
     setState();
   }
 }
@@ -679,14 +714,16 @@ Future<void> _showUpPosDialog(
   final res = await showDialog<UpPanelPosition>(
     context: context,
     builder: (context) => SelectDialog<UpPanelPosition>(
-      title: '动态页UP主显示位置',
+      title: context.l10n.settingsFeedUploaderPosition,
       value: Pref.upPanelPosition,
-      values: UpPanelPosition.values.map((e) => (e, e.label)).toList(),
+      values: UpPanelPosition.values
+          .map((e) => (e, e.localizedLabel(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
     await GStorage.setting.put(SettingBoxKey.upPanelPosition, res.index);
-    SmartDialog.showToast('重启生效');
+    SmartDialog.showToast(context.l10n.settingsRestartRequired);
     setState();
   }
 }
@@ -698,9 +735,11 @@ Future<void> _showDynBadgeDialog(
   final res = await showDialog<DynamicBadgeMode>(
     context: context,
     builder: (context) => SelectDialog<DynamicBadgeMode>(
-      title: '动态未读标记',
+      title: context.l10n.settingsFeedUnreadBadge,
       value: Pref.dynamicBadgeType,
-      values: DynamicBadgeMode.values.map((e) => (e, e.desc)).toList(),
+      values: DynamicBadgeMode.values
+          .map((e) => (e, e.localizedDescription(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -713,7 +752,7 @@ Future<void> _showDynBadgeDialog(
       SettingBoxKey.dynamicBadgeMode,
       res.index,
     );
-    SmartDialog.showToast('设置成功');
+    SmartDialog.showToast(context.l10n.settingsSucceeded);
     setState();
   }
 }
@@ -725,9 +764,11 @@ Future<void> _showMsgBadgeDialog(
   final res = await showDialog<DynamicBadgeMode>(
     context: context,
     builder: (context) => SelectDialog<DynamicBadgeMode>(
-      title: '消息未读标记',
+      title: context.l10n.settingsMessageUnreadBadge,
       value: Pref.msgBadgeMode,
-      values: DynamicBadgeMode.values.map((e) => (e, e.desc)).toList(),
+      values: DynamicBadgeMode.values
+          .map((e) => (e, e.localizedDescription(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -739,7 +780,7 @@ Future<void> _showMsgBadgeDialog(
       mainController.msgUnReadCount.value = '';
     }
     await GStorage.setting.put(SettingBoxKey.msgBadgeMode, res.index);
-    SmartDialog.showToast('设置成功');
+    SmartDialog.showToast(context.l10n.settingsSucceeded);
     setState();
   }
 }
@@ -751,9 +792,11 @@ Future<void> _showMsgUnReadDialog(
   final res = await showDialog<Set<MsgUnReadType>>(
     context: context,
     builder: (context) => MultiSelectDialog<MsgUnReadType>(
-      title: '消息未读类型',
+      title: context.l10n.settingsMessageUnreadTypes,
       initValues: Pref.msgUnReadTypeV2,
-      values: {for (final i in MsgUnReadType.values) i: i.title},
+      values: {
+        for (final i in MsgUnReadType.values) i: i.localizedTitle(context.l10n),
+      },
     ),
   );
   if (res != null) {
@@ -765,7 +808,7 @@ Future<void> _showMsgUnReadDialog(
       SettingBoxKey.msgUnReadTypeV2,
       res.map((item) => item.index).toList()..sort(),
     );
-    SmartDialog.showToast('设置成功');
+    SmartDialog.showToast(context.l10n.settingsSucceeded);
     setState();
   }
 }
@@ -780,7 +823,7 @@ void _showReduceColorDialog(
     builder: (context) => AlertDialog(
       clipBehavior: Clip.hardEdge,
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      title: const Text('Color Picker'),
+      title: Text(context.l10n.commonColorPicker),
       content: SlideColorPicker(
         color: reduceLuxColor ?? Colors.white,
         onChanged: (Color? color) {
@@ -788,7 +831,7 @@ void _showReduceColorDialog(
             if (color == Colors.white) {
               NetworkImgLayer.reduceLuxColor = null;
               GStorage.setting.delete(SettingBoxKey.reduceLuxColor);
-              SmartDialog.showToast('设置成功');
+              SmartDialog.showToast(context.l10n.settingsSucceeded);
               setState();
             } else {
               void onConfirm() {
@@ -797,7 +840,7 @@ void _showReduceColorDialog(
                   SettingBoxKey.reduceLuxColor,
                   color.toARGB32(),
                 );
-                SmartDialog.showToast('设置成功');
+                SmartDialog.showToast(context.l10n.settingsSucceeded);
                 setState();
               }
 
@@ -805,9 +848,11 @@ void _showReduceColorDialog(
                 showConfirmDialog(
                   context: context,
                   title: Text(
-                    '确认使用#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6)}？',
+                    context.l10n.settingsConfirmDarkColor(
+                      '#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6)}',
+                    ),
                   ),
-                  content: const Text('所选颜色过于昏暗，可能会影响图片观看'),
+                  content: Text(context.l10n.settingsDarkColorWarning),
                   onConfirm: onConfirm,
                 );
               } else {
@@ -828,7 +873,7 @@ Future<void> _showToastDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: const Text('Toast不透明度'),
+      title: Text(context.l10n.settingsToastOpacity),
       value: CustomToast.toastOpacity,
       min: 0.0,
       max: 1.0,
@@ -838,7 +883,7 @@ Future<void> _showToastDialog(
   if (res != null) {
     CustomToast.toastOpacity = res;
     await GStorage.setting.put(SettingBoxKey.defaultToastOp, res);
-    SmartDialog.showToast('设置成功');
+    SmartDialog.showToast(context.l10n.settingsSucceeded);
     setState();
   }
 }
@@ -850,9 +895,11 @@ Future<void> _showThemeTypeDialog(
   final res = await showDialog<ThemeType>(
     context: context,
     builder: (context) => SelectDialog<ThemeType>(
-      title: '主题模式',
+      title: context.l10n.settingsThemeMode,
       value: Pref.themeType,
-      values: ThemeType.values.map((e) => (e, e.desc)).toList(),
+      values: ThemeType.values
+          .map((e) => (e, e.localizedLabel(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -872,14 +919,16 @@ Future<void> _showDefHomeDialog(
   final res = await showDialog<NavigationBarType>(
     context: context,
     builder: (context) => SelectDialog<NavigationBarType>(
-      title: '首页启动页',
+      title: context.l10n.settingsDefaultStartPage,
       value: Pref.defaultHomePage,
-      values: NavigationBarType.values.map((e) => (e, e.label)).toList(),
+      values: NavigationBarType.values
+          .map((e) => (e, e.localizedLabel(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
     await GStorage.setting.put(SettingBoxKey.defaultHomePage, res.index);
-    SmartDialog.showToast('设置成功，重启生效');
+    SmartDialog.showToast(context.l10n.settingsSucceededRestartRequired);
     setState();
   }
 }
@@ -891,19 +940,21 @@ Future<void> _showBarHideTypeDialog(
   final res = await showDialog<BarHideType>(
     context: context,
     builder: (context) => SelectDialog<BarHideType>(
-      title: '顶/底栏收起类型',
+      title: context.l10n.settingsBarCollapseBehavior,
       value: Pref.barHideType,
-      values: BarHideType.values.map((e) => (e, e.label)).toList(),
+      values: BarHideType.values
+          .map((e) => (e, e.localizedLabel(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
     await GStorage.setting.put(SettingBoxKey.barHideType, res.index);
-    SmartDialog.showToast('重启生效');
+    SmartDialog.showToast(context.l10n.settingsRestartRequired);
     setState();
   }
 }
 
-NormalModel _useSSDModel() {
+NormalModel _useSSDModel(BuildContext context) {
   final file = File(path.join(appSupportDirPath, 'use_ssd'));
   void onChanged(BuildContext context, VoidCallback setState) {
     (file.existsSync() ? file.tryDel() : file.create()).whenComplete(() {
@@ -914,7 +965,7 @@ NormalModel _useSSDModel() {
   }
 
   return NormalModel(
-    title: '使用SSD（Server-Side Decoration）',
+    title: context.l10n.settingsUseServerSideDecoration,
     leading: const Icon(Icons.web_asset),
     onTap: onChanged,
     getTrailing: (theme) => Builder(

@@ -12,6 +12,7 @@ import 'package:ex_piliplus/pages/history/base_controller.dart';
 import 'package:ex_piliplus/pages/history/controller.dart';
 import 'package:ex_piliplus/pages/history/widgets/item.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart' hide TabBarView;
 import 'package:get/get.dart';
@@ -128,7 +129,7 @@ class _HistoryPageState extends State<HistoryPage>
                         }
                       },
                       tabs: [
-                        const Tab(text: '全部'),
+                        Tab(text: context.l10n.historyAll),
                         ...tabs.map((item) => Tab(text: item.name)),
                       ],
                     ),
@@ -157,11 +158,11 @@ class _HistoryPageState extends State<HistoryPage>
   }
 
   AppBar get _buildAppBar => AppBar(
-    title: const Text('观看记录'),
+    title: Text(context.l10n.historyTitle),
     bottom: _buildPauseTip,
     actions: [
       IconButton(
-        tooltip: '搜索',
+        tooltip: context.l10n.commonSearch,
         onPressed: () => Get.toNamed('/historySearch'),
         icon: const Icon(Icons.search_outlined),
       ),
@@ -171,8 +172,8 @@ class _HistoryPageState extends State<HistoryPage>
             onTap: () => _historyController.baseCtr.onPauseHistory(context),
             child: Text(
               !_historyController.baseCtr.pauseStatus.value
-                  ? '暂停观看记录'
-                  : '恢复观看记录',
+                  ? context.l10n.historyPause
+                  : context.l10n.historyResume,
             ),
           ),
           PopupMenuItem(
@@ -193,11 +194,11 @@ class _HistoryPageState extends State<HistoryPage>
                 }
               },
             ),
-            child: const Text('清空观看记录'),
+            child: Text(context.l10n.historyClear),
           ),
           PopupMenuItem(
             onTap: currCtr().onDelViewedHistory,
-            child: const Text('删除已看记录'),
+            child: Text(context.l10n.historyDeleteWatched),
           ),
         ],
       ),
@@ -262,7 +263,7 @@ class _HistoryPageState extends State<HistoryPage>
                           color: theme.onSecondaryContainer,
                         ),
                       ),
-                      const TextSpan(text: ' 历史记录功能已关闭'),
+                      TextSpan(text: context.l10n.historyDisabled),
                     ],
                   ),
                 ),
@@ -276,7 +277,7 @@ class _HistoryPageState extends State<HistoryPage>
                     horizontal: 10,
                   ),
                   child: Text(
-                    '点击开启',
+                    context.l10n.historyTapToEnable,
                     strutStyle: const StrutStyle(height: 1, leading: 0),
                     style: TextStyle(height: 1, color: theme.primary),
                   ),

@@ -13,6 +13,7 @@ import 'package:ex_piliplus/pages/msg_feed_top/reply_me/controller.dart';
 import 'package:ex_piliplus/pages/whisper_settings/view.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class _ReplyMePageState extends State<ReplyMePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('回复我的'),
+        title: Text(context.l10n.messagesRepliesToMe),
         actions: [
           IconButton(
             onPressed: () => Get.to(
@@ -97,7 +98,9 @@ class _ReplyMePageState extends State<ReplyMePage> {
 
                   void onLongPress() => showConfirmDialog(
                     context: context,
-                    title: const Text('确定删除该通知?'),
+                    title: Text(
+                      context.l10n.messagesDeleteNotificationConfirm,
+                    ),
                     onConfirm: () =>
                         _replyMeController.onRemove(item.id, index),
                   );
@@ -139,14 +142,16 @@ class _ReplyMePageState extends State<ReplyMePage> {
                           ),
                           if (item.isMulti == 1)
                             TextSpan(
-                              text: " 等人",
+                              text: context.l10n.messagesAndOthers,
                               style: theme.textTheme.titleSmall!.copyWith(
                                 fontSize: 12,
                               ),
                             ),
                           TextSpan(
-                            text:
-                                " 对我的${item.item?.business}发布了${item.counts}条评论",
+                            text: context.l10n.messagesCommentsOnMyItem(
+                              item.item?.business ?? '',
+                              item.counts.toString(),
+                            ),
                             style: theme.textTheme.titleSmall!.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),

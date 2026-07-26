@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/common/dynamic/up_panel_position.dart';
 import 'package:ex_piliplus/models/dynamics/up.dart';
 import 'package:ex_piliplus/pages/dynamics/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/pages/live_follow/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
@@ -102,14 +103,17 @@ class _UpPanelState extends State<UpPanel> {
             },
           ),
         SliverToBoxAdapter(
-          child: upItemBuild(theme, UpItem(face: '', uname: '全部动态', mid: -1)),
+          child: upItemBuild(
+            theme,
+            UpItem(face: '', uname: context.l10n.feedAllUpdates, mid: -1),
+          ),
         ),
         SliverToBoxAdapter(
           child: Obx(
             () => upItemBuild(
               theme,
               UpItem(
-                uname: '我',
+                uname: context.l10n.feedMe,
                 face: controller.accountService.face.value,
                 mid: Accounts.main.mid,
               ),

@@ -30,12 +30,12 @@ class _SettingsSearchPageState
   final _textEditingController = TextEditingController();
   final RxList<SettingsModel> _list = <SettingsModel>[].obs;
   List<SettingsModel> get _settings => [
-    ...extraSettings,
-    ...privacySettings,
-    ...recommendSettings,
-    ...videoSettings,
-    ...playSettings,
-    ...styleSettings,
+    ...extraSettings(context),
+    ...privacySettings(context),
+    ...recommendSettings(context),
+    ...videoSettings(context),
+    ...playSettings(context),
+    ...styleSettings(context),
     ...exFeatureSettings(context),
   ];
 

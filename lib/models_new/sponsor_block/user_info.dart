@@ -1,4 +1,4 @@
-import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 
 class UserInfo {
@@ -18,16 +18,10 @@ class UserInfo {
     segmentCount: json['segmentCount'],
   );
 
-  @override
-  String toString() {
-    String minutes = DurationUtils.formatTimeDuration(
-      Duration(minutes: minutesSaved.round()),
-    );
-    if (minutes.isEmpty) {
-      minutes = '0分钟';
-    }
-    return ('您提交了 ${NumUtils.formatPositiveDecimal(segmentCount)} 片段\n'
-        '您为大家节省了 ${NumUtils.formatPositiveDecimal(viewCount)} 片段\n'
-        '($minutes 的生命)');
-  }
+  String localizedSummary(AppLocalizations l10n) =>
+      l10n.sponsorBlockUserInformation(
+        NumUtils.formatPositiveDecimal(segmentCount),
+        NumUtils.formatPositiveDecimal(viewCount),
+        NumUtils.formatPositiveDecimal(minutesSaved.round()),
+      );
 }

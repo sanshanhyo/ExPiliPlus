@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum SubtitlePrefType {
   off('默认不显示字幕'),
   on('优先选择非自动生成(ai)字幕'),
@@ -7,4 +9,11 @@ enum SubtitlePrefType {
 
   final String desc;
   const SubtitlePrefType(this.desc);
+
+  String localizedDescription(AppLocalizations l10n) => switch (this) {
+    .off => l10n.settingsSubtitlePreferenceOff,
+    .on => l10n.settingsSubtitlePreferencePreferHuman,
+    .withoutAi => l10n.settingsSubtitlePreferenceSkipAi,
+    .auto => l10n.settingsSubtitlePreferenceAuto,
+  };
 }

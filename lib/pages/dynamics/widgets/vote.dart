@@ -12,6 +12,7 @@ import 'package:ex_piliplus/models/dynamics/vote_model.dart';
 import 'package:ex_piliplus/models_new/followee_votes/vote.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -74,10 +75,10 @@ class _VotePanelState extends State<VotePanel> {
         children: [
           Text(
             _enabled
-                ? '投票选项'
+                ? context.l10n.feedPollOptions
                 : groupValue.isEmpty
-                ? '已结束'
-                : '已完成',
+                ? context.l10n.feedPollEnded
+                : context.l10n.feedPollCompleted,
           ),
           if (_enabled) Obx(() => Text('${groupValue.length} / $_maxCnt')),
         ],
@@ -133,7 +134,7 @@ class _VotePanelState extends State<VotePanel> {
                       }
                     }
                   : null,
-              child: const Center(child: Text('投票')),
+              child: Center(child: Text(context.l10n.feedPoll)),
             ),
           ),
         ),
@@ -161,7 +162,7 @@ class _VotePanelState extends State<VotePanel> {
                       final colorScheme = ColorScheme.of(context);
                       return SimpleDialog(
                         clipBehavior: .hardEdge,
-                        title: const Text('关注的人的投票'),
+                        title: Text(context.l10n.feedFollowedPeopleVotes),
                         contentPadding: const .only(bottom: 12),
                         titlePadding: const .fromLTRB(20, 20, 20, 10),
                         children: list
@@ -182,7 +183,7 @@ class _VotePanelState extends State<VotePanel> {
                                     children: [
                                       TextSpan(text: e.name),
                                       TextSpan(
-                                        text: ' 投给了',
+                                        text: ' ${context.l10n.feedVotedFor} ',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: colorScheme.outline,
@@ -201,7 +202,7 @@ class _VotePanelState extends State<VotePanel> {
                                             )
                                             ?.optDesc,
                                       )
-                                      .join('、'),
+                                      .join(context.l10n.commonListSeparator),
                                 ),
                               ),
                             )
@@ -250,7 +251,12 @@ class _VotePanelState extends State<VotePanel> {
             runSpacing: 5,
             children: [
               Text(
-                '至 ${DateFormatUtils.format(_voteInfo.endTime, format: DateFormatUtils.longFormatDs)}',
+                context.l10n.feedPollEndsAt(
+                  DateFormatUtils.format(
+                    _voteInfo.endTime,
+                    format: DateFormatUtils.longFormatDs,
+                  ),
+                ),
               ),
               Text.rich(
                 TextSpan(
@@ -259,7 +265,9 @@ class _VotePanelState extends State<VotePanel> {
                       text: NumUtils.numFormat(_voteInfo.joinNum),
                       style: TextStyle(color: theme.colorScheme.primary),
                     ),
-                    const TextSpan(text: '人参与'),
+                    TextSpan(
+                      text: context.l10n.feedParticipantCount(''),
+                    ),
                   ],
                 ),
               ),
@@ -292,7 +300,7 @@ class _VotePanelState extends State<VotePanel> {
     spacing: 16,
     children: [
       CheckBoxText(
-        text: '显示比例',
+        text: context.l10n.feedShowPercentage,
         selected: _showPercentage,
         onChanged: (value) {
           setState(() {
@@ -301,7 +309,7 @@ class _VotePanelState extends State<VotePanel> {
         },
       ),
       CheckBoxText(
-        text: '匿名',
+        text: context.l10n.feedAnonymous,
         selected: anonymous,
         onChanged: (val) => anonymous = val,
       ),

@@ -1,5 +1,6 @@
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -61,7 +62,9 @@ class _SetDisplayModeState extends State<SetDisplayMode> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('屏幕帧率设置')),
+      appBar: AppBar(
+        title: Text(context.l10n.settingsScreenRefreshRateTitle),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -70,7 +73,7 @@ class _SetDisplayModeState extends State<SetDisplayMode> {
                 MediaQuery.viewPaddingOf(context).copyWith(top: 0, bottom: 0) +
                 const EdgeInsets.only(left: 25, top: 10, bottom: 5),
             child: Text(
-              '没有生效？重启app试试',
+              context.l10n.settingsRestartIfDisplayModeFails,
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
           ),
@@ -94,8 +97,10 @@ class _SetDisplayModeState extends State<SetDisplayMode> {
                   return RadioListTile<DisplayMode>(
                     value: mode,
                     title: mode == DisplayMode.auto
-                        ? const Text('自动')
-                        : Text('$mode${mode == active ? '  [系统]' : ''}'),
+                        ? Text(context.l10n.settingsAutomatic)
+                        : Text(
+                            '$mode${mode == active ? '  [${context.l10n.settingsSystemModeMarker}]' : ''}',
+                          ),
                   );
                 },
               ),

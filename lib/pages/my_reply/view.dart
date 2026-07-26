@@ -218,7 +218,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
             title: const Text('从本地文件导入', style: style),
             onTap: () {
               Get.back();
-              importFromLocalFile<List<dynamic>>(onImport: _onImport);
+              importFromLocalFile<List<dynamic>>(context, onImport: _onImport);
             },
           ),
         ],

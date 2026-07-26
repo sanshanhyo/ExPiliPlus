@@ -1,6 +1,9 @@
 import 'package:ex_piliplus/common/widgets/pair.dart';
 import 'package:ex_piliplus/common/widgets/reorder_mixin.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
+import 'package:ex_piliplus/models/common/home_tab_type.dart';
+import 'package:ex_piliplus/models/common/nav_bar_config.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -51,13 +54,13 @@ class _BarSetPageState extends State<BarSetPage> with ReorderMixin {
       key,
       list.where((e) => e.second).map((e) => e.first.index).toList(),
     );
-    SmartDialog.showToast('保存成功，下次启动时生效');
+    SmartDialog.showToast(context.l10n.settingsSavedNextLaunch);
   }
 
   void onReset() {
     Get.back();
     GStorage.setting.delete(key);
-    SmartDialog.showToast('重置成功，下次启动时生效');
+    SmartDialog.showToast(context.l10n.settingsResetNextLaunch);
   }
 
   void onReorderItem(int oldIndex, int newIndex) {
@@ -70,10 +73,16 @@ class _BarSetPageState extends State<BarSetPage> with ReorderMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('$title编辑'),
+        title: Text(context.l10n.settingsEditTitle(title)),
         actions: [
-          TextButton(onPressed: onReset, child: const Text('重置')),
-          TextButton(onPressed: saveEdit, child: const Text('保存')),
+          TextButton(
+            onPressed: onReset,
+            child: Text(context.l10n.settingsReset),
+          ),
+          TextButton(
+            onPressed: saveEdit,
+            child: Text(context.l10n.settingsSave),
+          ),
           const SizedBox(width: 12),
         ],
       ),
@@ -82,9 +91,9 @@ class _BarSetPageState extends State<BarSetPage> with ReorderMixin {
         proxyDecorator: proxyDecorator,
         footer: Padding(
           padding: padding,
-          child: const Align(
+          child: Align(
             alignment: Alignment.centerRight,
-            child: Text('*长按拖动排序'),
+            child: Text(context.l10n.settingsLongPressToReorder),
           ),
         ),
         children: list
@@ -96,7 +105,15 @@ class _BarSetPageState extends State<BarSetPage> with ReorderMixin {
                   e.second = value!;
                   setState(() {});
                 },
-                title: Text(e.first.label),
+                title: Text(
+                  switch (e.first) {
+                    final HomeTabType type => type.localizedLabel(context.l10n),
+                    final NavigationBarType type => type.localizedLabel(
+                      context.l10n,
+                    ),
+                    _ => e.first.label,
+                  },
+                ),
                 secondary: const Icon(Icons.drag_indicator_rounded),
               ),
             )

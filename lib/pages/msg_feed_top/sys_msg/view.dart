@@ -8,6 +8,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/msg/msg_sys/data.dart';
 import 'package:ex_piliplus/pages/msg_feed_top/sys_msg/controller.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -34,7 +35,7 @@ class _SysMsgPageState extends State<SysMsgPage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('系统通知')),
+      appBar: AppBar(title: Text(context.l10n.messagesSystemNotifications)),
       body: refreshIndicator(
         onRefresh: _sysMsgController.onRefresh,
         child: CustomScrollView(
@@ -82,7 +83,9 @@ class _SysMsgPageState extends State<SysMsgPage> {
                   final item = response[index];
                   void onLongPress() => showConfirmDialog(
                     context: context,
-                    title: const Text('确定删除该通知?'),
+                    title: Text(
+                      context.l10n.messagesDeleteNotificationConfirm,
+                    ),
                     onConfirm: () => _sysMsgController.onRemove(item.id, index),
                   );
                   return ListTile(
@@ -194,7 +197,7 @@ class _SysMsgPageState extends State<SysMsgPage> {
               ..add(const TextSpan(text: '（'))
               ..add(
                 TextSpan(
-                  text: '查看动态',
+                  text: context.l10n.messagesViewFeed,
                   style: TextStyle(color: theme.colorScheme.primary),
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () {
@@ -211,7 +214,7 @@ class _SysMsgPageState extends State<SysMsgPage> {
         } else {
           spanChildren.add(
             TextSpan(
-              text: '\u{1F517}网页链接',
+              text: '\u{1F517}${context.l10n.messagesWebLink}',
               style: TextStyle(color: theme.colorScheme.primary),
               recognizer: NoDeadlineTapGestureRecognizer()
                 ..onTap = () {

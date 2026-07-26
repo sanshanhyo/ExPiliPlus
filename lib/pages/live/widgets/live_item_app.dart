@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -81,7 +82,9 @@ class LiveCardVApp extends StatelessWidget {
                   text: r.name!,
                   onTap: (_) async {
                     Get.back();
-                    SmartDialog.showLoading(msg: '正在提交');
+                    SmartDialog.showLoading(
+                      msg: context.l10n.commonSubmitting,
+                    );
                     final res = await LiveHttp.liveFeedback(
                       item.roomid!,
                       r.id!,
@@ -89,7 +92,9 @@ class LiveCardVApp extends StatelessWidget {
                     );
                     SmartDialog.dismiss();
                     if (res.isSuccess) {
-                      SmartDialog.showToast('提交成功');
+                      SmartDialog.showToast(
+                        context.l10n.commonSubmitSucceeded,
+                      );
                     } else {
                       res.toast();
                     }
@@ -135,7 +140,7 @@ class LiveCardVApp extends StatelessWidget {
                             style: FilledButton.styleFrom(
                               visualDensity: VisualDensity.compact,
                             ),
-                            child: const Text('取消'),
+                            child: Text(context.l10n.commonCancel),
                           ),
                         ),
                       ],

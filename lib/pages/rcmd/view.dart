@@ -6,6 +6,7 @@ import 'package:ex_piliplus/common/widgets/video_card/video_card_v.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/rcmd/controller.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,7 +84,7 @@ class _RcmdPageState extends State<RcmdPage>
                             alignment: Alignment.center,
                             padding: const .symmetric(horizontal: 10),
                             child: Text(
-                              '上次看到这里\n点击刷新',
+                              context.l10n.homeLastSeenRefresh,
                               textAlign: .center,
                               style: TextStyle(
                                 color: colorScheme.onSurfaceVariant,

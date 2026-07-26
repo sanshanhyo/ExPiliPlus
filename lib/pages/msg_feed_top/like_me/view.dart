@@ -15,6 +15,7 @@ import 'package:ex_piliplus/pages/msg_feed_top/like_me/controller.dart';
 import 'package:ex_piliplus/pages/whisper_settings/view.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:get/get.dart';
@@ -35,7 +36,7 @@ class _LikeMePageState extends State<LikeMePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('收到的赞'),
+        title: Text(context.l10n.messagesReceivedLikes),
         actions: [
           IconButton(
             onPressed: () => Get.to(
@@ -92,7 +93,7 @@ class _LikeMePageState extends State<LikeMePage> {
             return SliverMainAxisGroup(
               slivers: [
                 if (latest.isNotEmpty) ...[
-                  _buildHeader(theme, '最新'),
+                  _buildHeader(theme, context.l10n.messagesLatest),
                   SliverList.separated(
                     itemBuilder: (context, index) {
                       if (total.isEmpty && index == latest.length - 1) {
@@ -107,7 +108,7 @@ class _LikeMePageState extends State<LikeMePage> {
                   ),
                 ],
                 if (total.isNotEmpty) ...[
-                  _buildHeader(theme, '累计'),
+                  _buildHeader(theme, context.l10n.messagesTotal),
                   SliverList.separated(
                     itemBuilder: (context, index) {
                       if (index == total.length - 1) {
@@ -202,12 +203,17 @@ class _LikeMePageState extends State<LikeMePage> {
                 Get.back();
                 showConfirmDialog(
                   context: context,
-                  title: const Text('删除'),
-                  content: const Text('该条通知删除后，当有新点赞时会重新出现在列表，是否继续？'),
+                  title: Text(context.l10n.commonDelete),
+                  content: Text(
+                    context.l10n.messagesDeleteLikeNoticeConfirm,
+                  ),
                   onConfirm: () => onRemove(item.id),
                 );
               },
-              child: const Text('删除', style: TextStyle(fontSize: 14)),
+              child: Text(
+                context.l10n.commonDelete,
+                style: const TextStyle(fontSize: 14),
+              ),
             ),
             DialogOption(
               onPressed: () {
@@ -215,8 +221,10 @@ class _LikeMePageState extends State<LikeMePage> {
                 if (isNotice) {
                   showConfirmDialog(
                     context: context,
-                    title: const Text('不再通知'),
-                    content: const Text('这条内容的点赞将不再通知，但仍可在列表内查看，是否继续？'),
+                    title: Text(context.l10n.messagesStopNotifications),
+                    content: Text(
+                      context.l10n.messagesStopNotificationsConfirm,
+                    ),
                     onConfirm: () =>
                         _likeMeController.onSetNotice(item, isNotice),
                   );
@@ -225,7 +233,9 @@ class _LikeMePageState extends State<LikeMePage> {
                 }
               },
               child: Text(
-                isNotice ? '不再通知' : '接收通知',
+                isNotice
+                    ? context.l10n.messagesStopNotifications
+                    : context.l10n.messagesReceiveNotifications,
                 style: const TextStyle(fontSize: 14),
               ),
             ),
@@ -270,14 +280,16 @@ class _LikeMePageState extends State<LikeMePage> {
             ),
             if (item.counts! > 1)
               TextSpan(
-                text: ' 等${item.counts}人',
+                text: context.l10n.messagesAndPeople(item.counts.toString()),
                 style: theme.textTheme.titleSmall!.copyWith(
                   fontSize: 12,
                   height: 1.5,
                 ),
               ),
             TextSpan(
-              text: ' 赞了我的${item.item?.business}',
+              text: context.l10n.messagesLikedMyItem(
+                item.item?.business ?? '',
+              ),
               style: theme.textTheme.titleSmall!.copyWith(
                 height: 1.5,
                 color: theme.colorScheme.onSurfaceVariant,

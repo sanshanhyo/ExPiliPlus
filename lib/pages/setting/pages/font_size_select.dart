@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -37,9 +38,12 @@ class _FontSizeSelectPageState extends State<FontSizeSelectPage> {
               currentSize = 1.0;
               setFontSize();
             },
-            child: const Text('重置'),
+            child: Text(context.l10n.settingsReset),
           ),
-          TextButton(onPressed: setFontSize, child: const Text('确定')),
+          TextButton(
+            onPressed: setFontSize,
+            child: Text(context.l10n.commonConfirm),
+          ),
           const SizedBox(width: 12),
         ],
       ),
@@ -49,7 +53,11 @@ class _FontSizeSelectPageState extends State<FontSizeSelectPage> {
             Expanded(
               child: Center(
                 child: Text(
-                  '当前字体大小:${currentSize == 1.0 ? '默认' : currentSize}',
+                  context.l10n.settingsCurrentFontSize(
+                    currentSize == 1.0
+                        ? context.l10n.commonDefault
+                        : currentSize.toString(),
+                  ),
                   style: TextStyle(fontSize: 14 * currentSize),
                 ),
               ),
@@ -66,7 +74,7 @@ class _FontSizeSelectPageState extends State<FontSizeSelectPage> {
               ),
               child: Row(
                 children: [
-                  const Text('小'),
+                  Text(context.l10n.settingsSmall),
                   Expanded(
                     child: Slider(
                       min: minSize,
@@ -81,9 +89,9 @@ class _FontSizeSelectPageState extends State<FontSizeSelectPage> {
                     ),
                   ),
                   const SizedBox(width: 5),
-                  const Text(
-                    '大',
-                    style: TextStyle(fontSize: 20),
+                  Text(
+                    context.l10n.settingsLarge,
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ],
               ),

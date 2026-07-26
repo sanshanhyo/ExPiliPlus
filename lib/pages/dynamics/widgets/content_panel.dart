@@ -2,7 +2,8 @@
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/common/widgets/emote_span.dart';
-import 'package:ex_piliplus/common/widgets/flutter/text/text.dart' as custom_text;
+import 'package:ex_piliplus/common/widgets/flutter/text/text.dart'
+    as custom_text;
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
 import 'package:ex_piliplus/common/widgets/selection_text.dart';

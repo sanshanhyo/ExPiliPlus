@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum AppFontFamily {
   system(label: '系统默认'),
   lxgwWenKaiGbScreen(
@@ -162,6 +164,23 @@ enum AppFontFamily {
   final String? licenseNotice;
 
   bool get isSystem => this == system;
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .system => l10n.settingsSystemDefaultFont,
+    .lxgwWenKaiGbScreen => l10n.settingsFontLxgwWenKai,
+    .lxgwZhenKaiGb => l10n.settingsFontLxgwZhenKai,
+    .lxgwNeoXiHeiScreen => l10n.settingsFontLxgwNeoXiHei,
+    .lxgwZhuqueFangsong => l10n.settingsFontLxgwZhuqueFangsong,
+    .sourceHanSansCn => l10n.settingsFontSourceHanSans,
+    .sourceHanSerifCn => l10n.settingsFontSourceHanSerif,
+    .miSans => 'MiSans',
+    .harmonyOsSansSc => 'HarmonyOS Sans',
+    .fusionPixel => l10n.settingsFontFusionPixel,
+  };
+
+  String? localizedLicenseNotice(AppLocalizations l10n) => licenseNotice == null
+      ? null
+      : l10n.settingsFontLicenseNotice(localizedLabel(l10n));
 
   int? get transferSize => downloadArchive?.downloadSize ?? downloadSize;
 

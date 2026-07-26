@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/common/badge_type.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 Widget liveRcmdPanel(
@@ -60,8 +61,8 @@ Widget liveRcmdPanel(
                 ),
               )
             else
-              const PBadge(
-                text: '直播结束',
+              PBadge(
+                text: context.l10n.feedLiveEnded,
                 top: 6,
                 right: 6,
                 type: PBadgeType.gray,

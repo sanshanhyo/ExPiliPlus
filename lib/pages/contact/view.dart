@@ -4,6 +4,7 @@ import 'package:ex_piliplus/pages/follow/child/child_view.dart';
 import 'package:ex_piliplus/pages/follow_search/view.dart';
 import 'package:ex_piliplus/pages/share/view.dart' show UserModel;
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,12 +43,12 @@ class _ContactPageState extends State<ContactPage>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('通讯录'),
+        title: Text(context.l10n.contactsTitle),
         bottom: TabBar(
           controller: _controller,
-          tabs: const [
-            Tab(text: '我的关注'),
-            Tab(text: '我的粉丝'),
+          tabs: [
+            Tab(text: context.l10n.mineFollowing),
+            Tab(text: context.l10n.mineFollowers),
           ],
         ),
         actions: [

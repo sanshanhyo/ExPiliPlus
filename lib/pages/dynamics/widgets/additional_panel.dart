@@ -8,6 +8,7 @@ import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -355,9 +356,9 @@ Widget? addWidget(
                                         color: theme.colorScheme.primary,
                                       ),
                                     ),
-                                    const TextSpan(
-                                      text: ' 起',
-                                      style: TextStyle(fontSize: 12),
+                                    TextSpan(
+                                      text: ' ${context.l10n.feedPriceFrom}',
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
@@ -444,7 +445,9 @@ Widget? addWidget(
                           overflow: TextOverflow.ellipsis,
                         ),
                       Text(
-                        '${NumUtils.numFormat(vote.joinNum)}人参与',
+                        context.l10n.feedParticipantCount(
+                          NumUtils.numFormat(vote.joinNum),
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -477,7 +480,7 @@ Widget? addWidget(
                     ),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: const Text('参与'),
+                  child: Text(context.l10n.feedJoin),
                 ),
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/common/badge_type.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_timeline/episode.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -49,8 +50,8 @@ class PgcCardVTimeline extends StatelessWidget {
                         height: maxHeight,
                       ),
                       if (item.follow == 1)
-                        const PBadge(
-                          text: '已追番',
+                        PBadge(
+                          text: context.l10n.homeFollowingAnime,
                           right: 6,
                           top: 6,
                         ),

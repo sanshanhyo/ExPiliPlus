@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show LengthLimitingTextInputFormatter, FilteringTextInputFormatter;
 import 'package:get/get.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 
 class SlideColorPicker extends StatefulWidget {
   const SlideColorPicker({
@@ -152,14 +153,14 @@ class _SlideColorPickerState extends State<SlideColorPicker> {
                     Get.back();
                     widget.onChanged(null);
                   },
-                  child: const Text('重置'),
+                  child: Text(context.l10n.settingsReset),
                 ),
               ],
               const Spacer(),
               TextButton(
                 onPressed: Get.back,
                 child: Text(
-                  '取消',
+                  context.l10n.commonCancel,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -170,7 +171,7 @@ class _SlideColorPickerState extends State<SlideColorPicker> {
                   Get.back();
                   widget.onChanged(DmUtils.decimalToColor(_rgb));
                 },
-                child: const Text('确定'),
+                child: Text(context.l10n.commonConfirm),
               ),
               const SizedBox(width: 16),
             ],

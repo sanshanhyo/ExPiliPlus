@@ -3,6 +3,7 @@ import 'package:ex_piliplus/pages/webdav/webdav.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -36,10 +37,11 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final showAppBar = widget.showAppBar;
     final padding = MediaQuery.viewPaddingOf(context);
     return Scaffold(
-      appBar: showAppBar ? AppBar(title: const Text('WebDAV 设置')) : null,
+      appBar: showAppBar ? AppBar(title: Text(l10n.webDavSettingsTitle)) : null,
       body: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -53,17 +55,17 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
             children: [
               TextField(
                 controller: _uriCtr,
-                decoration: const InputDecoration(
-                  labelText: '地址',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingWebDavAddress,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: _usernameCtr,
-                decoration: const InputDecoration(
-                  labelText: '用户',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingWebDavUser,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -71,7 +73,7 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
                 controller: _passwordCtr,
                 autofillHints: const [AutofillHints.password],
                 decoration: InputDecoration(
-                  labelText: '密码',
+                  labelText: l10n.onboardingWebDavPassword,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     onPressed: () =>
@@ -86,9 +88,9 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
               const SizedBox(height: 20),
               TextField(
                 controller: _directoryCtr,
-                decoration: const InputDecoration(
-                  labelText: '路径',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingWebDavPath,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -102,7 +104,7 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
                         ),
                       ),
                       onPressed: WebDav().backup,
-                      child: const Text('备份设置'),
+                      child: Text(l10n.webDavBackupSettings),
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -114,7 +116,7 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
                         ),
                       ),
                       onPressed: WebDav().restore,
-                      child: const Text('恢复设置'),
+                      child: Text(l10n.webDavRestoreSettings),
                     ),
                   ),
                 ],
@@ -140,12 +142,16 @@ class _WebDavSettingPageState extends State<WebDavSettingPage> {
                 try {
                   final res = await WebDav().init();
                   if (res.first) {
-                    SmartDialog.showToast('配置成功');
+                    SmartDialog.showToast(l10n.webDavConfigurationSucceeded);
                   } else {
-                    SmartDialog.showToast('配置失败: ${res.second}');
+                    SmartDialog.showToast(
+                      l10n.webDavConfigurationFailed('${res.second}'),
+                    );
                   }
                 } catch (e) {
-                  SmartDialog.showToast('配置失败: ${e.toString()}');
+                  SmartDialog.showToast(
+                    l10n.webDavConfigurationFailed(e.toString()),
+                  );
                   return;
                 }
               },

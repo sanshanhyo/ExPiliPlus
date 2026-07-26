@@ -14,6 +14,7 @@ import 'package:ex_piliplus/pages/follow/widgets/follow_item.dart';
 import 'package:ex_piliplus/pages/follow_type/follow_same/view.dart';
 import 'package:ex_piliplus/pages/share/view.dart' show UserModel;
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -132,7 +133,11 @@ class _FollowChildPageState extends State<FollowChildPage>
                     ..onReload(),
                   icon: const Icon(Icons.format_list_bulleted, size: 20),
                   label: Obx(
-                    () => Text(_followController.orderType.value.title),
+                    () => Text(
+                      _followController.orderType.value.localizedTitle(
+                        context.l10n,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -198,12 +203,13 @@ class _FollowChildPageState extends State<FollowChildPage>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '我们的共同关注',
+                            context.l10n.followShared,
                             style: TextStyle(
                               color: colorScheme.onSurfaceVariant,
                             ),
                           ),
                           moreTextButton(
+                            text: context.l10n.commonViewAll,
                             onTap: () => FollowSamePage.toFollowSamePage(
                               mid: _followController.mid,
                               name: widget.controller?.name.value,
@@ -227,7 +233,7 @@ class _FollowChildPageState extends State<FollowChildPage>
                         bottom: 6,
                       ),
                       child: Text(
-                        '全部关注',
+                        context.l10n.followAll,
                         style: TextStyle(
                           color: colorScheme.onSurfaceVariant,
                         ),

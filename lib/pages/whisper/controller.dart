@@ -2,6 +2,7 @@ import 'package:ex_piliplus/grpc/bilibili/app/im/v1.pb.dart'
     show Offset, Session, SessionMainReply, SessionPageType, ThreeDotItem;
 import 'package:ex_piliplus/grpc/im.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models_new/msg/msgfeed_unread.dart';
 import 'package:ex_piliplus/pages/common/common_whisper_controller.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -26,27 +27,28 @@ class WhisperController extends CommonWhisperController<SessionMainReply> {
   @override
   void onInit() {
     super.onInit();
+    final l10n = AppLocalizations.of(Get.context!);
     msgFeedTopItems = [
-      const (
-        name: "回复我的",
+      (
+        name: l10n.messagesRepliesToMe,
         icon: Icons.message_outlined,
         route: "/replyMe",
         enabled: true,
       ),
-      const (
-        name: "@我",
+      (
+        name: l10n.messagesMentions,
         icon: Icons.alternate_email_outlined,
         route: "/atMe",
         enabled: true,
       ),
       (
-        name: "收到的赞",
+        name: l10n.messagesReceivedLikes,
         icon: Icons.favorite_border_outlined,
         route: "/likeMe",
         enabled: !Pref.disableLikeMsg,
       ),
-      const (
-        name: "系统通知",
+      (
+        name: l10n.messagesSystemNotifications,
         icon: Icons.notifications_none_outlined,
         route: "/sysMsg",
         enabled: true,

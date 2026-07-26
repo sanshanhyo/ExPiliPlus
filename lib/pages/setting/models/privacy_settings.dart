@@ -2,21 +2,22 @@ import 'package:ex_piliplus/models/common/account_type.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/api_type.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-List<SettingsModel> get privacySettings => [
+List<SettingsModel> privacySettings(BuildContext context) => [
   NormalModel(
     onTap: (context, setState) {
       if (!Accounts.main.isLogin) {
-        SmartDialog.showToast('登录后查看');
+        SmartDialog.showToast(context.l10n.settingsSignInRequired);
         return;
       }
       Get.toNamed('/blackListPage');
     },
-    title: '黑名单管理',
-    subtitle: '已拉黑用户',
+    title: context.l10n.settingsBlockedUsersManagement,
+    subtitle: context.l10n.settingsBlockedUsersDescription,
     leading: const Icon(Icons.block),
   ),
   NormalModel(
@@ -24,20 +25,20 @@ List<SettingsModel> get privacySettings => [
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('账号模式详情'),
+          title: Text(context.l10n.settingsAccountModeDetails),
           content: SingleChildScrollView(child: _getAccountDetail(context)),
           actions: [
             TextButton(
               onPressed: Get.back,
-              child: const Text('确认'),
+              child: Text(context.l10n.commonConfirm),
             ),
           ],
         ),
       );
     },
     leading: const Icon(Icons.flag_outlined),
-    title: '了解账号模式',
-    subtitle: '查看各个账号模式作用的API列表',
+    title: context.l10n.settingsLearnAccountModes,
+    subtitle: context.l10n.settingsAccountModesApiDescription,
   ),
 ];
 
@@ -49,7 +50,14 @@ Widget _getAccountDetail(BuildContext context) {
     if (url == null) continue;
 
     children
-      ..add(Center(child: Text(i.title, style: theme.titleMedium)))
+      ..add(
+        Center(
+          child: Text(
+            i.localizedTitle(context.l10n),
+            style: theme.titleMedium,
+          ),
+        ),
+      )
       ..add(Text(url.join('\n')));
   }
   return SelectionArea(

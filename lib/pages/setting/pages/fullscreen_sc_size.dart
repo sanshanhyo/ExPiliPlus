@@ -10,6 +10,7 @@ import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 const kFullScreenSCWidth = 255.0;
@@ -72,9 +73,12 @@ class _FullScreenScSizeState extends State<FullScreenScSize> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('全屏 SC 大小设置'),
+        title: Text(context.l10n.settingsFullscreenSuperChatSizeTitle),
         actions: [
-          TextButton(onPressed: _onReset, child: const Text('重置')),
+          TextButton(
+            onPressed: _onReset,
+            child: Text(context.l10n.settingsReset),
+          ),
         ],
       ),
       body: Padding(padding: _padding, child: _buildBody),

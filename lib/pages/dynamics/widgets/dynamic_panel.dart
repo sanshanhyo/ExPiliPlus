@@ -7,6 +7,7 @@ import 'package:ex_piliplus/pages/dynamics/widgets/author_panel.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/dyn_content.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/interaction.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,7 @@ class DynamicPanel extends StatelessWidget {
                   height: 1,
                   color: theme.dividerColor.withValues(alpha: 0.1),
                 ),
-                _buildFoldItem(theme, moduleFold),
+                _buildFoldItem(context, theme, moduleFold),
               ],
             ] else if (!isSave)
               const SizedBox(height: 12),
@@ -205,7 +206,11 @@ class DynamicPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildFoldItem(ThemeData theme, ModuleFold moduleFold) {
+  Widget _buildFoldItem(
+    BuildContext context,
+    ThemeData theme,
+    ModuleFold moduleFold,
+  ) {
     Widget child = Text.rich(
       textAlign: TextAlign.center,
       style: TextStyle(
@@ -220,7 +225,7 @@ class DynamicPanel extends StatelessWidget {
       ),
       TextSpan(
         children: [
-          TextSpan(text: moduleFold.statement ?? '展开'),
+          TextSpan(text: moduleFold.statement ?? context.l10n.feedExpand),
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: Icon(

@@ -11,13 +11,14 @@ import 'package:ex_piliplus/pages/dynamics/widgets/live_panel_sub.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/live_rcmd_panel.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/video_panel.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-Widget noneWidget(ThemeData theme, String? tips) => Row(
+Widget noneWidget(BuildContext context, ThemeData theme, String? tips) => Row(
   spacing: 5,
   children: [
     Icon(
@@ -26,7 +27,7 @@ Widget noneWidget(ThemeData theme, String? tips) => Row(
       color: theme.colorScheme.outline,
     ),
     Text(
-      tips ?? '已失效',
+      tips ?? context.l10n.feedExpired,
       style: TextStyle(color: theme.colorScheme.outline),
     ),
   ],
@@ -44,7 +45,7 @@ Widget module(
   final major = moduleDynamic?.major;
 
   if (major?.type == 'MAJOR_TYPE_NONE') {
-    return noneWidget(theme, major?.none?.tips);
+    return noneWidget(context, theme, major?.none?.tips);
   }
 
   switch (item.type) {
@@ -315,7 +316,9 @@ Widget module(
         padding: floor == 1
             ? const EdgeInsets.symmetric(horizontal: 12)
             : EdgeInsets.zero,
-        child: Text('暂未支持的类型: \n${item.idStr}\n${item.type}'),
+        child: Text(
+          context.l10n.feedUnsupportedType(item.idStr, item.type ?? ''),
+        ),
       );
   }
 }

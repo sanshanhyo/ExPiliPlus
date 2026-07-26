@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/pages/setting/widgets/checkbox_num_list_tile.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -80,7 +81,7 @@ class _OrderedMultiSelectDialogState<T>
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(
               color: theme.colorScheme.outline,
             ),
@@ -91,7 +92,7 @@ class _OrderedMultiSelectDialogState<T>
             assert(_tempValues.values.isSorted(Comparable.compare));
             Get.back(result: _tempValues.keys.toList());
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     );

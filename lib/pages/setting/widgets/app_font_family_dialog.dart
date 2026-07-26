@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -23,20 +24,24 @@ class AppFontFamilyDialog extends StatelessWidget {
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('使用 ${font.label}'),
-            content: Text(font.licenseNotice!),
+            title: Text(
+              context.l10n.settingsUseFont(
+                font.localizedLabel(context.l10n),
+              ),
+            ),
+            content: Text(font.localizedLicenseNotice(context.l10n)!),
             actions: [
               TextButton(
                 onPressed: () => PageUtils.launchURL(font.licenseUrl!),
-                child: const Text('查看许可协议'),
+                child: Text(context.l10n.settingsViewLicense),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('取消'),
+                child: Text(context.l10n.commonCancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('同意并下载'),
+                child: Text(context.l10n.settingsAgreeAndDownload),
               ),
             ],
           ),
@@ -49,7 +54,11 @@ class AppFontFamilyDialog extends StatelessWidget {
     try {
       await AppFontManager.download(font);
       if (context.mounted) {
-        SmartDialog.showToast('${font.label}下载完成');
+        SmartDialog.showToast(
+          context.l10n.settingsFontDownloaded(
+            font.localizedLabel(context.l10n),
+          ),
+        );
       }
     } catch (error) {
       if (context.mounted) {
@@ -77,10 +86,14 @@ class AppFontFamilyDialog extends StatelessWidget {
         ? null
         : progress != null
         ? progress.total > 0
-              ? '正在下载 ${(progressValue! * 100).round()}%'
-              : '正在连接下载源'
+              ? context.l10n.settingsFontDownloading(
+                  (progressValue! * 100).round(),
+                )
+              : context.l10n.settingsFontConnecting
         : downloaded
-        ? '已下载 · ${_sizeLabel(font.downloadSize!)}'
+        ? context.l10n.settingsDownloadedWithSize(
+            _sizeLabel(font.downloadSize!),
+          )
         : _sizeLabel(font.transferSize!);
 
     Widget? trailing;
@@ -99,14 +112,14 @@ class AppFontFamilyDialog extends StatelessWidget {
               )
             : downloaded
             ? Tooltip(
-                message: '已下载',
+                message: context.l10n.settingsDownloaded,
                 child: Icon(
                   Icons.download_done_rounded,
                   color: ColorScheme.of(context).primary,
                 ),
               )
             : IconButton(
-                tooltip: '下载字体',
+                tooltip: context.l10n.settingsDownloadFont,
                 onPressed: () => _download(context, font),
                 icon: const Icon(Icons.download_rounded),
               ),
@@ -120,7 +133,7 @@ class AppFontFamilyDialog extends StatelessWidget {
         enabled: downloaded,
       ),
       title: Text(
-        font.label,
+        font.localizedLabel(context.l10n),
         style: TextTheme.of(context).titleMedium,
       ),
       subtitle: subtitle == null
@@ -139,7 +152,7 @@ class AppFontFamilyDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       clipBehavior: Clip.hardEdge,
-      title: const Text('App字体'),
+      title: Text(context.l10n.settingsAppFontTitle),
       constraints: const BoxConstraints(minWidth: 300, maxWidth: 380),
       contentPadding: const EdgeInsets.symmetric(vertical: 12),
       content: Material(

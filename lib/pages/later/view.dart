@@ -12,6 +12,7 @@ import 'package:ex_piliplus/pages/later/base_controller.dart';
 import 'package:ex_piliplus/pages/later/controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:flutter/material.dart' hide TabBarView;
@@ -101,7 +102,7 @@ class _LaterPageState extends State<LaterPage>
                                 _baseCtr.setIsPlayAll(true);
                               }
                             },
-                            label: const Text('播放全部'),
+                            label: Text(context.l10n.commonPlayAll),
                             icon: const Icon(Icons.playlist_play),
                           ),
                         ),
@@ -119,7 +120,8 @@ class _LaterPageState extends State<LaterPage>
                     tabs: LaterViewType.values.map((item) {
                       final count = _baseCtr.counts[item.index];
                       return Tab(
-                        text: '${item.title}${count != -1 ? '($count)' : ''}',
+                        text:
+                            '${item.localizedTitle(context.l10n)}${count != -1 ? '($count)' : ''}',
                       );
                     }).toList(),
                     onTap: (_) {
@@ -173,7 +175,7 @@ class _LaterPageState extends State<LaterPage>
               mid: ctr.mid,
             );
           },
-          child: Text('复制', style: textStyle),
+          child: Text(context.l10n.commonCopy, style: textStyle),
         ),
         TextButton(
           style: btnStyle,
@@ -187,14 +189,14 @@ class _LaterPageState extends State<LaterPage>
               mid: ctr.mid,
             );
           },
-          child: Text('移动', style: textStyle),
+          child: Text(context.l10n.commonMove, style: textStyle),
         ),
       ],
       child: AppBar(
-        title: const Text('稍后再看'),
+        title: Text(context.l10n.mineWatchLater),
         actions: [
           IconButton(
-            tooltip: '搜索',
+            tooltip: context.l10n.commonSearch,
             onPressed: () {
               final mid = Accounts.main.mid;
               Get.toNamed(
@@ -203,7 +205,7 @@ class _LaterPageState extends State<LaterPage>
                   'type': 0,
                   'mediaId': mid,
                   'mid': mid,
-                  'title': '稍后再看',
+                  'title': context.l10n.mineWatchLater,
                   'count': _baseCtr.counts[LaterViewType.all.index],
                 },
               );
@@ -216,7 +218,7 @@ class _LaterPageState extends State<LaterPage>
               final value = currCtr().asc.value;
               return PopupMenuButton(
                 initialValue: value,
-                tooltip: '排序',
+                tooltip: context.l10n.commonSort,
                 onSelected: (value) => currCtr()
                   ..asc.value = value
                   ..onReload(),
@@ -232,7 +234,11 @@ class _LaterPageState extends State<LaterPage>
                     ),
                     TextSpan(
                       children: [
-                        TextSpan(text: value ? '最早添加' : '最近添加'),
+                        TextSpan(
+                          text: value
+                              ? context.l10n.laterEarliestAdded
+                              : context.l10n.laterRecentlyAdded,
+                        ),
                         WidgetSpan(
                           alignment: .middle,
                           child: Icon(
@@ -247,20 +253,20 @@ class _LaterPageState extends State<LaterPage>
                   ),
                 ),
                 itemBuilder: (_) => [
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: false,
-                    child: Text('最近添加'),
+                    child: Text(context.l10n.laterRecentlyAdded),
                   ),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: true,
-                    child: Text('最早添加'),
+                    child: Text(context.l10n.laterEarliestAdded),
                   ),
                 ],
               );
             },
           ),
           PopupMenuButton(
-            tooltip: '清空',
+            tooltip: context.l10n.commonClear,
             borderRadius: const .all(.circular(20)),
             child: Padding(
               padding: const .symmetric(horizontal: 12, vertical: 6),
@@ -273,7 +279,7 @@ class _LaterPageState extends State<LaterPage>
                 ),
                 TextSpan(
                   children: [
-                    const TextSpan(text: '清空'),
+                    TextSpan(text: context.l10n.commonClear),
                     WidgetSpan(
                       alignment: .middle,
                       child: Icon(
@@ -290,15 +296,15 @@ class _LaterPageState extends State<LaterPage>
             itemBuilder: (_) => [
               PopupMenuItem(
                 onTap: () => currCtr().toViewClear(context, 1),
-                child: const Text('清空失效'),
+                child: Text(context.l10n.laterClearInvalid),
               ),
               PopupMenuItem(
                 onTap: () => currCtr().toViewClear(context, 2),
-                child: const Text('清空看完'),
+                child: Text(context.l10n.laterClearWatched),
               ),
               PopupMenuItem(
                 onTap: () => currCtr().toViewClear(context),
-                child: const Text('清空全部'),
+                child: Text(context.l10n.laterClearAll),
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:ex_piliplus/pages/dynamics_repost/view.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -53,13 +54,13 @@ class ActionPanel extends StatelessWidget {
                   FontAwesomeIcons.shareFromSquare,
                   size: 16,
                   color: outline,
-                  semanticLabel: "转发",
+                  semanticLabel: context.l10n.commonRepost,
                 ),
                 style: btnStyle,
                 label: Text(
                   forward.count != null
                       ? NumUtils.numFormat(forward.count)
-                      : '转发',
+                      : context.l10n.commonRepost,
                 ),
               );
             },
@@ -76,11 +77,13 @@ class ActionPanel extends StatelessWidget {
               FontAwesomeIcons.comment,
               size: 16,
               color: outline,
-              semanticLabel: "评论",
+              semanticLabel: context.l10n.feedComment,
             ),
             style: btnStyle,
             label: Text(
-              comment.count != null ? NumUtils.numFormat(comment.count) : '评论',
+              comment.count != null
+                  ? NumUtils.numFormat(comment.count)
+                  : context.l10n.feedComment,
             ),
           ),
         ),
@@ -93,11 +96,11 @@ class ActionPanel extends StatelessWidget {
               if (like.status ?? false) {
                 icon = FontAwesomeIcons.solidThumbsUp;
                 color = primary;
-                label = '已赞';
+                label = context.l10n.commonLiked;
               } else {
                 icon = FontAwesomeIcons.thumbsUp;
                 color = outline;
-                label = '点赞';
+                label = context.l10n.commonLike;
               }
               final likeIcon = Icon(
                 icon,
@@ -122,7 +125,9 @@ class ActionPanel extends StatelessWidget {
                   transitionBuilder: (child, animation) =>
                       ScaleTransition(scale: animation, child: child),
                   child: Text(
-                    like.count != null ? NumUtils.numFormat(like.count) : '点赞',
+                    like.count != null
+                        ? NumUtils.numFormat(like.count)
+                        : context.l10n.commonLike,
                     key: ValueKey<int?>(like.count),
                     style: TextStyle(color: like.status! ? primary : outline),
                   ),

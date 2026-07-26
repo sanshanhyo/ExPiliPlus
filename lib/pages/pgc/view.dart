@@ -21,6 +21,7 @@ import 'package:ex_piliplus/pages/pgc_index/view.dart';
 import 'package:ex_piliplus/pages/pgc_index/widgets/pgc_card_v_pgc_index.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -101,7 +102,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                         children: [
                           const SizedBox(width: 16),
                           Text(
-                            '追番时间表',
+                            context.l10n.homePgcSchedule,
                             style: theme.textTheme.titleMedium,
                           ),
                           const SizedBox(width: 16),
@@ -138,15 +139,17 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                                 (item) {
                                   return Tab(
                                     text:
-                                        '${item.date} ${item.isToday == 1 ? '今天' : '周${const [
-                                                '一',
-                                                '二',
-                                                '三',
-                                                '四',
-                                                '五',
-                                                '六',
-                                                '日',
-                                              ][item.dayOfWeek! - 1]}'}',
+                                        '${item.date} ${item.isToday == 1 ? context.l10n.homeToday : context.l10n.homeWeekday(
+                                                [
+                                                  context.l10n.weekdayMondayShort,
+                                                  context.l10n.weekdayTuesdayShort,
+                                                  context.l10n.weekdayWednesdayShort,
+                                                  context.l10n.weekdayThursdayShort,
+                                                  context.l10n.weekdayFridayShort,
+                                                  context.l10n.weekdaySaturdayShort,
+                                                  context.l10n.weekdaySundayShort,
+                                                ][item.dayOfWeek! - 1],
+                                              )}',
                                   );
                                 },
                               ).toList(),
@@ -230,7 +233,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '推荐',
+            context.l10n.homeRecommendations,
             style: theme.textTheme.titleMedium,
           ),
           moreTextButton(
@@ -239,18 +242,20 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
               if (widget.tabType == HomeTabType.bangumi) {
                 Get.to(const PgcIndexPage());
               } else {
-                List<String> titles = const [
-                  '全部',
-                  '电影',
-                  '电视剧',
-                  '纪录片',
-                  '综艺',
+                final titles = [
+                  context.l10n.homeAllMedia,
+                  context.l10n.homeMovies,
+                  context.l10n.homeTvShows,
+                  context.l10n.homeDocumentaries,
+                  context.l10n.homeVarietyShows,
                 ];
                 List<int> types = const [102, 2, 5, 3, 7];
                 Get.to(
                   Scaffold(
                     resizeToAvoidBottomInset: false,
-                    appBar: AppBar(title: const Text('索引')),
+                    appBar: AppBar(
+                      title: Text(context.l10n.homeMediaIndex),
+                    ),
                     body: DefaultTabController(
                       length: types.length,
                       child: Builder(
@@ -293,6 +298,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
                 );
               }
             },
+            text: context.l10n.commonViewAll,
             color: theme.colorScheme.secondary,
           ),
         ],
@@ -357,13 +363,23 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
       children: [
         Obx(
           () => Text(
-            '最近${widget.tabType == HomeTabType.bangumi ? '追番' : '追剧'}${controller.followCount.value == -1 ? '' : ' ${controller.followCount.value}'}',
+            widget.tabType == HomeTabType.bangumi
+                ? context.l10n.homeRecentAnime(
+                    controller.followCount.value == -1
+                        ? ''
+                        : ' ${controller.followCount.value}',
+                  )
+                : context.l10n.homeRecentSeries(
+                    controller.followCount.value == -1
+                        ? ''
+                        : ' ${controller.followCount.value}',
+                  ),
             style: theme.textTheme.titleMedium,
           ),
         ),
         const Spacer(),
         IconButton(
-          tooltip: '刷新',
+          tooltip: context.l10n.commonRefresh,
           onPressed: () => controller
             ..followPage = 1
             ..followEnd = false
@@ -378,7 +394,7 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: moreTextButton(
-                    text: '查看全部',
+                    text: context.l10n.commonViewAll,
                     onTap: () => Get.toNamed(
                       '/fav',
                       arguments: widget.tabType == HomeTabType.bangumi
@@ -421,7 +437,9 @@ class _PgcPageState extends State<PgcPage> with AutomaticKeepAliveClientMixin {
               )
             : Center(
                 child: Text(
-                  '还没有${widget.tabType == HomeTabType.bangumi ? '追番' : '追剧'}',
+                  widget.tabType == HomeTabType.bangumi
+                      ? context.l10n.homeNoAnime
+                      : context.l10n.homeNoSeries,
                 ),
               ),
       Error(:final errMsg) => Container(

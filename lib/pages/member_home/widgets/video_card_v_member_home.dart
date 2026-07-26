@@ -9,6 +9,7 @@ import 'package:ex_piliplus/models_new/video/video_detail/dimension.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +117,11 @@ class VideoCardVMemberHome extends StatelessWidget {
                       if (videoItem.badges?.isNotEmpty == true)
                         PBadge(
                           text: videoItem.badges!
-                              .map((e) => e.text ?? '')
+                              .map(
+                                (e) => e.text == '充电专属'
+                                    ? context.l10n.videoSupporterOnly
+                                    : e.text ?? '',
+                              )
                               .join('|'),
                           top: 6,
                           right: 6,
@@ -125,14 +130,14 @@ class VideoCardVMemberHome extends StatelessWidget {
                               : PBadgeType.primary,
                         )
                       else if (videoItem.isCooperation == true)
-                        const PBadge(
-                          text: '合作',
+                        PBadge(
+                          text: context.l10n.videoCooperation,
                           top: 6,
                           right: 6,
                         )
                       else if (videoItem.isSteins == true)
-                        const PBadge(
-                          text: '互动',
+                        PBadge(
+                          text: context.l10n.videoInteractive,
                           top: 6,
                           right: 6,
                         ),

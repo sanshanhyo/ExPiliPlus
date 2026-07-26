@@ -150,6 +150,20 @@ enum SegmentType {
     .filler => l10n.sponsorBlockCategoryFillerShort,
     .music_offtopic => l10n.sponsorBlockCategoryMusicOfftopicShort,
   };
+
+  String localizedDescription(AppLocalizations l10n) => switch (this) {
+    .sponsor => l10n.sponsorBlockDescriptionSponsor,
+    .selfpromo => l10n.sponsorBlockDescriptionSelfPromotion,
+    .exclusive_access => l10n.sponsorBlockDescriptionExclusiveAccess,
+    .interaction => l10n.sponsorBlockDescriptionInteraction,
+    .poi_highlight => l10n.sponsorBlockDescriptionHighlight,
+    .intro => l10n.sponsorBlockDescriptionIntro,
+    .outro => l10n.sponsorBlockDescriptionOutro,
+    .preview => l10n.sponsorBlockDescriptionPreview,
+    .padding => l10n.sponsorBlockDescriptionPadding,
+    .filler => l10n.sponsorBlockDescriptionFiller,
+    .music_offtopic => l10n.sponsorBlockDescriptionMusicOfftopic,
+  };
 }
 
 // List<SegmentType> _actionType2SegmentType(ActionType actionType) {

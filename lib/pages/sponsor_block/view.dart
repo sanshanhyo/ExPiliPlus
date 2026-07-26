@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models/common/sponsor_block/segment_type.dart';
 import 'package:ex_piliplus/models/common/sponsor_block/skip_type.dart';
 import 'package:ex_piliplus/models_new/sponsor_block/user_info.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/filtering_text.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -74,6 +75,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     TextStyle subTitleStyle,
   ) => Builder(
     builder: (context) {
+      final l10n = context.l10n;
       return ListTile(
         dense: true,
         onTap: () {
@@ -81,7 +83,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
           showDialog(
             context: context,
             builder: (_) => AlertDialog(
-              title: Text('最短片段时长', style: titleStyle),
+              title: Text(l10n.sponsorBlockMinimumDuration, style: titleStyle),
               content: TextFormField(
                 keyboardType: const .numberWithOptions(decimal: true),
                 controller: _textController,
@@ -93,7 +95,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                 TextButton(
                   onPressed: Get.back,
                   child: Text(
-                    '取消',
+                    l10n.commonCancel,
                     style: TextStyle(color: theme.colorScheme.outline),
                   ),
                 ),
@@ -108,15 +110,15 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                       SmartDialog.showToast(e.toString());
                     }
                   },
-                  child: const Text('确定'),
+                  child: Text(l10n.commonConfirm),
                 ),
               ],
             ),
           );
         },
-        title: Text('最短片段时长', style: titleStyle),
+        title: Text(l10n.sponsorBlockMinimumDuration, style: titleStyle),
         subtitle: Text(
-          '忽略短于此时长的片段',
+          l10n.sponsorBlockMinimumDurationDescription,
           style: subTitleStyle,
         ),
         trailing: Text(
@@ -127,9 +129,13 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     },
   );
 
-  Widget _aboutItem(TextStyle titleStyle, TextStyle subTitleStyle) => ListTile(
+  Widget _aboutItem(
+    BuildContext context,
+    TextStyle titleStyle,
+    TextStyle subTitleStyle,
+  ) => ListTile(
     dense: true,
-    title: Text('关于空降助手', style: titleStyle),
+    title: Text(context.l10n.sponsorBlockAbout, style: titleStyle),
     subtitle: Text(_url, style: subTitleStyle),
     onTap: () => PageUtils.launchURL(_url),
   );
@@ -140,9 +146,10 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     TextStyle subTitleStyle,
   ) => Builder(
     builder: (context) {
+      final l10n = context.l10n;
       return ListTile(
         dense: true,
-        title: Text('用户ID', style: titleStyle),
+        title: Text(l10n.sponsorBlockUserId, style: titleStyle),
         subtitle: Text(_userId, style: subTitleStyle),
         onTap: () {
           final key = GlobalKey<FormFieldState<String>>();
@@ -151,7 +158,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
             context: context,
             builder: (_) {
               return AlertDialog(
-                title: Text('用户ID', style: titleStyle),
+                title: Text(l10n.sponsorBlockUserId, style: titleStyle),
                 content: TextFormField(
                   key: key,
                   minLines: 1,
@@ -164,7 +171,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                   decoration: const InputDecoration(errorMaxLines: 2),
                   validator: (value) {
                     if ((value?.length ?? -1) < 30) {
-                      return '用户ID要求至少为30个字符长度的纯字符串';
+                      return l10n.sponsorBlockUserIdValidation;
                     }
                     return null;
                   },
@@ -179,12 +186,12 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                       setting.put(SettingBoxKey.blockUserID, _userId);
                       (context as Element).markNeedsBuild();
                     },
-                    child: const Text('随机'),
+                    child: Text(l10n.sponsorBlockRandom),
                   ),
                   TextButton(
                     onPressed: Get.back,
                     child: Text(
-                      '取消',
+                      l10n.commonCancel,
                       style: TextStyle(
                         color: theme.colorScheme.outline,
                       ),
@@ -199,7 +206,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                         (context as Element).markNeedsBuild();
                       }
                     },
-                    child: const Text('确定'),
+                    child: Text(l10n.commonConfirm),
                   ),
                 ],
               );
@@ -212,6 +219,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
 
   Widget _blockToastItem(TextStyle titleStyle) => Builder(
     builder: (context) {
+      final l10n = context.l10n;
       void update() {
         _blockToast = !_blockToast;
         setting.put(SettingBoxKey.blockToast, _blockToast);
@@ -222,7 +230,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
         dense: true,
         onTap: update,
         title: Text(
-          '显示跳过Toast',
+          l10n.sponsorBlockShowSkipToast,
           style: titleStyle,
         ),
         trailing: Transform.scale(
@@ -242,6 +250,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     TextStyle subTitleStyle,
   ) => Builder(
     builder: (context) {
+      final l10n = context.l10n;
       void update() {
         _blockTrack = !_blockTrack;
         setting.put(SettingBoxKey.blockTrack, _blockTrack);
@@ -252,12 +261,11 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
         dense: true,
         onTap: update,
         title: Text(
-          '跳过次数统计跟踪',
+          l10n.sponsorBlockTrackSkips,
           style: titleStyle,
         ),
         subtitle: Text(
-          // from origin extension
-          '此功能追踪您跳过了哪些片段，让用户知道他们提交的片段帮助了多少人。同时点赞会作为依据，确保垃圾信息不会污染数据库。在您每次跳过片段时，我们都会向服务器发送一条消息。希望大家开启此项设置，以便得到更准确的统计数据。:)',
+          l10n.sponsorBlockTrackSkipsDescription,
           style: subTitleStyle,
         ),
         trailing: Transform.scale(
@@ -278,6 +286,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     TextStyle subTitleStyle,
   ) => Obx(
     () {
+      final l10n = context.l10n;
       return ListTile(
         dense: true,
         onTap: () {
@@ -285,17 +294,17 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
           _getUserInfo();
         },
         title: Text(
-          '您的信息',
+          l10n.sponsorBlockYourInformation,
           style: titleStyle,
         ),
         subtitle: switch (_userInfo.value) {
           Loading() => const SizedBox.shrink(),
           Success<UserInfo>(:final response) => Text(
-            response.toString(),
+            response.localizedSummary(l10n),
             style: subTitleStyle,
           ),
           Error(:final errMsg) => Text(
-            errMsg ?? '服务器错误',
+            errMsg ?? l10n.sponsorBlockServerError,
             style: subTitleStyle.copyWith(color: theme.colorScheme.error),
           ),
         },
@@ -309,6 +318,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     TextStyle subTitleStyle,
   ) => Builder(
     builder: (context) {
+      final l10n = context.l10n;
       return ListTile(
         dense: true,
         onTap: () {
@@ -316,7 +326,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
           showDialog(
             context: context,
             builder: (_) => AlertDialog(
-              title: Text('服务器地址', style: titleStyle),
+              title: Text(l10n.sponsorBlockServerAddress, style: titleStyle),
               content: TextFormField(
                 keyboardType: TextInputType.url,
                 controller: _textController,
@@ -331,12 +341,12 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                     Request.accountManager.blockServer = _blockServer;
                     (context as Element).markNeedsBuild();
                   },
-                  child: const Text('重置'),
+                  child: Text(l10n.settingsReset),
                 ),
                 TextButton(
                   onPressed: Get.back,
                   child: Text(
-                    '取消',
+                    l10n.commonCancel,
                     style: TextStyle(
                       color: theme.colorScheme.outline,
                     ),
@@ -352,14 +362,14 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                     _getUserInfo();
                     (context as Element).markNeedsBuild();
                   },
-                  child: const Text('确定'),
+                  child: Text(l10n.commonConfirm),
                 ),
               ],
             ),
           );
         },
         title: Text(
-          '服务器地址',
+          l10n.sponsorBlockServerAddress,
           style: titleStyle,
         ),
         subtitle: Text(
@@ -372,16 +382,17 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
 
   Widget _serverStatusItem(ThemeData theme, TextStyle titleStyle) => Obx(
     () {
+      final l10n = context.l10n;
       String status;
       Color? color;
       switch (_serverStatus.value) {
         case null:
           status = '——';
         case true:
-          status = '正常';
+          status = l10n.sponsorBlockServerNormal;
           color = theme.colorScheme.primary;
         case false:
-          status = '错误';
+          status = l10n.sponsorBlockServerUnavailable;
           color = theme.colorScheme.error;
       }
       return ListTile(
@@ -390,7 +401,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
           _serverStatus.value = null;
           _checkServerStatus();
         },
-        title: Text('服务器状态', style: titleStyle),
+        title: Text(l10n.sponsorBlockServerStatus, style: titleStyle),
         trailing: Text(
           status,
           style: TextStyle(fontSize: 13, color: color),
@@ -405,6 +416,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
     Color color,
     Pair<SegmentType, SkipType> item,
   ) {
+    final l10n = context.l10n;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -413,9 +425,10 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
         title: Text.rich(
           TextSpan(
             children: [
-              const TextSpan(
-                text: 'Color Picker ',
-                style: TextStyle(fontSize: 15),
+              TextSpan(
+                text:
+                    '${l10n.sponsorBlockColorPickerTitle(item.first.localizedTitle(l10n))} ',
+                style: const TextStyle(fontSize: 15),
               ),
               WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
@@ -427,10 +440,6 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                     color: color,
                   ),
                 ),
-                style: const TextStyle(fontSize: 13, height: 1),
-              ),
-              TextSpan(
-                text: ' ${item.first.title}',
                 style: const TextStyle(fontSize: 13, height: 1),
               ),
             ],
@@ -456,6 +465,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
 
     const titleStyle = TextStyle(fontSize: 15);
@@ -481,7 +491,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('空降助手')),
+      appBar: AppBar(title: Text(l10n.sponsorBlockTitle)),
       body: CustomScrollView(
         slivers: [
           dividerL,
@@ -514,7 +524,9 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
             child: _blockServerItem(theme, titleStyle, subTitleStyle),
           ),
           dividerL,
-          SliverToBoxAdapter(child: _aboutItem(titleStyle, subTitleStyle)),
+          SliverToBoxAdapter(
+            child: _aboutItem(context, titleStyle, subTitleStyle),
+          ),
           dividerL,
           SliverToBoxAdapter(
             child: SizedBox(
@@ -533,6 +545,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
   ) {
     return Builder(
       builder: (context) {
+        final l10n = context.l10n;
         Color color = _blockColor[index];
         final isDisable = item.second == SkipType.disable;
         return ListTile(
@@ -558,7 +571,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                       style: const TextStyle(fontSize: 14, height: 1),
                     ),
                     TextSpan(
-                      text: ' ${item.first.title}',
+                      text: ' ${item.first.localizedTitle(l10n)}',
                       style: const TextStyle(fontSize: 14, height: 1),
                     ),
                   ],
@@ -585,7 +598,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                         .map(
                           (item) => PopupMenuItem<SkipType>(
                             value: item,
-                            child: Text(item.label),
+                            child: Text(item.localizedLabel(l10n)),
                           ),
                         )
                         .toList(),
@@ -608,7 +621,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
                         ),
                         TextSpan(
                           children: [
-                            TextSpan(text: item.second.label),
+                            TextSpan(text: item.second.localizedLabel(l10n)),
                             WidgetSpan(
                               alignment: .middle,
                               child: Icon(
@@ -631,7 +644,7 @@ class _SponsorBlockPageState extends State<SponsorBlockPage> {
             ],
           ),
           subtitle: Text(
-            item.first.description,
+            item.first.localizedDescription(l10n),
             style: TextStyle(
               fontSize: 12,
               color: isDisable ? null : theme.colorScheme.outline,

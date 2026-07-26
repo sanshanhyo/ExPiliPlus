@@ -32,6 +32,7 @@ import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/filtering_text.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
@@ -52,570 +53,594 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-List<SettingsModel> get extraSettings => [
-  if (PlatformUtils.isDesktop) ...[
+List<SettingsModel> extraSettings(BuildContext context) {
+  final l10n = context.l10n;
+  return [
+    if (PlatformUtils.isDesktop) ...[
+      SwitchModel(
+        title: l10n.settingsMinimizeOnExit,
+        leading: const Icon(Icons.exit_to_app),
+        setKey: SettingBoxKey.minimizeOnExit,
+        defaultVal: true,
+        onChanged: (value) {
+          try {
+            Get.find<MainController>().minimizeOnExit = value;
+          } catch (_) {}
+        },
+      ),
+      NormalModel(
+        title: l10n.settingsCachePath,
+        getSubtitle: () => downloadPath,
+        leading: const Icon(Icons.storage),
+        onTap: _showDownPathDialog,
+      ),
+    ],
+    SplitModel(
+      normalModel: NormalModel.split(
+        title: l10n.settingsSponsorBlock,
+        subtitle: l10n.settingsTapToConfigure,
+        leading: const Icon(CustomIcons.shield_play_arrow),
+      ),
+      switchModel: SwitchModel.split(
+        defaultVal: false,
+        setKey: SettingBoxKey.enableSponsorBlock,
+        onTap: (context) => Get.toNamed('/sponsorBlock'),
+      ),
+    ),
+    PopupModel<SkipType>(
+      title: l10n.settingsAnimeIntroOutroSkip,
+      leading: const Icon(MdiIcons.debugStepOver),
+      value: () => Pref.pgcSkipType,
+      items: SkipType.values,
+      labelBuilder: (value) => value.localizedLabel(l10n),
+      onSelected: (value, setState) => GStorage.setting
+          .put(SettingBoxKey.pgcSkipType, value.index)
+          .whenComplete(setState),
+    ),
+    SplitModel(
+      normalModel: NormalModel.split(
+        title: l10n.settingsCheckUnreadFeed,
+        subtitle: l10n.settingsCheckUnreadFeedDescription,
+        leading: const Icon(Icons.notifications_none),
+      ),
+      switchModel: SwitchModel.split(
+        defaultVal: true,
+        setKey: SettingBoxKey.checkDynamic,
+        onChanged: (value) => Get.find<MainController>().checkDynamic = value,
+        onTap: _showDynDialog,
+      ),
+    ),
     SwitchModel(
-      title: '退出时最小化',
-      leading: const Icon(Icons.exit_to_app),
-      setKey: SettingBoxKey.minimizeOnExit,
+      title: l10n.settingsVideoChapters,
+      leading: const Icon(CustomIcons.view_headline_rotate_90),
+      setKey: SettingBoxKey.showViewPoints,
       defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsRelatedVideos,
+      leading: const Icon(MdiIcons.motionPlayOutline),
+      setKey: SettingBoxKey.showRelatedVideo,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsVideoComments,
+      leading: const Icon(MdiIcons.commentTextOutline),
+      setKey: SettingBoxKey.showVideoReply,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsAnimeComments,
+      leading: const Icon(MdiIcons.commentTextOutline),
+      setKey: SettingBoxKey.showBangumiReply,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsExpandVideoDescription,
+      leading: const Icon(Icons.expand_more),
+      setKey: SettingBoxKey.alwaysExpandIntroPanel,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsExpandVideoDescriptionLandscape,
+      leading: const Icon(Icons.expand_more),
+      setKey: SettingBoxKey.expandIntroPanelH,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsLandscapeEpisodeTabs,
+      leading: const Icon(Icons.format_list_numbered_rtl_sharp),
+      setKey: SettingBoxKey.horizontalSeasonPanel,
+      defaultVal: Pref.horizontalScreen,
+    ),
+    SwitchModel(
+      title: l10n.settingsLandscapeUploaderSidebar,
+      leading: const Icon(Icons.account_circle_outlined),
+      setKey: SettingBoxKey.horizontalMemberPage,
+      defaultVal: Pref.horizontalScreen,
+    ),
+    SwitchModel(
+      title: l10n.settingsLandscapeImagePreview,
+      leading: const Icon(Icons.photo_outlined),
+      setKey: SettingBoxKey.horizontalPreview,
+      defaultVal: false,
+      onChanged: (value) => ImageGridView.horizontalPreview = value,
+    ),
+    NormalModel(
+      title: l10n.settingsCommentFoldLines,
+      subtitle: l10n.settingsZeroLinesDoNotFold,
+      leading: const Icon(Icons.compress),
+      getTrailing: (theme) => Text(
+        l10n.settingsLineCount(
+          ReplyItemGrpc.replyLengthLimit?.toString() ?? '0',
+        ),
+        style: theme.textTheme.titleSmall,
+      ),
+      onTap: _showReplyLengthDialog,
+    ),
+    NormalModel(
+      title: l10n.settingsDanmakuLineHeight,
+      subtitle: l10n.settingsDefaultNumber('1.6'),
+      leading: const Icon(CustomIcons.dm_settings),
+      getTrailing: (theme) => Text(
+        Pref.danmakuLineHeight.toString(),
+        style: theme.textTheme.titleSmall,
+      ),
+      onTap: _showDmHeightDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsVideoWarnings,
+      leading: const Icon(Icons.warning_amber_rounded),
+      setKey: SettingBoxKey.showArgueMsg,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsFeedWarnings,
+      leading: const Icon(Icons.warning_amber_rounded),
+      setKey: SettingBoxKey.showDynDispute,
+      defaultVal: false,
+      onChanged: (val) => ItemModulesModel.showDynDispute = val,
+    ),
+    SwitchModel(
+      title: l10n.settingsReverseEpisodesFromFirst,
+      subtitle: l10n.settingsReverseEpisodesFromFirstDescription,
+      leading: const Icon(MdiIcons.sort),
+      setKey: SettingBoxKey.reverseFromFirst,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsDisableSslVerification,
+      subtitle: l10n.settingsDisableSslVerificationDescription,
+      leading: const Icon(Icons.security),
+      needReboot: true,
+      setKey: SettingBoxKey.badCertificateCallback,
+    ),
+    SwitchModel(
+      title: l10n.settingsContinuePartPrompt,
+      leading: const Icon(Icons.local_parking),
+      setKey: SettingBoxKey.continuePlayingPart,
+      defaultVal: true,
+    ),
+    getBanWordModel(
+      context: context,
+      title: l10n.settingsCommentKeywordFilter,
+      key: SettingBoxKey.banWordForReply,
       onChanged: (value) {
+        ReplyGrpc.replyRegExp = value;
+        ReplyGrpc.enableFilter = value.pattern.isNotEmpty;
+      },
+    ),
+    getBanWordModel(
+      context: context,
+      title: l10n.settingsFeedKeywordFilter,
+      key: SettingBoxKey.banWordForDyn,
+      onChanged: (value) {
+        DynamicsDataModel.banWordForDyn = value;
+        DynamicsDataModel.enableFilter = value.pattern.isNotEmpty;
+      },
+    ),
+    SwitchModel(
+      title: l10n.settingsExternalBrowser,
+      leading: const Icon(Icons.open_in_browser),
+      setKey: SettingBoxKey.openInBrowser,
+      defaultVal: false,
+    ),
+    NormalModel(
+      title: l10n.settingsHorizontalSwipeThreshold,
+      getSubtitle: () => l10n.settingsCurrentAndSystemDefault(
+        Pref.touchSlopH.toString(),
+        deviceTouchSlop.toString(),
+      ),
+      onTap: _showTouchSlopDialog,
+      leading: const Icon(Icons.pan_tool_alt_outlined),
+    ),
+    NormalModel(
+      title: l10n.settingsRefreshDragDistance,
+      leading: const Icon(Icons.refresh),
+      getSubtitle: () =>
+          l10n.settingsCurrentMultiplier(Pref.refreshDragPercentage.toString()),
+      onTap: _showRefreshDragDialog,
+    ),
+    NormalModel(
+      title: l10n.settingsRefreshIndicatorHeight,
+      leading: const Icon(Icons.height),
+      getSubtitle: () =>
+          l10n.settingsCurrentValue(Pref.refreshDisplacement.toString()),
+      onTap: _showRefreshDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsVipDanmaku,
+      leading: const Icon(MdiIcons.gradientHorizontal),
+      setKey: SettingBoxKey.showVipDanmaku,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsMergeDanmaku,
+      subtitle: l10n.settingsMergeDanmakuDescription,
+      leading: const Icon(Icons.merge),
+      setKey: SettingBoxKey.mergeDanmaku,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsTrendingRecommendations,
+      subtitle: l10n.settingsTrendingRecommendationsDescription,
+      leading: const Icon(Icons.local_fire_department_outlined),
+      setKey: SettingBoxKey.showHotRcmd,
+      defaultVal: false,
+      needReboot: true,
+    ),
+    if (kDebugMode || Platform.isAndroid)
+      NormalModel(
+        title: l10n.settingsAudioNormalization,
+        leading: const Icon(Icons.multitrack_audio),
+        getSubtitle: () {
+          final audioNormalization =
+              AudioNormalization.localizedTitleFromConfig(
+                Pref.audioNormalization,
+                l10n,
+              );
+          String fallback = Pref.fallbackNormalization;
+          if (fallback == '0') {
+            fallback = '';
+          } else {
+            fallback = l10n.settingsFallbackValue(
+              AudioNormalization.localizedTitleFromConfig(fallback, l10n),
+            );
+          }
+          return '${l10n.settingsCurrentValue(audioNormalization)}$fallback';
+        },
+        onTap: audioNormalization,
+      ),
+    NormalModel(
+      title: l10n.settingsSuperResolution,
+      leading: const Icon(Icons.stay_current_landscape_outlined),
+      getSubtitle: () => l10n.settingsSuperResolutionDescription(
+        Pref.superResolutionType.localizedLabel(l10n),
+      ),
+      onTap: _showSuperResolutionDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsPreinitializePlayer,
+      subtitle: l10n.settingsPreinitializePlayerDescription,
+      leading: const Icon(Icons.play_circle_outlined),
+      setKey: SettingBoxKey.preInitPlayer,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsHomePageAnimation,
+      leading: const Icon(Icons.home_outlined),
+      setKey: SettingBoxKey.mainTabBarView,
+      defaultVal: false,
+      needReboot: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsSearchSuggestions,
+      leading: const Icon(Icons.search),
+      setKey: SettingBoxKey.searchSuggestion,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsSearchHistory,
+      leading: const Icon(Icons.history),
+      setKey: SettingBoxKey.recordSearchHistory,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsShowDecorations,
+      leading: const Icon(MdiIcons.stickerCircleOutline),
+      setKey: SettingBoxKey.showDecorate,
+      defaultVal: true,
+      onChanged: (value) => PendantAvatar.showDecorate = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsFanMedals,
+      leading: const Icon(MdiIcons.medalOutline),
+      setKey: SettingBoxKey.showMedal,
+      defaultVal: true,
+      onChanged: (value) => GlobalData().showMedal = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsLivePhotoPreview,
+      subtitle: l10n.settingsLivePhotoPreviewDescription,
+      leading: const Icon(Icons.image_outlined),
+      setKey: SettingBoxKey.enableLivePhoto,
+      defaultVal: true,
+      onChanged: (value) => ImageModel.enableLivePhoto = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsSeekPreviewThumbnails,
+      leading: const Icon(Icons.preview_outlined),
+      setKey: SettingBoxKey.showSeekPreview,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsDanmakuHeatmap,
+      subtitle: l10n.settingsDanmakuHeatmapDescription,
+      leading: const Icon(Icons.show_chart),
+      setKey: SettingBoxKey.showDmChart,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsSaveComments,
+      leading: const Icon(Icons.message_outlined),
+      setKey: SettingBoxKey.saveReply,
+      defaultVal: true,
+      needReboot: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsCommentAntifraud,
+      subtitle: l10n.settingsCommentAntifraudDescription,
+      leading: const Icon(CustomIcons.shield_reply),
+      setKey: SettingBoxKey.enableCommAntifraud,
+      defaultVal: false,
+    ),
+    if (Platform.isAndroid)
+      SwitchModel(
+        title: l10n.settingsUseBilibiliCommentCheck,
+        leading: const Icon(
+          FontAwesomeIcons.b,
+          size: 22,
+        ),
+        setKey: SettingBoxKey.biliSendCommAntifraud,
+        defaultVal: false,
+      ),
+    SwitchModel(
+      title: l10n.settingsFeedPostAntifraud,
+      subtitle: l10n.settingsFeedPostAntifraudDescription,
+      leading: const Icon(CustomIcons.shield_published),
+      setKey: SettingBoxKey.enableCreateDynAntifraud,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsBlockShoppingPosts,
+      leading: const Icon(CustomIcons.shopping_bag_not_interested),
+      setKey: SettingBoxKey.antiGoodsDyn,
+      defaultVal: false,
+      onChanged: (value) => DynamicsDataModel.antiGoodsDyn = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsBlockShoppingComments,
+      leading: const Icon(CustomIcons.shopping_bag_not_interested),
+      setKey: SettingBoxKey.antiGoodsReply,
+      defaultVal: false,
+      onChanged: (value) => ReplyGrpc.antiGoodsReply = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsSwipeToCloseSecondaryPages,
+      leading: const Icon(CustomIcons.touch_app_rotate_270),
+      setKey: SettingBoxKey.slideDismissReplyPage,
+      defaultVal: Platform.isIOS,
+      onChanged: (value) => CommonSlideMixin.slideDismissReplyPage = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsPinchToShrinkVideo,
+      leading: const Icon(Icons.pinch),
+      setKey: SettingBoxKey.enableShrinkVideoSize,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsSecondaryPageActionBar,
+      leading: const Icon(Icons.more_horiz),
+      setKey: SettingBoxKey.showDynActionBar,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsDragSubtitles,
+      leading: const Icon(MdiIcons.dragVariant),
+      setKey: SettingBoxKey.enableDragSubtitle,
+      defaultVal: false,
+    ),
+    SwitchModel(
+      title: l10n.settingsAnimeSchedule,
+      leading: const Icon(MdiIcons.chartTimelineVariantShimmer),
+      setKey: SettingBoxKey.showPgcTimeline,
+      defaultVal: true,
+      needReboot: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsSilentImageDownload,
+      subtitle: l10n.settingsSilentImageDownloadDescription,
+      leading: const Icon(Icons.download_for_offline_outlined),
+      setKey: SettingBoxKey.silentDownImg,
+      defaultVal: false,
+      onChanged: (value) => ImageUtils.silentDownImg = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsImageContextMenu,
+      leading: const Icon(Icons.menu),
+      setKey: SettingBoxKey.enableImgMenu,
+      defaultVal: false,
+      onChanged: (value) => ImageGridView.enableImgMenu = value,
+    ),
+    SwitchModel(
+      setKey: SettingBoxKey.feedBackEnable,
+      onChanged: (value) {
+        enableFeedback = value;
+        feedBack();
+      },
+      leading: const Icon(Icons.vibration_outlined),
+      title: l10n.settingsHapticFeedback,
+      subtitle: l10n.settingsHapticFeedbackDescription,
+    ),
+    SwitchModel(
+      title: l10n.settingsTrendingSearches,
+      subtitle: l10n.settingsTrendingSearchesDescription,
+      leading: const Icon(Icons.data_thresholding_outlined),
+      setKey: SettingBoxKey.enableHotKey,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsSearchDiscovery,
+      subtitle: l10n.settingsSearchDiscoveryDescription,
+      leading: const Icon(Icons.search_outlined),
+      setKey: SettingBoxKey.enableSearchRcmd,
+      defaultVal: true,
+    ),
+    SwitchModel(
+      title: l10n.settingsDefaultSearchTerm,
+      subtitle: l10n.settingsDefaultSearchTermDescription,
+      leading: const Icon(Icons.whatshot_outlined),
+      setKey: SettingBoxKey.enableSearchWord,
+      defaultVal: false,
+      onChanged: (val) {
         try {
-          Get.find<MainController>().minimizeOnExit = value;
+          final controller = Get.find<HomeController>()..enableSearchWord = val;
+          if (val) {
+            controller.querySearchDefault();
+          } else {
+            controller.defaultSearch.value = '';
+          }
         } catch (_) {}
       },
     ),
-    NormalModel(
-      title: '缓存路径',
-      getSubtitle: () => downloadPath,
-      leading: const Icon(Icons.storage),
-      onTap: _showDownPathDialog,
-    ),
-  ],
-  SplitModel(
-    normalModel: const NormalModel.split(
-      title: '空降助手',
-      subtitle: '点击配置',
-      leading: Icon(CustomIcons.shield_play_arrow),
-    ),
-    switchModel: SwitchModel.split(
+    SwitchModel(
+      title: l10n.settingsQuickFavorite,
+      subtitle: l10n.settingsQuickFavoriteDescription,
+      leading: const Icon(Icons.bookmark_add_outlined),
+      setKey: SettingBoxKey.enableQuickFav,
+      onTap: _showFavDialog,
       defaultVal: false,
-      setKey: SettingBoxKey.enableSponsorBlock,
-      onTap: (context) => Get.toNamed('/sponsorBlock'),
     ),
-  ),
-  PopupModel<SkipType>(
-    title: '番剧片头/片尾跳过类型',
-    leading: const Icon(MdiIcons.debugStepOver),
-    value: () => Pref.pgcSkipType,
-    items: SkipType.values,
-    onSelected: (value, setState) => GStorage.setting
-        .put(SettingBoxKey.pgcSkipType, value.index)
-        .whenComplete(setState),
-  ),
-  SplitModel(
-    normalModel: const NormalModel.split(
-      title: '检查未读动态',
-      subtitle: '点击设置检查周期(min)',
-      leading: Icon(Icons.notifications_none),
+    SwitchModel(
+      title: l10n.settingsCommentSearchKeywords,
+      subtitle: l10n.settingsCommentSearchKeywordsDescription,
+      leading: const Icon(Icons.search_outlined),
+      setKey: SettingBoxKey.enableWordRe,
+      defaultVal: false,
+      onChanged: (value) => ReplyItemGrpc.enableWordRe = value,
     ),
-    switchModel: SwitchModel.split(
-      defaultVal: true,
-      setKey: SettingBoxKey.checkDynamic,
-      onChanged: (value) => Get.find<MainController>().checkDynamic = value,
-      onTap: _showDynDialog,
+    SwitchModel(
+      title: l10n.settingsAiSummary,
+      subtitle: l10n.settingsAiSummaryDescription,
+      leading: const Icon(Icons.engineering_outlined),
+      setKey: SettingBoxKey.enableAi,
+      defaultVal: false,
     ),
-  ),
-  const SwitchModel(
-    title: '显示视频分段信息',
-    leading: Icon(CustomIcons.view_headline_rotate_90),
-    setKey: SettingBoxKey.showViewPoints,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '视频页显示相关视频',
-    leading: Icon(MdiIcons.motionPlayOutline),
-    setKey: SettingBoxKey.showRelatedVideo,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '显示视频评论',
-    leading: Icon(MdiIcons.commentTextOutline),
-    setKey: SettingBoxKey.showVideoReply,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '显示番剧评论',
-    leading: Icon(MdiIcons.commentTextOutline),
-    setKey: SettingBoxKey.showBangumiReply,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '默认展开视频简介',
-    leading: Icon(Icons.expand_more),
-    setKey: SettingBoxKey.alwaysExpandIntroPanel,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '横屏自动展开视频简介',
-    leading: Icon(Icons.expand_more),
-    setKey: SettingBoxKey.expandIntroPanelH,
-    defaultVal: false,
-  ),
-  SwitchModel(
-    title: '横屏分P/合集列表显示在Tab栏',
-    leading: const Icon(Icons.format_list_numbered_rtl_sharp),
-    setKey: SettingBoxKey.horizontalSeasonPanel,
-    defaultVal: Pref.horizontalScreen,
-  ),
-  SwitchModel(
-    title: '横屏播放页在侧栏打开UP主页',
-    leading: const Icon(Icons.account_circle_outlined),
-    setKey: SettingBoxKey.horizontalMemberPage,
-    defaultVal: Pref.horizontalScreen,
-  ),
-  SwitchModel(
-    title: '横屏在侧栏打开图片预览',
-    leading: const Icon(Icons.photo_outlined),
-    setKey: SettingBoxKey.horizontalPreview,
-    defaultVal: false,
-    onChanged: (value) => ImageGridView.horizontalPreview = value,
-  ),
-  NormalModel(
-    title: '评论折叠行数',
-    subtitle: '0行为不折叠',
-    leading: const Icon(Icons.compress),
-    getTrailing: (theme) => Text(
-      '${ReplyItemGrpc.replyLengthLimit}行',
-      style: theme.textTheme.titleSmall,
+    SwitchModel(
+      title: l10n.settingsDisableReceivedLikes,
+      subtitle: l10n.settingsDisableReceivedLikesDescription,
+      leading: const Icon(Icons.beach_access_outlined),
+      setKey: SettingBoxKey.disableLikeMsg,
+      defaultVal: false,
     ),
-    onTap: _showReplyLengthDialog,
-  ),
-  NormalModel(
-    title: '弹幕行高',
-    subtitle: '默认1.6',
-    leading: const Icon(CustomIcons.dm_settings),
-    getTrailing: (theme) => Text(
-      Pref.danmakuLineHeight.toString(),
-      style: theme.textTheme.titleSmall,
+    SwitchModel(
+      title: l10n.settingsShowCommentsByDefault,
+      subtitle: l10n.settingsShowCommentsByDefaultDescription,
+      leading: const Icon(Icons.mode_comment_outlined),
+      setKey: SettingBoxKey.defaultShowComment,
+      defaultVal: false,
     ),
-    onTap: _showDmHeightDialog,
-  ),
-  const SwitchModel(
-    title: '显示视频警告/争议信息',
-    leading: Icon(Icons.warning_amber_rounded),
-    setKey: SettingBoxKey.showArgueMsg,
-    defaultVal: true,
-  ),
-  SwitchModel(
-    title: '显示动态警告/争议信息',
-    leading: const Icon(Icons.warning_amber_rounded),
-    setKey: SettingBoxKey.showDynDispute,
-    defaultVal: false,
-    onChanged: (val) => ItemModulesModel.showDynDispute = val,
-  ),
-  const SwitchModel(
-    title: '分P/合集：倒序播放从首集开始播放',
-    subtitle: '开启则自动切换为倒序首集，否则保持当前集',
-    leading: Icon(MdiIcons.sort),
-    setKey: SettingBoxKey.reverseFromFirst,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '禁用 SSL 证书验证',
-    subtitle: '谨慎开启，禁用容易受到中间人攻击',
-    leading: Icon(Icons.security),
-    needReboot: true,
-    setKey: SettingBoxKey.badCertificateCallback,
-  ),
-  const SwitchModel(
-    title: '显示继续播放分P提示',
-    leading: Icon(Icons.local_parking),
-    setKey: SettingBoxKey.continuePlayingPart,
-    defaultVal: true,
-  ),
-  getBanWordModel(
-    title: '评论关键词过滤',
-    key: SettingBoxKey.banWordForReply,
-    onChanged: (value) {
-      ReplyGrpc.replyRegExp = value;
-      ReplyGrpc.enableFilter = value.pattern.isNotEmpty;
-    },
-  ),
-  getBanWordModel(
-    title: '动态关键词过滤',
-    key: SettingBoxKey.banWordForDyn,
-    onChanged: (value) {
-      DynamicsDataModel.banWordForDyn = value;
-      DynamicsDataModel.enableFilter = value.pattern.isNotEmpty;
-    },
-  ),
-  const SwitchModel(
-    title: '使用外部浏览器打开链接',
-    leading: Icon(Icons.open_in_browser),
-    setKey: SettingBoxKey.openInBrowser,
-    defaultVal: false,
-  ),
-  NormalModel(
-    title: '横向滑动阈值',
-    getSubtitle: () => '当前:「${Pref.touchSlopH}」，系统默认值: $deviceTouchSlop',
-    onTap: _showTouchSlopDialog,
-    leading: const Icon(Icons.pan_tool_alt_outlined),
-  ),
-  NormalModel(
-    title: '刷新滑动距离',
-    leading: const Icon(Icons.refresh),
-    getSubtitle: () => '当前滑动距离: ${Pref.refreshDragPercentage}x',
-    onTap: _showRefreshDragDialog,
-  ),
-  NormalModel(
-    title: '刷新指示器高度',
-    leading: const Icon(Icons.height),
-    getSubtitle: () => '当前指示器高度: ${Pref.refreshDisplacement}',
-    onTap: _showRefreshDialog,
-  ),
-  const SwitchModel(
-    title: '显示会员彩色弹幕',
-    leading: Icon(MdiIcons.gradientHorizontal),
-    setKey: SettingBoxKey.showVipDanmaku,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '合并弹幕',
-    subtitle: '合并一段时间内获取到的相同弹幕',
-    leading: Icon(Icons.merge),
-    setKey: SettingBoxKey.mergeDanmaku,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '显示热门推荐',
-    subtitle: '热门页面显示每周必看等推荐内容入口',
-    leading: Icon(Icons.local_fire_department_outlined),
-    setKey: SettingBoxKey.showHotRcmd,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  if (kDebugMode || Platform.isAndroid)
+    SwitchModel(
+      title: l10n.settingsHttp2,
+      leading: const Icon(Icons.swap_horizontal_circle_outlined),
+      setKey: SettingBoxKey.enableHttp2,
+      defaultVal: false,
+      needReboot: true,
+    ),
     NormalModel(
-      title: '音量均衡',
-      leading: const Icon(Icons.multitrack_audio),
-      getSubtitle: () {
-        final audioNormalization = AudioNormalization.getTitleFromConfig(
-          Pref.audioNormalization,
-        );
-        String fallback = Pref.fallbackNormalization;
-        if (fallback == '0') {
-          fallback = '';
-        } else {
-          fallback =
-              '，无参数时:「${AudioNormalization.getTitleFromConfig(fallback)}」';
-        }
-        return '当前:「$audioNormalization」$fallback';
-      },
-      onTap: audioNormalization,
+      title: l10n.settingsRetryCount,
+      subtitle: l10n.settingsZeroDisables,
+      leading: const Icon(Icons.repeat),
+      onTap: _showReplyCountDialog,
     ),
-  NormalModel(
-    title: '超分辨率',
-    leading: const Icon(Icons.stay_current_landscape_outlined),
-    getSubtitle: () =>
-        '当前:「${Pref.superResolutionType.label}」\n默认设置对番剧生效, 其他视频默认关闭\n超分辨率需要启用硬件解码, 若启用硬件解码后仍然不生效, 尝试切换硬件解码器为 auto-copy',
-    onTap: _showSuperResolutionDialog,
-  ),
-  const SwitchModel(
-    title: '提前初始化播放器',
-    subtitle: '相对减少手动播放加载时间',
-    leading: Icon(Icons.play_circle_outlined),
-    setKey: SettingBoxKey.preInitPlayer,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '首页切换页面动画',
-    leading: Icon(Icons.home_outlined),
-    setKey: SettingBoxKey.mainTabBarView,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  const SwitchModel(
-    title: '搜索建议',
-    leading: Icon(Icons.search),
-    setKey: SettingBoxKey.searchSuggestion,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '记录搜索历史',
-    leading: Icon(Icons.history),
-    setKey: SettingBoxKey.recordSearchHistory,
-    defaultVal: true,
-  ),
-  SwitchModel(
-    title: '展示头像/评论/动态装饰',
-    leading: const Icon(MdiIcons.stickerCircleOutline),
-    setKey: SettingBoxKey.showDecorate,
-    defaultVal: true,
-    onChanged: (value) => PendantAvatar.showDecorate = value,
-  ),
-  SwitchModel(
-    title: '显示粉丝勋章',
-    leading: const Icon(MdiIcons.medalOutline),
-    setKey: SettingBoxKey.showMedal,
-    defaultVal: true,
-    onChanged: (value) => GlobalData().showMedal = value,
-  ),
-  SwitchModel(
-    title: '预览 Live Photo',
-    subtitle: '开启则以视频形式预览 Live Photo，否则预览静态图片',
-    leading: const Icon(Icons.image_outlined),
-    setKey: SettingBoxKey.enableLivePhoto,
-    defaultVal: true,
-    onChanged: (value) => ImageModel.enableLivePhoto = value,
-  ),
-  const SwitchModel(
-    title: '滑动跳转预览视频缩略图',
-    leading: Icon(Icons.preview_outlined),
-    setKey: SettingBoxKey.showSeekPreview,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '显示高能进度条',
-    subtitle: '高能进度条反应了在时域上，单位时间内弹幕发送量的变化趋势',
-    leading: Icon(Icons.show_chart),
-    setKey: SettingBoxKey.showDmChart,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '记录评论',
-    leading: Icon(Icons.message_outlined),
-    setKey: SettingBoxKey.saveReply,
-    defaultVal: true,
-    needReboot: true,
-  ),
-  const SwitchModel(
-    title: '发评反诈',
-    subtitle: '发送评论后检查评论是否可见',
-    leading: Icon(CustomIcons.shield_reply),
-    setKey: SettingBoxKey.enableCommAntifraud,
-    defaultVal: false,
-  ),
-  if (Platform.isAndroid)
-    const SwitchModel(
-      title: '使用「哔哩发评反诈」检查评论',
-      leading: Icon(
-        FontAwesomeIcons.b,
-        size: 22,
+    NormalModel(
+      title: l10n.settingsRetryDelay,
+      subtitle: l10n.settingsRetryDelayDescription,
+      leading: const Icon(Icons.more_time_outlined),
+      onTap: _showReplyDelayDialog,
+    ),
+    NormalModel(
+      title: l10n.settingsCommentDisplay,
+      leading: const Icon(Icons.whatshot_outlined),
+      getSubtitle: () => l10n.settingsCurrentlyPrioritize(
+        Pref.replySortType.localizedTitle(l10n),
       ),
-      setKey: SettingBoxKey.biliSendCommAntifraud,
-      defaultVal: false,
+      onTap: _showReplySortDialog,
     ),
-  const SwitchModel(
-    title: '发布/转发动态反诈',
-    subtitle: '发布/转发动态后检查动态是否可见',
-    leading: Icon(CustomIcons.shield_published),
-    setKey: SettingBoxKey.enableCreateDynAntifraud,
-    defaultVal: false,
-  ),
-  SwitchModel(
-    title: '屏蔽带货动态',
-    leading: const Icon(CustomIcons.shopping_bag_not_interested),
-    setKey: SettingBoxKey.antiGoodsDyn,
-    defaultVal: false,
-    onChanged: (value) => DynamicsDataModel.antiGoodsDyn = value,
-  ),
-  SwitchModel(
-    title: '屏蔽带货评论',
-    leading: const Icon(CustomIcons.shopping_bag_not_interested),
-    setKey: SettingBoxKey.antiGoodsReply,
-    defaultVal: false,
-    onChanged: (value) => ReplyGrpc.antiGoodsReply = value,
-  ),
-  SwitchModel(
-    title: '侧滑关闭二级页面',
-    leading: const Icon(CustomIcons.touch_app_rotate_270),
-    setKey: SettingBoxKey.slideDismissReplyPage,
-    defaultVal: Platform.isIOS,
-    onChanged: (value) => CommonSlideMixin.slideDismissReplyPage = value,
-  ),
-  const SwitchModel(
-    title: '启用双指缩小视频',
-    leading: Icon(Icons.pinch),
-    setKey: SettingBoxKey.enableShrinkVideoSize,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '动态/专栏详情页展示底部操作栏',
-    leading: Icon(Icons.more_horiz),
-    setKey: SettingBoxKey.showDynActionBar,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '启用拖拽字幕调整底部边距',
-    leading: Icon(MdiIcons.dragVariant),
-    setKey: SettingBoxKey.enableDragSubtitle,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '展示追番时间表',
-    leading: Icon(MdiIcons.chartTimelineVariantShimmer),
-    setKey: SettingBoxKey.showPgcTimeline,
-    defaultVal: true,
-    needReboot: true,
-  ),
-  SwitchModel(
-    title: '静默下载图片',
-    subtitle: '不显示下载 Loading 弹窗',
-    leading: const Icon(Icons.download_for_offline_outlined),
-    setKey: SettingBoxKey.silentDownImg,
-    defaultVal: false,
-    onChanged: (value) => ImageUtils.silentDownImg = value,
-  ),
-  SwitchModel(
-    title: '长按/右键显示图片菜单',
-    leading: const Icon(Icons.menu),
-    setKey: SettingBoxKey.enableImgMenu,
-    defaultVal: false,
-    onChanged: (value) => ImageGridView.enableImgMenu = value,
-  ),
-  SwitchModel(
-    setKey: SettingBoxKey.feedBackEnable,
-    onChanged: (value) {
-      enableFeedback = value;
-      feedBack();
-    },
-    leading: const Icon(Icons.vibration_outlined),
-    title: '震动反馈',
-    subtitle: '请确定手机设置中已开启震动反馈',
-  ),
-  const SwitchModel(
-    title: '大家都在搜',
-    subtitle: '是否展示「大家都在搜」',
-    leading: Icon(Icons.data_thresholding_outlined),
-    setKey: SettingBoxKey.enableHotKey,
-    defaultVal: true,
-  ),
-  const SwitchModel(
-    title: '搜索发现',
-    subtitle: '是否展示「搜索发现」',
-    leading: Icon(Icons.search_outlined),
-    setKey: SettingBoxKey.enableSearchRcmd,
-    defaultVal: true,
-  ),
-  SwitchModel(
-    title: '搜索默认词',
-    subtitle: '是否展示搜索框默认词',
-    leading: const Icon(Icons.whatshot_outlined),
-    setKey: SettingBoxKey.enableSearchWord,
-    defaultVal: false,
-    onChanged: (val) {
-      try {
-        final controller = Get.find<HomeController>()..enableSearchWord = val;
+    NormalModel(
+      title: l10n.settingsFeedDisplay,
+      leading: const Icon(Icons.dynamic_feed_rounded),
+      getSubtitle: () => l10n.settingsCurrentlyPrioritize(
+        Pref.defaultDynamicType.localizedLabel(l10n),
+      ),
+      onTap: _showDefDynDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsFeedInteractions,
+      subtitle: l10n.settingsFeedInteractionsDescription,
+      leading: const Icon(Icons.quickreply_outlined),
+      setKey: SettingBoxKey.showDynInteraction,
+      defaultVal: true,
+      onChanged: (val) => ItemModulesModel.showDynInteraction = val,
+    ),
+    NormalModel(
+      title: l10n.settingsMemberDefaultTab,
+      leading: const Icon(Icons.tab),
+      getSubtitle: () => l10n.settingsCurrentlyPrioritize(
+        Pref.memberTab.localizedTitle(l10n),
+      ),
+      onTap: _showMemberTabDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsUploaderShopTab,
+      leading: const Icon(Icons.shop_outlined),
+      setKey: SettingBoxKey.showMemberShop,
+      defaultVal: false,
+      onChanged: (value) => MemberTabType.showMemberShop = value,
+    ),
+    SplitModel(
+      normalModel: NormalModel.split(
+        title: l10n.settingsProxy,
+        subtitle: l10n.settingsProxyDescription,
+        leading: const Icon(Icons.airplane_ticket_outlined),
+      ),
+      switchModel: SwitchModel.split(
+        defaultVal: false,
+        setKey: SettingBoxKey.enableSystemProxy,
+        onTap: _showProxyDialog,
+      ),
+    ),
+    NormalModel(
+      title: l10n.settingsMaximumCacheSize,
+      getSubtitle: () => l10n.settingsCurrentMaximumCacheSize(
+        CacheManager.formatSize(Pref.maxCacheSize),
+      ),
+      leading: const Icon(Icons.delete_outlined),
+      onTap: _showCacheDialog,
+    ),
+    SwitchModel(
+      title: l10n.settingsCheckForUpdates,
+      subtitle: l10n.settingsCheckForUpdatesDescription,
+      leading: const Icon(Icons.system_update_alt),
+      setKey: SettingBoxKey.autoUpdate,
+      defaultVal: true,
+      onChanged: (val) {
         if (val) {
-          controller.querySearchDefault();
-        } else {
-          controller.defaultSearch.value = '';
+          Update.checkUpdate(false);
         }
-      } catch (_) {}
-    },
-  ),
-  const SwitchModel(
-    title: '快速收藏',
-    subtitle: '点击设置默认收藏夹\n点按收藏至默认，长按选择文件夹',
-    leading: Icon(Icons.bookmark_add_outlined),
-    setKey: SettingBoxKey.enableQuickFav,
-    onTap: _showFavDialog,
-    defaultVal: false,
-  ),
-  SwitchModel(
-    title: '评论区搜索关键词',
-    subtitle: '展示评论区搜索关键词',
-    leading: const Icon(Icons.search_outlined),
-    setKey: SettingBoxKey.enableWordRe,
-    defaultVal: false,
-    onChanged: (value) => ReplyItemGrpc.enableWordRe = value,
-  ),
-  const SwitchModel(
-    title: '启用AI总结',
-    subtitle: '视频详情页开启AI总结',
-    leading: Icon(Icons.engineering_outlined),
-    setKey: SettingBoxKey.enableAi,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '消息页禁用"收到的赞"功能',
-    subtitle: '禁止打开入口，降低网络社交依赖',
-    leading: Icon(Icons.beach_access_outlined),
-    setKey: SettingBoxKey.disableLikeMsg,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '默认展示评论区',
-    subtitle: '在视频详情页默认切换至评论区页（仅Tab型布局）',
-    leading: Icon(Icons.mode_comment_outlined),
-    setKey: SettingBoxKey.defaultShowComment,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '启用HTTP/2',
-    leading: Icon(Icons.swap_horizontal_circle_outlined),
-    setKey: SettingBoxKey.enableHttp2,
-    defaultVal: false,
-    needReboot: true,
-  ),
-  const NormalModel(
-    title: '连接重试次数',
-    subtitle: '为0时禁用',
-    leading: Icon(Icons.repeat),
-    onTap: _showReplyCountDialog,
-  ),
-  const NormalModel(
-    title: '连接重试间隔',
-    subtitle: '实际间隔 = 间隔 * 第x次重试',
-    leading: Icon(Icons.more_time_outlined),
-    onTap: _showReplyDelayDialog,
-  ),
-  NormalModel(
-    title: '评论展示',
-    leading: const Icon(Icons.whatshot_outlined),
-    getSubtitle: () => '当前优先展示「${Pref.replySortType.title}」',
-    onTap: _showReplySortDialog,
-  ),
-  NormalModel(
-    title: '动态展示',
-    leading: const Icon(Icons.dynamic_feed_rounded),
-    getSubtitle: () => '当前优先展示「${Pref.defaultDynamicType.label}」',
-    onTap: _showDefDynDialog,
-  ),
-  SwitchModel(
-    title: '显示动态互动内容',
-    subtitle: '开启后则在动态卡片底部显示互动内容（如关注的人点赞、热评等）',
-    leading: const Icon(Icons.quickreply_outlined),
-    setKey: SettingBoxKey.showDynInteraction,
-    defaultVal: true,
-    onChanged: (val) => ItemModulesModel.showDynInteraction = val,
-  ),
-  NormalModel(
-    title: '用户页默认展示TAB',
-    leading: const Icon(Icons.tab),
-    getSubtitle: () => '当前优先展示「${Pref.memberTab.title}」',
-    onTap: _showMemberTabDialog,
-  ),
-  SwitchModel(
-    title: '显示UP主页小店TAB',
-    leading: const Icon(Icons.shop_outlined),
-    setKey: SettingBoxKey.showMemberShop,
-    defaultVal: false,
-    onChanged: (value) => MemberTabType.showMemberShop = value,
-  ),
-  const SplitModel(
-    normalModel: NormalModel.split(
-      title: '设置代理',
-      subtitle: '设置代理 host:port',
-      leading: Icon(Icons.airplane_ticket_outlined),
+      },
     ),
-    switchModel: SwitchModel.split(
-      defaultVal: false,
-      setKey: SettingBoxKey.enableSystemProxy,
-      onTap: _showProxyDialog,
-    ),
-  ),
-  NormalModel(
-    title: '最大缓存大小',
-    getSubtitle: () =>
-        '当前最大缓存大小: 「${CacheManager.formatSize(Pref.maxCacheSize)}」',
-    leading: const Icon(Icons.delete_outlined),
-    onTap: _showCacheDialog,
-  ),
-  SwitchModel(
-    title: '检查更新',
-    subtitle: '每次启动时检查是否需要更新',
-    leading: const Icon(Icons.system_update_alt),
-    setKey: SettingBoxKey.autoUpdate,
-    defaultVal: true,
-    onChanged: (val) {
-      if (val) {
-        Update.checkUpdate(false);
-      }
-    },
-  ),
-];
+  ];
+}
 
 Future<void> audioNormalization(
   BuildContext context,
@@ -639,7 +664,9 @@ Future<void> audioNormalization(
         '3',
       };
       return SelectDialog<String>(
-        title: fallback ? '服务器无loudnorm配置时使用' : '音量均衡',
+        title: fallback
+            ? context.l10n.settingsFallbackNormalization
+            : context.l10n.settingsAudioNormalization,
         toggleable: true,
         value: audioNormalization,
         values: values
@@ -647,10 +674,18 @@ Future<void> audioNormalization(
               (e) => (
                 e,
                 switch (e) {
-                  '0' => AudioNormalization.disable.title,
-                  '1' => AudioNormalization.dynaudnorm.title,
-                  '2' => AudioNormalization.loudnorm.title,
-                  '3' => AudioNormalization.custom.title,
+                  '0' => AudioNormalization.disable.localizedTitle(
+                    context.l10n,
+                  ),
+                  '1' => AudioNormalization.dynaudnorm.localizedTitle(
+                    context.l10n,
+                  ),
+                  '2' => AudioNormalization.loudnorm.localizedTitle(
+                    context.l10n,
+                  ),
+                  '3' => AudioNormalization.custom.localizedTitle(
+                    context.l10n,
+                  ),
                   _ => e,
                 },
               ),
@@ -665,12 +700,12 @@ Future<void> audioNormalization(
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('自定义参数'),
+          title: Text(context.l10n.settingsCustomParameters),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             spacing: 16,
             children: [
-              const Text('等同于 --lavfi-complex="[aid1] 参数 [ao]"'),
+              Text(context.l10n.settingsAudioNormalizationParameterHelp),
               TextField(
                 autofocus: true,
                 onChanged: (value) => param = value,
@@ -681,7 +716,7 @@ Future<void> audioNormalization(
             TextButton(
               onPressed: Get.back,
               child: Text(
-                '取消',
+                context.l10n.commonCancel,
                 style: TextStyle(color: ColorScheme.of(context).outline),
               ),
             ),
@@ -695,7 +730,7 @@ Future<void> audioNormalization(
                 }
                 setState();
               },
-              child: const Text('确定'),
+              child: Text(context.l10n.commonConfirm),
             ),
           ],
         ),
@@ -722,7 +757,10 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
             Get.back();
             Utils.copyText(downloadPath);
           },
-          child: const Text('复制', style: TextStyle(fontSize: 14)),
+          child: Text(
+            context.l10n.commonCopyLink,
+            style: const TextStyle(fontSize: 14),
+          ),
         ),
         DialogOption(
           onPressed: () {
@@ -734,7 +772,10 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
             Get.find<DownloadService>().initDownloadList();
             GStorage.setting.delete(SettingBoxKey.downloadPath);
           },
-          child: const Text('重置', style: TextStyle(fontSize: 14)),
+          child: Text(
+            context.l10n.settingsReset,
+            style: const TextStyle(fontSize: 14),
+          ),
         ),
         DialogOption(
           onPressed: () async {
@@ -746,7 +787,10 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
             Get.find<DownloadService>().initDownloadList();
             GStorage.setting.put(SettingBoxKey.downloadPath, path);
           },
-          child: const Text('设置新路径', style: TextStyle(fontSize: 14)),
+          child: Text(
+            context.l10n.settingsSetNewPath,
+            style: const TextStyle(fontSize: 14),
+          ),
         ),
       ],
     ),
@@ -758,7 +802,7 @@ void _showDynDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('检查周期'),
+      title: Text(context.l10n.settingsCheckInterval),
       content: TextFormField(
         autofocus: true,
         initialValue: dynamicPeriod,
@@ -771,7 +815,7 @@ void _showDynDialog(BuildContext context) {
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -786,7 +830,7 @@ void _showDynDialog(BuildContext context) {
               SmartDialog.showToast(e.toString());
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -798,20 +842,22 @@ void _showReplyLengthDialog(BuildContext context, VoidCallback setState) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('评论折叠行数'),
+      title: Text(context.l10n.settingsCommentFoldLines),
       content: TextFormField(
         autofocus: true,
         initialValue: replyLengthLimit,
         keyboardType: TextInputType.number,
         onChanged: (value) => replyLengthLimit = value,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        decoration: const InputDecoration(suffixText: '行'),
+        decoration: InputDecoration(
+          suffixText: context.l10n.settingsLineCount(''),
+        ),
       ),
       actions: [
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -827,7 +873,7 @@ void _showReplyLengthDialog(BuildContext context, VoidCallback setState) {
               SmartDialog.showToast(e.toString());
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -839,7 +885,7 @@ void _showDmHeightDialog(BuildContext context, VoidCallback setState) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('弹幕行高'),
+      title: Text(context.l10n.settingsDanmakuLineHeight),
       content: TextFormField(
         autofocus: true,
         initialValue: danmakuLineHeight,
@@ -851,7 +897,7 @@ void _showDmHeightDialog(BuildContext context, VoidCallback setState) {
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -869,7 +915,7 @@ void _showDmHeightDialog(BuildContext context, VoidCallback setState) {
               SmartDialog.showToast(e.toString());
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -881,7 +927,7 @@ void _showTouchSlopDialog(BuildContext context, VoidCallback setState) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('横向滑动阈值'),
+      title: Text(context.l10n.settingsHorizontalSwipeThreshold),
       content: TextFormField(
         autofocus: true,
         initialValue: initialValue,
@@ -893,7 +939,7 @@ void _showTouchSlopDialog(BuildContext context, VoidCallback setState) {
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -909,7 +955,7 @@ void _showTouchSlopDialog(BuildContext context, VoidCallback setState) {
               SmartDialog.showToast(e.toString());
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -923,7 +969,7 @@ Future<void> _showRefreshDragDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: const Text('刷新滑动距离'),
+      title: Text(context.l10n.settingsRefreshDragDistance),
       min: 0.1,
       max: 0.5,
       divisions: 8,
@@ -946,7 +992,7 @@ Future<void> _showRefreshDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: const Text('刷新指示器高度'),
+      title: Text(context.l10n.settingsRefreshIndicatorHeight),
       min: 10.0,
       max: 100.0,
       divisions: 9,
@@ -979,9 +1025,11 @@ Future<void> _showSuperResolutionDialog(
   final res = await showDialog<SuperResolutionType>(
     context: context,
     builder: (context) => SelectDialog<SuperResolutionType>(
-      title: '超分辨率',
+      title: context.l10n.settingsSuperResolution,
       value: Pref.superResolutionType,
-      values: SuperResolutionType.values.map((e) => (e, e.label)).toList(),
+      values: SuperResolutionType.values
+          .map((e) => (e, e.localizedLabel(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -1007,14 +1055,14 @@ Future<void> _showFavDialog(BuildContext context) async {
         context: context,
         builder: (context) => AlertDialog(
           clipBehavior: Clip.hardEdge,
-          title: const Text('选择默认收藏夹'),
+          title: Text(context.l10n.settingsChooseDefaultFavorite),
           contentPadding: const EdgeInsets.only(top: 5, bottom: 18),
           content: SingleChildScrollView(
             child: RadioGroup(
               onChanged: (value) {
                 Get.back();
                 GStorage.setting.put(SettingBoxKey.quickFavId, value);
-                SmartDialog.showToast('设置成功');
+                SmartDialog.showToast(context.l10n.settingsSucceeded);
               },
               groupValue: quickFavId,
               child: Column(
@@ -1046,7 +1094,7 @@ Future<void> _showReplyCountDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: const Text('连接重试次数'),
+      title: Text(context.l10n.settingsRetryCount),
       min: 0,
       max: 8,
       divisions: 8,
@@ -1057,7 +1105,7 @@ Future<void> _showReplyCountDialog(
   if (res != null) {
     await GStorage.setting.put(SettingBoxKey.retryCount, res.toInt());
     setState();
-    SmartDialog.showToast('重启生效');
+    SmartDialog.showToast(context.l10n.settingsRestartRequired);
   }
 }
 
@@ -1068,7 +1116,7 @@ Future<void> _showReplyDelayDialog(
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: const Text('连接重试间隔'),
+      title: Text(context.l10n.settingsRetryDelay),
       min: 0,
       max: 1000,
       divisions: 10,
@@ -1080,7 +1128,7 @@ Future<void> _showReplyDelayDialog(
   if (res != null) {
     await GStorage.setting.put(SettingBoxKey.retryDelay, res.toInt());
     setState();
-    SmartDialog.showToast('重启生效');
+    SmartDialog.showToast(context.l10n.settingsRestartRequired);
   }
 }
 
@@ -1091,9 +1139,12 @@ Future<void> _showReplySortDialog(
   final res = await showDialog<ReplySortType>(
     context: context,
     builder: (context) => SelectDialog<ReplySortType>(
-      title: '评论展示',
+      title: context.l10n.settingsCommentDisplay,
       value: Pref.replySortType,
-      values: ReplySortType.values.take(2).map((e) => (e, e.title)).toList(),
+      values: ReplySortType.values
+          .take(2)
+          .map((e) => (e, e.localizedTitle(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -1109,9 +1160,12 @@ Future<void> _showDefDynDialog(
   final res = await showDialog<DynamicsTabType>(
     context: context,
     builder: (context) => SelectDialog<DynamicsTabType>(
-      title: '动态展示',
+      title: context.l10n.settingsFeedDisplay,
       value: Pref.defaultDynamicType,
-      values: DynamicsTabType.values.take(4).map((e) => (e, e.label)).toList(),
+      values: DynamicsTabType.values
+          .take(4)
+          .map((e) => (e, e.localizedLabel(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -1130,9 +1184,11 @@ Future<void> _showMemberTabDialog(
   final res = await showDialog<MemberTabType>(
     context: context,
     builder: (context) => SelectDialog<MemberTabType>(
-      title: '用户页默认展示TAB',
+      title: context.l10n.settingsMemberDefaultTab,
       value: Pref.memberTab,
-      values: MemberTabType.values.map((e) => (e, e.title)).toList(),
+      values: MemberTabType.values
+          .map((e) => (e, e.localizedTitle(context.l10n)))
+          .toList(),
     ),
   );
   if (res != null) {
@@ -1148,17 +1204,17 @@ void _showProxyDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('设置代理'),
+      title: Text(context.l10n.settingsProxy),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 6),
           TextFormField(
             initialValue: systemProxyHost,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               isDense: true,
-              labelText: '请输入Host，使用 . 分割',
-              border: OutlineInputBorder(
+              labelText: context.l10n.settingsProxyHostHint,
+              border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(6)),
               ),
             ),
@@ -1168,10 +1224,12 @@ void _showProxyDialog(BuildContext context) {
           TextFormField(
             initialValue: systemProxyPort,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               isDense: true,
-              labelText: '请输入Port',
-              border: OutlineInputBorder(borderRadius: .all(.circular(6))),
+              labelText: context.l10n.settingsProxyPortHint,
+              border: const OutlineInputBorder(
+                borderRadius: .all(.circular(6)),
+              ),
             ),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (e) => systemProxyPort = e,
@@ -1182,7 +1240,7 @@ void _showProxyDialog(BuildContext context) {
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -1198,7 +1256,7 @@ void _showProxyDialog(BuildContext context) {
               systemProxyPort,
             );
           },
-          child: const Text('确认'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -1210,7 +1268,7 @@ void _showCacheDialog(BuildContext context, VoidCallback setState) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('最大缓存大小'),
+      title: Text(context.l10n.settingsMaximumCacheSize),
       content: TextField(
         autofocus: true,
         onChanged: (value) => valueStr = value,
@@ -1222,7 +1280,7 @@ void _showCacheDialog(BuildContext context, VoidCallback setState) {
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -1240,7 +1298,7 @@ void _showCacheDialog(BuildContext context, VoidCallback setState) {
               SmartDialog.showToast(e.toString());
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),

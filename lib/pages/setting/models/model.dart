@@ -5,6 +5,7 @@ import 'package:ex_piliplus/pages/setting/widgets/popup_item.dart';
 import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/switch_item.dart';
 import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart' hide PopupMenuItemSelected;
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -76,6 +77,7 @@ class PopupModel<T extends EnumWithLabel> extends SettingsModel {
     required this.value,
     required this.items,
     required this.onSelected,
+    this.labelBuilder,
   });
 
   @override
@@ -90,6 +92,7 @@ class PopupModel<T extends EnumWithLabel> extends SettingsModel {
   final ValueGetter<T> value;
   final List<T> items;
   final PopupMenuItemSelected<T> onSelected;
+  final String Function(T value)? labelBuilder;
 
   @override
   Widget get widget => PopupListTile<T>(
@@ -98,9 +101,16 @@ class PopupModel<T extends EnumWithLabel> extends SettingsModel {
     title: Text(title),
     value: () {
       final v = value();
-      return (v, v.label);
+      return (v, labelBuilder?.call(v) ?? v.label);
     },
-    itemBuilder: (_) => enumItemBuilder(items),
+    itemBuilder: (_) => items
+        .map(
+          (item) => PopupMenuItem(
+            value: item,
+            child: Text(labelBuilder?.call(item) ?? item.label),
+          ),
+        )
+        .toList(),
     onSelected: onSelected,
   );
 }
@@ -213,6 +223,7 @@ class SwitchModel extends SettingsModel {
 }
 
 SettingsModel getBanWordModel({
+  required BuildContext context,
   required String title,
   required String key,
   required ValueChanged<RegExp> onChanged,
@@ -221,7 +232,8 @@ SettingsModel getBanWordModel({
   return NormalModel(
     leading: const Icon(Icons.filter_alt_outlined),
     title: title,
-    getSubtitle: () => banWord.isEmpty ? "点击添加" : banWord,
+    getSubtitle: () =>
+        banWord.isEmpty ? context.l10n.settingsTapToAdd : banWord,
     onTap: (context, setState) {
       String editValue = banWord;
       showDialog(
@@ -233,7 +245,7 @@ SettingsModel getBanWordModel({
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('使用|隔开，如：尝试|测试'),
+              Text(context.l10n.settingsKeywordSeparatorHelp),
               TextFormField(
                 autofocus: true,
                 initialValue: editValue,
@@ -248,18 +260,18 @@ SettingsModel getBanWordModel({
             TextButton(
               onPressed: Get.back,
               child: Text(
-                '取消',
+                context.l10n.commonCancel,
                 style: TextStyle(color: ColorScheme.of(context).outline),
               ),
             ),
             TextButton(
-              child: const Text('保存'),
+              child: Text(context.l10n.commonConfirm),
               onPressed: () {
                 Get.back();
                 banWord = editValue;
                 setState();
                 onChanged(RegExp(banWord, caseSensitive: false));
-                SmartDialog.showToast('已保存');
+                SmartDialog.showToast(context.l10n.settingsSaved);
                 GStorage.setting.put(key, banWord);
               },
             ),
@@ -271,6 +283,7 @@ SettingsModel getBanWordModel({
 }
 
 SettingsModel getVideoFilterSelectModel({
+  required BuildContext context,
   required String title,
   String? subtitle,
   String? suffix,
@@ -283,19 +296,30 @@ SettingsModel getVideoFilterSelectModel({
   assert(!isFilter || onChanged != null);
   int value = GStorage.setting.get(key, defaultValue: defaultValue);
   return NormalModel(
-    title: '$title${isFilter ? '过滤' : ''}',
+    title: isFilter ? context.l10n.settingsFilterTitle(title) : title,
     leading: const Icon(Icons.timelapse_outlined),
     subtitle: subtitle,
     getSubtitle: subtitle == null
         ? () => isFilter
-              ? '过滤掉$title小于「$value${suffix ?? ""}」的视频'
-              : '当前$title:「$value${suffix ?? ""}」'
+              ? context.l10n.settingsFilterBelow(
+                  title,
+                  value,
+                  suffix ?? '',
+                )
+              : context.l10n.settingsCurrentNamedValue(
+                  title,
+                  value,
+                  suffix ?? '',
+                )
         : null,
     onTap: (context, setState) async {
       var result = await showDialog<int>(
         context: context,
         builder: (context) => SelectDialog<int>(
-          title: '选择$title${isFilter ? '（0即不过滤）' : ''}',
+          title: context.l10n.settingsChooseFilterValue(
+            title,
+            isFilter ? context.l10n.settingsZeroDisablesFilter : '',
+          ),
           value: value,
           values:
               (values
@@ -303,7 +327,7 @@ SettingsModel getVideoFilterSelectModel({
                     ..sort())
                   .map((e) => (e, suffix == null ? e.toString() : '$e $suffix'))
                   .toList()
-                ..add((-1, '自定义')),
+                ..add((-1, context.l10n.settingsCustomValue)),
         ),
       );
       if (result != null) {
@@ -312,7 +336,7 @@ SettingsModel getVideoFilterSelectModel({
           await showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text('自定义$title'),
+              title: Text(context.l10n.settingsCustomNamedValue(title)),
               content: TextField(
                 autofocus: true,
                 onChanged: (value) => valueStr = value,
@@ -324,7 +348,7 @@ SettingsModel getVideoFilterSelectModel({
                 TextButton(
                   onPressed: Get.back,
                   child: Text(
-                    '取消',
+                    context.l10n.commonCancel,
                     style: TextStyle(color: ColorScheme.of(context).outline),
                   ),
                 ),
@@ -337,7 +361,7 @@ SettingsModel getVideoFilterSelectModel({
                       SmartDialog.showToast(e.toString());
                     }
                   },
-                  child: const Text('确定'),
+                  child: Text(context.l10n.commonConfirm),
                 ),
               ],
             ),

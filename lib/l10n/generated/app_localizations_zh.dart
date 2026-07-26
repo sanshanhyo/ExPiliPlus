@@ -2204,6 +2204,2469 @@ class AppLocalizationsZh extends AppLocalizations {
   String videoConfirmBlockUploader(String name, String id) {
     return '确定拉黑 $name（$id）？\n\n被拉黑的 Uploader 可在隐私设置的黑名单管理中解除。';
   }
+
+  @override
+  String get timeJustNow => '刚刚';
+
+  @override
+  String timeMinutesAgo(int count) {
+    return '$count 分钟前';
+  }
+
+  @override
+  String timeHoursAgo(int count) {
+    return '$count 小时前';
+  }
+
+  @override
+  String timeYesterdayAt(String time) {
+    return '昨天 $time';
+  }
+
+  @override
+  String timeDaysAgo(int count) {
+    return '$count 天前';
+  }
+
+  @override
+  String timeTodayAt(String time) {
+    return '今天 $time';
+  }
+
+  @override
+  String get weekdayMondayShort => '一';
+
+  @override
+  String get weekdayTuesdayShort => '二';
+
+  @override
+  String get weekdayWednesdayShort => '三';
+
+  @override
+  String get weekdayThursdayShort => '四';
+
+  @override
+  String get weekdayFridayShort => '五';
+
+  @override
+  String get weekdaySaturdayShort => '六';
+
+  @override
+  String get weekdaySundayShort => '日';
+
+  @override
+  String get homePgcSchedule => '追番时间表';
+
+  @override
+  String get homeToday => '今天';
+
+  @override
+  String homeWeekday(String weekday) {
+    return '周$weekday';
+  }
+
+  @override
+  String get homeRecommendations => '推荐';
+
+  @override
+  String get homeMediaIndex => '索引';
+
+  @override
+  String get homeAllMedia => '全部';
+
+  @override
+  String get homeMovies => '电影';
+
+  @override
+  String get homeTvShows => '电视剧';
+
+  @override
+  String get homeDocumentaries => '纪录片';
+
+  @override
+  String get homeVarietyShows => '综艺';
+
+  @override
+  String homeRecentAnime(String count) {
+    return '最近追番$count';
+  }
+
+  @override
+  String homeRecentSeries(String count) {
+    return '最近追剧$count';
+  }
+
+  @override
+  String get homeNoAnime => '还没有追番';
+
+  @override
+  String get homeNoSeries => '还没有追剧';
+
+  @override
+  String get feedAll => '全部';
+
+  @override
+  String get feedUploads => '投稿';
+
+  @override
+  String get feedAnime => '番剧';
+
+  @override
+  String get feedArticles => '专栏';
+
+  @override
+  String get feedUploader => 'UP';
+
+  @override
+  String get feedCreatePost => '发布动态';
+
+  @override
+  String get feedAllUpdates => '全部动态';
+
+  @override
+  String get feedMe => '我';
+
+  @override
+  String get feedLiveEnded => '直播结束';
+
+  @override
+  String feedVoteWithTitle(String title) {
+    return '投票：$title';
+  }
+
+  @override
+  String feedPlayCount(String count) {
+    return '$count播放';
+  }
+
+  @override
+  String feedDanmakuCount(String count) {
+    return '$count弹幕';
+  }
+
+  @override
+  String get feedExpired => '已失效';
+
+  @override
+  String feedUnsupportedType(String id, String type) {
+    return '暂未支持的类型：\n$id\n$type';
+  }
+
+  @override
+  String get followMyFollowing => '我的关注';
+
+  @override
+  String followUserFollowing(String name) {
+    return '$name的关注';
+  }
+
+  @override
+  String get followNewGroup => '新建分组';
+
+  @override
+  String get followSortGroups => '分组排序';
+
+  @override
+  String get followBlockedUsers => '黑名单管理';
+
+  @override
+  String get followShared => '我们的共同关注';
+
+  @override
+  String get followAll => '全部关注';
+
+  @override
+  String get followMostRecent => '最近关注';
+
+  @override
+  String get followMostVisited => '最常访问';
+
+  @override
+  String get followEditGroupName => '编辑分组名称';
+
+  @override
+  String get followRenameGroup => '修改名称';
+
+  @override
+  String get followDeleteGroup => '删除分组';
+
+  @override
+  String get followDeleteGroupDescription => '删除后，该分组下的用户依旧保留。';
+
+  @override
+  String get followUpdateSucceeded => '修改成功';
+
+  @override
+  String get followDeleteSucceeded => '删除成功';
+
+  @override
+  String get feedSupporterOnly => '充电专属';
+
+  @override
+  String get feedPollOptions => '投票选项';
+
+  @override
+  String get feedPollEnded => '已结束';
+
+  @override
+  String get feedPollCompleted => '已完成';
+
+  @override
+  String get feedPoll => '投票';
+
+  @override
+  String get feedFollowedPeopleVotes => '关注的人的投票';
+
+  @override
+  String get feedVotedFor => '投给了';
+
+  @override
+  String feedPollEndsAt(String time) {
+    return '至 $time';
+  }
+
+  @override
+  String feedParticipantCount(String count) {
+    return '$count人参与';
+  }
+
+  @override
+  String get feedShowPercentage => '显示比例';
+
+  @override
+  String get feedAnonymous => '匿名';
+
+  @override
+  String get feedMoreActions => '更多';
+
+  @override
+  String get feedWatchLater => '稍后再看';
+
+  @override
+  String get feedSavePost => '保存动态';
+
+  @override
+  String get feedSharePost => '分享动态';
+
+  @override
+  String get feedShareToMessages => '分享至消息';
+
+  @override
+  String feedTemporarilyBlock(String name) {
+    return '临时屏蔽：$name';
+  }
+
+  @override
+  String feedTemporarilyBlocked(String name, String id) {
+    return '已临时屏蔽 $name（$id），重启后恢复';
+  }
+
+  @override
+  String get feedCheckPost => '检查动态';
+
+  @override
+  String get feedPinPost => '置顶';
+
+  @override
+  String get feedUnpinPost => '取消置顶';
+
+  @override
+  String get feedEnableFeaturedComments => '开启评论精选';
+
+  @override
+  String get feedDisableFeaturedComments => '停止评论精选';
+
+  @override
+  String get feedDisableComments => '关闭评论';
+
+  @override
+  String get feedRestoreComments => '恢复评论';
+
+  @override
+  String get feedInteractionSettings => '互动设置';
+
+  @override
+  String get feedVisibleToEveryone => '所有用户可见';
+
+  @override
+  String get feedVisibleOnlyToMe => '仅自己可见';
+
+  @override
+  String get feedVisibility => '可见范围';
+
+  @override
+  String get feedEditPost => '编辑动态';
+
+  @override
+  String get feedConfirmDeletePost => '确定删除该动态？';
+
+  @override
+  String get feedExpand => '展开';
+
+  @override
+  String get feedPriceFrom => '起';
+
+  @override
+  String get feedJoin => '参与';
+
+  @override
+  String get feedComment => '评论';
+
+  @override
+  String get feedWebLink => '网页链接';
+
+  @override
+  String get followGroupSortTitle => '关注分组排序';
+
+  @override
+  String get followSortCompleted => '排序完成';
+
+  @override
+  String followAlsoFollowed(int count, String name) {
+    return '我关注的 $count 人也关注了 $name';
+  }
+
+  @override
+  String get followUnknownPerson => 'TA';
+
+  @override
+  String get followActionFollow => '关注';
+
+  @override
+  String get followActionFollowing => '已关注';
+
+  @override
+  String followSharedWithUser(String name) {
+    return '我与 $name 的共同关注';
+  }
+
+  @override
+  String get settingsSignInRequired => '登录后查看';
+
+  @override
+  String get settingsBlockedUsersManagement => '黑名单管理';
+
+  @override
+  String get settingsBlockedUsersDescription => '已拉黑用户';
+
+  @override
+  String get settingsAccountModeDetails => '账号模式详情';
+
+  @override
+  String get settingsLearnAccountModes => '了解账号模式';
+
+  @override
+  String get settingsAccountModesApiDescription => '查看各个账号模式所使用的 API 列表';
+
+  @override
+  String get settingsAccountModeMain => '主账号';
+
+  @override
+  String get settingsAccountModeWatchHistory => '记录观看';
+
+  @override
+  String get settingsAccountModeRecommendation => '推荐';
+
+  @override
+  String get settingsAccountModeVideoStream => '视频取流';
+
+  @override
+  String get settingsUseAppRecommendations => '首页使用 App 端推荐';
+
+  @override
+  String get settingsUseAppRecommendationsDescription =>
+      '若 Web 端推荐不太符合预期，可尝试切换至 App 端推荐';
+
+  @override
+  String get settingsKeepPreviousRecommendations => '保留首页推荐刷新';
+
+  @override
+  String get settingsKeepPreviousRecommendationsDescription => '下拉刷新时保留上次内容';
+
+  @override
+  String get settingsShowLastPosition => '显示上次看到位置提示';
+
+  @override
+  String get settingsShowLastPositionDescription => '保留上次推荐时，在上次刷新位置显示提示';
+
+  @override
+  String get settingsLikeRatio => '点赞率';
+
+  @override
+  String get settingsTitleKeywordFilter => '标题关键词过滤';
+
+  @override
+  String get settingsCategoryKeywordFilter => 'App 推荐／热门／排行榜：视频分区关键词过滤';
+
+  @override
+  String get settingsVideoDuration => '视频时长';
+
+  @override
+  String get settingsPlayCount => '播放量';
+
+  @override
+  String get settingsExemptFollowedUploaders => '已关注 UP 豁免推荐过滤';
+
+  @override
+  String get settingsExemptFollowedUploadersDescription => '推荐中已关注用户发布的内容不会被过滤';
+
+  @override
+  String get settingsApplyFilterToRelatedVideos => '过滤器也应用于详情页相关视频';
+
+  @override
+  String get settingsApplyFilterToRelatedVideosDescription =>
+      '热门视频、搜索等其它页面不受过滤器影响；相关视频中的已关注 UP 无法豁免';
+
+  @override
+  String get settingsTapToAdd => '点击添加';
+
+  @override
+  String get settingsKeywordSeparatorHelp => '使用 | 隔开，例如：尝试|测试';
+
+  @override
+  String get settingsSaved => '已保存';
+
+  @override
+  String settingsFilterTitle(String title) {
+    return '$title过滤';
+  }
+
+  @override
+  String settingsFilterBelow(String title, int value, String suffix) {
+    return '过滤掉$title小于「$value$suffix」的视频';
+  }
+
+  @override
+  String settingsCurrentNamedValue(String title, int value, String suffix) {
+    return '当前$title：「$value$suffix」';
+  }
+
+  @override
+  String settingsChooseFilterValue(String title, String filterHint) {
+    return '选择$title$filterHint';
+  }
+
+  @override
+  String get settingsZeroDisablesFilter => '（0 即不过滤）';
+
+  @override
+  String get settingsCustomValue => '自定义';
+
+  @override
+  String settingsCustomNamedValue(String title) {
+    return '自定义$title';
+  }
+
+  @override
+  String get settingsChooseAccountsToSignOut => '选择要登出的账号 UID';
+
+  @override
+  String settingsConfirmSignOutAccounts(String accounts) {
+    return '确认要退出以下账号登录吗？\n\n$accounts';
+  }
+
+  @override
+  String get settingsSignOutCancel => '点错了';
+
+  @override
+  String get settingsSignOutOnly => '仅登出';
+
+  @override
+  String get settingsDanmakuEnabled => '弹幕开关';
+
+  @override
+  String get settingsDanmakuEnabledDescription => '是否展示弹幕';
+
+  @override
+  String get settingsTapDanmaku => '启用点击弹幕';
+
+  @override
+  String get settingsTapDanmakuDescription => '点击弹幕悬停，支持点赞、复制、举报操作';
+
+  @override
+  String get settingsPlaybackSpeed => '倍速设置';
+
+  @override
+  String get settingsPlaybackSpeedDescription => '设置视频播放速度';
+
+  @override
+  String get settingsTiltAngleThreshold => '倾斜角度阈值';
+
+  @override
+  String get settingsAutoplay => '自动播放';
+
+  @override
+  String get settingsAutoplayDescription => '进入详情页自动播放';
+
+  @override
+  String get settingsFullscreenLockButton => '全屏显示锁定按钮';
+
+  @override
+  String get settingsFullscreenScreenshotButton => '全屏显示截图按钮';
+
+  @override
+  String get settingsFullscreenBattery => '全屏显示电池电量';
+
+  @override
+  String get settingsDoubleTapSeek => '双击快退／快进';
+
+  @override
+  String get settingsDoubleTapSeekDescription => '左侧双击快退，右侧双击快进；关闭后双击均为暂停／播放';
+
+  @override
+  String get settingsSlideBrightnessVolume => '左右侧滑动调节亮度／音量';
+
+  @override
+  String get settingsSystemBrightness => '调节系统亮度';
+
+  @override
+  String get settingsSlideFullscreen => '中间滑动进入／退出全屏';
+
+  @override
+  String get settingsPlayerVolume => '播放器音量';
+
+  @override
+  String get settingsMaximumVolume => '最高音量';
+
+  @override
+  String get settingsDoubleTapSeekDuration => '双击快进／快退时长';
+
+  @override
+  String get settingsRelativeSlideSeek => '滑动快进／快退使用相对时长';
+
+  @override
+  String get settingsSlideSeekDuration => '滑动快进／快退时长';
+
+  @override
+  String get settingsSlideSeekDurationDescription => '从播放器一端滑到另一端的快进／快退时长';
+
+  @override
+  String get settingsAutomaticSubtitles => '自动启用字幕';
+
+  @override
+  String settingsCurrentPreference(String value) {
+    return '当前选择偏好：$value';
+  }
+
+  @override
+  String get settingsPauseWhenMinimized => '最小化时暂停／还原时播放';
+
+  @override
+  String get settingsKeyboardControls => '启用键盘控制';
+
+  @override
+  String get settingsSuperChatDisplay => 'SuperChat（醒目留言）显示类型';
+
+  @override
+  String get settingsFullscreenSuperChatSize => '全屏 SC 大小';
+
+  @override
+  String get settingsFullscreenSuperChatSizeDescription =>
+      'SuperChat（醒目留言）大小设置';
+
+  @override
+  String get settingsExpandPortraitVideo => '竖屏扩大展示';
+
+  @override
+  String get settingsExpandPortraitVideoDescription =>
+      '小屏竖屏视频宽高比由 16:9 扩大至 1:1（不支持收起）；横屏适配时扩大至 9:16';
+
+  @override
+  String get settingsAutoEnterFullscreen => '自动全屏';
+
+  @override
+  String get settingsAutoEnterFullscreenDescription => '视频开始播放时进入全屏';
+
+  @override
+  String get settingsAutoExitFullscreen => '自动退出全屏';
+
+  @override
+  String get settingsAutoExitFullscreenDescription => '视频结束播放时退出全屏';
+
+  @override
+  String get settingsExtendPlayerControls => '延长播放控件显示时间';
+
+  @override
+  String get settingsExtendPlayerControlsDescription =>
+      '开启后延长至 30 秒，便于屏幕阅读器滑动切换控件焦点';
+
+  @override
+  String get settingsBackgroundPlayback => '后台播放';
+
+  @override
+  String get settingsBackgroundPlaybackDescription => '进入后台时继续播放';
+
+  @override
+  String get settingsBackgroundPictureInPicture => '后台画中画';
+
+  @override
+  String get settingsBackgroundPictureInPictureDescription =>
+      '进入后台时以小窗形式（PiP）播放';
+
+  @override
+  String get settingsEnableBackgroundAudioSuggestion => '建议开启后台音频服务';
+
+  @override
+  String get settingsHideDanmakuInPictureInPicture => '画中画不加载弹幕';
+
+  @override
+  String get settingsHideDanmakuInPictureInPictureDescription =>
+      '小窗播放时屏蔽弹幕以获得更好的体验';
+
+  @override
+  String get settingsReverseFullscreenGesture => '全屏手势反向';
+
+  @override
+  String get settingsReverseFullscreenGestureDescription =>
+      '默认向上滑动进入全屏、向下退出；开启后方向相反';
+
+  @override
+  String get settingsFullscreenActionButtons => '全屏展示点赞、投币、收藏等操作按钮';
+
+  @override
+  String get settingsOnlineViewerCount => '观看人数';
+
+  @override
+  String get settingsOnlineViewerCountDescription => '展示同时在看人数';
+
+  @override
+  String get settingsDefaultFullscreenOrientation => '默认全屏方向';
+
+  @override
+  String settingsCurrentFullscreenOrientation(String value) {
+    return '当前全屏方向：$value';
+  }
+
+  @override
+  String get settingsBottomProgressBar => '底部进度条展示';
+
+  @override
+  String settingsCurrentBottomProgressBar(String value) {
+    return '当前展示方式：$value';
+  }
+
+  @override
+  String get settingsBackgroundAudioService => '后台音频服务';
+
+  @override
+  String get settingsBackgroundAudioServiceDescription => '避免画中画没有播放暂停功能';
+
+  @override
+  String get settingsPlaybackOrder => '播放顺序';
+
+  @override
+  String get settingsTemporaryPlayerSettings => '播放器设置仅对当前生效';
+
+  @override
+  String get settingsTemporaryPlayerSettingsDescription => '弹幕、字幕及部分设置中没有的设置除外';
+
+  @override
+  String get settingsSubtitlePreference => '字幕选择偏好';
+
+  @override
+  String get settingsSubtitlePreferenceOff => '默认不显示字幕';
+
+  @override
+  String get settingsSubtitlePreferencePreferHuman => '优先选择非自动生成（AI）字幕';
+
+  @override
+  String get settingsSubtitlePreferenceSkipAi => '跳过自动生成（AI）字幕，选择第一个可用字幕';
+
+  @override
+  String get settingsSubtitlePreferenceAuto => '静音时优先非自动字幕，非静音时跳过自动字幕';
+
+  @override
+  String get settingsSuperChatValidOnly => '有效时间内显示';
+
+  @override
+  String get settingsSuperChatPersistent => '常驻显示';
+
+  @override
+  String get settingsSuperChatDisabled => '不显示';
+
+  @override
+  String get settingsFullscreenOrientationAuto => '按视频方向（默认）';
+
+  @override
+  String get settingsFullscreenOrientationUnchanged => '不改变当前方向';
+
+  @override
+  String get settingsFullscreenOrientationPortrait => '强制竖屏';
+
+  @override
+  String get settingsFullscreenOrientationLandscape => '强制横屏';
+
+  @override
+  String settingsFullscreenOrientationRatio(double ratio) {
+    return '屏幕长宽比小于 $ratio 或为竖屏视频时竖屏，否则横屏';
+  }
+
+  @override
+  String get settingsFullscreenOrientationGravity =>
+      '忽略系统方向锁定，强制按重力转屏（仅 Android）';
+
+  @override
+  String get settingsProgressAlwaysShow => '始终展示';
+
+  @override
+  String get settingsProgressAlwaysHide => '始终隐藏';
+
+  @override
+  String get settingsProgressFullscreenOnly => '仅全屏时展示';
+
+  @override
+  String get settingsProgressHideFullscreen => '仅全屏时隐藏';
+
+  @override
+  String get settingsHardwareDecoding => '开启硬解';
+
+  @override
+  String get settingsHardwareDecodingDescription => '以较低功耗播放视频，若异常卡死请关闭';
+
+  @override
+  String get settingsGuest1080p => '免登录 1080P';
+
+  @override
+  String get settingsGuest1080pDescription => '未登录时也尝试播放 1080P 视频';
+
+  @override
+  String get settingsBilibiliDataPlan => 'B 站定向流量支持';
+
+  @override
+  String get settingsBilibiliDataPlanDescription =>
+      '若套餐含 B 站定向流量则会自动使用，可查阅运营商的流量记录确认';
+
+  @override
+  String get settingsCdn => 'CDN 设置';
+
+  @override
+  String settingsCurrentCdn(String value) {
+    return '当前使用：$value。部分 CDN 可能失效，如无法播放请尝试切换';
+  }
+
+  @override
+  String get settingsLiveCdn => '直播 CDN 设置';
+
+  @override
+  String settingsCurrentSource(String value) {
+    return '当前使用：$value';
+  }
+
+  @override
+  String get settingsCdnSpeedTest => 'CDN 测速';
+
+  @override
+  String get settingsCdnSpeedTestDescription => '测速通过模拟加载视频实现，请注意流量消耗，结果仅供参考';
+
+  @override
+  String get settingsSeparateAudioCdn => '音频不跟随 CDN 设置';
+
+  @override
+  String get settingsSeparateAudioCdnDescription => '直接采用备用 URL，可解决部分视频无声';
+
+  @override
+  String get settingsDefaultVideoQuality => '默认画质';
+
+  @override
+  String get settingsCellularVideoQuality => '蜂窝网络画质';
+
+  @override
+  String get settingsDefaultAudioQuality => '默认音质';
+
+  @override
+  String get settingsCellularAudioQuality => '蜂窝网络音质';
+
+  @override
+  String get settingsDefaultLiveQuality => '直播默认画质';
+
+  @override
+  String get settingsCellularLiveQuality => '蜂窝网络直播默认画质';
+
+  @override
+  String settingsCurrentVideoQuality(String value) {
+    return '当前画质：$value';
+  }
+
+  @override
+  String settingsCurrentAudioQuality(String value) {
+    return '当前音质：$value';
+  }
+
+  @override
+  String get settingsPreferredCodecs => '首选解码格式';
+
+  @override
+  String settingsPreferredCodecsDescription(String value) {
+    return '首选解码格式：$value。请根据设备支持情况与需求调整';
+  }
+
+  @override
+  String get settingsAudioOutput => '音频输出设备';
+
+  @override
+  String get settingsBufferSize => '缓冲大小';
+
+  @override
+  String settingsBufferSizeDescription(double value) {
+    return '当前：$value MB。此值同时作为前向和后向缓冲区大小；直播流会全部用于前向缓冲（mpv：--demuxer-max-bytes、--demuxer-max-back-bytes）';
+  }
+
+  @override
+  String get settingsBufferDuration => '缓冲时长';
+
+  @override
+  String settingsBufferDurationDescription(double value) {
+    return '当前：$value 秒。实际缓冲取大小与时长限制中的较小值；直播流不使用此项（mpv：--cache-secs）';
+  }
+
+  @override
+  String get settingsAutoSync => '自动同步';
+
+  @override
+  String settingsAutoSyncDescription(String value) {
+    return '当前：$value（mpv：--autosync）';
+  }
+
+  @override
+  String get settingsVideoSync => '视频同步';
+
+  @override
+  String settingsVideoSyncDescription(String value) {
+    return '当前：$value（mpv：--video-sync）';
+  }
+
+  @override
+  String get settingsHardwareDecodingMode => '硬解模式';
+
+  @override
+  String settingsHardwareDecodingModeDescription(String value) {
+    return '当前：$value（mpv：--hwdec）';
+  }
+
+  @override
+  String get settingsEnterCdnHost => '输入 CDN Host';
+
+  @override
+  String get settingsLiveQualityDolby => '杜比';
+
+  @override
+  String get settingsLiveQuality4kOriginal => '4K 原画';
+
+  @override
+  String get settingsLiveQuality4k => '4K';
+
+  @override
+  String get settingsLiveQuality2k => '2K';
+
+  @override
+  String get settingsLiveQualityOriginal => '原画';
+
+  @override
+  String get settingsLiveQualityBluRay => '蓝光';
+
+  @override
+  String get settingsLiveQualitySuperHd => '超清';
+
+  @override
+  String get settingsLiveQualityHd => '高清';
+
+  @override
+  String get settingsLiveQualitySmooth => '流畅';
+
+  @override
+  String get settingsHwdecSoftware => '启用软解';
+
+  @override
+  String get settingsHwdecAny => '启用任意可用解码器';
+
+  @override
+  String get settingsHwdecBest => '启用最佳解码器';
+
+  @override
+  String get settingsHwdecBestCopy => '启用带拷贝功能的最佳解码器';
+
+  @override
+  String get settingsHwdecNonDirect => '非直通';
+
+  @override
+  String settingsHwdecExclusive(String vendor) {
+    return '$vendor 独占';
+  }
+
+  @override
+  String get settingsHwdecExperimental => '实验性';
+
+  @override
+  String get settingsHwdecDeprecated => '已过时';
+
+  @override
+  String get settingsHwdecAllPlatforms => '全平台';
+
+  @override
+  String get settingsHwdecPartialRockchip => '仅部分 Rockchip 芯片';
+
+  @override
+  String get settingsWindowTitleBar => '显示窗口标题栏';
+
+  @override
+  String get settingsTrayIcon => '显示托盘图标';
+
+  @override
+  String get settingsLandscapeLayout => '横屏适配';
+
+  @override
+  String get settingsLandscapeLayoutDescription =>
+      '启用横屏布局与逻辑，平板、折叠屏等可开启；建议全屏方向设为“不改变当前方向”';
+
+  @override
+  String get settingsUseSidebar => '改用侧边栏';
+
+  @override
+  String get settingsUseSidebarDescription => '开启后底栏与顶栏会被替换，相关设置将失效';
+
+  @override
+  String get settingsUiScale => '界面缩放';
+
+  @override
+  String settingsCurrentUiScale(String value) {
+    return '当前缩放比例：$value';
+  }
+
+  @override
+  String get settingsPageTransition => '页面过渡动画';
+
+  @override
+  String get settingsOptimizeTabletNavigation => '优化平板导航栏';
+
+  @override
+  String get settingsMaterialYouBottomBar => 'MD3 样式底栏';
+
+  @override
+  String get settingsMaterialYouBottomBarDescription =>
+      'Material You 设计规范底栏，关闭后可变窄';
+
+  @override
+  String get settingsFloatingBottomBar => '悬浮底栏';
+
+  @override
+  String get settingsListWidthLimit => '列表宽度（dp）限制';
+
+  @override
+  String settingsListWidthDescription(int home, int other, String screen) {
+    return '当前：主页 $home dp，其他 $other dp，屏幕宽度 $screen dp。宽度越小，列数越多。';
+  }
+
+  @override
+  String get settingsRemovePlayerSafeArea => '播放页移除安全边距';
+
+  @override
+  String get settingsDarkVideoPage => '视频播放页使用深色主题';
+
+  @override
+  String get settingsFeedWaterfall => 'Feed 启用瀑布流';
+
+  @override
+  String get settingsFeedWaterfallDescription => '关闭后显示为单列';
+
+  @override
+  String get settingsFeedUploaderPosition => 'Feed Uploader 显示位置';
+
+  @override
+  String get settingsShowAllFollowedUploaders => 'Feed 显示所有已关注 Uploader';
+
+  @override
+  String get settingsExpandLiveUploaders => 'Feed 展开正在直播的 Uploader 列表';
+
+  @override
+  String get settingsFeedUnreadBadge => 'Feed 未读标记';
+
+  @override
+  String get settingsMessageUnreadBadge => '消息未读标记';
+
+  @override
+  String settingsCurrentBadgeStyle(String value) {
+    return '当前标记样式：$value';
+  }
+
+  @override
+  String get settingsMessageUnreadTypes => '消息未读类型';
+
+  @override
+  String settingsCurrentMessageTypes(String value) {
+    return '当前消息类型：$value';
+  }
+
+  @override
+  String get settingsBarCollapseBehavior => '顶／底栏收起类型';
+
+  @override
+  String get settingsCollapseHomeTopBar => '首页顶栏收起';
+
+  @override
+  String get settingsCollapseHomeTopBarDescription => '首页列表滑动时收起顶栏';
+
+  @override
+  String get settingsCollapseHomeBottomBar => '首页底栏收起';
+
+  @override
+  String get settingsCollapseHomeBottomBarDescription => '首页列表滑动时收起底栏';
+
+  @override
+  String get settingsImageQuality => '图片质量';
+
+  @override
+  String get settingsImagePreviewQuality => '查看大图质量';
+
+  @override
+  String get settingsImageQualityDescription => '选择合适的图片清晰度，上限 100%';
+
+  @override
+  String get settingsDarkImageOverlay => '深色下图片颜色叠加';
+
+  @override
+  String get settingsDarkImageOverlayDescription => '显示颜色＝图片原色 × 所选颜色；大图查看不受影响';
+
+  @override
+  String get settingsToastOpacity => '气泡提示不透明度';
+
+  @override
+  String get settingsToastOpacityDescription => '自定义气泡提示（Toast）不透明度';
+
+  @override
+  String get settingsThemeMode => '主题模式';
+
+  @override
+  String settingsCurrentMode(String value) {
+    return '当前模式：$value';
+  }
+
+  @override
+  String get settingsPureBlackTheme => '纯黑主题';
+
+  @override
+  String get settingsAppTheme => '应用主题';
+
+  @override
+  String settingsCurrentTheme(String value) {
+    return '当前主题：$value';
+  }
+
+  @override
+  String get settingsDynamicColor => '动态取色';
+
+  @override
+  String get settingsExPiliPlusCustomColor => 'ExPiliPlus 自定义颜色';
+
+  @override
+  String get settingsSpecifiedColor => '指定颜色';
+
+  @override
+  String get settingsDefaultStartPage => '默认启动页';
+
+  @override
+  String settingsCurrentStartPage(String value) {
+    return '当前启动页：$value';
+  }
+
+  @override
+  String get settingsSpringParameters => '滑动动画弹簧参数';
+
+  @override
+  String get settingsFontSize => '字体大小';
+
+  @override
+  String get settingsHomeTabs => '首页标签页';
+
+  @override
+  String get settingsHomeTabsDescription => '删除或调换首页标签页';
+
+  @override
+  String get settingsNavigationBarEditor => 'Navbar 编辑';
+
+  @override
+  String get settingsNavigationBarEditorDescription => '删除或调换 Navbar';
+
+  @override
+  String get settingsExitDirectlyOnBack => '返回时直接退出';
+
+  @override
+  String get settingsExitDirectlyOnBackDescription =>
+      '开启后，在主页任意标签页按返回键都会直接退出；关闭后先回到 Navbar 的第一个标签页';
+
+  @override
+  String get settingsScreenRefreshRate => '屏幕帧率';
+
+  @override
+  String get settingsSucceeded => '设置成功';
+
+  @override
+  String get settingsRestartRequired => '重启生效';
+
+  @override
+  String get settingsSucceededRestartRequired => '设置成功，重启生效';
+
+  @override
+  String get settingsReset => '重置';
+
+  @override
+  String get settingsResetSucceededRestartRequired => '重置成功，重启生效';
+
+  @override
+  String get settingsScaleRatio => '缩放比例';
+
+  @override
+  String get settingsSpringParametersTitle => '弹簧参数';
+
+  @override
+  String get settingsSpringDurationMode => '滑动时间';
+
+  @override
+  String get settingsSpringPhysicalMode => '物理参数';
+
+  @override
+  String get settingsListMaxColumnWidth => '列表最大列宽度（默认 240 dp）';
+
+  @override
+  String get settingsHomeRecommendationFeed => '主页推荐流';
+
+  @override
+  String settingsConfirmDarkColor(String color) {
+    return '确认使用 $color？';
+  }
+
+  @override
+  String get settingsDarkColorWarning => '所选颜色过于昏暗，可能会影响图片观看';
+
+  @override
+  String get settingsUseServerSideDecoration =>
+      '使用 SSD（Server-Side Decoration）';
+
+  @override
+  String get settingsUpPositionTop => '顶部';
+
+  @override
+  String get settingsUpPositionLeftFixed => '左侧常驻';
+
+  @override
+  String get settingsUpPositionRightFixed => '右侧常驻';
+
+  @override
+  String get settingsUpPositionLeftDrawer => '左侧抽屉';
+
+  @override
+  String get settingsUpPositionRightDrawer => '右侧抽屉';
+
+  @override
+  String get settingsBadgeHidden => '隐藏';
+
+  @override
+  String get settingsBadgeDot => '红点';
+
+  @override
+  String get settingsBadgeNumber => '数字';
+
+  @override
+  String get settingsUnreadPrivateMessages => '私信';
+
+  @override
+  String get settingsUnreadReplies => '回复我的';
+
+  @override
+  String get settingsUnreadMentions => '@我';
+
+  @override
+  String get settingsUnreadLikes => '收到的赞';
+
+  @override
+  String get settingsUnreadSystem => '系统通知';
+
+  @override
+  String get settingsBarCollapseInstant => '即时';
+
+  @override
+  String get settingsBarCollapseSynchronized => '同步';
+
+  @override
+  String get settingsMinimizeOnExit => '退出时最小化';
+
+  @override
+  String get settingsCachePath => '缓存路径';
+
+  @override
+  String get settingsSponsorBlock => '空降助手';
+
+  @override
+  String get settingsAnimeIntroOutroSkip => '番剧片头／片尾跳过类型';
+
+  @override
+  String get settingsCheckUnreadFeed => '检查未读 Feed';
+
+  @override
+  String get settingsCheckUnreadFeedDescription => '点击设置检查周期（分钟）';
+
+  @override
+  String get settingsVideoChapters => '显示视频分段信息';
+
+  @override
+  String get settingsRelatedVideos => '视频页显示相关视频';
+
+  @override
+  String get settingsVideoComments => '显示视频评论';
+
+  @override
+  String get settingsAnimeComments => '显示番剧评论';
+
+  @override
+  String get settingsExpandVideoDescription => '默认展开视频简介';
+
+  @override
+  String get settingsExpandVideoDescriptionLandscape => '横屏自动展开视频简介';
+
+  @override
+  String get settingsLandscapeEpisodeTabs => '横屏分 P／合集列表显示在 Tab 栏';
+
+  @override
+  String get settingsLandscapeUploaderSidebar => '横屏播放页在侧栏打开 Uploader 主页';
+
+  @override
+  String get settingsLandscapeImagePreview => '横屏在侧栏打开图片预览';
+
+  @override
+  String get settingsCommentFoldLines => '评论折叠行数';
+
+  @override
+  String get settingsZeroLinesDoNotFold => '0 行时不折叠';
+
+  @override
+  String settingsLineCount(String count) {
+    return '$count 行';
+  }
+
+  @override
+  String get settingsDanmakuLineHeight => '弹幕行高';
+
+  @override
+  String settingsDefaultNumber(String value) {
+    return '默认 $value';
+  }
+
+  @override
+  String get settingsVideoWarnings => '显示视频警告／争议信息';
+
+  @override
+  String get settingsFeedWarnings => '显示 Feed 警告／争议信息';
+
+  @override
+  String get settingsReverseEpisodesFromFirst => '分 P／合集：倒序播放从首集开始';
+
+  @override
+  String get settingsReverseEpisodesFromFirstDescription =>
+      '开启后自动切换到倒序首集，否则保持当前集';
+
+  @override
+  String get settingsDisableSslVerification => '禁用 SSL 证书验证';
+
+  @override
+  String get settingsDisableSslVerificationDescription => '请谨慎开启，禁用后容易受到中间人攻击';
+
+  @override
+  String get settingsContinuePartPrompt => '显示继续播放分 P 提示';
+
+  @override
+  String get settingsCommentKeywordFilter => '评论关键词过滤';
+
+  @override
+  String get settingsFeedKeywordFilter => 'Feed 关键词过滤';
+
+  @override
+  String get settingsExternalBrowser => '使用外部浏览器打开链接';
+
+  @override
+  String get settingsHorizontalSwipeThreshold => '横向滑动阈值';
+
+  @override
+  String settingsCurrentAndSystemDefault(String current, String defaultValue) {
+    return '当前：$current；系统默认值：$defaultValue';
+  }
+
+  @override
+  String get settingsRefreshDragDistance => '刷新滑动距离';
+
+  @override
+  String settingsCurrentMultiplier(String value) {
+    return '当前：$value×';
+  }
+
+  @override
+  String get settingsRefreshIndicatorHeight => '刷新指示器高度';
+
+  @override
+  String get settingsVipDanmaku => '显示会员彩色弹幕';
+
+  @override
+  String get settingsMergeDanmaku => '合并弹幕';
+
+  @override
+  String get settingsMergeDanmakuDescription => '合并一段时间内获取到的相同弹幕';
+
+  @override
+  String get settingsTrendingRecommendations => '显示热门推荐';
+
+  @override
+  String get settingsTrendingRecommendationsDescription => '热门页面显示每周必看等推荐内容入口';
+
+  @override
+  String get settingsAudioNormalization => '音量均衡';
+
+  @override
+  String get settingsFallbackNormalization => '服务器无 loudnorm 配置时使用';
+
+  @override
+  String settingsFallbackValue(String value) {
+    return '无参数时：$value';
+  }
+
+  @override
+  String get settingsAudioNormalizationDisabled => '禁用';
+
+  @override
+  String get settingsAudioNormalizationDynaudnorm => '预设 dynaudnorm';
+
+  @override
+  String get settingsAudioNormalizationLoudnorm => '预设 loudnorm';
+
+  @override
+  String get settingsCustomParameters => '自定义参数';
+
+  @override
+  String get settingsAudioNormalizationParameterHelp =>
+      '等同于 --lavfi-complex=\"[aid1] 参数 [ao]\"';
+
+  @override
+  String get settingsSuperResolution => '超分辨率';
+
+  @override
+  String settingsSuperResolutionDescription(String value) {
+    return '当前：$value\n默认设置对番剧生效，其它视频默认关闭\n超分辨率需要启用硬件解码；若仍未生效，请尝试将硬件解码器切换为 auto-copy';
+  }
+
+  @override
+  String get settingsPreinitializePlayer => '提前初始化播放器';
+
+  @override
+  String get settingsPreinitializePlayerDescription => '相对减少手动播放的加载时间';
+
+  @override
+  String get settingsHomePageAnimation => '首页切换页面动画';
+
+  @override
+  String get settingsSearchSuggestions => '搜索建议';
+
+  @override
+  String get settingsSearchHistory => '记录搜索历史';
+
+  @override
+  String get settingsShowDecorations => '展示头像、评论和 Feed 装饰';
+
+  @override
+  String get settingsFanMedals => '显示粉丝勋章';
+
+  @override
+  String get settingsLivePhotoPreview => '预览 Live Photo';
+
+  @override
+  String get settingsLivePhotoPreviewDescription =>
+      '开启后以视频形式预览 Live Photo，否则预览静态图片';
+
+  @override
+  String get settingsSeekPreviewThumbnails => '滑动跳转预览视频缩略图';
+
+  @override
+  String get settingsDanmakuHeatmap => '显示高能进度条';
+
+  @override
+  String get settingsDanmakuHeatmapDescription => '高能进度条反映单位时间内弹幕发送量的变化趋势';
+
+  @override
+  String get settingsSaveComments => '记录评论';
+
+  @override
+  String get settingsCommentAntifraud => '发评反诈';
+
+  @override
+  String get settingsCommentAntifraudDescription => '发送评论后检查评论是否可见';
+
+  @override
+  String get settingsUseBilibiliCommentCheck => '使用“哔哩发评反诈”检查评论';
+
+  @override
+  String get settingsFeedPostAntifraud => '发布／转发 Feed 反诈';
+
+  @override
+  String get settingsFeedPostAntifraudDescription => '发布／转发后检查 Feed 内容是否可见';
+
+  @override
+  String get settingsBlockShoppingPosts => '屏蔽带货 Feed';
+
+  @override
+  String get settingsBlockShoppingComments => '屏蔽带货评论';
+
+  @override
+  String get settingsSwipeToCloseSecondaryPages => '侧滑关闭二级页面';
+
+  @override
+  String get settingsPinchToShrinkVideo => '启用双指缩小视频';
+
+  @override
+  String get settingsSecondaryPageActionBar => 'Feed／专栏详情页展示底部操作栏';
+
+  @override
+  String get settingsDragSubtitles => '启用拖拽字幕调整底部边距';
+
+  @override
+  String get settingsAnimeSchedule => '展示追番时间表';
+
+  @override
+  String get settingsSilentImageDownload => '静默下载图片';
+
+  @override
+  String get settingsSilentImageDownloadDescription => '不显示下载 Loading 弹窗';
+
+  @override
+  String get settingsImageContextMenu => '长按／右键显示图片菜单';
+
+  @override
+  String get settingsHapticFeedback => '振动反馈';
+
+  @override
+  String get settingsHapticFeedbackDescription => '请确认手机系统设置中已开启振动反馈';
+
+  @override
+  String get settingsTrendingSearches => '大家都在搜';
+
+  @override
+  String get settingsTrendingSearchesDescription => '展示“大家都在搜”';
+
+  @override
+  String get settingsSearchDiscovery => '搜索发现';
+
+  @override
+  String get settingsSearchDiscoveryDescription => '展示“搜索发现”';
+
+  @override
+  String get settingsDefaultSearchTerm => '搜索默认词';
+
+  @override
+  String get settingsDefaultSearchTermDescription => '在搜索框中展示默认词';
+
+  @override
+  String get settingsQuickFavorite => '快速收藏';
+
+  @override
+  String get settingsQuickFavoriteDescription =>
+      '点击设置默认收藏夹\n点按收藏至默认收藏夹，长按选择文件夹';
+
+  @override
+  String get settingsCommentSearchKeywords => '评论区搜索关键词';
+
+  @override
+  String get settingsCommentSearchKeywordsDescription => '展示评论区搜索关键词';
+
+  @override
+  String get settingsAiSummary => '启用 AI 总结';
+
+  @override
+  String get settingsAiSummaryDescription => '在视频详情页开启 AI 总结';
+
+  @override
+  String get settingsDisableReceivedLikes => '消息页禁用“收到的赞”';
+
+  @override
+  String get settingsDisableReceivedLikesDescription => '禁止打开入口，降低网络社交依赖';
+
+  @override
+  String get settingsShowCommentsByDefault => '默认展示评论区';
+
+  @override
+  String get settingsShowCommentsByDefaultDescription =>
+      '视频详情页默认切换至评论区（仅 Tab 型布局）';
+
+  @override
+  String get settingsHttp2 => '启用 HTTP/2';
+
+  @override
+  String get settingsRetryCount => '连接重试次数';
+
+  @override
+  String get settingsZeroDisables => '设为 0 时禁用';
+
+  @override
+  String get settingsRetryDelay => '连接重试间隔';
+
+  @override
+  String get settingsRetryDelayDescription => '实际间隔＝间隔 × 第 n 次重试';
+
+  @override
+  String get settingsCommentDisplay => '评论展示';
+
+  @override
+  String settingsCurrentlyPrioritize(String value) {
+    return '当前优先展示“$value”';
+  }
+
+  @override
+  String get settingsFeedDisplay => 'Feed 展示';
+
+  @override
+  String get settingsFeedInteractions => '显示 Feed 互动内容';
+
+  @override
+  String get settingsFeedInteractionsDescription =>
+      '在 Feed 卡片底部显示互动内容，例如关注的人点赞、热评等';
+
+  @override
+  String get settingsMemberDefaultTab => '用户页默认展示 Tab';
+
+  @override
+  String get settingsUploaderShopTab => '显示 Uploader 主页小店 Tab';
+
+  @override
+  String get settingsProxy => '设置代理';
+
+  @override
+  String get settingsProxyDescription => '设置代理 host:port';
+
+  @override
+  String get settingsProxyHostHint => '请输入 Host，使用 . 分隔';
+
+  @override
+  String get settingsProxyPortHint => '请输入 Port';
+
+  @override
+  String get settingsMaximumCacheSize => '最大缓存大小';
+
+  @override
+  String settingsCurrentMaximumCacheSize(String value) {
+    return '当前最大缓存大小：$value';
+  }
+
+  @override
+  String get settingsCheckForUpdates => '检查更新';
+
+  @override
+  String get settingsCheckForUpdatesDescription => '每次启动时检查是否需要更新';
+
+  @override
+  String get settingsSetNewPath => '设置新路径';
+
+  @override
+  String get settingsCheckInterval => '检查周期';
+
+  @override
+  String get settingsChooseDefaultFavorite => '选择默认收藏夹';
+
+  @override
+  String get replySortNewest => '最新评论';
+
+  @override
+  String get replySortHottest => '最热评论';
+
+  @override
+  String get replySortFeatured => '精选评论';
+
+  @override
+  String get memberTabDefault => '默认';
+
+  @override
+  String get memberTabHome => '主页';
+
+  @override
+  String get memberTabFeed => 'Feed';
+
+  @override
+  String get memberTabUploads => '投稿';
+
+  @override
+  String get memberTabFavorites => '收藏';
+
+  @override
+  String get memberTabAnime => '番剧';
+
+  @override
+  String get memberTabCourses => '课堂';
+
+  @override
+  String get memberTabShop => '小店';
+
+  @override
+  String get logsTitle => '日志';
+
+  @override
+  String get logsCopied => '复制成功';
+
+  @override
+  String get logsCleared => '已清空';
+
+  @override
+  String get logsTriggerError => '引发错误';
+
+  @override
+  String get logsEnabledRestartRequired => '已开启，重启生效';
+
+  @override
+  String get logsDisabledRestartRequired => '已关闭，重启生效';
+
+  @override
+  String get logsEnable => '开启日志';
+
+  @override
+  String get logsDisable => '关闭日志';
+
+  @override
+  String get logsCopy => '复制日志';
+
+  @override
+  String get logsErrorFeedback => '错误反馈';
+
+  @override
+  String get logsClear => '清空日志';
+
+  @override
+  String get logsRelatedInformation => '相关信息';
+
+  @override
+  String get logsCollapse => '收起';
+
+  @override
+  String get logsExpand => '展开';
+
+  @override
+  String get logsDeviceInformation => '设备信息';
+
+  @override
+  String get logsAppInformation => '应用信息';
+
+  @override
+  String get logsBuildInformation => '编译信息';
+
+  @override
+  String logsCopiedTimestamp(String time) {
+    return '已将 $time 复制至剪贴板';
+  }
+
+  @override
+  String get logsErrorDetails => '错误详情';
+
+  @override
+  String get logsStackTrace => '堆栈跟踪';
+
+  @override
+  String get settingsPlaybackSpeedSetDefault => '设置为默认倍速';
+
+  @override
+  String get settingsPlaybackSpeedSetLongPress => '设置为默认长按倍速';
+
+  @override
+  String get settingsPlaybackSpeedDelete => '删除该项';
+
+  @override
+  String get settingsPlaybackSpeedAdd => '添加倍速';
+
+  @override
+  String get settingsPlaybackSpeedCustom => '自定义倍速';
+
+  @override
+  String get settingsPlaybackSpeedExists => '该倍速已存在';
+
+  @override
+  String get settingsPlaybackSpeedDefaultCannotDelete => '不支持删除默认倍速';
+
+  @override
+  String get settingsPlaybackSpeedHint => '点击下方按钮设置默认倍速和长按倍速';
+
+  @override
+  String get settingsPlaybackSpeedDefault => '默认倍速';
+
+  @override
+  String get settingsPlaybackSpeedDynamicLongPress => '动态长按倍速';
+
+  @override
+  String get settingsPlaybackSpeedDynamicLongPressDescription =>
+      '根据默认倍速，长按时自动使用双倍速度';
+
+  @override
+  String get settingsPlaybackSpeedDefaultLongPress => '默认长按倍速';
+
+  @override
+  String get settingsPlaybackSpeedList => '倍速列表';
+
+  @override
+  String get settingsAdd => '添加';
+
+  @override
+  String get settingsSavedNextLaunch => '保存成功，下次启动时生效';
+
+  @override
+  String get settingsResetNextLaunch => '重置成功，下次启动时生效';
+
+  @override
+  String settingsEditTitle(String title) {
+    return '$title编辑';
+  }
+
+  @override
+  String get settingsSave => '保存';
+
+  @override
+  String get settingsLongPressToReorder => '长按拖动排序';
+
+  @override
+  String settingsCurrentFontSize(String value) {
+    return '当前字体大小：$value';
+  }
+
+  @override
+  String get settingsSmall => '小';
+
+  @override
+  String get settingsLarge => '大';
+
+  @override
+  String get settingsScreenRefreshRateTitle => '屏幕帧率设置';
+
+  @override
+  String get settingsRestartIfDisplayModeFails => '没有生效？请尝试重启 App';
+
+  @override
+  String get settingsAutomatic => '自动';
+
+  @override
+  String get settingsSystemModeMarker => '系统';
+
+  @override
+  String get settingsChooseAppTheme => '选择应用主题';
+
+  @override
+  String get settingsPaletteStyle => '调色板风格';
+
+  @override
+  String get settingsDynamicColorUnsupported => '设备可能不支持动态取色';
+
+  @override
+  String settingsUseFont(String font) {
+    return '使用 $font';
+  }
+
+  @override
+  String get settingsViewLicense => '查看许可协议';
+
+  @override
+  String get settingsAgreeAndDownload => '同意并下载';
+
+  @override
+  String settingsFontDownloaded(String font) {
+    return '$font 下载完成';
+  }
+
+  @override
+  String settingsFontDownloading(int progress) {
+    return '正在下载 $progress%';
+  }
+
+  @override
+  String get settingsFontConnecting => '正在连接下载源';
+
+  @override
+  String settingsDownloadedWithSize(String size) {
+    return '已下载 · $size';
+  }
+
+  @override
+  String get settingsDownloaded => '已下载';
+
+  @override
+  String get settingsDownloadFont => '下载字体';
+
+  @override
+  String get settingsAppFontTitle => 'App 字体';
+
+  @override
+  String get settingsFontLxgwWenKai => '霞鹜文楷';
+
+  @override
+  String get settingsFontLxgwZhenKai => '霞鹜臻楷';
+
+  @override
+  String get settingsFontLxgwNeoXiHei => '霞鹜新晰黑';
+
+  @override
+  String get settingsFontLxgwZhuqueFangsong => '霞鹜朱雀仿宋';
+
+  @override
+  String get settingsFontSourceHanSans => '思源黑体';
+
+  @override
+  String get settingsFontSourceHanSerif => '思源宋体';
+
+  @override
+  String get settingsFontFusionPixel => '缝合像素字体';
+
+  @override
+  String settingsFontLicenseNotice(String font) {
+    return '本软件将使用 $font。下载和使用即表示你同意其官方许可协议。';
+  }
+
+  @override
+  String get settingsFullscreenSuperChatSizeTitle => '全屏 SC 大小设置';
+
+  @override
+  String get themeColorDefaultGreen => '默认绿';
+
+  @override
+  String get themeColorPink => '粉红色';
+
+  @override
+  String get themeColorRed => '红色';
+
+  @override
+  String get themeColorOrange => '橙色';
+
+  @override
+  String get themeColorAmber => '琥珀色';
+
+  @override
+  String get themeColorYellow => '黄色';
+
+  @override
+  String get themeColorLime => '酸橙色';
+
+  @override
+  String get themeColorLightGreen => '浅绿色';
+
+  @override
+  String get themeColorGreen => '绿色';
+
+  @override
+  String get themeColorTeal => '青色';
+
+  @override
+  String get themeColorCyan => '蓝绿色';
+
+  @override
+  String get themeColorLightBlue => '浅蓝色';
+
+  @override
+  String get themeColorBlue => '蓝色';
+
+  @override
+  String get themeColorIndigo => '靛蓝色';
+
+  @override
+  String get themeColorPurple => '紫色';
+
+  @override
+  String get themeColorDeepPurple => '深紫色';
+
+  @override
+  String get themeColorBlueGrey => '蓝灰色';
+
+  @override
+  String get themeColorBrown => '棕色';
+
+  @override
+  String get themeColorGrey => '灰色';
+
+  @override
+  String get commonCopy => '复制';
+
+  @override
+  String get homeFollowingAnime => '已追番';
+
+  @override
+  String get homeRankings => '排行榜';
+
+  @override
+  String get homeWeeklyMustWatch => '每周必看';
+
+  @override
+  String get homeEssentialVideos => '入站必刷';
+
+  @override
+  String get homeLastSeenRefresh => '上次看到这里\n点击刷新';
+
+  @override
+  String get homeSwitchToCover => '切换封面';
+
+  @override
+  String get homeSwitchToFirstFrame => '切换首帧';
+
+  @override
+  String get homeGameEvents => '游戏赛事';
+
+  @override
+  String get homeAllLiveCategories => '全部标签';
+
+  @override
+  String get homeMyLiveFollowing => '我的关注';
+
+  @override
+  String homeLiveFollowingCount(String count) {
+    return '$count 人正在直播';
+  }
+
+  @override
+  String get aboutAppDescription => '使用 Flutter 开发的 B 站第三方客户端';
+
+  @override
+  String get aboutAppSemantics => '与你一起，发现不一样的世界';
+
+  @override
+  String get aboutAccessibilityAdapted => '无障碍适配';
+
+  @override
+  String get aboutCurrentVersion => '当前版本';
+
+  @override
+  String get aboutOpenSupportedLinks => '打开受支持的链接';
+
+  @override
+  String get aboutIssueFeedback => '问题反馈';
+
+  @override
+  String get aboutErrorLogs => '错误日志';
+
+  @override
+  String get aboutClearLogsHint => '长按清除日志';
+
+  @override
+  String get aboutClearCacheConfirm => '该操作将清除图片及网络请求缓存数据，确认清除？';
+
+  @override
+  String get aboutClearing => '正在清除…';
+
+  @override
+  String get aboutClearSucceeded => '清除成功';
+
+  @override
+  String get aboutClearCache => '清除缓存';
+
+  @override
+  String aboutImageNetworkCache(Object size) {
+    return '图片及网络缓存 $size';
+  }
+
+  @override
+  String get aboutImportExportLogin => '导入/导出登录信息';
+
+  @override
+  String get aboutLoginData => '登录信息';
+
+  @override
+  String get aboutImportExportSettings => '导入/导出设置';
+
+  @override
+  String get aboutSettingsData => '设置';
+
+  @override
+  String get aboutResetAllSettings => '重置所有设置';
+
+  @override
+  String get aboutResetAllSettingsQuestion => '是否重置所有设置？';
+
+  @override
+  String get aboutResetSucceeded => '重置成功';
+
+  @override
+  String get aboutResetExportableSettings => '重置可导出的设置';
+
+  @override
+  String get aboutResetAllData => '重置所有数据（含登录信息）';
+
+  @override
+  String importExportTitle(Object title) {
+    return '导入/导出$title';
+  }
+
+  @override
+  String importConfirmPreview(Object title) {
+    return '是否导入如下$title？';
+  }
+
+  @override
+  String importInputTitle(Object title) {
+    return '输入$title';
+  }
+
+  @override
+  String importJsonParseFailed(Object error) {
+    return '解析 JSON 失败：$error';
+  }
+
+  @override
+  String get importSucceeded => '导入成功';
+
+  @override
+  String importFailed(Object error) {
+    return '导入失败：$error';
+  }
+
+  @override
+  String get importClipboardEmpty => '剪贴板无数据';
+
+  @override
+  String get exportToClipboard => '导出至剪贴板';
+
+  @override
+  String get exportToLocalFile => '导出文件至本地';
+
+  @override
+  String get importEnterManually => '输入';
+
+  @override
+  String get importFromClipboard => '从剪贴板导入';
+
+  @override
+  String get importFromLocalFile => '从本地文件导入';
+
+  @override
+  String get memberHomeVideos => '视频';
+
+  @override
+  String get memberHomeFavorites => '收藏';
+
+  @override
+  String get memberHomeRecentCoinedVideos => '最近投币的视频';
+
+  @override
+  String get memberHomeRecentLikedVideos => '最近点赞的视频';
+
+  @override
+  String get memberHomePosts => '图文';
+
+  @override
+  String get memberHomeAudio => '音频';
+
+  @override
+  String get memberHomeComics => '漫画';
+
+  @override
+  String get memberHomeAnime => '追番';
+
+  @override
+  String blacklistTitle(Object count) {
+    return '黑名单管理$count';
+  }
+
+  @override
+  String blacklistCountSuffix(Object count) {
+    return ': $count';
+  }
+
+  @override
+  String blacklistAddedAt(Object date) {
+    return '添加时间：$date';
+  }
+
+  @override
+  String blacklistRemoveConfirm(Object name) {
+    return '确定将 $name 移出黑名单？';
+  }
+
+  @override
+  String get blacklistRemoved => '移除成功';
+
+  @override
+  String get webDavSettingsTitle => 'WebDAV 设置';
+
+  @override
+  String get webDavBackupSettings => '备份设置';
+
+  @override
+  String get webDavRestoreSettings => '恢复设置';
+
+  @override
+  String get webDavConfigurationSucceeded => '配置成功';
+
+  @override
+  String webDavConfigurationFailed(Object error) {
+    return '配置失败：$error';
+  }
+
+  @override
+  String webDavBackupConfigurationFailed(Object error) {
+    return '备份失败，请检查配置：$error';
+  }
+
+  @override
+  String get webDavBackupSucceeded => '备份成功';
+
+  @override
+  String webDavBackupFailed(Object error) {
+    return '备份失败：$error';
+  }
+
+  @override
+  String get webDavRestoreSucceeded => '恢复成功';
+
+  @override
+  String webDavRestoreFailed(Object error) {
+    return '恢复失败：$error';
+  }
+
+  @override
+  String webDavCheckConfiguration(Object error) {
+    return '请检查配置：$error';
+  }
+
+  @override
+  String get webDavBackupNotFound => '未找到备份文件';
+
+  @override
+  String get sponsorBlockTitle => '空降助手';
+
+  @override
+  String get sponsorBlockMinimumDuration => '最短片段时长';
+
+  @override
+  String get sponsorBlockMinimumDurationDescription => '忽略短于此时长的片段';
+
+  @override
+  String get sponsorBlockAbout => '关于空降助手';
+
+  @override
+  String get sponsorBlockUserId => '用户 ID';
+
+  @override
+  String get sponsorBlockUserIdValidation => '用户 ID 要求至少为 30 个字符长度的纯字母数字字符串';
+
+  @override
+  String get sponsorBlockRandom => '随机';
+
+  @override
+  String get sponsorBlockShowSkipToast => '显示跳过提示';
+
+  @override
+  String get sponsorBlockTrackSkips => '跳过次数统计跟踪';
+
+  @override
+  String get sponsorBlockTrackSkipsDescription =>
+      '此功能会报告您跳过的片段，让提交者知道帮助了多少人；点赞结果也会用于避免垃圾信息污染数据库。每次跳过片段时都会向服务器发送消息，开启后可让统计更准确。';
+
+  @override
+  String get sponsorBlockYourInformation => '您的信息';
+
+  @override
+  String sponsorBlockUserInformation(
+    Object minutes,
+    Object segments,
+    Object views,
+  ) {
+    return '您提交了 $segments 个片段\n您的片段已帮助观众 $views 次\n（节省 $minutes 分钟）';
+  }
+
+  @override
+  String get sponsorBlockServerError => '服务器错误';
+
+  @override
+  String get sponsorBlockServerAddress => '服务器地址';
+
+  @override
+  String get sponsorBlockServerStatus => '服务器状态';
+
+  @override
+  String get sponsorBlockServerNormal => '正常';
+
+  @override
+  String get sponsorBlockServerUnavailable => '错误';
+
+  @override
+  String sponsorBlockColorPickerTitle(Object category) {
+    return '$category的颜色';
+  }
+
+  @override
+  String get sponsorBlockDescriptionSponsor => '付费推广、赞助和直接广告，不包含无偿提及。';
+
+  @override
+  String get sponsorBlockDescriptionSelfPromotion => '无偿或自我推广，包括商品、捐赠或合作者信息。';
+
+  @override
+  String get sponsorBlockDescriptionExclusiveAccess =>
+      '标记整个展示免费或优惠获得的产品、服务或场地的视频。';
+
+  @override
+  String get sponsorBlockDescriptionInteraction =>
+      '简短提醒观众点赞、关注或互动；较长且有实质内容的片段应归为自我推广。';
+
+  @override
+  String get sponsorBlockDescriptionHighlight => '大多数观众正在寻找的精彩时刻，例如封面所示的时间点。';
+
+  @override
+  String get sponsorBlockDescriptionIntro => '没有实际内容的过场或片头，例如暂停、静止画面或重复动画。';
+
+  @override
+  String get sponsorBlockDescriptionOutro => '没有额外内容的片尾或鸣谢画面。';
+
+  @override
+  String get sponsorBlockDescriptionPreview => '本片或同系列稍后会再次出现内容的回顾或预览。';
+
+  @override
+  String get sponsorBlockDescriptionPadding => '搬运内容前后无实质意义、与主体无关的空白或填充画面。';
+
+  @override
+  String get sponsorBlockDescriptionFiller => '理解主要内容不需要的离题闲聊或玩笑；这是一个较激进的分类。';
+
+  @override
+  String get sponsorBlockDescriptionMusicOfftopic => '仅限音乐视频：不属于其他分类的非音乐片段。';
+
+  @override
+  String get videoCooperation => '合作';
+
+  @override
+  String get commonSort => '排序';
+
+  @override
+  String get commonMultiSelect => '多选';
+
+  @override
+  String get commonUpdate => '更新';
+
+  @override
+  String get commonUpdateSucceeded => '更新成功';
+
+  @override
+  String get commonUpdateFailed => '更新失败';
+
+  @override
+  String get commonMove => '移动';
+
+  @override
+  String get commonPlayAll => '播放全部';
+
+  @override
+  String get favoriteTitle => '我的收藏';
+
+  @override
+  String get favoriteNewFolder => '新建收藏夹';
+
+  @override
+  String get favoriteFolderSort => '收藏夹排序';
+
+  @override
+  String get favoriteLoadAllBeforeSorting => '加载全部收藏夹再排序';
+
+  @override
+  String get favoriteTabVideos => '视频';
+
+  @override
+  String get favoriteTabAnime => '追番';
+
+  @override
+  String get favoriteTabSeries => '追剧';
+
+  @override
+  String get favoriteTabArticles => '专栏';
+
+  @override
+  String get favoriteTabNotes => '笔记';
+
+  @override
+  String get favoriteTabTopics => '话题';
+
+  @override
+  String get favoriteTabCourses => '课堂';
+
+  @override
+  String get laterAll => '全部';
+
+  @override
+  String get laterUnfinished => '未看完';
+
+  @override
+  String get laterRecentlyAdded => '最近添加';
+
+  @override
+  String get laterEarliestAdded => '最早添加';
+
+  @override
+  String get laterClearInvalid => '清空失效';
+
+  @override
+  String get laterClearWatched => '清空看完';
+
+  @override
+  String get laterClearAll => '清空全部';
+
+  @override
+  String get historyAll => '全部';
+
+  @override
+  String get historyTitle => '观看记录';
+
+  @override
+  String get historyPause => '暂停观看记录';
+
+  @override
+  String get historyResume => '恢复观看记录';
+
+  @override
+  String get historyClear => '清空观看记录';
+
+  @override
+  String get historyDeleteWatched => '删除已看记录';
+
+  @override
+  String get historyDisabled => ' 历史记录功能已关闭';
+
+  @override
+  String get historyTapToEnable => '点击开启';
+
+  @override
+  String get downloadOfflineTitle => '离线缓存';
+
+  @override
+  String downloadDownloadingCount(Object count) {
+    return '正在缓存（$count）';
+  }
+
+  @override
+  String get downloadDownloadedVideos => '已缓存视频';
+
+  @override
+  String downloadVideoCount(Object count) {
+    return '$count 个视频';
+  }
+
+  @override
+  String get downloadCourse => '课程';
+
+  @override
+  String get downloadAnime => '番剧';
+
+  @override
+  String get downloadMovie => '电影';
+
+  @override
+  String get downloadDocumentary => '纪录片';
+
+  @override
+  String get downloadChineseAnimation => '国创';
+
+  @override
+  String get downloadTvSeries => '电视剧';
+
+  @override
+  String get downloadVarietyShow => '综艺';
+
+  @override
+  String get downloadConfirmDelete => '确定删除？';
+
+  @override
+  String get downloadUpdateDanmaku => '更新弹幕';
+
+  @override
+  String get messagesTitle => '消息';
+
+  @override
+  String get messagesNewFollowers => '新增粉丝';
+
+  @override
+  String get messagesRepliesToMe => '回复我的';
+
+  @override
+  String get messagesMentions => '@我';
+
+  @override
+  String get messagesReceivedLikes => '收到的赞';
+
+  @override
+  String get messagesSystemNotifications => '系统通知';
+
+  @override
+  String get messagesMarkedAsRead => '已标为已读';
+
+  @override
+  String get messagesMarkAsRead => '标为已读';
+
+  @override
+  String get messagesEnableDoNotDisturb => '开启免打扰';
+
+  @override
+  String get messagesDisableDoNotDisturb => '关闭免打扰';
+
+  @override
+  String get messagesDeleteConversationConfirm => '确定删除该对话？';
+
+  @override
+  String get contactsTitle => '通讯录';
+
+  @override
+  String get loginDevicesTitle => '登录设备';
+
+  @override
+  String get loginDevicesCurrentDevice => '（本机）';
+
+  @override
+  String get memberMyFeed => '我的动态';
+
+  @override
+  String get memberSpaceSettings => '空间设置';
+
+  @override
+  String get messagesLikeDetails => '点赞详情';
+
+  @override
+  String get messagesMentionsMe => '@我的';
+
+  @override
+  String get messagesDeleteNotificationConfirm => '确定删除该通知？';
+
+  @override
+  String messagesMentionedIn(Object business) {
+    return ' 在$business中@了我';
+  }
+
+  @override
+  String get messagesAndOthers => ' 等人';
+
+  @override
+  String messagesCommentsOnMyItem(Object business, Object count) {
+    return ' 对我的$business发布了$count条评论';
+  }
+
+  @override
+  String get messagesLatest => '最新';
+
+  @override
+  String get messagesTotal => '累计';
+
+  @override
+  String get messagesDeleteLikeNoticeConfirm => '该条通知删除后，当有新点赞时会重新出现在列表，是否继续？';
+
+  @override
+  String get messagesStopNotifications => '不再通知';
+
+  @override
+  String get messagesStopNotificationsConfirm => '这条内容的点赞将不再通知，但仍可在列表内查看，是否继续？';
+
+  @override
+  String get messagesReceiveNotifications => '接收通知';
+
+  @override
+  String messagesAndPeople(Object count) {
+    return ' 等$count人';
+  }
+
+  @override
+  String messagesLikedMyItem(Object business) {
+    return ' 赞了我的$business';
+  }
+
+  @override
+  String get messagesViewFeed => '查看动态';
+
+  @override
+  String get messagesWebLink => '网页链接';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4406,4 +6869,2468 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String videoConfirmBlockUploader(String name, String id) {
     return '確定封鎖 $name（$id）？\n\n可在隱私設定的封鎖名單管理中解除封鎖此 Uploader。';
   }
+
+  @override
+  String get timeJustNow => '剛剛';
+
+  @override
+  String timeMinutesAgo(int count) {
+    return '$count 分鐘前';
+  }
+
+  @override
+  String timeHoursAgo(int count) {
+    return '$count 小時前';
+  }
+
+  @override
+  String timeYesterdayAt(String time) {
+    return '昨天 $time';
+  }
+
+  @override
+  String timeDaysAgo(int count) {
+    return '$count 天前';
+  }
+
+  @override
+  String timeTodayAt(String time) {
+    return '今天 $time';
+  }
+
+  @override
+  String get weekdayMondayShort => '一';
+
+  @override
+  String get weekdayTuesdayShort => '二';
+
+  @override
+  String get weekdayWednesdayShort => '三';
+
+  @override
+  String get weekdayThursdayShort => '四';
+
+  @override
+  String get weekdayFridayShort => '五';
+
+  @override
+  String get weekdaySaturdayShort => '六';
+
+  @override
+  String get weekdaySundayShort => '日';
+
+  @override
+  String get homePgcSchedule => '追番時間表';
+
+  @override
+  String get homeToday => '今天';
+
+  @override
+  String homeWeekday(String weekday) {
+    return '週$weekday';
+  }
+
+  @override
+  String get homeRecommendations => '推薦';
+
+  @override
+  String get homeMediaIndex => '索引';
+
+  @override
+  String get homeAllMedia => '全部';
+
+  @override
+  String get homeMovies => '電影';
+
+  @override
+  String get homeTvShows => '電視劇';
+
+  @override
+  String get homeDocumentaries => '紀錄片';
+
+  @override
+  String get homeVarietyShows => '綜藝';
+
+  @override
+  String homeRecentAnime(String count) {
+    return '最近追番$count';
+  }
+
+  @override
+  String homeRecentSeries(String count) {
+    return '最近追劇$count';
+  }
+
+  @override
+  String get homeNoAnime => '還沒有追番';
+
+  @override
+  String get homeNoSeries => '還沒有追劇';
+
+  @override
+  String get feedAll => '全部';
+
+  @override
+  String get feedUploads => '投稿';
+
+  @override
+  String get feedAnime => '番劇';
+
+  @override
+  String get feedArticles => '專欄';
+
+  @override
+  String get feedUploader => 'UP';
+
+  @override
+  String get feedCreatePost => '發佈動態';
+
+  @override
+  String get feedAllUpdates => '全部動態';
+
+  @override
+  String get feedMe => '我';
+
+  @override
+  String get feedLiveEnded => '直播結束';
+
+  @override
+  String feedVoteWithTitle(String title) {
+    return '投票：$title';
+  }
+
+  @override
+  String feedPlayCount(String count) {
+    return '$count播放';
+  }
+
+  @override
+  String feedDanmakuCount(String count) {
+    return '$count彈幕';
+  }
+
+  @override
+  String get feedExpired => '已失效';
+
+  @override
+  String feedUnsupportedType(String id, String type) {
+    return '暫未支援的類型：\n$id\n$type';
+  }
+
+  @override
+  String get followMyFollowing => '我的關注';
+
+  @override
+  String followUserFollowing(String name) {
+    return '$name的關注';
+  }
+
+  @override
+  String get followNewGroup => '新增分組';
+
+  @override
+  String get followSortGroups => '分組排序';
+
+  @override
+  String get followBlockedUsers => '封鎖名單管理';
+
+  @override
+  String get followShared => '我們的共同關注';
+
+  @override
+  String get followAll => '全部關注';
+
+  @override
+  String get followMostRecent => '最近關注';
+
+  @override
+  String get followMostVisited => '最常造訪';
+
+  @override
+  String get followEditGroupName => '編輯分組名稱';
+
+  @override
+  String get followRenameGroup => '修改名稱';
+
+  @override
+  String get followDeleteGroup => '刪除分組';
+
+  @override
+  String get followDeleteGroupDescription => '刪除後，該分組下的使用者依舊保留。';
+
+  @override
+  String get followUpdateSucceeded => '修改成功';
+
+  @override
+  String get followDeleteSucceeded => '刪除成功';
+
+  @override
+  String get feedSupporterOnly => '充電專屬';
+
+  @override
+  String get feedPollOptions => '投票選項';
+
+  @override
+  String get feedPollEnded => '已結束';
+
+  @override
+  String get feedPollCompleted => '已完成';
+
+  @override
+  String get feedPoll => '投票';
+
+  @override
+  String get feedFollowedPeopleVotes => '關注的人的投票';
+
+  @override
+  String get feedVotedFor => '投給了';
+
+  @override
+  String feedPollEndsAt(String time) {
+    return '至 $time';
+  }
+
+  @override
+  String feedParticipantCount(String count) {
+    return '$count人參與';
+  }
+
+  @override
+  String get feedShowPercentage => '顯示比例';
+
+  @override
+  String get feedAnonymous => '匿名';
+
+  @override
+  String get feedMoreActions => '更多';
+
+  @override
+  String get feedWatchLater => '稍後再看';
+
+  @override
+  String get feedSavePost => '儲存動態';
+
+  @override
+  String get feedSharePost => '分享動態';
+
+  @override
+  String get feedShareToMessages => '分享至訊息';
+
+  @override
+  String feedTemporarilyBlock(String name) {
+    return '暫時封鎖：$name';
+  }
+
+  @override
+  String feedTemporarilyBlocked(String name, String id) {
+    return '已暫時封鎖 $name（$id），重新啟動後恢復';
+  }
+
+  @override
+  String get feedCheckPost => '檢查動態';
+
+  @override
+  String get feedPinPost => '置頂';
+
+  @override
+  String get feedUnpinPost => '取消置頂';
+
+  @override
+  String get feedEnableFeaturedComments => '開啟評論精選';
+
+  @override
+  String get feedDisableFeaturedComments => '停止評論精選';
+
+  @override
+  String get feedDisableComments => '關閉評論';
+
+  @override
+  String get feedRestoreComments => '恢復評論';
+
+  @override
+  String get feedInteractionSettings => '互動設定';
+
+  @override
+  String get feedVisibleToEveryone => '所有使用者可見';
+
+  @override
+  String get feedVisibleOnlyToMe => '僅自己可見';
+
+  @override
+  String get feedVisibility => '可見範圍';
+
+  @override
+  String get feedEditPost => '編輯動態';
+
+  @override
+  String get feedConfirmDeletePost => '確定刪除該動態？';
+
+  @override
+  String get feedExpand => '展開';
+
+  @override
+  String get feedPriceFrom => '起';
+
+  @override
+  String get feedJoin => '參與';
+
+  @override
+  String get feedComment => '評論';
+
+  @override
+  String get feedWebLink => '網頁連結';
+
+  @override
+  String get followGroupSortTitle => '關注分組排序';
+
+  @override
+  String get followSortCompleted => '排序完成';
+
+  @override
+  String followAlsoFollowed(int count, String name) {
+    return '我關注的 $count 人也關注了 $name';
+  }
+
+  @override
+  String get followUnknownPerson => 'TA';
+
+  @override
+  String get followActionFollow => '關注';
+
+  @override
+  String get followActionFollowing => '已關注';
+
+  @override
+  String followSharedWithUser(String name) {
+    return '我與 $name 的共同關注';
+  }
+
+  @override
+  String get settingsSignInRequired => '登入後查看';
+
+  @override
+  String get settingsBlockedUsersManagement => '封鎖名單管理';
+
+  @override
+  String get settingsBlockedUsersDescription => '已封鎖使用者';
+
+  @override
+  String get settingsAccountModeDetails => '帳號模式詳情';
+
+  @override
+  String get settingsLearnAccountModes => '了解帳號模式';
+
+  @override
+  String get settingsAccountModesApiDescription => '查看各個帳號模式所使用的 API 清單';
+
+  @override
+  String get settingsAccountModeMain => '主帳號';
+
+  @override
+  String get settingsAccountModeWatchHistory => '記錄觀看';
+
+  @override
+  String get settingsAccountModeRecommendation => '推薦';
+
+  @override
+  String get settingsAccountModeVideoStream => '影片串流';
+
+  @override
+  String get settingsUseAppRecommendations => '首頁使用 App 端推薦';
+
+  @override
+  String get settingsUseAppRecommendationsDescription =>
+      '若 Web 端推薦不太符合預期，可嘗試切換至 App 端推薦';
+
+  @override
+  String get settingsKeepPreviousRecommendations => '保留首頁推薦重新整理';
+
+  @override
+  String get settingsKeepPreviousRecommendationsDescription => '下拉重新整理時保留上次內容';
+
+  @override
+  String get settingsShowLastPosition => '顯示上次看到位置提示';
+
+  @override
+  String get settingsShowLastPositionDescription => '保留上次推薦時，在上次重新整理位置顯示提示';
+
+  @override
+  String get settingsLikeRatio => '按讚率';
+
+  @override
+  String get settingsTitleKeywordFilter => '標題關鍵字過濾';
+
+  @override
+  String get settingsCategoryKeywordFilter => 'App 推薦／熱門／排行榜：影片分區關鍵字過濾';
+
+  @override
+  String get settingsVideoDuration => '影片時長';
+
+  @override
+  String get settingsPlayCount => '播放量';
+
+  @override
+  String get settingsExemptFollowedUploaders => '已關注 UP 豁免推薦過濾';
+
+  @override
+  String get settingsExemptFollowedUploadersDescription =>
+      '推薦中已關注使用者發佈的內容不會被過濾';
+
+  @override
+  String get settingsApplyFilterToRelatedVideos => '過濾器也套用於詳情頁相關影片';
+
+  @override
+  String get settingsApplyFilterToRelatedVideosDescription =>
+      '熱門影片、搜尋等其它頁面不受過濾器影響；相關影片中的已關注 UP 無法豁免';
+
+  @override
+  String get settingsTapToAdd => '點擊新增';
+
+  @override
+  String get settingsKeywordSeparatorHelp => '使用 | 隔開，例如：嘗試|測試';
+
+  @override
+  String get settingsSaved => '已儲存';
+
+  @override
+  String settingsFilterTitle(String title) {
+    return '$title過濾';
+  }
+
+  @override
+  String settingsFilterBelow(String title, int value, String suffix) {
+    return '過濾掉$title小於「$value$suffix」的影片';
+  }
+
+  @override
+  String settingsCurrentNamedValue(String title, int value, String suffix) {
+    return '目前$title：「$value$suffix」';
+  }
+
+  @override
+  String settingsChooseFilterValue(String title, String filterHint) {
+    return '選擇$title$filterHint';
+  }
+
+  @override
+  String get settingsZeroDisablesFilter => '（0 即不過濾）';
+
+  @override
+  String get settingsCustomValue => '自訂';
+
+  @override
+  String settingsCustomNamedValue(String title) {
+    return '自訂$title';
+  }
+
+  @override
+  String get settingsChooseAccountsToSignOut => '選擇要登出的帳號 UID';
+
+  @override
+  String settingsConfirmSignOutAccounts(String accounts) {
+    return '確認要退出以下帳號登入嗎？\n\n$accounts';
+  }
+
+  @override
+  String get settingsSignOutCancel => '點錯了';
+
+  @override
+  String get settingsSignOutOnly => '僅登出';
+
+  @override
+  String get settingsDanmakuEnabled => '彈幕開關';
+
+  @override
+  String get settingsDanmakuEnabledDescription => '是否顯示彈幕';
+
+  @override
+  String get settingsTapDanmaku => '啟用點擊彈幕';
+
+  @override
+  String get settingsTapDanmakuDescription => '點擊彈幕暫停，支援按讚、複製、檢舉操作';
+
+  @override
+  String get settingsPlaybackSpeed => '倍速設定';
+
+  @override
+  String get settingsPlaybackSpeedDescription => '設定影片播放速度';
+
+  @override
+  String get settingsTiltAngleThreshold => '傾斜角度閾值';
+
+  @override
+  String get settingsAutoplay => '自動播放';
+
+  @override
+  String get settingsAutoplayDescription => '進入詳情頁自動播放';
+
+  @override
+  String get settingsFullscreenLockButton => '全螢幕顯示鎖定按鈕';
+
+  @override
+  String get settingsFullscreenScreenshotButton => '全螢幕顯示截圖按鈕';
+
+  @override
+  String get settingsFullscreenBattery => '全螢幕顯示電池電量';
+
+  @override
+  String get settingsDoubleTapSeek => '雙擊倒退／快進';
+
+  @override
+  String get settingsDoubleTapSeekDescription => '左側雙擊倒退，右側雙擊快進；關閉後雙擊均為暫停／播放';
+
+  @override
+  String get settingsSlideBrightnessVolume => '左右側滑動調節亮度／音量';
+
+  @override
+  String get settingsSystemBrightness => '調節系統亮度';
+
+  @override
+  String get settingsSlideFullscreen => '中間滑動進入／退出全螢幕';
+
+  @override
+  String get settingsPlayerVolume => '播放器音量';
+
+  @override
+  String get settingsMaximumVolume => '最高音量';
+
+  @override
+  String get settingsDoubleTapSeekDuration => '雙擊快進／倒退時長';
+
+  @override
+  String get settingsRelativeSlideSeek => '滑動快進／倒退使用相對時長';
+
+  @override
+  String get settingsSlideSeekDuration => '滑動快進／倒退時長';
+
+  @override
+  String get settingsSlideSeekDurationDescription => '從播放器一端滑到另一端的快進／倒退時長';
+
+  @override
+  String get settingsAutomaticSubtitles => '自動啟用字幕';
+
+  @override
+  String settingsCurrentPreference(String value) {
+    return '目前選擇偏好：$value';
+  }
+
+  @override
+  String get settingsPauseWhenMinimized => '最小化時暫停／還原時播放';
+
+  @override
+  String get settingsKeyboardControls => '啟用鍵盤控制';
+
+  @override
+  String get settingsSuperChatDisplay => 'SuperChat（醒目留言）顯示類型';
+
+  @override
+  String get settingsFullscreenSuperChatSize => '全螢幕 SC 大小';
+
+  @override
+  String get settingsFullscreenSuperChatSizeDescription =>
+      'SuperChat（醒目留言）大小設定';
+
+  @override
+  String get settingsExpandPortraitVideo => '直向擴大顯示';
+
+  @override
+  String get settingsExpandPortraitVideoDescription =>
+      '小螢幕直向影片寬高比由 16:9 擴大至 1:1；橫向適配時擴大至 9:16';
+
+  @override
+  String get settingsAutoEnterFullscreen => '自動全螢幕';
+
+  @override
+  String get settingsAutoEnterFullscreenDescription => '影片開始播放時進入全螢幕';
+
+  @override
+  String get settingsAutoExitFullscreen => '自動退出全螢幕';
+
+  @override
+  String get settingsAutoExitFullscreenDescription => '影片結束播放時退出全螢幕';
+
+  @override
+  String get settingsExtendPlayerControls => '延長播放控制項顯示時間';
+
+  @override
+  String get settingsExtendPlayerControlsDescription =>
+      '開啟後延長至 30 秒，便於螢幕閱讀器滑動切換控制項焦點';
+
+  @override
+  String get settingsBackgroundPlayback => '背景播放';
+
+  @override
+  String get settingsBackgroundPlaybackDescription => '進入背景時繼續播放';
+
+  @override
+  String get settingsBackgroundPictureInPicture => '背景子母畫面';
+
+  @override
+  String get settingsBackgroundPictureInPictureDescription =>
+      '進入背景時以小窗形式（PiP）播放';
+
+  @override
+  String get settingsEnableBackgroundAudioSuggestion => '建議開啟背景音訊服務';
+
+  @override
+  String get settingsHideDanmakuInPictureInPicture => '子母畫面不載入彈幕';
+
+  @override
+  String get settingsHideDanmakuInPictureInPictureDescription =>
+      '小窗播放時隱藏彈幕以獲得更好的體驗';
+
+  @override
+  String get settingsReverseFullscreenGesture => '全螢幕手勢反向';
+
+  @override
+  String get settingsReverseFullscreenGestureDescription =>
+      '預設向上滑動進入全螢幕、向下退出；開啟後方向相反';
+
+  @override
+  String get settingsFullscreenActionButtons => '全螢幕顯示按讚、投幣、收藏等操作按鈕';
+
+  @override
+  String get settingsOnlineViewerCount => '觀看人數';
+
+  @override
+  String get settingsOnlineViewerCountDescription => '顯示同時在看人數';
+
+  @override
+  String get settingsDefaultFullscreenOrientation => '預設全螢幕方向';
+
+  @override
+  String settingsCurrentFullscreenOrientation(String value) {
+    return '目前全螢幕方向：$value';
+  }
+
+  @override
+  String get settingsBottomProgressBar => '底部進度條顯示';
+
+  @override
+  String settingsCurrentBottomProgressBar(String value) {
+    return '目前顯示方式：$value';
+  }
+
+  @override
+  String get settingsBackgroundAudioService => '背景音訊服務';
+
+  @override
+  String get settingsBackgroundAudioServiceDescription => '避免子母畫面沒有播放暫停功能';
+
+  @override
+  String get settingsPlaybackOrder => '播放順序';
+
+  @override
+  String get settingsTemporaryPlayerSettings => '播放器設定僅對目前影片生效';
+
+  @override
+  String get settingsTemporaryPlayerSettingsDescription => '彈幕、字幕及部分設定中沒有的選項除外';
+
+  @override
+  String get settingsSubtitlePreference => '字幕選擇偏好';
+
+  @override
+  String get settingsSubtitlePreferenceOff => '預設不顯示字幕';
+
+  @override
+  String get settingsSubtitlePreferencePreferHuman => '優先選擇非自動產生（AI）字幕';
+
+  @override
+  String get settingsSubtitlePreferenceSkipAi => '跳過自動產生（AI）字幕，選擇第一個可用字幕';
+
+  @override
+  String get settingsSubtitlePreferenceAuto => '靜音時優先非自動字幕，非靜音時跳過自動字幕';
+
+  @override
+  String get settingsSuperChatValidOnly => '有效時間內顯示';
+
+  @override
+  String get settingsSuperChatPersistent => '常駐顯示';
+
+  @override
+  String get settingsSuperChatDisabled => '不顯示';
+
+  @override
+  String get settingsFullscreenOrientationAuto => '按影片方向（預設）';
+
+  @override
+  String get settingsFullscreenOrientationUnchanged => '不改變目前方向';
+
+  @override
+  String get settingsFullscreenOrientationPortrait => '強制直向';
+
+  @override
+  String get settingsFullscreenOrientationLandscape => '強制橫向';
+
+  @override
+  String settingsFullscreenOrientationRatio(double ratio) {
+    return '螢幕長寬比小於 $ratio 或為直向影片時直向，否則橫向';
+  }
+
+  @override
+  String get settingsFullscreenOrientationGravity =>
+      '忽略系統方向鎖定，強制按重力旋轉（僅 Android）';
+
+  @override
+  String get settingsProgressAlwaysShow => '始終顯示';
+
+  @override
+  String get settingsProgressAlwaysHide => '始終隱藏';
+
+  @override
+  String get settingsProgressFullscreenOnly => '僅全螢幕時顯示';
+
+  @override
+  String get settingsProgressHideFullscreen => '僅全螢幕時隱藏';
+
+  @override
+  String get settingsHardwareDecoding => '開啟硬解';
+
+  @override
+  String get settingsHardwareDecodingDescription => '以較低功耗播放影片，若異常卡死請關閉';
+
+  @override
+  String get settingsGuest1080p => '免登入 1080P';
+
+  @override
+  String get settingsGuest1080pDescription => '未登入時也嘗試播放 1080P 影片';
+
+  @override
+  String get settingsBilibiliDataPlan => 'B 站定向流量支援';
+
+  @override
+  String get settingsBilibiliDataPlanDescription =>
+      '若方案含 B 站定向流量則會自動使用，可查閱電信商的流量記錄確認';
+
+  @override
+  String get settingsCdn => 'CDN 設定';
+
+  @override
+  String settingsCurrentCdn(String value) {
+    return '目前使用：$value。部分 CDN 可能失效，如無法播放請嘗試切換';
+  }
+
+  @override
+  String get settingsLiveCdn => '直播 CDN 設定';
+
+  @override
+  String settingsCurrentSource(String value) {
+    return '目前使用：$value';
+  }
+
+  @override
+  String get settingsCdnSpeedTest => 'CDN 測速';
+
+  @override
+  String get settingsCdnSpeedTestDescription => '測速透過模擬載入影片實現，請注意流量消耗，結果僅供參考';
+
+  @override
+  String get settingsSeparateAudioCdn => '音訊不跟隨 CDN 設定';
+
+  @override
+  String get settingsSeparateAudioCdnDescription => '直接採用備用 URL，可解決部分影片無聲';
+
+  @override
+  String get settingsDefaultVideoQuality => '預設畫質';
+
+  @override
+  String get settingsCellularVideoQuality => '行動網路畫質';
+
+  @override
+  String get settingsDefaultAudioQuality => '預設音質';
+
+  @override
+  String get settingsCellularAudioQuality => '行動網路音質';
+
+  @override
+  String get settingsDefaultLiveQuality => '直播預設畫質';
+
+  @override
+  String get settingsCellularLiveQuality => '行動網路直播預設畫質';
+
+  @override
+  String settingsCurrentVideoQuality(String value) {
+    return '目前畫質：$value';
+  }
+
+  @override
+  String settingsCurrentAudioQuality(String value) {
+    return '目前音質：$value';
+  }
+
+  @override
+  String get settingsPreferredCodecs => '首選解碼格式';
+
+  @override
+  String settingsPreferredCodecsDescription(String value) {
+    return '首選解碼格式：$value。請根據裝置支援情況與需求調整';
+  }
+
+  @override
+  String get settingsAudioOutput => '音訊輸出裝置';
+
+  @override
+  String get settingsBufferSize => '緩衝大小';
+
+  @override
+  String settingsBufferSizeDescription(double value) {
+    return '目前：$value MB。此值同時作為前向和後向緩衝區大小；直播串流會全部用於前向緩衝（mpv：--demuxer-max-bytes、--demuxer-max-back-bytes）';
+  }
+
+  @override
+  String get settingsBufferDuration => '緩衝時長';
+
+  @override
+  String settingsBufferDurationDescription(double value) {
+    return '目前：$value 秒。實際緩衝取大小與時長限制中的較小值；直播串流不使用此項（mpv：--cache-secs）';
+  }
+
+  @override
+  String get settingsAutoSync => '自動同步';
+
+  @override
+  String settingsAutoSyncDescription(String value) {
+    return '目前：$value（mpv：--autosync）';
+  }
+
+  @override
+  String get settingsVideoSync => '影片同步';
+
+  @override
+  String settingsVideoSyncDescription(String value) {
+    return '目前：$value（mpv：--video-sync）';
+  }
+
+  @override
+  String get settingsHardwareDecodingMode => '硬解模式';
+
+  @override
+  String settingsHardwareDecodingModeDescription(String value) {
+    return '目前：$value（mpv：--hwdec）';
+  }
+
+  @override
+  String get settingsEnterCdnHost => '輸入 CDN Host';
+
+  @override
+  String get settingsLiveQualityDolby => '杜比';
+
+  @override
+  String get settingsLiveQuality4kOriginal => '4K 原畫';
+
+  @override
+  String get settingsLiveQuality4k => '4K';
+
+  @override
+  String get settingsLiveQuality2k => '2K';
+
+  @override
+  String get settingsLiveQualityOriginal => '原畫';
+
+  @override
+  String get settingsLiveQualityBluRay => '藍光';
+
+  @override
+  String get settingsLiveQualitySuperHd => '超清';
+
+  @override
+  String get settingsLiveQualityHd => '高清';
+
+  @override
+  String get settingsLiveQualitySmooth => '流暢';
+
+  @override
+  String get settingsHwdecSoftware => '啟用軟解';
+
+  @override
+  String get settingsHwdecAny => '啟用任意可用解碼器';
+
+  @override
+  String get settingsHwdecBest => '啟用最佳解碼器';
+
+  @override
+  String get settingsHwdecBestCopy => '啟用帶拷貝功能的最佳解碼器';
+
+  @override
+  String get settingsHwdecNonDirect => '非直通';
+
+  @override
+  String settingsHwdecExclusive(String vendor) {
+    return '$vendor 獨占';
+  }
+
+  @override
+  String get settingsHwdecExperimental => '實驗性';
+
+  @override
+  String get settingsHwdecDeprecated => '已過時';
+
+  @override
+  String get settingsHwdecAllPlatforms => '全平台';
+
+  @override
+  String get settingsHwdecPartialRockchip => '僅部分 Rockchip 晶片';
+
+  @override
+  String get settingsWindowTitleBar => '顯示視窗標題列';
+
+  @override
+  String get settingsTrayIcon => '顯示系統匣圖示';
+
+  @override
+  String get settingsLandscapeLayout => '橫向適配';
+
+  @override
+  String get settingsLandscapeLayoutDescription =>
+      '啟用橫向版面與邏輯，平板、摺疊螢幕等可開啟；建議全螢幕方向設為「不改變目前方向」';
+
+  @override
+  String get settingsUseSidebar => '改用側邊欄';
+
+  @override
+  String get settingsUseSidebarDescription => '開啟後底欄與頂欄會被替換，相關設定將失效';
+
+  @override
+  String get settingsUiScale => '介面縮放';
+
+  @override
+  String settingsCurrentUiScale(String value) {
+    return '目前縮放比例：$value';
+  }
+
+  @override
+  String get settingsPageTransition => '頁面過渡動畫';
+
+  @override
+  String get settingsOptimizeTabletNavigation => '最佳化平板導覽列';
+
+  @override
+  String get settingsMaterialYouBottomBar => 'MD3 樣式底欄';
+
+  @override
+  String get settingsMaterialYouBottomBarDescription =>
+      'Material You 設計規範底欄，關閉後可變窄';
+
+  @override
+  String get settingsFloatingBottomBar => '懸浮底欄';
+
+  @override
+  String get settingsListWidthLimit => '清單寬度（dp）限制';
+
+  @override
+  String settingsListWidthDescription(int home, int other, String screen) {
+    return '目前：首頁 $home dp，其他 $other dp，螢幕寬度 $screen dp。寬度越小，欄數越多。';
+  }
+
+  @override
+  String get settingsRemovePlayerSafeArea => '播放頁移除安全邊距';
+
+  @override
+  String get settingsDarkVideoPage => '影片播放頁使用深色主題';
+
+  @override
+  String get settingsFeedWaterfall => 'Feed 啟用瀑布流';
+
+  @override
+  String get settingsFeedWaterfallDescription => '關閉後顯示為單欄';
+
+  @override
+  String get settingsFeedUploaderPosition => 'Feed Uploader 顯示位置';
+
+  @override
+  String get settingsShowAllFollowedUploaders => 'Feed 顯示所有已關注 Uploader';
+
+  @override
+  String get settingsExpandLiveUploaders => 'Feed 展開正在直播的 Uploader 清單';
+
+  @override
+  String get settingsFeedUnreadBadge => 'Feed 未讀標記';
+
+  @override
+  String get settingsMessageUnreadBadge => '訊息未讀標記';
+
+  @override
+  String settingsCurrentBadgeStyle(String value) {
+    return '目前標記樣式：$value';
+  }
+
+  @override
+  String get settingsMessageUnreadTypes => '訊息未讀類型';
+
+  @override
+  String settingsCurrentMessageTypes(String value) {
+    return '目前訊息類型：$value';
+  }
+
+  @override
+  String get settingsBarCollapseBehavior => '頂／底欄收起類型';
+
+  @override
+  String get settingsCollapseHomeTopBar => '首頁頂欄收起';
+
+  @override
+  String get settingsCollapseHomeTopBarDescription => '首頁清單滑動時收起頂欄';
+
+  @override
+  String get settingsCollapseHomeBottomBar => '首頁底欄收起';
+
+  @override
+  String get settingsCollapseHomeBottomBarDescription => '首頁清單滑動時收起底欄';
+
+  @override
+  String get settingsImageQuality => '圖片品質';
+
+  @override
+  String get settingsImagePreviewQuality => '查看大圖品質';
+
+  @override
+  String get settingsImageQualityDescription => '選擇合適的圖片清晰度，上限 100%';
+
+  @override
+  String get settingsDarkImageOverlay => '深色下圖片顏色疊加';
+
+  @override
+  String get settingsDarkImageOverlayDescription => '顯示顏色＝圖片原色 × 所選顏色；大圖查看不受影響';
+
+  @override
+  String get settingsToastOpacity => '氣泡提示不透明度';
+
+  @override
+  String get settingsToastOpacityDescription => '自訂氣泡提示（Toast）不透明度';
+
+  @override
+  String get settingsThemeMode => '主題模式';
+
+  @override
+  String settingsCurrentMode(String value) {
+    return '目前模式：$value';
+  }
+
+  @override
+  String get settingsPureBlackTheme => '純黑主題';
+
+  @override
+  String get settingsAppTheme => '應用程式主題';
+
+  @override
+  String settingsCurrentTheme(String value) {
+    return '目前主題：$value';
+  }
+
+  @override
+  String get settingsDynamicColor => '動態取色';
+
+  @override
+  String get settingsExPiliPlusCustomColor => 'ExPiliPlus 自訂顏色';
+
+  @override
+  String get settingsSpecifiedColor => '指定顏色';
+
+  @override
+  String get settingsDefaultStartPage => '預設啟動頁';
+
+  @override
+  String settingsCurrentStartPage(String value) {
+    return '目前啟動頁：$value';
+  }
+
+  @override
+  String get settingsSpringParameters => '滑動動畫彈簧參數';
+
+  @override
+  String get settingsFontSize => '字型大小';
+
+  @override
+  String get settingsHomeTabs => '首頁標籤頁';
+
+  @override
+  String get settingsHomeTabsDescription => '刪除或調換首頁標籤頁';
+
+  @override
+  String get settingsNavigationBarEditor => 'Navbar 編輯';
+
+  @override
+  String get settingsNavigationBarEditorDescription => '刪除或調換 Navbar';
+
+  @override
+  String get settingsExitDirectlyOnBack => '返回時直接退出';
+
+  @override
+  String get settingsExitDirectlyOnBackDescription =>
+      '開啟後，在首頁任意標籤頁按返回鍵都會直接退出；關閉後先回到 Navbar 的第一個標籤頁';
+
+  @override
+  String get settingsScreenRefreshRate => '螢幕更新率';
+
+  @override
+  String get settingsSucceeded => '設定成功';
+
+  @override
+  String get settingsRestartRequired => '重新啟動後生效';
+
+  @override
+  String get settingsSucceededRestartRequired => '設定成功，重新啟動後生效';
+
+  @override
+  String get settingsReset => '重設';
+
+  @override
+  String get settingsResetSucceededRestartRequired => '重設成功，重新啟動後生效';
+
+  @override
+  String get settingsScaleRatio => '縮放比例';
+
+  @override
+  String get settingsSpringParametersTitle => '彈簧參數';
+
+  @override
+  String get settingsSpringDurationMode => '滑動時間';
+
+  @override
+  String get settingsSpringPhysicalMode => '物理參數';
+
+  @override
+  String get settingsListMaxColumnWidth => '清單最大欄寬（預設 240 dp）';
+
+  @override
+  String get settingsHomeRecommendationFeed => '首頁推薦流';
+
+  @override
+  String settingsConfirmDarkColor(String color) {
+    return '確認使用 $color？';
+  }
+
+  @override
+  String get settingsDarkColorWarning => '所選顏色過於昏暗，可能會影響圖片觀看';
+
+  @override
+  String get settingsUseServerSideDecoration =>
+      '使用 SSD（Server-Side Decoration）';
+
+  @override
+  String get settingsUpPositionTop => '頂部';
+
+  @override
+  String get settingsUpPositionLeftFixed => '左側常駐';
+
+  @override
+  String get settingsUpPositionRightFixed => '右側常駐';
+
+  @override
+  String get settingsUpPositionLeftDrawer => '左側抽屜';
+
+  @override
+  String get settingsUpPositionRightDrawer => '右側抽屜';
+
+  @override
+  String get settingsBadgeHidden => '隱藏';
+
+  @override
+  String get settingsBadgeDot => '紅點';
+
+  @override
+  String get settingsBadgeNumber => '數字';
+
+  @override
+  String get settingsUnreadPrivateMessages => '私訊';
+
+  @override
+  String get settingsUnreadReplies => '回覆我的';
+
+  @override
+  String get settingsUnreadMentions => '@我';
+
+  @override
+  String get settingsUnreadLikes => '收到的讚';
+
+  @override
+  String get settingsUnreadSystem => '系統通知';
+
+  @override
+  String get settingsBarCollapseInstant => '即時';
+
+  @override
+  String get settingsBarCollapseSynchronized => '同步';
+
+  @override
+  String get settingsMinimizeOnExit => '退出時最小化';
+
+  @override
+  String get settingsCachePath => '快取路徑';
+
+  @override
+  String get settingsSponsorBlock => '空降助手';
+
+  @override
+  String get settingsAnimeIntroOutroSkip => '番劇片頭／片尾跳過類型';
+
+  @override
+  String get settingsCheckUnreadFeed => '檢查未讀 Feed';
+
+  @override
+  String get settingsCheckUnreadFeedDescription => '點擊設定檢查週期（分鐘）';
+
+  @override
+  String get settingsVideoChapters => '顯示影片分段資訊';
+
+  @override
+  String get settingsRelatedVideos => '影片頁顯示相關影片';
+
+  @override
+  String get settingsVideoComments => '顯示影片評論';
+
+  @override
+  String get settingsAnimeComments => '顯示番劇評論';
+
+  @override
+  String get settingsExpandVideoDescription => '預設展開影片簡介';
+
+  @override
+  String get settingsExpandVideoDescriptionLandscape => '橫向自動展開影片簡介';
+
+  @override
+  String get settingsLandscapeEpisodeTabs => '橫向分 P／合集清單顯示在 Tab 欄';
+
+  @override
+  String get settingsLandscapeUploaderSidebar => '橫向播放頁在側欄開啟 Uploader 首頁';
+
+  @override
+  String get settingsLandscapeImagePreview => '橫向在側欄開啟圖片預覽';
+
+  @override
+  String get settingsCommentFoldLines => '評論折疊行數';
+
+  @override
+  String get settingsZeroLinesDoNotFold => '0 行時不折疊';
+
+  @override
+  String settingsLineCount(String count) {
+    return '$count 行';
+  }
+
+  @override
+  String get settingsDanmakuLineHeight => '彈幕行高';
+
+  @override
+  String settingsDefaultNumber(String value) {
+    return '預設 $value';
+  }
+
+  @override
+  String get settingsVideoWarnings => '顯示影片警告／爭議資訊';
+
+  @override
+  String get settingsFeedWarnings => '顯示 Feed 警告／爭議資訊';
+
+  @override
+  String get settingsReverseEpisodesFromFirst => '分 P／合集：倒序播放從首集開始';
+
+  @override
+  String get settingsReverseEpisodesFromFirstDescription =>
+      '開啟後自動切換到倒序首集，否則保持目前集';
+
+  @override
+  String get settingsDisableSslVerification => '停用 SSL 憑證驗證';
+
+  @override
+  String get settingsDisableSslVerificationDescription => '請謹慎開啟，停用後容易受到中間人攻擊';
+
+  @override
+  String get settingsContinuePartPrompt => '顯示繼續播放分 P 提示';
+
+  @override
+  String get settingsCommentKeywordFilter => '評論關鍵字過濾';
+
+  @override
+  String get settingsFeedKeywordFilter => 'Feed 關鍵字過濾';
+
+  @override
+  String get settingsExternalBrowser => '使用外部瀏覽器開啟連結';
+
+  @override
+  String get settingsHorizontalSwipeThreshold => '橫向滑動閾值';
+
+  @override
+  String settingsCurrentAndSystemDefault(String current, String defaultValue) {
+    return '目前：$current；系統預設值：$defaultValue';
+  }
+
+  @override
+  String get settingsRefreshDragDistance => '重新整理滑動距離';
+
+  @override
+  String settingsCurrentMultiplier(String value) {
+    return '目前：$value×';
+  }
+
+  @override
+  String get settingsRefreshIndicatorHeight => '重新整理指示器高度';
+
+  @override
+  String get settingsVipDanmaku => '顯示會員彩色彈幕';
+
+  @override
+  String get settingsMergeDanmaku => '合併彈幕';
+
+  @override
+  String get settingsMergeDanmakuDescription => '合併一段時間內取得到的相同彈幕';
+
+  @override
+  String get settingsTrendingRecommendations => '顯示熱門推薦';
+
+  @override
+  String get settingsTrendingRecommendationsDescription => '熱門頁面顯示每週必看等推薦內容入口';
+
+  @override
+  String get settingsAudioNormalization => '音量均衡';
+
+  @override
+  String get settingsFallbackNormalization => '伺服器無 loudnorm 設定時使用';
+
+  @override
+  String settingsFallbackValue(String value) {
+    return '無參數時：$value';
+  }
+
+  @override
+  String get settingsAudioNormalizationDisabled => '停用';
+
+  @override
+  String get settingsAudioNormalizationDynaudnorm => '預設 dynaudnorm';
+
+  @override
+  String get settingsAudioNormalizationLoudnorm => '預設 loudnorm';
+
+  @override
+  String get settingsCustomParameters => '自訂參數';
+
+  @override
+  String get settingsAudioNormalizationParameterHelp =>
+      '等同於 --lavfi-complex=\"[aid1] 參數 [ao]\"';
+
+  @override
+  String get settingsSuperResolution => '超解析度';
+
+  @override
+  String settingsSuperResolutionDescription(String value) {
+    return '目前：$value\n預設設定對番劇生效，其它影片預設關閉\n超解析度需要啟用硬體解碼；若仍未生效，請嘗試將硬體解碼器切換為 auto-copy';
+  }
+
+  @override
+  String get settingsPreinitializePlayer => '提前初始化播放器';
+
+  @override
+  String get settingsPreinitializePlayerDescription => '相對減少手動播放的載入時間';
+
+  @override
+  String get settingsHomePageAnimation => '首頁切換頁面動畫';
+
+  @override
+  String get settingsSearchSuggestions => '搜尋建議';
+
+  @override
+  String get settingsSearchHistory => '記錄搜尋歷史';
+
+  @override
+  String get settingsShowDecorations => '顯示頭像、評論和 Feed 裝飾';
+
+  @override
+  String get settingsFanMedals => '顯示粉絲勳章';
+
+  @override
+  String get settingsLivePhotoPreview => '預覽 Live Photo';
+
+  @override
+  String get settingsLivePhotoPreviewDescription =>
+      '開啟後以影片形式預覽 Live Photo，否則預覽靜態圖片';
+
+  @override
+  String get settingsSeekPreviewThumbnails => '滑動跳轉預覽影片縮圖';
+
+  @override
+  String get settingsDanmakuHeatmap => '顯示高能進度條';
+
+  @override
+  String get settingsDanmakuHeatmapDescription => '高能進度條反映單位時間內彈幕傳送量的變化趨勢';
+
+  @override
+  String get settingsSaveComments => '記錄評論';
+
+  @override
+  String get settingsCommentAntifraud => '發評反詐';
+
+  @override
+  String get settingsCommentAntifraudDescription => '傳送評論後檢查評論是否可見';
+
+  @override
+  String get settingsUseBilibiliCommentCheck => '使用「嗶哩發評反詐」檢查評論';
+
+  @override
+  String get settingsFeedPostAntifraud => '發佈／轉發 Feed 反詐';
+
+  @override
+  String get settingsFeedPostAntifraudDescription => '發佈／轉發後檢查 Feed 內容是否可見';
+
+  @override
+  String get settingsBlockShoppingPosts => '封鎖帶貨 Feed';
+
+  @override
+  String get settingsBlockShoppingComments => '封鎖帶貨評論';
+
+  @override
+  String get settingsSwipeToCloseSecondaryPages => '側滑關閉二級頁面';
+
+  @override
+  String get settingsPinchToShrinkVideo => '啟用雙指縮小影片';
+
+  @override
+  String get settingsSecondaryPageActionBar => 'Feed／專欄詳情頁顯示底部操作欄';
+
+  @override
+  String get settingsDragSubtitles => '啟用拖曳字幕調整底部邊距';
+
+  @override
+  String get settingsAnimeSchedule => '顯示追番時間表';
+
+  @override
+  String get settingsSilentImageDownload => '靜默下載圖片';
+
+  @override
+  String get settingsSilentImageDownloadDescription => '不顯示下載 Loading 對話框';
+
+  @override
+  String get settingsImageContextMenu => '長按／右鍵顯示圖片選單';
+
+  @override
+  String get settingsHapticFeedback => '振動回饋';
+
+  @override
+  String get settingsHapticFeedbackDescription => '請確認手機系統設定中已開啟振動回饋';
+
+  @override
+  String get settingsTrendingSearches => '大家都在搜';
+
+  @override
+  String get settingsTrendingSearchesDescription => '顯示「大家都在搜」';
+
+  @override
+  String get settingsSearchDiscovery => '搜尋發現';
+
+  @override
+  String get settingsSearchDiscoveryDescription => '顯示「搜尋發現」';
+
+  @override
+  String get settingsDefaultSearchTerm => '搜尋預設詞';
+
+  @override
+  String get settingsDefaultSearchTermDescription => '在搜尋框中顯示預設詞';
+
+  @override
+  String get settingsQuickFavorite => '快速收藏';
+
+  @override
+  String get settingsQuickFavoriteDescription =>
+      '點擊設定預設收藏夾\n點按收藏至預設收藏夾，長按選擇資料夾';
+
+  @override
+  String get settingsCommentSearchKeywords => '評論區搜尋關鍵字';
+
+  @override
+  String get settingsCommentSearchKeywordsDescription => '顯示評論區搜尋關鍵字';
+
+  @override
+  String get settingsAiSummary => '啟用 AI 總結';
+
+  @override
+  String get settingsAiSummaryDescription => '在影片詳情頁開啟 AI 總結';
+
+  @override
+  String get settingsDisableReceivedLikes => '訊息頁停用「收到的讚」';
+
+  @override
+  String get settingsDisableReceivedLikesDescription => '禁止開啟入口，降低網路社交依賴';
+
+  @override
+  String get settingsShowCommentsByDefault => '預設顯示評論區';
+
+  @override
+  String get settingsShowCommentsByDefaultDescription =>
+      '影片詳情頁預設切換至評論區（僅 Tab 型版面）';
+
+  @override
+  String get settingsHttp2 => '啟用 HTTP/2';
+
+  @override
+  String get settingsRetryCount => '連線重試次數';
+
+  @override
+  String get settingsZeroDisables => '設為 0 時停用';
+
+  @override
+  String get settingsRetryDelay => '連線重試間隔';
+
+  @override
+  String get settingsRetryDelayDescription => '實際間隔＝間隔 × 第 n 次重試';
+
+  @override
+  String get settingsCommentDisplay => '評論顯示';
+
+  @override
+  String settingsCurrentlyPrioritize(String value) {
+    return '目前優先顯示「$value」';
+  }
+
+  @override
+  String get settingsFeedDisplay => 'Feed 顯示';
+
+  @override
+  String get settingsFeedInteractions => '顯示 Feed 互動內容';
+
+  @override
+  String get settingsFeedInteractionsDescription =>
+      '在 Feed 卡片底部顯示互動內容，例如關注的人按讚、熱門評論等';
+
+  @override
+  String get settingsMemberDefaultTab => '使用者頁預設顯示 Tab';
+
+  @override
+  String get settingsUploaderShopTab => '顯示 Uploader 首頁小店 Tab';
+
+  @override
+  String get settingsProxy => '設定代理';
+
+  @override
+  String get settingsProxyDescription => '設定代理 host:port';
+
+  @override
+  String get settingsProxyHostHint => '請輸入 Host，使用 . 分隔';
+
+  @override
+  String get settingsProxyPortHint => '請輸入 Port';
+
+  @override
+  String get settingsMaximumCacheSize => '最大快取大小';
+
+  @override
+  String settingsCurrentMaximumCacheSize(String value) {
+    return '目前最大快取大小：$value';
+  }
+
+  @override
+  String get settingsCheckForUpdates => '檢查更新';
+
+  @override
+  String get settingsCheckForUpdatesDescription => '每次啟動時檢查是否需要更新';
+
+  @override
+  String get settingsSetNewPath => '設定新路徑';
+
+  @override
+  String get settingsCheckInterval => '檢查週期';
+
+  @override
+  String get settingsChooseDefaultFavorite => '選擇預設收藏夾';
+
+  @override
+  String get replySortNewest => '最新評論';
+
+  @override
+  String get replySortHottest => '最熱門評論';
+
+  @override
+  String get replySortFeatured => '精選評論';
+
+  @override
+  String get memberTabDefault => '預設';
+
+  @override
+  String get memberTabHome => '首頁';
+
+  @override
+  String get memberTabFeed => 'Feed';
+
+  @override
+  String get memberTabUploads => '投稿';
+
+  @override
+  String get memberTabFavorites => '收藏';
+
+  @override
+  String get memberTabAnime => '番劇';
+
+  @override
+  String get memberTabCourses => '課堂';
+
+  @override
+  String get memberTabShop => '小店';
+
+  @override
+  String get logsTitle => '日誌';
+
+  @override
+  String get logsCopied => '複製成功';
+
+  @override
+  String get logsCleared => '已清空';
+
+  @override
+  String get logsTriggerError => '引發錯誤';
+
+  @override
+  String get logsEnabledRestartRequired => '已開啟，重新啟動後生效';
+
+  @override
+  String get logsDisabledRestartRequired => '已關閉，重新啟動後生效';
+
+  @override
+  String get logsEnable => '開啟日誌';
+
+  @override
+  String get logsDisable => '關閉日誌';
+
+  @override
+  String get logsCopy => '複製日誌';
+
+  @override
+  String get logsErrorFeedback => '錯誤回饋';
+
+  @override
+  String get logsClear => '清空日誌';
+
+  @override
+  String get logsRelatedInformation => '相關資訊';
+
+  @override
+  String get logsCollapse => '收起';
+
+  @override
+  String get logsExpand => '展開';
+
+  @override
+  String get logsDeviceInformation => '裝置資訊';
+
+  @override
+  String get logsAppInformation => '應用程式資訊';
+
+  @override
+  String get logsBuildInformation => '編譯資訊';
+
+  @override
+  String logsCopiedTimestamp(String time) {
+    return '已將 $time 複製至剪貼簿';
+  }
+
+  @override
+  String get logsErrorDetails => '錯誤詳情';
+
+  @override
+  String get logsStackTrace => '堆疊追蹤';
+
+  @override
+  String get settingsPlaybackSpeedSetDefault => '設為預設倍速';
+
+  @override
+  String get settingsPlaybackSpeedSetLongPress => '設為預設長按倍速';
+
+  @override
+  String get settingsPlaybackSpeedDelete => '刪除該項';
+
+  @override
+  String get settingsPlaybackSpeedAdd => '新增倍速';
+
+  @override
+  String get settingsPlaybackSpeedCustom => '自訂倍速';
+
+  @override
+  String get settingsPlaybackSpeedExists => '該倍速已存在';
+
+  @override
+  String get settingsPlaybackSpeedDefaultCannotDelete => '不支援刪除預設倍速';
+
+  @override
+  String get settingsPlaybackSpeedHint => '點擊下方按鈕設定預設倍速和長按倍速';
+
+  @override
+  String get settingsPlaybackSpeedDefault => '預設倍速';
+
+  @override
+  String get settingsPlaybackSpeedDynamicLongPress => '動態長按倍速';
+
+  @override
+  String get settingsPlaybackSpeedDynamicLongPressDescription =>
+      '根據預設倍速，長按時自動使用雙倍速度';
+
+  @override
+  String get settingsPlaybackSpeedDefaultLongPress => '預設長按倍速';
+
+  @override
+  String get settingsPlaybackSpeedList => '倍速清單';
+
+  @override
+  String get settingsAdd => '新增';
+
+  @override
+  String get settingsSavedNextLaunch => '儲存成功，下次啟動時生效';
+
+  @override
+  String get settingsResetNextLaunch => '重設成功，下次啟動時生效';
+
+  @override
+  String settingsEditTitle(String title) {
+    return '$title編輯';
+  }
+
+  @override
+  String get settingsSave => '儲存';
+
+  @override
+  String get settingsLongPressToReorder => '長按拖動排序';
+
+  @override
+  String settingsCurrentFontSize(String value) {
+    return '目前字型大小：$value';
+  }
+
+  @override
+  String get settingsSmall => '小';
+
+  @override
+  String get settingsLarge => '大';
+
+  @override
+  String get settingsScreenRefreshRateTitle => '螢幕更新率設定';
+
+  @override
+  String get settingsRestartIfDisplayModeFails => '沒有生效？請嘗試重新啟動 App';
+
+  @override
+  String get settingsAutomatic => '自動';
+
+  @override
+  String get settingsSystemModeMarker => '系統';
+
+  @override
+  String get settingsChooseAppTheme => '選擇應用程式主題';
+
+  @override
+  String get settingsPaletteStyle => '調色盤風格';
+
+  @override
+  String get settingsDynamicColorUnsupported => '裝置可能不支援動態取色';
+
+  @override
+  String settingsUseFont(String font) {
+    return '使用 $font';
+  }
+
+  @override
+  String get settingsViewLicense => '查看授權條款';
+
+  @override
+  String get settingsAgreeAndDownload => '同意並下載';
+
+  @override
+  String settingsFontDownloaded(String font) {
+    return '$font 下載完成';
+  }
+
+  @override
+  String settingsFontDownloading(int progress) {
+    return '正在下載 $progress%';
+  }
+
+  @override
+  String get settingsFontConnecting => '正在連線下載來源';
+
+  @override
+  String settingsDownloadedWithSize(String size) {
+    return '已下載 · $size';
+  }
+
+  @override
+  String get settingsDownloaded => '已下載';
+
+  @override
+  String get settingsDownloadFont => '下載字型';
+
+  @override
+  String get settingsAppFontTitle => 'App 字型';
+
+  @override
+  String get settingsFontLxgwWenKai => '霞鶩文楷';
+
+  @override
+  String get settingsFontLxgwZhenKai => '霞鶩臻楷';
+
+  @override
+  String get settingsFontLxgwNeoXiHei => '霞鶩新晰黑';
+
+  @override
+  String get settingsFontLxgwZhuqueFangsong => '霞鶩朱雀仿宋';
+
+  @override
+  String get settingsFontSourceHanSans => '思源黑體';
+
+  @override
+  String get settingsFontSourceHanSerif => '思源宋體';
+
+  @override
+  String get settingsFontFusionPixel => '縫合像素字型';
+
+  @override
+  String settingsFontLicenseNotice(String font) {
+    return '本軟體將使用 $font。下載和使用即表示你同意其官方授權條款。';
+  }
+
+  @override
+  String get settingsFullscreenSuperChatSizeTitle => '全螢幕 SC 大小設定';
+
+  @override
+  String get themeColorDefaultGreen => '預設綠';
+
+  @override
+  String get themeColorPink => '粉紅色';
+
+  @override
+  String get themeColorRed => '紅色';
+
+  @override
+  String get themeColorOrange => '橙色';
+
+  @override
+  String get themeColorAmber => '琥珀色';
+
+  @override
+  String get themeColorYellow => '黃色';
+
+  @override
+  String get themeColorLime => '酸橙色';
+
+  @override
+  String get themeColorLightGreen => '淺綠色';
+
+  @override
+  String get themeColorGreen => '綠色';
+
+  @override
+  String get themeColorTeal => '青色';
+
+  @override
+  String get themeColorCyan => '藍綠色';
+
+  @override
+  String get themeColorLightBlue => '淺藍色';
+
+  @override
+  String get themeColorBlue => '藍色';
+
+  @override
+  String get themeColorIndigo => '靛藍色';
+
+  @override
+  String get themeColorPurple => '紫色';
+
+  @override
+  String get themeColorDeepPurple => '深紫色';
+
+  @override
+  String get themeColorBlueGrey => '藍灰色';
+
+  @override
+  String get themeColorBrown => '棕色';
+
+  @override
+  String get themeColorGrey => '灰色';
+
+  @override
+  String get commonCopy => '複製';
+
+  @override
+  String get homeFollowingAnime => '已追番';
+
+  @override
+  String get homeRankings => '排行榜';
+
+  @override
+  String get homeWeeklyMustWatch => '每週必看';
+
+  @override
+  String get homeEssentialVideos => '入站必刷';
+
+  @override
+  String get homeLastSeenRefresh => '上次看到這裡\n點擊重新整理';
+
+  @override
+  String get homeSwitchToCover => '切換封面';
+
+  @override
+  String get homeSwitchToFirstFrame => '切換首幀';
+
+  @override
+  String get homeGameEvents => '遊戲賽事';
+
+  @override
+  String get homeAllLiveCategories => '全部標籤';
+
+  @override
+  String get homeMyLiveFollowing => '我的關注';
+
+  @override
+  String homeLiveFollowingCount(String count) {
+    return '$count 人正在直播';
+  }
+
+  @override
+  String get aboutAppDescription => '使用 Flutter 開發的 B 站第三方用戶端';
+
+  @override
+  String get aboutAppSemantics => '與你一起，發現不一樣的世界';
+
+  @override
+  String get aboutAccessibilityAdapted => '無障礙適配';
+
+  @override
+  String get aboutCurrentVersion => '目前版本';
+
+  @override
+  String get aboutOpenSupportedLinks => '開啟支援的連結';
+
+  @override
+  String get aboutIssueFeedback => '問題回報';
+
+  @override
+  String get aboutErrorLogs => '錯誤日誌';
+
+  @override
+  String get aboutClearLogsHint => '長按清除日誌';
+
+  @override
+  String get aboutClearCacheConfirm => '此操作將清除圖片及網路請求快取資料，確定清除？';
+
+  @override
+  String get aboutClearing => '正在清除…';
+
+  @override
+  String get aboutClearSucceeded => '清除成功';
+
+  @override
+  String get aboutClearCache => '清除快取';
+
+  @override
+  String aboutImageNetworkCache(Object size) {
+    return '圖片及網路快取 $size';
+  }
+
+  @override
+  String get aboutImportExportLogin => '匯入/匯出登入資訊';
+
+  @override
+  String get aboutLoginData => '登入資訊';
+
+  @override
+  String get aboutImportExportSettings => '匯入/匯出設定';
+
+  @override
+  String get aboutSettingsData => '設定';
+
+  @override
+  String get aboutResetAllSettings => '重設所有設定';
+
+  @override
+  String get aboutResetAllSettingsQuestion => '是否重設所有設定？';
+
+  @override
+  String get aboutResetSucceeded => '重設成功';
+
+  @override
+  String get aboutResetExportableSettings => '重設可匯出的設定';
+
+  @override
+  String get aboutResetAllData => '重設所有資料（含登入資訊）';
+
+  @override
+  String importExportTitle(Object title) {
+    return '匯入/匯出$title';
+  }
+
+  @override
+  String importConfirmPreview(Object title) {
+    return '是否匯入以下$title？';
+  }
+
+  @override
+  String importInputTitle(Object title) {
+    return '輸入$title';
+  }
+
+  @override
+  String importJsonParseFailed(Object error) {
+    return '解析 JSON 失敗：$error';
+  }
+
+  @override
+  String get importSucceeded => '匯入成功';
+
+  @override
+  String importFailed(Object error) {
+    return '匯入失敗：$error';
+  }
+
+  @override
+  String get importClipboardEmpty => '剪貼簿沒有資料';
+
+  @override
+  String get exportToClipboard => '匯出至剪貼簿';
+
+  @override
+  String get exportToLocalFile => '匯出檔案至本機';
+
+  @override
+  String get importEnterManually => '輸入';
+
+  @override
+  String get importFromClipboard => '從剪貼簿匯入';
+
+  @override
+  String get importFromLocalFile => '從本機檔案匯入';
+
+  @override
+  String get memberHomeVideos => '影片';
+
+  @override
+  String get memberHomeFavorites => '收藏';
+
+  @override
+  String get memberHomeRecentCoinedVideos => '最近投幣的影片';
+
+  @override
+  String get memberHomeRecentLikedVideos => '最近按讚的影片';
+
+  @override
+  String get memberHomePosts => '圖文';
+
+  @override
+  String get memberHomeAudio => '音訊';
+
+  @override
+  String get memberHomeComics => '漫畫';
+
+  @override
+  String get memberHomeAnime => '追番';
+
+  @override
+  String blacklistTitle(Object count) {
+    return '黑名單管理$count';
+  }
+
+  @override
+  String blacklistCountSuffix(Object count) {
+    return '：$count';
+  }
+
+  @override
+  String blacklistAddedAt(Object date) {
+    return '加入時間：$date';
+  }
+
+  @override
+  String blacklistRemoveConfirm(Object name) {
+    return '確定將 $name 移出黑名單？';
+  }
+
+  @override
+  String get blacklistRemoved => '移除成功';
+
+  @override
+  String get webDavSettingsTitle => 'WebDAV 設定';
+
+  @override
+  String get webDavBackupSettings => '備份設定';
+
+  @override
+  String get webDavRestoreSettings => '還原設定';
+
+  @override
+  String get webDavConfigurationSucceeded => '設定成功';
+
+  @override
+  String webDavConfigurationFailed(Object error) {
+    return '設定失敗：$error';
+  }
+
+  @override
+  String webDavBackupConfigurationFailed(Object error) {
+    return '備份失敗，請檢查設定：$error';
+  }
+
+  @override
+  String get webDavBackupSucceeded => '備份成功';
+
+  @override
+  String webDavBackupFailed(Object error) {
+    return '備份失敗：$error';
+  }
+
+  @override
+  String get webDavRestoreSucceeded => '還原成功';
+
+  @override
+  String webDavRestoreFailed(Object error) {
+    return '還原失敗：$error';
+  }
+
+  @override
+  String webDavCheckConfiguration(Object error) {
+    return '請檢查設定：$error';
+  }
+
+  @override
+  String get webDavBackupNotFound => '找不到備份檔案';
+
+  @override
+  String get sponsorBlockTitle => '空降助手';
+
+  @override
+  String get sponsorBlockMinimumDuration => '最短片段時長';
+
+  @override
+  String get sponsorBlockMinimumDurationDescription => '忽略短於此時長的片段';
+
+  @override
+  String get sponsorBlockAbout => '關於空降助手';
+
+  @override
+  String get sponsorBlockUserId => '使用者 ID';
+
+  @override
+  String get sponsorBlockUserIdValidation => '使用者 ID 必須是至少 30 個字元的英數字串';
+
+  @override
+  String get sponsorBlockRandom => '隨機';
+
+  @override
+  String get sponsorBlockShowSkipToast => '顯示跳過提示';
+
+  @override
+  String get sponsorBlockTrackSkips => '追蹤跳過次數統計';
+
+  @override
+  String get sponsorBlockTrackSkipsDescription =>
+      '此功能會回報您跳過的片段，讓提交者知道幫助了多少人；按讚結果也會用於避免垃圾資訊污染資料庫。每次跳過片段時都會向伺服器傳送訊息，開啟後可讓統計更準確。';
+
+  @override
+  String get sponsorBlockYourInformation => '您的資訊';
+
+  @override
+  String sponsorBlockUserInformation(
+    Object minutes,
+    Object segments,
+    Object views,
+  ) {
+    return '您提交了 $segments 個片段\n您的片段已幫助觀眾 $views 次\n（節省 $minutes 分鐘）';
+  }
+
+  @override
+  String get sponsorBlockServerError => '伺服器錯誤';
+
+  @override
+  String get sponsorBlockServerAddress => '伺服器位址';
+
+  @override
+  String get sponsorBlockServerStatus => '伺服器狀態';
+
+  @override
+  String get sponsorBlockServerNormal => '正常';
+
+  @override
+  String get sponsorBlockServerUnavailable => '錯誤';
+
+  @override
+  String sponsorBlockColorPickerTitle(Object category) {
+    return '$category的顏色';
+  }
+
+  @override
+  String get sponsorBlockDescriptionSponsor => '付費推廣、贊助和直接廣告，不包含無償提及。';
+
+  @override
+  String get sponsorBlockDescriptionSelfPromotion => '無償或自我推廣，包括商品、捐贈或合作者資訊。';
+
+  @override
+  String get sponsorBlockDescriptionExclusiveAccess =>
+      '標記整部展示免費或優惠取得的產品、服務或場地的影片。';
+
+  @override
+  String get sponsorBlockDescriptionInteraction =>
+      '簡短提醒觀眾按讚、關注或互動；較長且有實質內容的片段應歸為自我推廣。';
+
+  @override
+  String get sponsorBlockDescriptionHighlight => '大多數觀眾正在尋找的精彩時刻，例如縮圖所示的時間點。';
+
+  @override
+  String get sponsorBlockDescriptionIntro => '沒有實際內容的過場或片頭，例如暫停、靜止畫面或重複動畫。';
+
+  @override
+  String get sponsorBlockDescriptionOutro => '沒有額外內容的片尾或鳴謝畫面。';
+
+  @override
+  String get sponsorBlockDescriptionPreview => '本片或同系列稍後會再次出現內容的回顧或預覽。';
+
+  @override
+  String get sponsorBlockDescriptionPadding => '搬運內容前後無實質意義、與主體無關的空白或填充畫面。';
+
+  @override
+  String get sponsorBlockDescriptionFiller => '理解主要內容不需要的離題閒聊或玩笑；這是一個較激進的分類。';
+
+  @override
+  String get sponsorBlockDescriptionMusicOfftopic => '僅限音樂影片：不屬於其他分類的非音樂片段。';
+
+  @override
+  String get videoCooperation => '合作';
+
+  @override
+  String get commonSort => '排序';
+
+  @override
+  String get commonMultiSelect => '多選';
+
+  @override
+  String get commonUpdate => '更新';
+
+  @override
+  String get commonUpdateSucceeded => '更新成功';
+
+  @override
+  String get commonUpdateFailed => '更新失敗';
+
+  @override
+  String get commonMove => '移動';
+
+  @override
+  String get commonPlayAll => '播放全部';
+
+  @override
+  String get favoriteTitle => '我的收藏';
+
+  @override
+  String get favoriteNewFolder => '新增收藏夾';
+
+  @override
+  String get favoriteFolderSort => '收藏夾排序';
+
+  @override
+  String get favoriteLoadAllBeforeSorting => '載入全部收藏夾後再排序';
+
+  @override
+  String get favoriteTabVideos => '影片';
+
+  @override
+  String get favoriteTabAnime => '追番';
+
+  @override
+  String get favoriteTabSeries => '追劇';
+
+  @override
+  String get favoriteTabArticles => '專欄';
+
+  @override
+  String get favoriteTabNotes => '筆記';
+
+  @override
+  String get favoriteTabTopics => '話題';
+
+  @override
+  String get favoriteTabCourses => '課程';
+
+  @override
+  String get laterAll => '全部';
+
+  @override
+  String get laterUnfinished => '未看完';
+
+  @override
+  String get laterRecentlyAdded => '最近加入';
+
+  @override
+  String get laterEarliestAdded => '最早加入';
+
+  @override
+  String get laterClearInvalid => '清除失效';
+
+  @override
+  String get laterClearWatched => '清除已看完';
+
+  @override
+  String get laterClearAll => '清除全部';
+
+  @override
+  String get historyAll => '全部';
+
+  @override
+  String get historyTitle => '觀看記錄';
+
+  @override
+  String get historyPause => '暫停觀看記錄';
+
+  @override
+  String get historyResume => '恢復觀看記錄';
+
+  @override
+  String get historyClear => '清除觀看記錄';
+
+  @override
+  String get historyDeleteWatched => '刪除已看記錄';
+
+  @override
+  String get historyDisabled => ' 觀看記錄功能已關閉';
+
+  @override
+  String get historyTapToEnable => '點擊開啟';
+
+  @override
+  String get downloadOfflineTitle => '離線快取';
+
+  @override
+  String downloadDownloadingCount(Object count) {
+    return '正在快取（$count）';
+  }
+
+  @override
+  String get downloadDownloadedVideos => '已快取影片';
+
+  @override
+  String downloadVideoCount(Object count) {
+    return '$count 個影片';
+  }
+
+  @override
+  String get downloadCourse => '課程';
+
+  @override
+  String get downloadAnime => '番劇';
+
+  @override
+  String get downloadMovie => '電影';
+
+  @override
+  String get downloadDocumentary => '紀錄片';
+
+  @override
+  String get downloadChineseAnimation => '國創';
+
+  @override
+  String get downloadTvSeries => '電視劇';
+
+  @override
+  String get downloadVarietyShow => '綜藝';
+
+  @override
+  String get downloadConfirmDelete => '確定刪除？';
+
+  @override
+  String get downloadUpdateDanmaku => '更新彈幕';
+
+  @override
+  String get messagesTitle => '訊息';
+
+  @override
+  String get messagesNewFollowers => '新增粉絲';
+
+  @override
+  String get messagesRepliesToMe => '回覆我的';
+
+  @override
+  String get messagesMentions => '@我';
+
+  @override
+  String get messagesReceivedLikes => '收到的讚';
+
+  @override
+  String get messagesSystemNotifications => '系統通知';
+
+  @override
+  String get messagesMarkedAsRead => '已標為已讀';
+
+  @override
+  String get messagesMarkAsRead => '標為已讀';
+
+  @override
+  String get messagesEnableDoNotDisturb => '開啟勿擾';
+
+  @override
+  String get messagesDisableDoNotDisturb => '關閉勿擾';
+
+  @override
+  String get messagesDeleteConversationConfirm => '確定刪除該對話？';
+
+  @override
+  String get contactsTitle => '通訊錄';
+
+  @override
+  String get loginDevicesTitle => '登入裝置';
+
+  @override
+  String get loginDevicesCurrentDevice => '（本機）';
+
+  @override
+  String get memberMyFeed => '我的動態';
+
+  @override
+  String get memberSpaceSettings => '空間設定';
+
+  @override
+  String get messagesLikeDetails => '按讚詳情';
+
+  @override
+  String get messagesMentionsMe => '@我的';
+
+  @override
+  String get messagesDeleteNotificationConfirm => '確定刪除該通知？';
+
+  @override
+  String messagesMentionedIn(Object business) {
+    return ' 在$business中提及了我';
+  }
+
+  @override
+  String get messagesAndOthers => ' 等人';
+
+  @override
+  String messagesCommentsOnMyItem(Object business, Object count) {
+    return ' 對我的$business發佈了$count則留言';
+  }
+
+  @override
+  String get messagesLatest => '最新';
+
+  @override
+  String get messagesTotal => '累計';
+
+  @override
+  String get messagesDeleteLikeNoticeConfirm => '刪除該通知後，內容有新按讚時會再次出現在列表，是否繼續？';
+
+  @override
+  String get messagesStopNotifications => '不再通知';
+
+  @override
+  String get messagesStopNotificationsConfirm => '將不再通知這則內容的按讚，但仍可在列表中查看，是否繼續？';
+
+  @override
+  String get messagesReceiveNotifications => '接收通知';
+
+  @override
+  String messagesAndPeople(Object count) {
+    return ' 等$count人';
+  }
+
+  @override
+  String messagesLikedMyItem(Object business) {
+    return ' 按讚了我的$business';
+  }
+
+  @override
+  String get messagesViewFeed => '查看動態';
+
+  @override
+  String get messagesWebLink => '網頁連結';
 }

@@ -13,6 +13,7 @@ import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -69,7 +70,13 @@ TextSpan? richNode(
             if (i.origText == _linkFoldedText) {
               item.linkFolded = true;
             }
-            spanChildren.add(TextSpan(text: i.origText));
+            spanChildren.add(
+              TextSpan(
+                text: i.origText == _linkFoldedText
+                    ? context.l10n.feedWebLink
+                    : i.origText,
+              ),
+            );
             break;
           // @用户
           case 'RICH_TEXT_NODE_TYPE_AT':
@@ -144,7 +151,7 @@ TextSpan? richNode(
               )
               ..add(
                 TextSpan(
-                  text: '投票：${i.text}',
+                  text: context.l10n.feedVoteWithTitle(i.text ?? ''),
                   style: style,
                   recognizer: NoDeadlineTapGestureRecognizer()
                     ..onTap = () {

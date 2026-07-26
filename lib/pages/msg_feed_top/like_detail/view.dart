@@ -9,6 +9,7 @@ import 'package:ex_piliplus/models_new/msg/msg_like_detail/item.dart';
 import 'package:ex_piliplus/pages/msg_feed_top/like_detail/controller.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +32,7 @@ class _LikeDetailPageState extends State<LikeDetailPage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('点赞详情')),
+      appBar: AppBar(title: Text(context.l10n.messagesLikeDetails)),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,
         child: CustomScrollView(
@@ -129,7 +130,7 @@ class _LikeDetailPageState extends State<LikeDetailPage> {
               ),
             ),
             TextSpan(
-              text: " 赞了我",
+              text: context.l10n.messagesLikedMyItem(''),
               style: TextStyle(
                 fontSize: 13,
                 color: theme.colorScheme.onSurfaceVariant,

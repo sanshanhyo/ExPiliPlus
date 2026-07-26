@@ -23,7 +23,7 @@ Widget forwardPanel(
   Widget child;
 
   if (isNoneMajor) {
-    child = noneWidget(theme, major?.none?.tips);
+    child = noneWidget(context, theme, major?.none?.tips);
   } else {
     child = Column(
       mainAxisSize: MainAxisSize.min,

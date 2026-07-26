@@ -4,6 +4,7 @@ import 'package:ex_piliplus/common/widgets/loading_widget/loading_widget.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/space_setting/privacy.dart';
 import 'package:ex_piliplus/pages/space_setting/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +23,7 @@ class _SpaceSettingPageState extends State<SpaceSettingPage> {
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('空间设置')),
+      appBar: AppBar(title: Text(context.l10n.memberSpaceSettings)),
       body: Obx(() => _buildBody(theme, _controller.loadingState.value)),
     );
   }

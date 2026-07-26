@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 // mpv --hwdec=help
 enum HwDecType {
   no('no', '启用软解'),
@@ -37,6 +39,50 @@ enum HwDecType {
   final String hwdec;
   final String desc;
   const HwDecType(this.hwdec, this.desc);
+
+  String localizedDescription(AppLocalizations l10n) => switch (this) {
+    .no => l10n.settingsHwdecSoftware,
+    .auto => l10n.settingsHwdecAny,
+    .autoSafe => l10n.settingsHwdecBest,
+    .autoCopy => l10n.settingsHwdecBestCopy,
+    .d3d12va => 'DirectX 12 (Windows 10+)',
+    .d3d12vaCopy => 'DirectX 12 (Windows 10+, ${l10n.settingsHwdecNonDirect})',
+    .d3d11va => 'DirectX 11 (Windows 8+)',
+    .d3d11vaCopy => 'DirectX 11 (Windows 8+, ${l10n.settingsHwdecNonDirect})',
+    .dxva2 => 'DXVA2 (Windows 7+)',
+    .dxva2Copy => 'DXVA2 (Windows 7+, ${l10n.settingsHwdecNonDirect})',
+    .videotoolbox => 'VideoToolbox (macOS / iOS)',
+    .videotoolboxCopy =>
+      'VideoToolbox (macOS / iOS, ${l10n.settingsHwdecNonDirect})',
+    .vaapi => 'VAAPI (Linux)',
+    .vaapiCopy => 'VAAPI (Linux, ${l10n.settingsHwdecNonDirect})',
+    .nvdec => 'NVDEC (${l10n.settingsHwdecExclusive('NVIDIA')})',
+    .nvdecCopy =>
+      'NVDEC (${l10n.settingsHwdecExclusive('NVIDIA')}, ${l10n.settingsHwdecNonDirect})',
+    .drm => 'DRM (Linux)',
+    .drmCopy => 'DRM (Linux, ${l10n.settingsHwdecNonDirect})',
+    .vulkan =>
+      'Vulkan (${l10n.settingsHwdecAllPlatforms}, ${l10n.settingsHwdecExperimental})',
+    .vulkanCopy =>
+      'Vulkan (${l10n.settingsHwdecAllPlatforms}, ${l10n.settingsHwdecExperimental}, ${l10n.settingsHwdecNonDirect})',
+    .vdpau => 'VDPAU (Linux)',
+    .vdpauCopy => 'VDPAU (Linux, ${l10n.settingsHwdecNonDirect})',
+    .mediacodec => 'MediaCodec (Android)',
+    .mediacodecCopy => 'MediaCodec (Android, ${l10n.settingsHwdecNonDirect})',
+    .cuda =>
+      'CUDA (${l10n.settingsHwdecExclusive('NVIDIA')}, ${l10n.settingsHwdecDeprecated})',
+    .cudaCopy =>
+      'CUDA (${l10n.settingsHwdecExclusive('NVIDIA')}, ${l10n.settingsHwdecDeprecated}, ${l10n.settingsHwdecNonDirect})',
+    .crystalhd =>
+      'CrystalHD (${l10n.settingsHwdecAllPlatforms}, ${l10n.settingsHwdecDeprecated})',
+    .rkmpp => 'Rockchip MPP (${l10n.settingsHwdecPartialRockchip})',
+    .amf => 'AMF (${l10n.settingsHwdecExclusive('AMD')})',
+    .amfCopy =>
+      'AMF (${l10n.settingsHwdecExclusive('AMD')}, ${l10n.settingsHwdecNonDirect})',
+    .qsv => 'Quick Sync Video (${l10n.settingsHwdecExclusive('Intel')})',
+    .qsvCopy =>
+      'Quick Sync Video (${l10n.settingsHwdecExclusive('Intel')}, ${l10n.settingsHwdecNonDirect})',
+  };
 
   static final String androidDefault = [
     HwDecType.mediacodec.hwdec,

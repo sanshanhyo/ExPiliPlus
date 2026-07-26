@@ -7,6 +7,7 @@ import 'package:ex_piliplus/common/widgets/loading_widget/loading_widget.dart';
 import 'package:ex_piliplus/common/widgets/selection_text.dart';
 import 'package:ex_piliplus/services/logger.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -81,8 +82,8 @@ class _LogsPageState extends State<LogsPage> {
     );
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('复制成功'),
+        SnackBar(
+          content: Text(context.l10n.logsCopied),
           duration: _snackBarDisplayDuration,
         ),
       );
@@ -93,8 +94,8 @@ class _LogsPageState extends State<LogsPage> {
     if (await LoggerUtils.clearLogs()) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('已清空'),
+          SnackBar(
+            content: Text(context.l10n.logsCleared),
             duration: _snackBarDisplayDuration,
           ),
         );
@@ -110,7 +111,7 @@ class _LogsPageState extends State<LogsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('日志'),
+        title: Text(context.l10n.logsTitle),
         actions: [
           PopupMenuButton(
             itemBuilder: (_) => [
@@ -126,28 +127,36 @@ class _LogsPageState extends State<LogsPage> {
                       }
                     },
                   ),
-                  child: const Text('引发错误'),
+                  child: Text(context.l10n.logsTriggerError),
                 ),
               PopupMenuItem(
                 onTap: () {
                   enableLog = !enableLog;
                   GStorage.setting.put(SettingBoxKey.enableLog, enableLog);
-                  SmartDialog.showToast('已${enableLog ? '开启' : '关闭'}，重启生效');
+                  SmartDialog.showToast(
+                    enableLog
+                        ? context.l10n.logsEnabledRestartRequired
+                        : context.l10n.logsDisabledRestartRequired,
+                  );
                 },
-                child: Text('${enableLog ? '关闭' : '开启'}日志'),
+                child: Text(
+                  enableLog
+                      ? context.l10n.logsDisable
+                      : context.l10n.logsEnable,
+                ),
               ),
               PopupMenuItem(
                 onTap: copyLogs,
-                child: const Text('复制日志'),
+                child: Text(context.l10n.logsCopy),
               ),
               PopupMenuItem(
                 onTap: () =>
                     PageUtils.launchURL('${Constants.sourceCodeUrl}/issues'),
-                child: const Text('错误反馈'),
+                child: Text(context.l10n.logsErrorFeedback),
               ),
               PopupMenuItem(
                 onTap: clearLogs,
-                child: const Text('清空日志'),
+                child: Text(context.l10n.logsClear),
               ),
             ],
           ),
@@ -246,10 +255,10 @@ class _InfoCard extends StatelessWidget {
             size: 22,
             color: colorScheme.primary,
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              '相关信息',
-              style: TextStyle(fontWeight: .bold, fontSize: 15),
+              context.l10n.logsRelatedInformation,
+              style: const TextStyle(fontWeight: .bold, fontSize: 15),
               maxLines: 1,
               overflow: .ellipsis,
             ),
@@ -257,7 +266,9 @@ class _InfoCard extends StatelessWidget {
           iconButton(
             size: 34,
             iconSize: 22,
-            tooltip: info.isExpanded ? '收起' : '展开',
+            tooltip: info.isExpanded
+                ? context.l10n.logsCollapse
+                : context.l10n.logsExpand,
             icon: Icon(
               info.isExpanded ? Icons.expand_less : Icons.expand_more,
             ),
@@ -269,9 +280,21 @@ class _InfoCard extends StatelessWidget {
         ],
       ),
       if (info.isExpanded) ...[
-        _buildMapSection(colorScheme.primary, '设备信息', info.item.$1),
-        _buildMapSection(colorScheme.primary, '应用信息', info.item.$2),
-        _buildMapSection(colorScheme.primary, '编译信息', info.item.$3),
+        _buildMapSection(
+          colorScheme.primary,
+          context.l10n.logsDeviceInformation,
+          info.item.$1,
+        ),
+        _buildMapSection(
+          colorScheme.primary,
+          context.l10n.logsAppInformation,
+          info.item.$2,
+        ),
+        _buildMapSection(
+          colorScheme.primary,
+          context.l10n.logsBuildInformation,
+          info.item.$3,
+        ),
       ],
     ]);
   }
@@ -319,12 +342,14 @@ class _ReportCard extends StatelessWidget {
           iconButton(
             size: 34,
             iconSize: 22,
-            tooltip: '复制',
+            tooltip: context.l10n.commonCopy,
             onPressed: () {
               Utils.copyText('```\n$report```', needToast: false);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('已将 $dateTime 复制至剪贴板'),
+                  content: Text(
+                    context.l10n.logsCopiedTimestamp(dateTime),
+                  ),
                   duration: _snackBarDisplayDuration,
                 ),
               );
@@ -334,7 +359,9 @@ class _ReportCard extends StatelessWidget {
           iconButton(
             size: 34,
             iconSize: 22,
-            tooltip: report.isExpanded ? '收起' : '展开',
+            tooltip: report.isExpanded
+                ? context.l10n.logsCollapse
+                : context.l10n.logsExpand,
             icon: Icon(
               report.isExpanded ? Icons.expand_less : Icons.expand_more,
             ),
@@ -348,7 +375,7 @@ class _ReportCard extends StatelessWidget {
       if (report.isExpanded) ...[
         const SizedBox(height: 16),
         Text(
-          '错误详情',
+          context.l10n.logsErrorDetails,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: colorScheme.error,
@@ -375,7 +402,7 @@ class _ReportCard extends StatelessWidget {
         if (stackTrace != null && stackTrace.isNotEmpty) ...[
           const SizedBox(height: 16),
           Text(
-            '堆栈跟踪',
+            context.l10n.logsStackTrace,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: colorScheme.error,

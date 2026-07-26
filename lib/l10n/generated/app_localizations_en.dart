@@ -2241,4 +2241,2593 @@ class AppLocalizationsEn extends AppLocalizations {
   String videoConfirmBlockUploader(String name, String id) {
     return 'Block $name ($id)?\n\nYou can unblock this Uploader from Privacy settings > Blocked users.';
   }
+
+  @override
+  String get timeJustNow => 'Just now';
+
+  @override
+  String timeMinutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeHoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String timeYesterdayAt(String time) {
+    return 'Yesterday at $time';
+  }
+
+  @override
+  String timeDaysAgo(int count) {
+    return '$count days ago';
+  }
+
+  @override
+  String timeTodayAt(String time) {
+    return 'Today at $time';
+  }
+
+  @override
+  String get weekdayMondayShort => 'Mon';
+
+  @override
+  String get weekdayTuesdayShort => 'Tue';
+
+  @override
+  String get weekdayWednesdayShort => 'Wed';
+
+  @override
+  String get weekdayThursdayShort => 'Thu';
+
+  @override
+  String get weekdayFridayShort => 'Fri';
+
+  @override
+  String get weekdaySaturdayShort => 'Sat';
+
+  @override
+  String get weekdaySundayShort => 'Sun';
+
+  @override
+  String get homePgcSchedule => 'Anime schedule';
+
+  @override
+  String get homeToday => 'Today';
+
+  @override
+  String homeWeekday(String weekday) {
+    return '$weekday';
+  }
+
+  @override
+  String get homeRecommendations => 'Recommended';
+
+  @override
+  String get homeMediaIndex => 'Browse';
+
+  @override
+  String get homeAllMedia => 'All';
+
+  @override
+  String get homeMovies => 'Movies';
+
+  @override
+  String get homeTvShows => 'TV shows';
+
+  @override
+  String get homeDocumentaries => 'Documentaries';
+
+  @override
+  String get homeVarietyShows => 'Variety shows';
+
+  @override
+  String homeRecentAnime(String count) {
+    return 'Recently watched$count';
+  }
+
+  @override
+  String homeRecentSeries(String count) {
+    return 'Recently watched$count';
+  }
+
+  @override
+  String get homeNoAnime => 'No anime followed yet';
+
+  @override
+  String get homeNoSeries => 'No series followed yet';
+
+  @override
+  String get feedAll => 'All';
+
+  @override
+  String get feedUploads => 'Uploads';
+
+  @override
+  String get feedAnime => 'Anime';
+
+  @override
+  String get feedArticles => 'Articles';
+
+  @override
+  String get feedUploader => 'Uploader';
+
+  @override
+  String get feedCreatePost => 'Create post';
+
+  @override
+  String get feedAllUpdates => 'All updates';
+
+  @override
+  String get feedMe => 'Me';
+
+  @override
+  String get feedLiveEnded => 'Live ended';
+
+  @override
+  String feedVoteWithTitle(String title) {
+    return 'Poll: $title';
+  }
+
+  @override
+  String feedPlayCount(String count) {
+    return '$count views';
+  }
+
+  @override
+  String feedDanmakuCount(String count) {
+    return '$count danmaku';
+  }
+
+  @override
+  String get feedExpired => 'No longer available';
+
+  @override
+  String feedUnsupportedType(String id, String type) {
+    return 'Unsupported post type:\n$id\n$type';
+  }
+
+  @override
+  String get followMyFollowing => 'Following';
+
+  @override
+  String followUserFollowing(String name) {
+    return '$name\'s following';
+  }
+
+  @override
+  String get followNewGroup => 'New group';
+
+  @override
+  String get followSortGroups => 'Sort groups';
+
+  @override
+  String get followBlockedUsers => 'Blocked users';
+
+  @override
+  String get followShared => 'Followed by both';
+
+  @override
+  String get followAll => 'All following';
+
+  @override
+  String get followMostRecent => 'Recently followed';
+
+  @override
+  String get followMostVisited => 'Most visited';
+
+  @override
+  String get followEditGroupName => 'Edit group name';
+
+  @override
+  String get followRenameGroup => 'Rename';
+
+  @override
+  String get followDeleteGroup => 'Delete group';
+
+  @override
+  String get followDeleteGroupDescription =>
+      'People in this group will remain in your following list.';
+
+  @override
+  String get followUpdateSucceeded => 'Group updated';
+
+  @override
+  String get followDeleteSucceeded => 'Group deleted';
+
+  @override
+  String get feedSupporterOnly => 'Supporters only';
+
+  @override
+  String get feedPollOptions => 'Poll options';
+
+  @override
+  String get feedPollEnded => 'Poll ended';
+
+  @override
+  String get feedPollCompleted => 'Voted';
+
+  @override
+  String get feedPoll => 'Vote';
+
+  @override
+  String get feedFollowedPeopleVotes => 'Votes from people you follow';
+
+  @override
+  String get feedVotedFor => 'voted for';
+
+  @override
+  String feedPollEndsAt(String time) {
+    return 'Ends $time';
+  }
+
+  @override
+  String feedParticipantCount(String count) {
+    return '$count participants';
+  }
+
+  @override
+  String get feedShowPercentage => 'Show percentage';
+
+  @override
+  String get feedAnonymous => 'Anonymous';
+
+  @override
+  String get feedMoreActions => 'More';
+
+  @override
+  String get feedWatchLater => 'Watch later';
+
+  @override
+  String get feedSavePost => 'Save post';
+
+  @override
+  String get feedSharePost => 'Share post';
+
+  @override
+  String get feedShareToMessages => 'Share in messages';
+
+  @override
+  String feedTemporarilyBlock(String name) {
+    return 'Hide posts from $name';
+  }
+
+  @override
+  String feedTemporarilyBlocked(String name, String id) {
+    return 'Posts from $name ($id) are hidden until restart';
+  }
+
+  @override
+  String get feedCheckPost => 'Check post';
+
+  @override
+  String get feedPinPost => 'Pin post';
+
+  @override
+  String get feedUnpinPost => 'Unpin post';
+
+  @override
+  String get feedEnableFeaturedComments => 'Turn on featured comments';
+
+  @override
+  String get feedDisableFeaturedComments => 'Turn off featured comments';
+
+  @override
+  String get feedDisableComments => 'Turn off comments';
+
+  @override
+  String get feedRestoreComments => 'Restore comments';
+
+  @override
+  String get feedInteractionSettings => 'Interaction settings';
+
+  @override
+  String get feedVisibleToEveryone => 'Visible to everyone';
+
+  @override
+  String get feedVisibleOnlyToMe => 'Only visible to me';
+
+  @override
+  String get feedVisibility => 'Visibility';
+
+  @override
+  String get feedEditPost => 'Edit post';
+
+  @override
+  String get feedConfirmDeletePost => 'Delete this post?';
+
+  @override
+  String get feedExpand => 'Show more';
+
+  @override
+  String get feedPriceFrom => 'and up';
+
+  @override
+  String get feedJoin => 'Join';
+
+  @override
+  String get feedComment => 'Comment';
+
+  @override
+  String get feedWebLink => 'Web link';
+
+  @override
+  String get followGroupSortTitle => 'Sort following groups';
+
+  @override
+  String get followSortCompleted => 'Order saved';
+
+  @override
+  String followAlsoFollowed(int count, String name) {
+    return '$count people you follow also follow $name';
+  }
+
+  @override
+  String get followUnknownPerson => 'them';
+
+  @override
+  String get followActionFollow => 'Follow';
+
+  @override
+  String get followActionFollowing => 'Following';
+
+  @override
+  String followSharedWithUser(String name) {
+    return 'Followed by you and $name';
+  }
+
+  @override
+  String get settingsSignInRequired => 'Sign in to view';
+
+  @override
+  String get settingsBlockedUsersManagement => 'Blocked users';
+
+  @override
+  String get settingsBlockedUsersDescription => 'People you\'ve blocked';
+
+  @override
+  String get settingsAccountModeDetails => 'Account mode details';
+
+  @override
+  String get settingsLearnAccountModes => 'About account modes';
+
+  @override
+  String get settingsAccountModesApiDescription =>
+      'See which APIs each account mode uses';
+
+  @override
+  String get settingsAccountModeMain => 'Main account';
+
+  @override
+  String get settingsAccountModeWatchHistory => 'Watch history';
+
+  @override
+  String get settingsAccountModeRecommendation => 'Recommendations';
+
+  @override
+  String get settingsAccountModeVideoStream => 'Video streaming';
+
+  @override
+  String get settingsUseAppRecommendations => 'Use app recommendations on Home';
+
+  @override
+  String get settingsUseAppRecommendationsDescription =>
+      'Try the app recommendation source if Web recommendations don\'t fit you';
+
+  @override
+  String get settingsKeepPreviousRecommendations =>
+      'Keep previous recommendations';
+
+  @override
+  String get settingsKeepPreviousRecommendationsDescription =>
+      'Keep the previous items when refreshing';
+
+  @override
+  String get settingsShowLastPosition => 'Show last position';
+
+  @override
+  String get settingsShowLastPositionDescription =>
+      'Mark where the previous recommendation refresh started';
+
+  @override
+  String get settingsLikeRatio => 'Like ratio';
+
+  @override
+  String get settingsTitleKeywordFilter => 'Filter title keywords';
+
+  @override
+  String get settingsCategoryKeywordFilter =>
+      'Filter category keywords in app recommendations, Trending, and rankings';
+
+  @override
+  String get settingsVideoDuration => 'Video duration';
+
+  @override
+  String get settingsPlayCount => 'View count';
+
+  @override
+  String get settingsExemptFollowedUploaders =>
+      'Don\'t filter followed Uploaders';
+
+  @override
+  String get settingsExemptFollowedUploadersDescription =>
+      'Uploads from people you follow won\'t be filtered from recommendations';
+
+  @override
+  String get settingsApplyFilterToRelatedVideos =>
+      'Apply filters to related videos';
+
+  @override
+  String get settingsApplyFilterToRelatedVideosDescription =>
+      'Other pages such as Trending and Search aren\'t filtered; followed Uploaders can\'t be exempted in related videos';
+
+  @override
+  String get settingsTapToAdd => 'Tap to add';
+
+  @override
+  String get settingsKeywordSeparatorHelp =>
+      'Separate terms with |, for example: cats|dogs';
+
+  @override
+  String get settingsSaved => 'Saved';
+
+  @override
+  String settingsFilterTitle(String title) {
+    return 'Filter by $title';
+  }
+
+  @override
+  String settingsFilterBelow(String title, int value, String suffix) {
+    return 'Hide videos with $title below $value$suffix';
+  }
+
+  @override
+  String settingsCurrentNamedValue(String title, int value, String suffix) {
+    return 'Current $title: $value$suffix';
+  }
+
+  @override
+  String settingsChooseFilterValue(String title, String filterHint) {
+    return 'Choose $title$filterHint';
+  }
+
+  @override
+  String get settingsZeroDisablesFilter => ' (0 turns off this filter)';
+
+  @override
+  String get settingsCustomValue => 'Custom';
+
+  @override
+  String settingsCustomNamedValue(String title) {
+    return 'Custom $title';
+  }
+
+  @override
+  String get settingsChooseAccountsToSignOut =>
+      'Choose account UIDs to sign out';
+
+  @override
+  String settingsConfirmSignOutAccounts(String accounts) {
+    return 'Sign out of these accounts?\n\n$accounts';
+  }
+
+  @override
+  String get settingsSignOutCancel => 'Cancel';
+
+  @override
+  String get settingsSignOutOnly => 'Sign out locally';
+
+  @override
+  String get settingsDanmakuEnabled => 'Danmaku';
+
+  @override
+  String get settingsDanmakuEnabledDescription => 'Show danmaku over videos';
+
+  @override
+  String get settingsTapDanmaku => 'Tap danmaku';
+
+  @override
+  String get settingsTapDanmakuDescription =>
+      'Pause a danmaku by tapping it to like, copy, or report';
+
+  @override
+  String get settingsPlaybackSpeed => 'Playback speed';
+
+  @override
+  String get settingsPlaybackSpeedDescription =>
+      'Choose available video playback speeds';
+
+  @override
+  String get settingsTiltAngleThreshold => 'Tilt angle threshold';
+
+  @override
+  String get settingsAutoplay => 'Autoplay';
+
+  @override
+  String get settingsAutoplayDescription =>
+      'Start playback when opening video details';
+
+  @override
+  String get settingsFullscreenLockButton => 'Show lock button in full screen';
+
+  @override
+  String get settingsFullscreenScreenshotButton =>
+      'Show screenshot button in full screen';
+
+  @override
+  String get settingsFullscreenBattery => 'Show battery level in full screen';
+
+  @override
+  String get settingsDoubleTapSeek => 'Double-tap to seek';
+
+  @override
+  String get settingsDoubleTapSeekDescription =>
+      'Double-tap left to rewind and right to fast-forward; when off, double-tap pauses or plays';
+
+  @override
+  String get settingsSlideBrightnessVolume =>
+      'Swipe sides for brightness and volume';
+
+  @override
+  String get settingsSystemBrightness => 'Adjust system brightness';
+
+  @override
+  String get settingsSlideFullscreen =>
+      'Swipe center to enter or exit full screen';
+
+  @override
+  String get settingsPlayerVolume => 'Player volume';
+
+  @override
+  String get settingsMaximumVolume => 'Maximum volume';
+
+  @override
+  String get settingsDoubleTapSeekDuration => 'Double-tap seek duration';
+
+  @override
+  String get settingsRelativeSlideSeek => 'Use relative swipe seek duration';
+
+  @override
+  String get settingsSlideSeekDuration => 'Swipe seek duration';
+
+  @override
+  String get settingsSlideSeekDurationDescription =>
+      'How far to seek when swiping across the full player width';
+
+  @override
+  String get settingsAutomaticSubtitles => 'Automatic subtitles';
+
+  @override
+  String settingsCurrentPreference(String value) {
+    return 'Current preference: $value';
+  }
+
+  @override
+  String get settingsPauseWhenMinimized =>
+      'Pause when minimized and resume when restored';
+
+  @override
+  String get settingsKeyboardControls => 'Keyboard controls';
+
+  @override
+  String get settingsSuperChatDisplay => 'Super Chat display';
+
+  @override
+  String get settingsFullscreenSuperChatSize => 'Full-screen Super Chat size';
+
+  @override
+  String get settingsFullscreenSuperChatSizeDescription =>
+      'Adjust the size of Super Chats in full screen';
+
+  @override
+  String get settingsExpandPortraitVideo => 'Expand portrait videos';
+
+  @override
+  String get settingsExpandPortraitVideoDescription =>
+      'Expand portrait videos from 16:9 to 1:1 on phones and to 9:16 in landscape layouts';
+
+  @override
+  String get settingsAutoEnterFullscreen => 'Enter full screen automatically';
+
+  @override
+  String get settingsAutoEnterFullscreenDescription =>
+      'Enter full screen when playback starts';
+
+  @override
+  String get settingsAutoExitFullscreen => 'Exit full screen automatically';
+
+  @override
+  String get settingsAutoExitFullscreenDescription =>
+      'Exit full screen when playback ends';
+
+  @override
+  String get settingsExtendPlayerControls =>
+      'Keep player controls visible longer';
+
+  @override
+  String get settingsExtendPlayerControlsDescription =>
+      'Keep controls visible for 30 seconds to make screen-reader navigation easier';
+
+  @override
+  String get settingsBackgroundPlayback => 'Background playback';
+
+  @override
+  String get settingsBackgroundPlaybackDescription =>
+      'Keep playing while the app is in the background';
+
+  @override
+  String get settingsBackgroundPictureInPicture =>
+      'Background picture-in-picture';
+
+  @override
+  String get settingsBackgroundPictureInPictureDescription =>
+      'Enter picture-in-picture when the app goes to the background';
+
+  @override
+  String get settingsEnableBackgroundAudioSuggestion =>
+      'Turn on the background audio service for better controls';
+
+  @override
+  String get settingsHideDanmakuInPictureInPicture =>
+      'Hide danmaku in picture-in-picture';
+
+  @override
+  String get settingsHideDanmakuInPictureInPictureDescription =>
+      'Hide danmaku in the floating player';
+
+  @override
+  String get settingsReverseFullscreenGesture => 'Reverse full-screen gesture';
+
+  @override
+  String get settingsReverseFullscreenGestureDescription =>
+      'By default, swipe up to enter full screen and down to exit; turn on to reverse it';
+
+  @override
+  String get settingsFullscreenActionButtons =>
+      'Show action buttons in full screen';
+
+  @override
+  String get settingsOnlineViewerCount => 'Concurrent viewers';
+
+  @override
+  String get settingsOnlineViewerCountDescription =>
+      'Show how many people are watching now';
+
+  @override
+  String get settingsDefaultFullscreenOrientation =>
+      'Default full-screen orientation';
+
+  @override
+  String settingsCurrentFullscreenOrientation(String value) {
+    return 'Current orientation: $value';
+  }
+
+  @override
+  String get settingsBottomProgressBar => 'Bottom progress bar';
+
+  @override
+  String settingsCurrentBottomProgressBar(String value) {
+    return 'Current display: $value';
+  }
+
+  @override
+  String get settingsBackgroundAudioService => 'Background audio service';
+
+  @override
+  String get settingsBackgroundAudioServiceDescription =>
+      'Keeps play and pause controls available in picture-in-picture';
+
+  @override
+  String get settingsPlaybackOrder => 'Playback order';
+
+  @override
+  String get settingsTemporaryPlayerSettings =>
+      'Apply player settings only to the current video';
+
+  @override
+  String get settingsTemporaryPlayerSettingsDescription =>
+      'Except danmaku, subtitles, and options not available in Settings';
+
+  @override
+  String get settingsSubtitlePreference => 'Subtitle preference';
+
+  @override
+  String get settingsSubtitlePreferenceOff =>
+      'Don\'t show subtitles by default';
+
+  @override
+  String get settingsSubtitlePreferencePreferHuman =>
+      'Prefer non-auto-generated subtitles';
+
+  @override
+  String get settingsSubtitlePreferenceSkipAi =>
+      'Skip auto-generated subtitles and use the first available track';
+
+  @override
+  String get settingsSubtitlePreferenceAuto =>
+      'Prefer human subtitles when muted; otherwise skip auto-generated tracks';
+
+  @override
+  String get settingsSuperChatValidOnly => 'Show while active';
+
+  @override
+  String get settingsSuperChatPersistent => 'Always show';
+
+  @override
+  String get settingsSuperChatDisabled => 'Don\'t show';
+
+  @override
+  String get settingsFullscreenOrientationAuto =>
+      'Match video orientation (default)';
+
+  @override
+  String get settingsFullscreenOrientationUnchanged =>
+      'Keep current orientation';
+
+  @override
+  String get settingsFullscreenOrientationPortrait => 'Always portrait';
+
+  @override
+  String get settingsFullscreenOrientationLandscape => 'Always landscape';
+
+  @override
+  String settingsFullscreenOrientationRatio(double ratio) {
+    return 'Use portrait below a $ratio screen ratio or for portrait video; otherwise landscape';
+  }
+
+  @override
+  String get settingsFullscreenOrientationGravity =>
+      'Rotate with gravity even when system rotation is locked (Android only)';
+
+  @override
+  String get settingsProgressAlwaysShow => 'Always show';
+
+  @override
+  String get settingsProgressAlwaysHide => 'Always hide';
+
+  @override
+  String get settingsProgressFullscreenOnly => 'Show only in full screen';
+
+  @override
+  String get settingsProgressHideFullscreen => 'Hide in full screen';
+
+  @override
+  String get settingsHardwareDecoding => 'Hardware decoding';
+
+  @override
+  String get settingsHardwareDecodingDescription =>
+      'Use less power for video playback; turn off if playback freezes';
+
+  @override
+  String get settingsGuest1080p => '1080p without signing in';
+
+  @override
+  String get settingsGuest1080pDescription =>
+      'Try to play 1080p video while signed out';
+
+  @override
+  String get settingsBilibiliDataPlan => 'Bilibili carrier data support';
+
+  @override
+  String get settingsBilibiliDataPlanDescription =>
+      'Automatically use a Bilibili-specific carrier data plan when available; verify it in your carrier usage records';
+
+  @override
+  String get settingsCdn => 'CDN';
+
+  @override
+  String settingsCurrentCdn(String value) {
+    return 'Current: $value. Some CDNs may stop working; switch if playback fails';
+  }
+
+  @override
+  String get settingsLiveCdn => 'Live CDN';
+
+  @override
+  String settingsCurrentSource(String value) {
+    return 'Current: $value';
+  }
+
+  @override
+  String get settingsCdnSpeedTest => 'CDN speed test';
+
+  @override
+  String get settingsCdnSpeedTestDescription =>
+      'Tests by simulating video loading, which uses data; results are for reference only';
+
+  @override
+  String get settingsSeparateAudioCdn => 'Use a separate CDN for audio';
+
+  @override
+  String get settingsSeparateAudioCdnDescription =>
+      'Use the backup URL directly to fix missing audio on some videos';
+
+  @override
+  String get settingsDefaultVideoQuality => 'Default video quality';
+
+  @override
+  String get settingsCellularVideoQuality => 'Video quality on mobile data';
+
+  @override
+  String get settingsDefaultAudioQuality => 'Default audio quality';
+
+  @override
+  String get settingsCellularAudioQuality => 'Audio quality on mobile data';
+
+  @override
+  String get settingsDefaultLiveQuality => 'Default live quality';
+
+  @override
+  String get settingsCellularLiveQuality => 'Live quality on mobile data';
+
+  @override
+  String settingsCurrentVideoQuality(String value) {
+    return 'Current quality: $value';
+  }
+
+  @override
+  String settingsCurrentAudioQuality(String value) {
+    return 'Current audio quality: $value';
+  }
+
+  @override
+  String get settingsPreferredCodecs => 'Preferred codecs';
+
+  @override
+  String settingsPreferredCodecsDescription(String value) {
+    return 'Preferred codecs: $value. Adjust this to match your device support and needs';
+  }
+
+  @override
+  String get settingsAudioOutput => 'Audio output';
+
+  @override
+  String get settingsBufferSize => 'Buffer size';
+
+  @override
+  String settingsBufferSizeDescription(double value) {
+    return 'Current: $value MB. Used for both forward and backward buffers; live streams use all of it as forward buffer (mpv: --demuxer-max-bytes, --demuxer-max-back-bytes)';
+  }
+
+  @override
+  String get settingsBufferDuration => 'Buffer duration';
+
+  @override
+  String settingsBufferDurationDescription(double value) {
+    return 'Current: $value seconds. Actual buffering uses the lower of the size and duration limits; this doesn\'t affect live streams (mpv: --cache-secs)';
+  }
+
+  @override
+  String get settingsAutoSync => 'Auto sync';
+
+  @override
+  String settingsAutoSyncDescription(String value) {
+    return 'Current: $value (mpv: --autosync)';
+  }
+
+  @override
+  String get settingsVideoSync => 'Video sync';
+
+  @override
+  String settingsVideoSyncDescription(String value) {
+    return 'Current: $value (mpv: --video-sync)';
+  }
+
+  @override
+  String get settingsHardwareDecodingMode => 'Hardware decoding mode';
+
+  @override
+  String settingsHardwareDecodingModeDescription(String value) {
+    return 'Current: $value (mpv: --hwdec)';
+  }
+
+  @override
+  String get settingsEnterCdnHost => 'Enter CDN host';
+
+  @override
+  String get settingsLiveQualityDolby => 'Dolby';
+
+  @override
+  String get settingsLiveQuality4kOriginal => '4K Original';
+
+  @override
+  String get settingsLiveQuality4k => '4K';
+
+  @override
+  String get settingsLiveQuality2k => '2K';
+
+  @override
+  String get settingsLiveQualityOriginal => 'Original';
+
+  @override
+  String get settingsLiveQualityBluRay => 'Blu-ray';
+
+  @override
+  String get settingsLiveQualitySuperHd => 'Super HD';
+
+  @override
+  String get settingsLiveQualityHd => 'HD';
+
+  @override
+  String get settingsLiveQualitySmooth => 'Smooth';
+
+  @override
+  String get settingsHwdecSoftware => 'Use software decoding';
+
+  @override
+  String get settingsHwdecAny => 'Use any available decoder';
+
+  @override
+  String get settingsHwdecBest => 'Use the best decoder';
+
+  @override
+  String get settingsHwdecBestCopy => 'Use the best copy-back decoder';
+
+  @override
+  String get settingsHwdecNonDirect => 'copy-back';
+
+  @override
+  String settingsHwdecExclusive(String vendor) {
+    return '$vendor only';
+  }
+
+  @override
+  String get settingsHwdecExperimental => 'experimental';
+
+  @override
+  String get settingsHwdecDeprecated => 'deprecated';
+
+  @override
+  String get settingsHwdecAllPlatforms => 'all platforms';
+
+  @override
+  String get settingsHwdecPartialRockchip => 'selected Rockchip chips only';
+
+  @override
+  String get settingsWindowTitleBar => 'Show window title bar';
+
+  @override
+  String get settingsTrayIcon => 'Show tray icon';
+
+  @override
+  String get settingsLandscapeLayout => 'Landscape layout';
+
+  @override
+  String get settingsLandscapeLayoutDescription =>
+      'Use landscape layout and behavior on tablets and foldables; keeping the current orientation is recommended for full screen';
+
+  @override
+  String get settingsUseSidebar => 'Use sidebar';
+
+  @override
+  String get settingsUseSidebarDescription =>
+      'Replaces the top and bottom bars and disables related options';
+
+  @override
+  String get settingsUiScale => 'Interface scale';
+
+  @override
+  String settingsCurrentUiScale(String value) {
+    return 'Current scale: $value';
+  }
+
+  @override
+  String get settingsPageTransition => 'Page transition';
+
+  @override
+  String get settingsOptimizeTabletNavigation => 'Optimize tablet navigation';
+
+  @override
+  String get settingsMaterialYouBottomBar => 'Material 3 bottom bar';
+
+  @override
+  String get settingsMaterialYouBottomBarDescription =>
+      'Use the Material You bottom bar; turn off for a narrower bar';
+
+  @override
+  String get settingsFloatingBottomBar => 'Floating bottom bar';
+
+  @override
+  String get settingsListWidthLimit => 'List width limit (dp)';
+
+  @override
+  String settingsListWidthDescription(int home, int other, String screen) {
+    return 'Current: Home $home dp, other pages $other dp, screen $screen dp. Smaller widths create more columns.';
+  }
+
+  @override
+  String get settingsRemovePlayerSafeArea => 'Remove safe area on video pages';
+
+  @override
+  String get settingsDarkVideoPage => 'Use dark theme on video pages';
+
+  @override
+  String get settingsFeedWaterfall => 'Waterfall layout for Feed';
+
+  @override
+  String get settingsFeedWaterfallDescription =>
+      'Turn off to use a single column';
+
+  @override
+  String get settingsFeedUploaderPosition => 'Uploader list position in Feed';
+
+  @override
+  String get settingsShowAllFollowedUploaders =>
+      'Show all followed Uploaders in Feed';
+
+  @override
+  String get settingsExpandLiveUploaders => 'Expand live Uploaders in Feed';
+
+  @override
+  String get settingsFeedUnreadBadge => 'Feed unread badge';
+
+  @override
+  String get settingsMessageUnreadBadge => 'Message unread badge';
+
+  @override
+  String settingsCurrentBadgeStyle(String value) {
+    return 'Current badge style: $value';
+  }
+
+  @override
+  String get settingsMessageUnreadTypes => 'Unread message types';
+
+  @override
+  String settingsCurrentMessageTypes(String value) {
+    return 'Current message types: $value';
+  }
+
+  @override
+  String get settingsBarCollapseBehavior =>
+      'Top and bottom bar collapse behavior';
+
+  @override
+  String get settingsCollapseHomeTopBar => 'Collapse Home top bar';
+
+  @override
+  String get settingsCollapseHomeTopBarDescription =>
+      'Collapse the top bar while scrolling Home';
+
+  @override
+  String get settingsCollapseHomeBottomBar => 'Collapse Home bottom bar';
+
+  @override
+  String get settingsCollapseHomeBottomBarDescription =>
+      'Collapse the bottom bar while scrolling Home';
+
+  @override
+  String get settingsImageQuality => 'Image quality';
+
+  @override
+  String get settingsImagePreviewQuality => 'Full-size image quality';
+
+  @override
+  String get settingsImageQualityDescription =>
+      'Choose image clarity up to 100%';
+
+  @override
+  String get settingsDarkImageOverlay => 'Dark-mode image overlay';
+
+  @override
+  String get settingsDarkImageOverlayDescription =>
+      'Display color = original image × selected color; full-size images aren\'t affected';
+
+  @override
+  String get settingsToastOpacity => 'Toast opacity';
+
+  @override
+  String get settingsToastOpacityDescription => 'Customize toast opacity';
+
+  @override
+  String get settingsThemeMode => 'Theme mode';
+
+  @override
+  String settingsCurrentMode(String value) {
+    return 'Current mode: $value';
+  }
+
+  @override
+  String get settingsPureBlackTheme => 'Pure black theme';
+
+  @override
+  String get settingsAppTheme => 'App theme';
+
+  @override
+  String settingsCurrentTheme(String value) {
+    return 'Current theme: $value';
+  }
+
+  @override
+  String get settingsDynamicColor => 'Dynamic color';
+
+  @override
+  String get settingsExPiliPlusCustomColor => 'ExPiliPlus custom color';
+
+  @override
+  String get settingsSpecifiedColor => 'Selected color';
+
+  @override
+  String get settingsDefaultStartPage => 'Default start page';
+
+  @override
+  String settingsCurrentStartPage(String value) {
+    return 'Current start page: $value';
+  }
+
+  @override
+  String get settingsSpringParameters => 'Scroll spring parameters';
+
+  @override
+  String get settingsFontSize => 'Font size';
+
+  @override
+  String get settingsHomeTabs => 'Home tabs';
+
+  @override
+  String get settingsHomeTabsDescription => 'Remove or reorder Home tabs';
+
+  @override
+  String get settingsNavigationBarEditor => 'Edit Navbar';
+
+  @override
+  String get settingsNavigationBarEditorDescription =>
+      'Remove or reorder Navbar items';
+
+  @override
+  String get settingsExitDirectlyOnBack => 'Exit directly with Back';
+
+  @override
+  String get settingsExitDirectlyOnBackDescription =>
+      'When on, Back exits from any Home tab; when off, it first returns to the first Navbar tab';
+
+  @override
+  String get settingsScreenRefreshRate => 'Screen refresh rate';
+
+  @override
+  String get settingsSucceeded => 'Settings updated';
+
+  @override
+  String get settingsRestartRequired => 'Restart to apply';
+
+  @override
+  String get settingsSucceededRestartRequired =>
+      'Settings updated; restart to apply';
+
+  @override
+  String get settingsReset => 'Reset';
+
+  @override
+  String get settingsResetSucceededRestartRequired => 'Reset; restart to apply';
+
+  @override
+  String get settingsScaleRatio => 'Scale';
+
+  @override
+  String get settingsSpringParametersTitle => 'Spring parameters';
+
+  @override
+  String get settingsSpringDurationMode => 'Duration mode';
+
+  @override
+  String get settingsSpringPhysicalMode => 'Physical parameters';
+
+  @override
+  String get settingsListMaxColumnWidth =>
+      'Maximum column width (default 240 dp)';
+
+  @override
+  String get settingsHomeRecommendationFeed => 'Home recommendation feed';
+
+  @override
+  String settingsConfirmDarkColor(String color) {
+    return 'Use $color?';
+  }
+
+  @override
+  String get settingsDarkColorWarning =>
+      'This color is very dark and may make images harder to view';
+
+  @override
+  String get settingsUseServerSideDecoration =>
+      'Use SSD (Server-Side Decoration)';
+
+  @override
+  String get settingsUpPositionTop => 'Top';
+
+  @override
+  String get settingsUpPositionLeftFixed => 'Fixed left';
+
+  @override
+  String get settingsUpPositionRightFixed => 'Fixed right';
+
+  @override
+  String get settingsUpPositionLeftDrawer => 'Left drawer';
+
+  @override
+  String get settingsUpPositionRightDrawer => 'Right drawer';
+
+  @override
+  String get settingsBadgeHidden => 'Hidden';
+
+  @override
+  String get settingsBadgeDot => 'Dot';
+
+  @override
+  String get settingsBadgeNumber => 'Number';
+
+  @override
+  String get settingsUnreadPrivateMessages => 'Direct messages';
+
+  @override
+  String get settingsUnreadReplies => 'Replies';
+
+  @override
+  String get settingsUnreadMentions => 'Mentions';
+
+  @override
+  String get settingsUnreadLikes => 'Likes';
+
+  @override
+  String get settingsUnreadSystem => 'System notifications';
+
+  @override
+  String get settingsBarCollapseInstant => 'Instant';
+
+  @override
+  String get settingsBarCollapseSynchronized => 'Synchronized';
+
+  @override
+  String get settingsMinimizeOnExit => 'Minimize on exit';
+
+  @override
+  String get settingsCachePath => 'Cache location';
+
+  @override
+  String get settingsSponsorBlock => 'SponsorBlock';
+
+  @override
+  String get settingsAnimeIntroOutroSkip => 'Anime intro and outro skipping';
+
+  @override
+  String get settingsCheckUnreadFeed => 'Check for unread Feed updates';
+
+  @override
+  String get settingsCheckUnreadFeedDescription =>
+      'Tap to set the check interval in minutes';
+
+  @override
+  String get settingsVideoChapters => 'Show video chapters';
+
+  @override
+  String get settingsRelatedVideos => 'Show related videos';
+
+  @override
+  String get settingsVideoComments => 'Show video comments';
+
+  @override
+  String get settingsAnimeComments => 'Show anime comments';
+
+  @override
+  String get settingsExpandVideoDescription =>
+      'Expand video description by default';
+
+  @override
+  String get settingsExpandVideoDescriptionLandscape =>
+      'Expand video description in landscape';
+
+  @override
+  String get settingsLandscapeEpisodeTabs =>
+      'Show episodes and collections as landscape tabs';
+
+  @override
+  String get settingsLandscapeUploaderSidebar =>
+      'Open Uploader profiles in the landscape sidebar';
+
+  @override
+  String get settingsLandscapeImagePreview =>
+      'Open image previews in the landscape sidebar';
+
+  @override
+  String get settingsCommentFoldLines => 'Comment fold line count';
+
+  @override
+  String get settingsZeroLinesDoNotFold => '0 lines means don\'t fold';
+
+  @override
+  String settingsLineCount(String count) {
+    return '$count lines';
+  }
+
+  @override
+  String get settingsDanmakuLineHeight => 'Danmaku line height';
+
+  @override
+  String settingsDefaultNumber(String value) {
+    return 'Default: $value';
+  }
+
+  @override
+  String get settingsVideoWarnings => 'Show video warnings and dispute notices';
+
+  @override
+  String get settingsFeedWarnings => 'Show Feed warnings and dispute notices';
+
+  @override
+  String get settingsReverseEpisodesFromFirst =>
+      'Start reversed episodes and collections from the first item';
+
+  @override
+  String get settingsReverseEpisodesFromFirstDescription =>
+      'Switch to the first item in reverse order; otherwise keep the current item';
+
+  @override
+  String get settingsDisableSslVerification =>
+      'Disable SSL certificate verification';
+
+  @override
+  String get settingsDisableSslVerificationDescription =>
+      'Use with caution; disabling verification makes man-in-the-middle attacks easier';
+
+  @override
+  String get settingsContinuePartPrompt =>
+      'Show continue-playing prompt for multipart videos';
+
+  @override
+  String get settingsCommentKeywordFilter => 'Filter comment keywords';
+
+  @override
+  String get settingsFeedKeywordFilter => 'Filter Feed keywords';
+
+  @override
+  String get settingsExternalBrowser => 'Open links in external browser';
+
+  @override
+  String get settingsHorizontalSwipeThreshold => 'Horizontal swipe threshold';
+
+  @override
+  String settingsCurrentAndSystemDefault(String current, String defaultValue) {
+    return 'Current: $current; system default: $defaultValue';
+  }
+
+  @override
+  String get settingsRefreshDragDistance => 'Pull-to-refresh distance';
+
+  @override
+  String settingsCurrentMultiplier(String value) {
+    return 'Current: $value×';
+  }
+
+  @override
+  String get settingsRefreshIndicatorHeight => 'Refresh indicator height';
+
+  @override
+  String get settingsVipDanmaku => 'Show member color danmaku';
+
+  @override
+  String get settingsMergeDanmaku => 'Merge duplicate danmaku';
+
+  @override
+  String get settingsMergeDanmakuDescription =>
+      'Merge identical danmaku received within a short period';
+
+  @override
+  String get settingsTrendingRecommendations => 'Show Trending recommendations';
+
+  @override
+  String get settingsTrendingRecommendationsDescription =>
+      'Show entries such as The Bests on Trending';
+
+  @override
+  String get settingsAudioNormalization => 'Volume normalization';
+
+  @override
+  String get settingsFallbackNormalization =>
+      'Use when the server has no loudnorm config';
+
+  @override
+  String settingsFallbackValue(String value) {
+    return 'When unavailable: $value';
+  }
+
+  @override
+  String get settingsAudioNormalizationDisabled => 'Disabled';
+
+  @override
+  String get settingsAudioNormalizationDynaudnorm => 'dynaudnorm preset';
+
+  @override
+  String get settingsAudioNormalizationLoudnorm => 'loudnorm preset';
+
+  @override
+  String get settingsCustomParameters => 'Custom parameters';
+
+  @override
+  String get settingsAudioNormalizationParameterHelp =>
+      'Equivalent to --lavfi-complex=\"[aid1] parameters [ao]\"';
+
+  @override
+  String get settingsSuperResolution => 'Super resolution';
+
+  @override
+  String settingsSuperResolutionDescription(String value) {
+    return 'Current: $value\nThe default applies to anime and is off for other videos\nHardware decoding is required; if it still doesn\'t work, try the auto-copy decoder';
+  }
+
+  @override
+  String get settingsPreinitializePlayer => 'Pre-initialize player';
+
+  @override
+  String get settingsPreinitializePlayerDescription =>
+      'Reduce loading time for manual playback';
+
+  @override
+  String get settingsHomePageAnimation => 'Home page switching animation';
+
+  @override
+  String get settingsSearchSuggestions => 'Search suggestions';
+
+  @override
+  String get settingsSearchHistory => 'Save search history';
+
+  @override
+  String get settingsShowDecorations =>
+      'Show avatar, comment, and Feed decorations';
+
+  @override
+  String get settingsFanMedals => 'Show fan medals';
+
+  @override
+  String get settingsLivePhotoPreview => 'Preview Live Photos';
+
+  @override
+  String get settingsLivePhotoPreviewDescription =>
+      'Play Live Photos as video; turn off to preview a still image';
+
+  @override
+  String get settingsSeekPreviewThumbnails => 'Show thumbnails while seeking';
+
+  @override
+  String get settingsDanmakuHeatmap => 'Show danmaku heatmap';
+
+  @override
+  String get settingsDanmakuHeatmapDescription =>
+      'Shows how danmaku volume changes over time';
+
+  @override
+  String get settingsSaveComments => 'Save comments';
+
+  @override
+  String get settingsCommentAntifraud => 'Verify posted comments';
+
+  @override
+  String get settingsCommentAntifraudDescription =>
+      'Check whether a comment remains visible after posting';
+
+  @override
+  String get settingsUseBilibiliCommentCheck =>
+      'Use Bilibili Comment Anti-Fraud to verify comments';
+
+  @override
+  String get settingsFeedPostAntifraud =>
+      'Verify posted and reposted Feed items';
+
+  @override
+  String get settingsFeedPostAntifraudDescription =>
+      'Check whether a Feed item remains visible after posting or reposting';
+
+  @override
+  String get settingsBlockShoppingPosts => 'Block shopping Feed posts';
+
+  @override
+  String get settingsBlockShoppingComments => 'Block shopping comments';
+
+  @override
+  String get settingsSwipeToCloseSecondaryPages =>
+      'Swipe to close secondary pages';
+
+  @override
+  String get settingsPinchToShrinkVideo => 'Pinch to shrink video';
+
+  @override
+  String get settingsSecondaryPageActionBar =>
+      'Show bottom action bar on Feed and article details';
+
+  @override
+  String get settingsDragSubtitles => 'Drag subtitles to adjust bottom margin';
+
+  @override
+  String get settingsAnimeSchedule => 'Show anime schedule';
+
+  @override
+  String get settingsSilentImageDownload => 'Download images silently';
+
+  @override
+  String get settingsSilentImageDownloadDescription =>
+      'Don\'t show a loading dialog while downloading';
+
+  @override
+  String get settingsImageContextMenu =>
+      'Long-press or right-click for image menu';
+
+  @override
+  String get settingsHapticFeedback => 'Haptic feedback';
+
+  @override
+  String get settingsHapticFeedbackDescription =>
+      'Make sure haptic feedback is enabled in system settings';
+
+  @override
+  String get settingsTrendingSearches => 'Trending searches';
+
+  @override
+  String get settingsTrendingSearchesDescription => 'Show Trending searches';
+
+  @override
+  String get settingsSearchDiscovery => 'Search discovery';
+
+  @override
+  String get settingsSearchDiscoveryDescription => 'Show Search discovery';
+
+  @override
+  String get settingsDefaultSearchTerm => 'Default search term';
+
+  @override
+  String get settingsDefaultSearchTermDescription =>
+      'Show a default term in the search box';
+
+  @override
+  String get settingsQuickFavorite => 'Quick save';
+
+  @override
+  String get settingsQuickFavoriteDescription =>
+      'Tap to choose a default favorite\nTap Save to use the default; long-press to choose a folder';
+
+  @override
+  String get settingsCommentSearchKeywords => 'Comment search keywords';
+
+  @override
+  String get settingsCommentSearchKeywordsDescription =>
+      'Show suggested keywords in comments';
+
+  @override
+  String get settingsAiSummary => 'AI summary';
+
+  @override
+  String get settingsAiSummaryDescription =>
+      'Enable AI summaries on video details';
+
+  @override
+  String get settingsDisableReceivedLikes =>
+      'Disable Received likes in Messages';
+
+  @override
+  String get settingsDisableReceivedLikesDescription =>
+      'Prevent opening it to reduce social-media dependence';
+
+  @override
+  String get settingsShowCommentsByDefault => 'Show comments by default';
+
+  @override
+  String get settingsShowCommentsByDefaultDescription =>
+      'Open the Comments tab by default on video details (tab layout only)';
+
+  @override
+  String get settingsHttp2 => 'Enable HTTP/2';
+
+  @override
+  String get settingsRetryCount => 'Connection retry count';
+
+  @override
+  String get settingsZeroDisables => '0 disables this option';
+
+  @override
+  String get settingsRetryDelay => 'Connection retry delay';
+
+  @override
+  String get settingsRetryDelayDescription =>
+      'Actual delay = interval × retry number';
+
+  @override
+  String get settingsCommentDisplay => 'Comment display';
+
+  @override
+  String settingsCurrentlyPrioritize(String value) {
+    return 'Currently prioritize “$value”';
+  }
+
+  @override
+  String get settingsFeedDisplay => 'Feed display';
+
+  @override
+  String get settingsFeedInteractions => 'Show Feed interactions';
+
+  @override
+  String get settingsFeedInteractionsDescription =>
+      'Show interactions such as likes from people you follow and popular comments below Feed cards';
+
+  @override
+  String get settingsMemberDefaultTab => 'Default profile tab';
+
+  @override
+  String get settingsUploaderShopTab => 'Show Shop tab on Uploader profiles';
+
+  @override
+  String get settingsProxy => 'Proxy';
+
+  @override
+  String get settingsProxyDescription => 'Set proxy host:port';
+
+  @override
+  String get settingsProxyHostHint => 'Enter Host, separated with dots';
+
+  @override
+  String get settingsProxyPortHint => 'Enter Port';
+
+  @override
+  String get settingsMaximumCacheSize => 'Maximum cache size';
+
+  @override
+  String settingsCurrentMaximumCacheSize(String value) {
+    return 'Current maximum cache size: $value';
+  }
+
+  @override
+  String get settingsCheckForUpdates => 'Check for updates';
+
+  @override
+  String get settingsCheckForUpdatesDescription =>
+      'Check for updates whenever the app starts';
+
+  @override
+  String get settingsSetNewPath => 'Choose new location';
+
+  @override
+  String get settingsCheckInterval => 'Check interval';
+
+  @override
+  String get settingsChooseDefaultFavorite => 'Choose default favorite';
+
+  @override
+  String get replySortNewest => 'Newest comments';
+
+  @override
+  String get replySortHottest => 'Top comments';
+
+  @override
+  String get replySortFeatured => 'Featured comments';
+
+  @override
+  String get memberTabDefault => 'Default';
+
+  @override
+  String get memberTabHome => 'Home';
+
+  @override
+  String get memberTabFeed => 'Feed';
+
+  @override
+  String get memberTabUploads => 'Uploads';
+
+  @override
+  String get memberTabFavorites => 'Favorites';
+
+  @override
+  String get memberTabAnime => 'Anime';
+
+  @override
+  String get memberTabCourses => 'Courses';
+
+  @override
+  String get memberTabShop => 'Shop';
+
+  @override
+  String get logsTitle => 'Logs';
+
+  @override
+  String get logsCopied => 'Copied';
+
+  @override
+  String get logsCleared => 'Logs cleared';
+
+  @override
+  String get logsTriggerError => 'Trigger error';
+
+  @override
+  String get logsEnabledRestartRequired => 'Logging enabled; restart to apply';
+
+  @override
+  String get logsDisabledRestartRequired =>
+      'Logging disabled; restart to apply';
+
+  @override
+  String get logsEnable => 'Enable logging';
+
+  @override
+  String get logsDisable => 'Disable logging';
+
+  @override
+  String get logsCopy => 'Copy logs';
+
+  @override
+  String get logsErrorFeedback => 'Report an error';
+
+  @override
+  String get logsClear => 'Clear logs';
+
+  @override
+  String get logsRelatedInformation => 'Related information';
+
+  @override
+  String get logsCollapse => 'Collapse';
+
+  @override
+  String get logsExpand => 'Expand';
+
+  @override
+  String get logsDeviceInformation => 'Device information';
+
+  @override
+  String get logsAppInformation => 'App information';
+
+  @override
+  String get logsBuildInformation => 'Build information';
+
+  @override
+  String logsCopiedTimestamp(String time) {
+    return 'Copied $time to the clipboard';
+  }
+
+  @override
+  String get logsErrorDetails => 'Error details';
+
+  @override
+  String get logsStackTrace => 'Stack trace';
+
+  @override
+  String get settingsPlaybackSpeedSetDefault => 'Set as default speed';
+
+  @override
+  String get settingsPlaybackSpeedSetLongPress =>
+      'Set as default long-press speed';
+
+  @override
+  String get settingsPlaybackSpeedDelete => 'Delete';
+
+  @override
+  String get settingsPlaybackSpeedAdd => 'Add speed';
+
+  @override
+  String get settingsPlaybackSpeedCustom => 'Custom speed';
+
+  @override
+  String get settingsPlaybackSpeedExists => 'This speed already exists';
+
+  @override
+  String get settingsPlaybackSpeedDefaultCannotDelete =>
+      'Default speeds can\'t be deleted';
+
+  @override
+  String get settingsPlaybackSpeedHint =>
+      'Use the buttons below to set default and long-press speeds';
+
+  @override
+  String get settingsPlaybackSpeedDefault => 'Default speed';
+
+  @override
+  String get settingsPlaybackSpeedDynamicLongPress =>
+      'Dynamic long-press speed';
+
+  @override
+  String get settingsPlaybackSpeedDynamicLongPressDescription =>
+      'Use twice the default speed while pressing and holding';
+
+  @override
+  String get settingsPlaybackSpeedDefaultLongPress =>
+      'Default long-press speed';
+
+  @override
+  String get settingsPlaybackSpeedList => 'Speed list';
+
+  @override
+  String get settingsAdd => 'Add';
+
+  @override
+  String get settingsSavedNextLaunch =>
+      'Saved; applies next time the app starts';
+
+  @override
+  String get settingsResetNextLaunch =>
+      'Reset; applies next time the app starts';
+
+  @override
+  String settingsEditTitle(String title) {
+    return 'Edit $title';
+  }
+
+  @override
+  String get settingsSave => 'Save';
+
+  @override
+  String get settingsLongPressToReorder => 'Press and hold to reorder';
+
+  @override
+  String settingsCurrentFontSize(String value) {
+    return 'Current font size: $value';
+  }
+
+  @override
+  String get settingsSmall => 'Small';
+
+  @override
+  String get settingsLarge => 'Large';
+
+  @override
+  String get settingsScreenRefreshRateTitle => 'Screen refresh rate';
+
+  @override
+  String get settingsRestartIfDisplayModeFails =>
+      'Not applied? Try restarting the app';
+
+  @override
+  String get settingsAutomatic => 'Automatic';
+
+  @override
+  String get settingsSystemModeMarker => 'system';
+
+  @override
+  String get settingsChooseAppTheme => 'Choose app theme';
+
+  @override
+  String get settingsPaletteStyle => 'Palette style';
+
+  @override
+  String get settingsDynamicColorUnsupported =>
+      'Dynamic color may not be supported on this device';
+
+  @override
+  String settingsUseFont(String font) {
+    return 'Use $font';
+  }
+
+  @override
+  String get settingsViewLicense => 'View license';
+
+  @override
+  String get settingsAgreeAndDownload => 'Agree and download';
+
+  @override
+  String settingsFontDownloaded(String font) {
+    return '$font downloaded';
+  }
+
+  @override
+  String settingsFontDownloading(int progress) {
+    return 'Downloading $progress%';
+  }
+
+  @override
+  String get settingsFontConnecting => 'Connecting to download source';
+
+  @override
+  String settingsDownloadedWithSize(String size) {
+    return 'Downloaded · $size';
+  }
+
+  @override
+  String get settingsDownloaded => 'Downloaded';
+
+  @override
+  String get settingsDownloadFont => 'Download font';
+
+  @override
+  String get settingsAppFontTitle => 'App font';
+
+  @override
+  String get settingsFontLxgwWenKai => 'LXGW WenKai';
+
+  @override
+  String get settingsFontLxgwZhenKai => 'LXGW ZhenKai';
+
+  @override
+  String get settingsFontLxgwNeoXiHei => 'LXGW Neo XiHei';
+
+  @override
+  String get settingsFontLxgwZhuqueFangsong => 'LXGW Zhuque Fangsong';
+
+  @override
+  String get settingsFontSourceHanSans => 'Source Han Sans';
+
+  @override
+  String get settingsFontSourceHanSerif => 'Source Han Serif';
+
+  @override
+  String get settingsFontFusionPixel => 'Fusion Pixel';
+
+  @override
+  String settingsFontLicenseNotice(String font) {
+    return 'This app will use $font. By downloading and using it, you agree to its official license.';
+  }
+
+  @override
+  String get settingsFullscreenSuperChatSizeTitle =>
+      'Full-screen Super Chat size';
+
+  @override
+  String get themeColorDefaultGreen => 'Default green';
+
+  @override
+  String get themeColorPink => 'Pink';
+
+  @override
+  String get themeColorRed => 'Red';
+
+  @override
+  String get themeColorOrange => 'Orange';
+
+  @override
+  String get themeColorAmber => 'Amber';
+
+  @override
+  String get themeColorYellow => 'Yellow';
+
+  @override
+  String get themeColorLime => 'Lime';
+
+  @override
+  String get themeColorLightGreen => 'Light green';
+
+  @override
+  String get themeColorGreen => 'Green';
+
+  @override
+  String get themeColorTeal => 'Teal';
+
+  @override
+  String get themeColorCyan => 'Cyan';
+
+  @override
+  String get themeColorLightBlue => 'Light blue';
+
+  @override
+  String get themeColorBlue => 'Blue';
+
+  @override
+  String get themeColorIndigo => 'Indigo';
+
+  @override
+  String get themeColorPurple => 'Purple';
+
+  @override
+  String get themeColorDeepPurple => 'Deep purple';
+
+  @override
+  String get themeColorBlueGrey => 'Blue grey';
+
+  @override
+  String get themeColorBrown => 'Brown';
+
+  @override
+  String get themeColorGrey => 'Grey';
+
+  @override
+  String get commonCopy => 'Copy';
+
+  @override
+  String get homeFollowingAnime => 'Following';
+
+  @override
+  String get homeRankings => 'Rankings';
+
+  @override
+  String get homeWeeklyMustWatch => 'The Bests';
+
+  @override
+  String get homeEssentialVideos => 'Bilibili essentials';
+
+  @override
+  String get homeLastSeenRefresh => 'You were here last time\nTap to refresh';
+
+  @override
+  String get homeSwitchToCover => 'Switch to cover';
+
+  @override
+  String get homeSwitchToFirstFrame => 'Switch to first frame';
+
+  @override
+  String get homeGameEvents => 'Gaming events';
+
+  @override
+  String get homeAllLiveCategories => 'All categories';
+
+  @override
+  String get homeMyLiveFollowing => 'Following';
+
+  @override
+  String homeLiveFollowingCount(String count) {
+    return '$count live now';
+  }
+
+  @override
+  String get aboutAppDescription =>
+      'A third-party Bilibili client built with Flutter';
+
+  @override
+  String get aboutAppSemantics => 'Discover a different world together';
+
+  @override
+  String get aboutAccessibilityAdapted => 'Accessibility supported';
+
+  @override
+  String get aboutCurrentVersion => 'Current version';
+
+  @override
+  String get aboutOpenSupportedLinks => 'Open supported links';
+
+  @override
+  String get aboutIssueFeedback => 'Report an issue';
+
+  @override
+  String get aboutErrorLogs => 'Error logs';
+
+  @override
+  String get aboutClearLogsHint => 'Press and hold to clear logs';
+
+  @override
+  String get aboutClearCacheConfirm =>
+      'This will clear image and network caches. Continue?';
+
+  @override
+  String get aboutClearing => 'Clearing…';
+
+  @override
+  String get aboutClearSucceeded => 'Cleared';
+
+  @override
+  String get aboutClearCache => 'Clear cache';
+
+  @override
+  String aboutImageNetworkCache(Object size) {
+    return 'Images and network cache: $size';
+  }
+
+  @override
+  String get aboutImportExportLogin => 'Import / export sign-in data';
+
+  @override
+  String get aboutLoginData => 'Sign-in data';
+
+  @override
+  String get aboutImportExportSettings => 'Import / export settings';
+
+  @override
+  String get aboutSettingsData => 'Settings';
+
+  @override
+  String get aboutResetAllSettings => 'Reset all settings';
+
+  @override
+  String get aboutResetAllSettingsQuestion => 'Reset all settings?';
+
+  @override
+  String get aboutResetSucceeded => 'Reset';
+
+  @override
+  String get aboutResetExportableSettings => 'Reset exportable settings';
+
+  @override
+  String get aboutResetAllData => 'Reset all data (including sign-in data)';
+
+  @override
+  String importExportTitle(Object title) {
+    return 'Import / export $title';
+  }
+
+  @override
+  String importConfirmPreview(Object title) {
+    return 'Import the following $title?';
+  }
+
+  @override
+  String importInputTitle(Object title) {
+    return 'Enter $title';
+  }
+
+  @override
+  String importJsonParseFailed(Object error) {
+    return 'Couldn\'t parse JSON: $error';
+  }
+
+  @override
+  String get importSucceeded => 'Imported';
+
+  @override
+  String importFailed(Object error) {
+    return 'Couldn\'t import: $error';
+  }
+
+  @override
+  String get importClipboardEmpty => 'The clipboard is empty';
+
+  @override
+  String get exportToClipboard => 'Export to clipboard';
+
+  @override
+  String get exportToLocalFile => 'Export to a local file';
+
+  @override
+  String get importEnterManually => 'Enter manually';
+
+  @override
+  String get importFromClipboard => 'Import from clipboard';
+
+  @override
+  String get importFromLocalFile => 'Import from a local file';
+
+  @override
+  String get memberHomeVideos => 'Videos';
+
+  @override
+  String get memberHomeFavorites => 'Favorites';
+
+  @override
+  String get memberHomeRecentCoinedVideos => 'Recently supported with coins';
+
+  @override
+  String get memberHomeRecentLikedVideos => 'Recently liked videos';
+
+  @override
+  String get memberHomePosts => 'Posts';
+
+  @override
+  String get memberHomeAudio => 'Audio';
+
+  @override
+  String get memberHomeComics => 'Comics';
+
+  @override
+  String get memberHomeAnime => 'Anime';
+
+  @override
+  String blacklistTitle(Object count) {
+    return 'Blocked users$count';
+  }
+
+  @override
+  String blacklistCountSuffix(Object count) {
+    return ': $count';
+  }
+
+  @override
+  String blacklistAddedAt(Object date) {
+    return 'Added: $date';
+  }
+
+  @override
+  String blacklistRemoveConfirm(Object name) {
+    return 'Remove $name from blocked users?';
+  }
+
+  @override
+  String get blacklistRemoved => 'Removed';
+
+  @override
+  String get webDavSettingsTitle => 'WebDAV settings';
+
+  @override
+  String get webDavBackupSettings => 'Back up settings';
+
+  @override
+  String get webDavRestoreSettings => 'Restore settings';
+
+  @override
+  String get webDavConfigurationSucceeded => 'Configuration saved';
+
+  @override
+  String webDavConfigurationFailed(Object error) {
+    return 'Couldn\'t save configuration: $error';
+  }
+
+  @override
+  String webDavBackupConfigurationFailed(Object error) {
+    return 'Couldn\'t back up. Check the configuration: $error';
+  }
+
+  @override
+  String get webDavBackupSucceeded => 'Backup complete';
+
+  @override
+  String webDavBackupFailed(Object error) {
+    return 'Couldn\'t back up: $error';
+  }
+
+  @override
+  String get webDavRestoreSucceeded => 'Settings restored';
+
+  @override
+  String webDavRestoreFailed(Object error) {
+    return 'Couldn\'t restore settings: $error';
+  }
+
+  @override
+  String webDavCheckConfiguration(Object error) {
+    return 'Check the configuration: $error';
+  }
+
+  @override
+  String get webDavBackupNotFound => 'No settings backup was found';
+
+  @override
+  String get sponsorBlockTitle => 'SponsorBlock';
+
+  @override
+  String get sponsorBlockMinimumDuration => 'Minimum segment duration';
+
+  @override
+  String get sponsorBlockMinimumDurationDescription =>
+      'Ignore segments shorter than this duration';
+
+  @override
+  String get sponsorBlockAbout => 'About SponsorBlock';
+
+  @override
+  String get sponsorBlockUserId => 'User ID';
+
+  @override
+  String get sponsorBlockUserIdValidation =>
+      'The User ID must be an alphanumeric string of at least 30 characters';
+
+  @override
+  String get sponsorBlockRandom => 'Random';
+
+  @override
+  String get sponsorBlockShowSkipToast => 'Show a toast after skipping';
+
+  @override
+  String get sponsorBlockTrackSkips => 'Track skip statistics';
+
+  @override
+  String get sponsorBlockTrackSkipsDescription =>
+      'This reports skipped segments so contributors can see how many people they helped. Votes are also used to keep spam out of the database. A message is sent to the server whenever a segment is skipped. Enabling this improves the accuracy of the statistics.';
+
+  @override
+  String get sponsorBlockYourInformation => 'Your information';
+
+  @override
+  String sponsorBlockUserInformation(
+    Object minutes,
+    Object segments,
+    Object views,
+  ) {
+    return 'You submitted $segments segments\nYour segments have helped viewers $views times\n($minutes minutes saved)';
+  }
+
+  @override
+  String get sponsorBlockServerError => 'Server error';
+
+  @override
+  String get sponsorBlockServerAddress => 'Server address';
+
+  @override
+  String get sponsorBlockServerStatus => 'Server status';
+
+  @override
+  String get sponsorBlockServerNormal => 'Available';
+
+  @override
+  String get sponsorBlockServerUnavailable => 'Unavailable';
+
+  @override
+  String sponsorBlockColorPickerTitle(Object category) {
+    return 'Color for $category';
+  }
+
+  @override
+  String get sponsorBlockDescriptionSponsor =>
+      'Paid promotion, sponsorship, direct advertising, or product placement. This does not include unpaid mentions.';
+
+  @override
+  String get sponsorBlockDescriptionSelfPromotion =>
+      'Unpaid or self promotion, including merchandise, donations, or collaborator information.';
+
+  @override
+  String get sponsorBlockDescriptionExclusiveAccess =>
+      'Marks a whole video that showcases a product, service, or location provided free or at a discount.';
+
+  @override
+  String get sponsorBlockDescriptionInteraction =>
+      'A brief reminder to like, follow, or interact. Longer segments with meaningful content belong under self promotion.';
+
+  @override
+  String get sponsorBlockDescriptionHighlight =>
+      'The moment most viewers are looking for, such as the timestamp shown on the thumbnail.';
+
+  @override
+  String get sponsorBlockDescriptionIntro =>
+      'An intermission or intro with no actual content, such as a pause, still frame, or repeated animation.';
+
+  @override
+  String get sponsorBlockDescriptionOutro =>
+      'Endcards or credits with no additional content.';
+
+  @override
+  String get sponsorBlockDescriptionPreview =>
+      'A recap or preview whose content appears again later in this video or the same series.';
+
+  @override
+  String get sponsorBlockDescriptionPadding =>
+      'Blank or unrelated padding around reposted content, with no meaningful connection to the main video.';
+
+  @override
+  String get sponsorBlockDescriptionFiller =>
+      'Tangents or jokes that are not required to understand the main content. This is an aggressive category.';
+
+  @override
+  String get sponsorBlockDescriptionMusicOfftopic =>
+      'For music videos only: non-music sections that do not fit another category.';
+
+  @override
+  String get videoCooperation => 'Collaboration';
+
+  @override
+  String get commonSort => 'Sort';
+
+  @override
+  String get commonMultiSelect => 'Select multiple';
+
+  @override
+  String get commonUpdate => 'Update';
+
+  @override
+  String get commonUpdateSucceeded => 'Updated';
+
+  @override
+  String get commonUpdateFailed => 'Couldn\'t update';
+
+  @override
+  String get commonMove => 'Move';
+
+  @override
+  String get commonPlayAll => 'Play all';
+
+  @override
+  String get favoriteTitle => 'My favorites';
+
+  @override
+  String get favoriteNewFolder => 'New favorites folder';
+
+  @override
+  String get favoriteFolderSort => 'Sort favorites folders';
+
+  @override
+  String get favoriteLoadAllBeforeSorting =>
+      'Load all favorites folders before sorting';
+
+  @override
+  String get favoriteTabVideos => 'Videos';
+
+  @override
+  String get favoriteTabAnime => 'Anime';
+
+  @override
+  String get favoriteTabSeries => 'TV series';
+
+  @override
+  String get favoriteTabArticles => 'Articles';
+
+  @override
+  String get favoriteTabNotes => 'Notes';
+
+  @override
+  String get favoriteTabTopics => 'Topics';
+
+  @override
+  String get favoriteTabCourses => 'Courses';
+
+  @override
+  String get laterAll => 'All';
+
+  @override
+  String get laterUnfinished => 'Unfinished';
+
+  @override
+  String get laterRecentlyAdded => 'Recently added';
+
+  @override
+  String get laterEarliestAdded => 'Earliest added';
+
+  @override
+  String get laterClearInvalid => 'Clear unavailable';
+
+  @override
+  String get laterClearWatched => 'Clear watched';
+
+  @override
+  String get laterClearAll => 'Clear all';
+
+  @override
+  String get historyAll => 'All';
+
+  @override
+  String get historyTitle => 'Watch history';
+
+  @override
+  String get historyPause => 'Pause watch history';
+
+  @override
+  String get historyResume => 'Resume watch history';
+
+  @override
+  String get historyClear => 'Clear watch history';
+
+  @override
+  String get historyDeleteWatched => 'Delete watched items';
+
+  @override
+  String get historyDisabled => ' Watch history is paused';
+
+  @override
+  String get historyTapToEnable => 'Turn on';
+
+  @override
+  String get downloadOfflineTitle => 'Downloads';
+
+  @override
+  String downloadDownloadingCount(Object count) {
+    return 'Downloading ($count)';
+  }
+
+  @override
+  String get downloadDownloadedVideos => 'Downloaded videos';
+
+  @override
+  String downloadVideoCount(Object count) {
+    return '$count videos';
+  }
+
+  @override
+  String get downloadCourse => 'Course';
+
+  @override
+  String get downloadAnime => 'Anime';
+
+  @override
+  String get downloadMovie => 'Movie';
+
+  @override
+  String get downloadDocumentary => 'Documentary';
+
+  @override
+  String get downloadChineseAnimation => 'Chinese animation';
+
+  @override
+  String get downloadTvSeries => 'TV series';
+
+  @override
+  String get downloadVarietyShow => 'Variety show';
+
+  @override
+  String get downloadConfirmDelete => 'Delete this download?';
+
+  @override
+  String get downloadUpdateDanmaku => 'Update danmaku';
+
+  @override
+  String get messagesTitle => 'Messages';
+
+  @override
+  String get messagesNewFollowers => 'New followers';
+
+  @override
+  String get messagesRepliesToMe => 'Replies';
+
+  @override
+  String get messagesMentions => 'Mentions';
+
+  @override
+  String get messagesReceivedLikes => 'Likes';
+
+  @override
+  String get messagesSystemNotifications => 'System notifications';
+
+  @override
+  String get messagesMarkedAsRead => 'Marked as read';
+
+  @override
+  String get messagesMarkAsRead => 'Mark as read';
+
+  @override
+  String get messagesEnableDoNotDisturb => 'Turn on mute';
+
+  @override
+  String get messagesDisableDoNotDisturb => 'Turn off mute';
+
+  @override
+  String get messagesDeleteConversationConfirm => 'Delete this conversation?';
+
+  @override
+  String get contactsTitle => 'Contacts';
+
+  @override
+  String get loginDevicesTitle => 'Sign-in devices';
+
+  @override
+  String get loginDevicesCurrentDevice => '(this device)';
+
+  @override
+  String get memberMyFeed => 'My posts';
+
+  @override
+  String get memberSpaceSettings => 'Profile settings';
+
+  @override
+  String get messagesLikeDetails => 'Like details';
+
+  @override
+  String get messagesMentionsMe => 'Mentions';
+
+  @override
+  String get messagesDeleteNotificationConfirm => 'Delete this notification?';
+
+  @override
+  String messagesMentionedIn(Object business) {
+    return ' mentioned you in $business';
+  }
+
+  @override
+  String get messagesAndOthers => ' and others';
+
+  @override
+  String messagesCommentsOnMyItem(Object business, Object count) {
+    return ' left $count comments on your $business';
+  }
+
+  @override
+  String get messagesLatest => 'Latest';
+
+  @override
+  String get messagesTotal => 'All time';
+
+  @override
+  String get messagesDeleteLikeNoticeConfirm =>
+      'If you delete this notification, it will appear again when the item receives a new like. Continue?';
+
+  @override
+  String get messagesStopNotifications => 'Stop notifications';
+
+  @override
+  String get messagesStopNotificationsConfirm =>
+      'You won\'t receive more like notifications for this item, but it will remain in the list. Continue?';
+
+  @override
+  String get messagesReceiveNotifications => 'Receive notifications';
+
+  @override
+  String messagesAndPeople(Object count) {
+    return ' and $count others';
+  }
+
+  @override
+  String messagesLikedMyItem(Object business) {
+    return ' liked your $business';
+  }
+
+  @override
+  String get messagesViewFeed => 'View post';
+
+  @override
+  String get messagesWebLink => 'Web link';
 }

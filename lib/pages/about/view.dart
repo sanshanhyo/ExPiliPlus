@@ -19,6 +19,7 @@ import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -84,6 +85,7 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     const style = TextStyle(fontSize: 15);
     final outline = theme.colorScheme.outline;
@@ -91,7 +93,7 @@ class _AboutPageState extends State<AboutPage> {
     final showAppBar = widget.showAppBar;
     final padding = MediaQuery.viewPaddingOf(context);
     return Scaffold(
-      appBar: showAppBar ? AppBar(title: const Text('关于')) : null,
+      appBar: showAppBar ? AppBar(title: Text(l10n.settingsAboutTitle)) : null,
       resizeToAvoidBottomInset: false,
       body: ListView(
         padding: EdgeInsets.only(
@@ -126,13 +128,13 @@ class _AboutPageState extends State<AboutPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '使用Flutter开发的B站第三方客户端',
+                  l10n.aboutAppDescription,
                   style: TextStyle(color: outline),
-                  semanticsLabel: '与你一起，发现不一样的世界',
+                  semanticsLabel: l10n.aboutAppSemantics,
                 ),
-                const Icon(
+                Icon(
                   Icons.accessibility_new,
-                  semanticLabel: "无障碍适配",
+                  semanticLabel: l10n.aboutAccessibilityAdapted,
                   size: 18,
                 ),
               ],
@@ -144,7 +146,7 @@ class _AboutPageState extends State<AboutPage> {
             onSecondaryTap: PlatformUtils.isMobile
                 ? null
                 : () => Utils.copyText(currentVersion),
-            title: const Text('当前版本'),
+            title: Text(l10n.aboutCurrentVersion),
             leading: const Icon(Icons.commit_outlined),
             trailing: Text(
               currentVersion,
@@ -182,14 +184,14 @@ Commit Hash: ${BuildConfig.commitHash}''',
             ListTile(
               onTap: PiliAndroidHelper.openLinkVerifySettings,
               leading: const Icon(MdiIcons.linkBoxOutline),
-              title: const Text('打开受支持的链接'),
+              title: Text(l10n.aboutOpenSupportedLinks),
               trailing: Icon(Icons.arrow_forward, size: 16, color: outline),
             ),
           ListTile(
             onTap: () =>
                 PageUtils.launchURL('${Constants.sourceCodeUrl}/issues'),
             leading: const Icon(Icons.feedback_outlined),
-            title: const Text('问题反馈'),
+            title: Text(l10n.aboutIssueFeedback),
             trailing: Icon(Icons.arrow_forward, size: 16, color: outline),
           ),
           ListTile(
@@ -199,8 +201,8 @@ Commit Hash: ${BuildConfig.commitHash}''',
                 ? null
                 : LoggerUtils.clearLogs,
             leading: const Icon(Icons.bug_report_outlined),
-            title: const Text('错误日志'),
-            subtitle: Text('长按清除日志', style: subTitleStyle),
+            title: Text(l10n.aboutErrorLogs),
+            subtitle: Text(l10n.aboutClearLogsHint, style: subTitleStyle),
             trailing: Icon(Icons.arrow_forward, size: 16, color: outline),
           ),
           ListTile(
@@ -208,13 +210,13 @@ Commit Hash: ${BuildConfig.commitHash}''',
               if (cacheSize.value.isNotEmpty) {
                 showConfirmDialog(
                   context: context,
-                  title: const Text('提示'),
-                  content: const Text('该操作将清除图片及网络请求缓存数据，确认清除？'),
+                  title: Text(l10n.commonNotice),
+                  content: Text(l10n.aboutClearCacheConfirm),
                   onConfirm: () async {
-                    SmartDialog.showLoading(msg: '正在清除...');
+                    SmartDialog.showLoading(msg: l10n.aboutClearing);
                     try {
                       await CacheManager.clearLibraryCache();
-                      SmartDialog.showToast('清除成功');
+                      SmartDialog.showToast(l10n.aboutClearSucceeded);
                     } catch (err) {
                       SmartDialog.showToast(err.toString());
                     } finally {
@@ -226,20 +228,20 @@ Commit Hash: ${BuildConfig.commitHash}''',
               }
             },
             leading: const Icon(Icons.delete_outline),
-            title: const Text('清除缓存'),
+            title: Text(l10n.aboutClearCache),
             subtitle: Obx(
               () => Text(
-                '图片及网络缓存 ${cacheSize.value}',
+                l10n.aboutImageNetworkCache(cacheSize.value),
                 style: subTitleStyle,
               ),
             ),
           ),
           ListTile(
-            title: const Text('导入/导出登录信息'),
+            title: Text(l10n.aboutImportExportLogin),
             leading: const Icon(Icons.import_export_outlined),
             onTap: () => showImportExportDialog<Map>(
               context,
-              title: '登录信息',
+              title: l10n.aboutLoginData,
               localFileName: () => 'account',
               onExport: () =>
                   Utils.jsonEncoder.convert(Accounts.account.toMap()),
@@ -257,12 +259,12 @@ Commit Hash: ${BuildConfig.commitHash}''',
             ),
           ),
           ListTile(
-            title: const Text('导入/导出设置'),
+            title: Text(l10n.aboutImportExportSettings),
             dense: false,
             leading: const Icon(Icons.import_export_outlined),
             onTap: () => showImportExportDialog<Map<String, dynamic>>(
               context,
-              title: '设置',
+              title: l10n.aboutSettingsData,
               localFileName: () => 'setting_${DeviceUtils.platformName}',
               onExport: GStorage.exportAllSettings,
               onImport: (json) async {
@@ -272,14 +274,14 @@ Commit Hash: ${BuildConfig.commitHash}''',
             ),
           ),
           ListTile(
-            title: const Text('重置所有设置'),
+            title: Text(l10n.aboutResetAllSettings),
             leading: const Icon(Icons.settings_backup_restore_outlined),
             onTap: () => showDialog(
               context: context,
               builder: (context) {
                 return SimpleDialog(
                   clipBehavior: Clip.hardEdge,
-                  title: const Text('是否重置所有设置？'),
+                  title: Text(l10n.aboutResetAllSettingsQuestion),
                   children: [
                     DialogOption(
                       onPressed: () async {
@@ -288,17 +290,20 @@ Commit Hash: ${BuildConfig.commitHash}''',
                           GStorage.setting.clear(),
                           GStorage.video.clear(),
                         ]);
-                        SmartDialog.showToast('重置成功');
+                        SmartDialog.showToast(l10n.aboutResetSucceeded);
                       },
-                      child: const Text('重置可导出的设置', style: style),
+                      child: Text(
+                        l10n.aboutResetExportableSettings,
+                        style: style,
+                      ),
                     ),
                     DialogOption(
                       onPressed: () async {
                         Get.back();
                         await GStorage.clear();
-                        SmartDialog.showToast('重置成功');
+                        SmartDialog.showToast(l10n.aboutResetSucceeded);
                       },
-                      child: const Text('重置所有数据（含登录信息）', style: style),
+                      child: Text(l10n.aboutResetAllData, style: style),
                     ),
                   ],
                 );

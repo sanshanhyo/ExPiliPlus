@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 
 enum MemberTabType {
   def('默认'),
@@ -27,4 +28,15 @@ enum MemberTabType {
 
   final String title;
   const MemberTabType(this.title);
+
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .def => l10n.memberTabDefault,
+    .home => l10n.memberTabHome,
+    .dynamic => l10n.memberTabFeed,
+    .contribute => l10n.memberTabUploads,
+    .favorite => l10n.memberTabFavorites,
+    .bangumi => l10n.memberTabAnime,
+    .cheese => l10n.memberTabCourses,
+    .shop => l10n.memberTabShop,
+  };
 }

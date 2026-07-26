@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/dynamics_create/view.dart';
 import 'package:ex_piliplus/pages/dynamics_tab/view.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart' hide DraggableScrollableSheet;
 import 'package:get/get.dart';
 
@@ -35,7 +36,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
       height: 34,
       margin: EdgeInsets.only(left: !isRight ? 16 : 0, right: isRight ? 16 : 0),
       child: IconButton(
-        tooltip: '发布动态',
+        tooltip: context.l10n.feedCreatePost,
         style: ButtonStyle(
           padding: const WidgetStatePropertyAll(EdgeInsets.zero),
           backgroundColor: WidgetStatePropertyAll(
@@ -188,7 +189,7 @@ class _DynamicsPageState extends CommonPageState<DynamicsPage>
                 TabBarTheme.of(context).labelStyle?.copyWith(fontSize: 13) ??
                 const TextStyle(fontSize: 13),
             tabs: DynamicsTabType.values
-                .map((e) => Tab(text: e.label))
+                .map((e) => Tab(text: e.localizedLabel(context.l10n)))
                 .toList(),
             onTap: (index) {
               if (!_dynamicsController.tabController.indexIsChanging) {

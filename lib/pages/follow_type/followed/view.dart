@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/pages/follow_type/followed/controller.dart';
 import 'package:ex_piliplus/pages/follow_type/view.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/parse_int.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,10 @@ class _FollowedPageState extends FollowTypePageState<FollowedPage> {
   PreferredSizeWidget get appBar => AppBar(
     title: Obx(
       () => Text(
-        '我关注的${controller.total.value}人也关注了${controller.name.value ?? 'TA'}',
+        context.l10n.followAlsoFollowed(
+          controller.total.value,
+          controller.name.value ?? context.l10n.followUnknownPerson,
+        ),
       ),
     ),
   );

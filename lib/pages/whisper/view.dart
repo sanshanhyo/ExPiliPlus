@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/whisper/controller.dart';
 import 'package:ex_piliplus/pages/whisper/widgets/item.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/three_dot_ext.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
@@ -29,10 +30,10 @@ class _WhisperPageState extends State<WhisperPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('消息'),
+        title: Text(context.l10n.messagesTitle),
         actions: [
           IconButton(
-            tooltip: '新增粉丝',
+            tooltip: context.l10n.messagesNewFollowers,
             onPressed: () => Get.toNamed(
               '/webview',
               parameters: {
@@ -195,7 +196,7 @@ class _WhisperPageState extends State<WhisperPage> {
               ),
               onTap: () {
                 if (!item.enabled) {
-                  SmartDialog.showToast('已禁用');
+                  SmartDialog.showToast(context.l10n.commonDisabled);
                   return;
                 }
                 _controller.unreadCounts[index] = 0;

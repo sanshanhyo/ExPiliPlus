@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/fav/topic/controller.dart';
 import 'package:ex_piliplus/pages/fav/video/controller.dart';
 import 'package:ex_piliplus/pages/fav_folder_sort/view.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -51,10 +52,11 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('我的收藏'),
+        title: Text(l10n.favoriteTitle),
         actions: [
           Obx(
             () => _showVideoFavMenu.value
@@ -74,7 +76,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                       },
                     ),
                     icon: const Icon(Icons.add),
-                    tooltip: '新建收藏夹',
+                    tooltip: l10n.favoriteNewFolder,
                   )
                 : const SizedBox.shrink(),
           ),
@@ -84,7 +86,9 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                     onPressed: () {
                       if (_favController.loadingState.value.isSuccess) {
                         if (!_favController.isEnd) {
-                          SmartDialog.showToast('加载全部收藏夹再排序');
+                          SmartDialog.showToast(
+                            l10n.favoriteLoadAllBeforeSorting,
+                          );
                           return;
                         }
                         Get.to(
@@ -93,7 +97,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                       }
                     },
                     icon: const Icon(Icons.sort),
-                    tooltip: '收藏夹排序',
+                    tooltip: l10n.favoriteFolderSort,
                   )
                 : const SizedBox.shrink(),
           ),
@@ -120,7 +124,7 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
                       }
                     },
                     icon: const Icon(Icons.search_outlined),
-                    tooltip: '搜索',
+                    tooltip: l10n.commonSearch,
                   )
                 : const SizedBox.shrink(),
           ),
@@ -130,7 +134,9 @@ class _FavPageState extends State<FavPage> with SingleTickerProviderStateMixin {
           controller: _tabController,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          tabs: FavTabType.values.map((item) => Tab(text: item.title)).toList(),
+          tabs: FavTabType.values
+              .map((item) => Tab(text: item.localizedTitle(l10n)))
+              .toList(),
           onTap: (index) {
             try {
               if (!_tabController.indexIsChanging) {

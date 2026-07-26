@@ -4,6 +4,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/member/tags.dart';
 import 'package:ex_piliplus/pages/follow/controller.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -39,16 +40,17 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('关注分组排序'),
+        title: Text(context.l10n.followGroupSortTitle),
         actions: _customTags.isNotEmpty
             ? [
                 TextButton(
                   onPressed: () async {
+                    final completedMessage = context.l10n.followSortCompleted;
                     final res = await FollowHttp.sortFollowTag(
                       tagids: _customTags.map((e) => e.tagid).join(','),
                     );
                     if (res.isSuccess) {
-                      SmartDialog.showToast('排序完成');
+                      SmartDialog.showToast(completedMessage);
                       final tabs = _defTags + _customTags;
                       widget.controller
                         ..tabs.value = tabs
@@ -61,7 +63,7 @@ class _FollowTagSortPageState extends State<FollowTagSortPage>
                       res.toast();
                     }
                   },
-                  child: const Text('完成'),
+                  child: Text(context.l10n.commonConfirm),
                 ),
                 const SizedBox(width: 16),
               ]

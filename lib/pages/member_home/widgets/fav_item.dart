@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/space/space_fav/list.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,7 +59,12 @@ class MemberFavItem extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '${item.count}个内容 · ${item.isPublic == 1 ? '私密' : '公开'}',
+                      context.l10n.favoriteFolderSummary(
+                        item.count ?? 0,
+                        item.isPublic == 1
+                            ? context.l10n.favoritePrivate
+                            : context.l10n.favoritePublic,
+                      ),
                       style: TextStyle(
                         fontSize: 12,
                         color: Theme.of(context).colorScheme.outline,

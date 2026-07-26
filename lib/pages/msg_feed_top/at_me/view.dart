@@ -13,6 +13,7 @@ import 'package:ex_piliplus/pages/msg_feed_top/at_me/controller.dart';
 import 'package:ex_piliplus/pages/whisper_settings/view.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class _AtMePageState extends State<AtMePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('@我的'),
+        title: Text(context.l10n.messagesMentionsMe),
         actions: [
           IconButton(
             onPressed: () => Get.to(
@@ -95,7 +96,9 @@ class _AtMePageState extends State<AtMePage> {
                   final item = response[index];
                   void onLongPress() => showConfirmDialog(
                     context: context,
-                    title: const Text('确定删除该通知?'),
+                    title: Text(
+                      context.l10n.messagesDeleteNotificationConfirm,
+                    ),
                     onConfirm: () => _atMeController.onRemove(item.id!, index),
                   );
                   return ListTile(
@@ -130,7 +133,9 @@ class _AtMePageState extends State<AtMePage> {
                             ),
                           ),
                           TextSpan(
-                            text: " 在${item.item?.business}中@了我",
+                            text: context.l10n.messagesMentionedIn(
+                              item.item?.business ?? '',
+                            ),
                             style: theme.textTheme.titleSmall!.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),

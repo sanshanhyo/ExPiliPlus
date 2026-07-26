@@ -64,7 +64,9 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
     ),
     NormalModel(
       getTitle: () => l10n.settingsAppFont,
-      getSubtitle: () => l10n.settingsCurrentValue(Pref.appFontFamily.label),
+      getSubtitle: () => l10n.settingsCurrentValue(
+        Pref.appFontFamily.localizedLabel(l10n),
+      ),
       leading: const Icon(Icons.font_download_outlined),
       onTap: _showAppFontFamilyDialog,
     ),

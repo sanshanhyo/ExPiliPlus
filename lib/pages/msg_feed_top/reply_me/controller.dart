@@ -1,9 +1,11 @@
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/msg.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models_new/msg/msg_reply/data.dart';
 import 'package:ex_piliplus/models_new/msg/msg_reply/item.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 class ReplyMeController
     extends CommonListController<MsgReplyData, MsgReplyItem> {
@@ -44,7 +46,9 @@ class ReplyMeController
         loadingState
           ..value.data!.removeAt(index)
           ..refresh();
-        SmartDialog.showToast('删除成功');
+        SmartDialog.showToast(
+          AppLocalizations.of(Get.context!).commonDeleteSucceeded,
+        );
       } else {
         res.toast();
       }

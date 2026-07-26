@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum ReplySortType {
   time('最新评论', '最新', text: '按时间'),
   hot('最热评论', '最热', text: '按热度'),
@@ -8,4 +10,10 @@ enum ReplySortType {
   final String label;
   final String? text;
   const ReplySortType(this.title, this.label, {this.text});
+
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .time => l10n.replySortNewest,
+    .hot => l10n.replySortHottest,
+    .select => l10n.replySortFeatured,
+  };
 }

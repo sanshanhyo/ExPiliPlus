@@ -10,6 +10,7 @@ import 'package:ex_piliplus/services/account_service.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 
 class DynamicsTabController
     extends CommonListController<DynamicsDataModel, DynamicItemModel>
@@ -58,7 +59,7 @@ class DynamicsTabController
       loadingState
         ..value.data!.removeAt(index)
         ..refresh();
-      SmartDialog.showToast('删除成功');
+      SmartDialog.showToast(Get.context!.l10n.commonDeleteSucceeded);
     } else {
       res.toast();
     }

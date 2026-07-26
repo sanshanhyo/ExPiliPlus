@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/home/controller.dart';
 import 'package:ex_piliplus/pages/hot/controller.dart';
 import 'package:ex_piliplus/pages/rank/view.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,7 +75,7 @@ class _HotPageState extends State<HotPage>
                     _buildEntranceItem(
                       iconUrl:
                           'https://i0.hdslb.com/bfs/archive/a3f11218aaf4521b4967db2ae164ecd3052586b9.png',
-                      title: '排行榜',
+                      title: context.l10n.homeRankings,
                       onTap: () {
                         try {
                           final homeController = Get.find<HomeController>();
@@ -87,7 +88,9 @@ class _HotPageState extends State<HotPage>
                             Get.to(
                               Scaffold(
                                 resizeToAvoidBottomInset: false,
-                                appBar: AppBar(title: const Text('排行榜')),
+                                appBar: AppBar(
+                                  title: Text(context.l10n.homeRankings),
+                                ),
                                 body: const ViewSafeArea(child: RankPage()),
                               ),
                             );
@@ -98,13 +101,13 @@ class _HotPageState extends State<HotPage>
                     _buildEntranceItem(
                       iconUrl:
                           'https://i0.hdslb.com/bfs/archive/552ebe8c4794aeef30ebd1568b59ad35f15e21ad.png',
-                      title: '每周必看',
+                      title: context.l10n.homeWeeklyMustWatch,
                       onTap: () => Get.toNamed('/popularSeries'),
                     ),
                     _buildEntranceItem(
                       iconUrl:
                           'https://i0.hdslb.com/bfs/archive/3693ec9335b78ca57353ac0734f36a46f3d179a9.png',
-                      title: '入站必刷',
+                      title: context.l10n.homeEssentialVideos,
                       onTap: () => Get.toNamed('/popularPrecious'),
                     ),
                   ],

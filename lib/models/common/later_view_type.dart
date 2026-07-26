@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/later/child_view.dart';
 import 'package:flutter/material.dart';
 
@@ -13,4 +14,9 @@ enum LaterViewType {
   final int type;
   final String title;
   const LaterViewType(this.type, this.title);
+
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .all => l10n.laterAll,
+    .unfinished => l10n.laterUnfinished,
+  };
 }

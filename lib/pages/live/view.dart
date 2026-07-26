@@ -15,6 +15,7 @@ import 'package:ex_piliplus/pages/live_area/view.dart';
 import 'package:ex_piliplus/pages/live_follow/view.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -111,7 +112,9 @@ class _LivePageState extends State<LivePage>
                                   horizontal: 8,
                                   vertical: 5,
                                 ),
-                                text: isFirst ? '推荐' : item.title!,
+                                text: isFirst
+                                    ? context.l10n.homeRecommendations
+                                    : item.title!,
                                 bgColor: isCurr
                                     ? theme.colorScheme.secondaryContainer
                                     : Colors.transparent,
@@ -133,7 +136,9 @@ class _LivePageState extends State<LivePage>
                       size: 26,
                       iconSize: 18,
                       context: context,
-                      tooltip: '切换${controller.showFirstFrame ? '封面' : '首帧'}',
+                      tooltip: controller.showFirstFrame
+                          ? context.l10n.homeSwitchToCover
+                          : context.l10n.homeSwitchToFirstFrame,
                       icon: controller.showFirstFrame
                           ? const Icon(MdiIcons.alphaFBox)
                           : const Icon(MdiIcons.image),
@@ -147,7 +152,7 @@ class _LivePageState extends State<LivePage>
                       size: 26,
                       iconSize: 16,
                       context: context,
-                      tooltip: '游戏赛事',
+                      tooltip: context.l10n.homeGameEvents,
                       icon: const Icon(Icons.gamepad),
                       onPressed: () => Get.toNamed(
                         '/webview',
@@ -163,7 +168,7 @@ class _LivePageState extends State<LivePage>
                       size: 26,
                       iconSize: 16,
                       context: context,
-                      tooltip: '全部标签',
+                      tooltip: context.l10n.homeAllLiveCategories,
                       icon: const Icon(Icons.widgets),
                       onPressed: () => Get.to(const LiveAreaPage()),
                     ),
@@ -271,7 +276,9 @@ class _LivePageState extends State<LivePage>
               Text.rich(
                 TextSpan(
                   children: [
-                    const TextSpan(text: '我的关注  '),
+                    TextSpan(
+                      text: '${context.l10n.homeMyLiveFollowing}  ',
+                    ),
                     TextSpan(
                       text: totalCount.toString(),
                       style: TextStyle(
@@ -280,7 +287,7 @@ class _LivePageState extends State<LivePage>
                       ),
                     ),
                     TextSpan(
-                      text: '人正在直播',
+                      text: context.l10n.homeLiveFollowingCount(''),
                       style: TextStyle(
                         fontSize: 13,
                         color: theme.colorScheme.outline,
@@ -290,6 +297,7 @@ class _LivePageState extends State<LivePage>
                 ),
               ),
               moreTextButton(
+                text: context.l10n.commonViewAll,
                 onTap: () => Get.to(const LiveFollowPage()),
                 color: theme.colorScheme.outline,
               ),

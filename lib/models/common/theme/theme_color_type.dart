@@ -1,23 +1,77 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-const List<({Color color, String label})> colorThemeTypes = [
-  (color: Color(0xFF5CB67B), label: '默认绿'),
-  (color: Color(0xFFFF7299), label: '粉红色'),
-  (color: Colors.red, label: '红色'),
-  (color: Colors.orange, label: '橙色'),
-  (color: Colors.amber, label: '琥珀色'),
-  (color: Colors.yellow, label: '黄色'),
-  (color: Colors.lime, label: '酸橙色'),
-  (color: Colors.lightGreen, label: '浅绿色'),
-  (color: Colors.green, label: '绿色'),
-  (color: Colors.teal, label: '青色'),
-  (color: Colors.cyan, label: '蓝绿色'),
-  (color: Colors.lightBlue, label: '浅蓝色'),
-  (color: Colors.blue, label: '蓝色'),
-  (color: Colors.indigo, label: '靛蓝色'),
-  (color: Colors.purple, label: '紫色'),
-  (color: Colors.deepPurple, label: '深紫色'),
-  (color: Colors.blueGrey, label: '蓝灰色'),
-  (color: Colors.brown, label: '棕色'),
-  (color: Colors.grey, label: '灰色'),
+const List<ThemeColorType> colorThemeTypes = [
+  ThemeColorType(Color(0xFF5CB67B), ThemeColorName.defaultGreen),
+  ThemeColorType(Color(0xFFFF7299), ThemeColorName.pink),
+  ThemeColorType(Colors.red, ThemeColorName.red),
+  ThemeColorType(Colors.orange, ThemeColorName.orange),
+  ThemeColorType(Colors.amber, ThemeColorName.amber),
+  ThemeColorType(Colors.yellow, ThemeColorName.yellow),
+  ThemeColorType(Colors.lime, ThemeColorName.lime),
+  ThemeColorType(Colors.lightGreen, ThemeColorName.lightGreen),
+  ThemeColorType(Colors.green, ThemeColorName.green),
+  ThemeColorType(Colors.teal, ThemeColorName.teal),
+  ThemeColorType(Colors.cyan, ThemeColorName.cyan),
+  ThemeColorType(Colors.lightBlue, ThemeColorName.lightBlue),
+  ThemeColorType(Colors.blue, ThemeColorName.blue),
+  ThemeColorType(Colors.indigo, ThemeColorName.indigo),
+  ThemeColorType(Colors.purple, ThemeColorName.purple),
+  ThemeColorType(Colors.deepPurple, ThemeColorName.deepPurple),
+  ThemeColorType(Colors.blueGrey, ThemeColorName.blueGrey),
+  ThemeColorType(Colors.brown, ThemeColorName.brown),
+  ThemeColorType(Colors.grey, ThemeColorName.grey),
 ];
+
+class ThemeColorType {
+  const ThemeColorType(this.color, this.name);
+
+  final Color color;
+  final ThemeColorName name;
+
+  String localizedLabel(AppLocalizations l10n) => name.localizedLabel(l10n);
+}
+
+enum ThemeColorName {
+  defaultGreen,
+  pink,
+  red,
+  orange,
+  amber,
+  yellow,
+  lime,
+  lightGreen,
+  green,
+  teal,
+  cyan,
+  lightBlue,
+  blue,
+  indigo,
+  purple,
+  deepPurple,
+  blueGrey,
+  brown,
+  grey;
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .defaultGreen => l10n.themeColorDefaultGreen,
+    .pink => l10n.themeColorPink,
+    .red => l10n.themeColorRed,
+    .orange => l10n.themeColorOrange,
+    .amber => l10n.themeColorAmber,
+    .yellow => l10n.themeColorYellow,
+    .lime => l10n.themeColorLime,
+    .lightGreen => l10n.themeColorLightGreen,
+    .green => l10n.themeColorGreen,
+    .teal => l10n.themeColorTeal,
+    .cyan => l10n.themeColorCyan,
+    .lightBlue => l10n.themeColorLightBlue,
+    .blue => l10n.themeColorBlue,
+    .indigo => l10n.themeColorIndigo,
+    .purple => l10n.themeColorPurple,
+    .deepPurple => l10n.themeColorDeepPurple,
+    .blueGrey => l10n.themeColorBlueGrey,
+    .brown => l10n.themeColorBrown,
+    .grey => l10n.themeColorGrey,
+  };
+}
