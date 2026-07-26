@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
-import 'package:ex_piliplus/pages/search/controller.dart' show DebounceStreamState;
+import 'package:ex_piliplus/pages/search/controller.dart'
+    show DebounceStreamState;
 import 'package:ex_piliplus/pages/setting/models/extra_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/ex_features_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
@@ -9,6 +10,7 @@ import 'package:ex_piliplus/pages/setting/models/privacy_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/recommend_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/style_settings.dart';
 import 'package:ex_piliplus/pages/setting/models/video_settings.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
 import 'package:flutter/material.dart';
@@ -27,15 +29,23 @@ class _SettingsSearchPageState
     extends DebounceStreamState<SettingsSearchPage, String> {
   final _textEditingController = TextEditingController();
   final RxList<SettingsModel> _list = <SettingsModel>[].obs;
-  late final _settings = [
+  List<SettingsModel> get _settings => [
     ...extraSettings,
     ...privacySettings,
     ...recommendSettings,
     ...videoSettings,
     ...playSettings,
     ...styleSettings,
-    ...exFeatureSettings,
+    ...exFeatureSettings(context),
   ];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_textEditingController.text.isNotEmpty) {
+      onValueChanged(_textEditingController.text);
+    }
+  }
 
   @override
   void onValueChanged(String value) {
@@ -82,9 +92,9 @@ class _SettingsSearchPageState
           controller: _textEditingController,
           textAlignVertical: TextAlignVertical.center,
           onChanged: ctr!.add,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             isDense: true,
-            hintText: '搜索',
+            hintText: context.l10n.settingsSearch,
             visualDensity: .standard,
             border: InputBorder.none,
           ),

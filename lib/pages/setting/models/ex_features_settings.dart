@@ -1,11 +1,15 @@
 import 'package:ex_piliplus/models/common/app_font_family.dart';
+import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
 import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
+import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/slider_dialog.dart';
+import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -13,83 +17,116 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-List<SettingsModel> get exFeatureSettings => [
-  NormalModel(
-    title: '自定义主题色',
-    getSubtitle: () {
-      final color = Pref.customThemeColor;
-      if (color == null) {
-        return '未启用，使用动态取色或 PiliPlus 预设色';
-      }
-      return Pref.dynamicColor
-          ? '已保存 ${_colorHex(color)}，当前由动态取色覆盖'
-          : '当前：${_colorHex(color)}';
-    },
-    getTrailing: (theme) {
-      final color = Pref.customThemeColor;
-      return color == null
-          ? const Icon(Icons.colorize_outlined)
-          : Container(
-              width: 22,
-              height: 22,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                border: Border.all(color: theme.colorScheme.outline),
-              ),
-            );
-    },
-    leading: const Icon(Icons.palette_outlined),
-    onTap: _showCustomThemeColorDialog,
-  ),
-  NormalModel(
-    title: 'App字体',
-    getSubtitle: () => '当前：${Pref.appFontFamily.label}',
-    leading: const Icon(Icons.font_download_outlined),
-    onTap: _showAppFontFamilyDialog,
-  ),
-  SplitModel(
-    normalModel: const NormalModel.split(
-      title: 'App字体字重',
-      subtitle: '点击设置',
-      leading: Icon(Icons.text_fields),
+List<SettingsModel> exFeatureSettings(BuildContext context) {
+  final l10n = context.l10n;
+  return [
+    NormalModel(
+      getTitle: () => l10n.settingsAppLanguage,
+      getSubtitle: () => l10n.settingsCurrentLanguage(
+        Pref.appLanguage.localizedName(l10n),
+      ),
+      leading: const Icon(Icons.language_outlined),
+      onTap: _showAppLanguageDialog,
     ),
-    switchModel: SwitchModel.split(
+    NormalModel(
+      getTitle: () => l10n.settingsCustomThemeColor,
+      getSubtitle: () {
+        final color = Pref.customThemeColor;
+        if (color == null) {
+          return l10n.settingsCustomThemeColorDisabled;
+        }
+        return Pref.dynamicColor
+            ? l10n.settingsCustomThemeColorSavedOverridden(_colorHex(color))
+            : l10n.settingsCurrentValue(_colorHex(color));
+      },
+      getTrailing: (theme) {
+        final color = Pref.customThemeColor;
+        return color == null
+            ? const Icon(Icons.colorize_outlined)
+            : Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: theme.colorScheme.outline),
+                ),
+              );
+      },
+      leading: const Icon(Icons.palette_outlined),
+      onTap: _showCustomThemeColorDialog,
+    ),
+    NormalModel(
+      getTitle: () => l10n.settingsAppFont,
+      getSubtitle: () => l10n.settingsCurrentValue(Pref.appFontFamily.label),
+      leading: const Icon(Icons.font_download_outlined),
+      onTap: _showAppFontFamilyDialog,
+    ),
+    SplitModel(
+      normalModel: NormalModel.split(
+        getTitle: () => l10n.settingsAppFontWeight,
+        getSubtitle: () => l10n.settingsTapToConfigure,
+        leading: const Icon(Icons.text_fields),
+      ),
+      switchModel: SwitchModel.split(
+        defaultVal: false,
+        setKey: SettingBoxKey.appFontWeight,
+        onChanged: (_) => Get.updateMyAppTheme(),
+        onTap: _showFontWeightDialog,
+      ),
+    ),
+    SwitchModel(
+      getTitle: () => l10n.settingsUploaderProfileShuffle,
+      leading: const Icon(Icons.shuffle),
+      setKey: SettingBoxKey.showRandomVideoButton,
       defaultVal: false,
-      setKey: SettingBoxKey.appFontWeight,
-      onChanged: (_) => Get.updateMyAppTheme(),
-      onTap: _showFontWeightDialog,
     ),
-  ),
-  const SwitchModel(
-    title: 'UP主页显示随机播放按钮',
-    leading: Icon(Icons.shuffle),
-    setKey: SettingBoxKey.showRandomVideoButton,
-    defaultVal: false,
-  ),
-  const SwitchModel(
-    title: '自动点赞点开的视频',
-    subtitle: '进入视频详情后自动点赞一次，已点赞的视频会跳过',
-    leading: Icon(Icons.thumb_up_alt_outlined),
-    setKey: SettingBoxKey.autoLikeOpenedVideo,
-    defaultVal: false,
-  ),
-];
+    SwitchModel(
+      getTitle: () => l10n.settingsAutoLikeOpenedVideos,
+      getSubtitle: () => l10n.settingsAutoLikeOpenedVideosDescription,
+      leading: const Icon(Icons.thumb_up_alt_outlined),
+      setKey: SettingBoxKey.autoLikeOpenedVideo,
+      defaultVal: false,
+    ),
+  ];
+}
 
 String _colorHex(Color color) =>
     '#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6, '0')}';
+
+Future<void> _showAppLanguageDialog(
+  BuildContext context,
+  VoidCallback setState,
+) async {
+  final l10n = context.l10n;
+  final current = Pref.appLanguage;
+  final selected = await showDialog<AppLanguage>(
+    context: context,
+    builder: (context) => SelectDialog<AppLanguage>(
+      value: current,
+      title: l10n.languagePickerTitle,
+      values: AppLanguage.values
+          .map((language) => (language, language.localizedName(l10n)))
+          .toList(growable: false),
+    ),
+  );
+  if (selected == null || selected == current) return;
+  await AppLocaleController.setLanguage(selected);
+  if (context.mounted) setState();
+}
 
 Future<void> _showCustomThemeColorDialog(
   BuildContext context,
   VoidCallback setState,
 ) async {
+  final l10n = context.l10n;
   final current = Pref.customThemeColor;
   await showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       clipBehavior: Clip.hardEdge,
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      title: const Text('自定义主题色'),
+      title: Text(l10n.settingsCustomThemeColor),
       content: SlideColorPicker(
         color: current ?? colorThemeTypes[Pref.customColor].color,
         showResetBtn: true,
@@ -98,7 +135,7 @@ Future<void> _showCustomThemeColorDialog(
             await GStorage.setting.delete(SettingBoxKey.customThemeColor);
             if (context.mounted) setState();
             Get.updateMyAppTheme();
-            SmartDialog.showToast('已恢复 PiliPlus 主题色');
+            SmartDialog.showToast(l10n.settingsPiliPlusThemeRestored);
             return;
           }
           await Future.wait([
@@ -110,7 +147,9 @@ Future<void> _showCustomThemeColorDialog(
           ]);
           if (context.mounted) setState();
           Get.updateMyAppTheme();
-          SmartDialog.showToast('主题色已设为 ${_colorHex(color)}');
+          SmartDialog.showToast(
+            l10n.settingsThemeColorSet(_colorHex(color)),
+          );
         },
       ),
     ),
@@ -121,7 +160,7 @@ Future<void> _showFontWeightDialog(BuildContext context) async {
   final res = await showDialog<double>(
     context: context,
     builder: (context) => SliderDialog(
-      title: const Text('App字体字重'),
+      title: Text(context.l10n.settingsAppFontWeight),
       value: Pref.appFontWeight.toDouble() + 1,
       min: 1,
       max: FontWeight.values.length.toDouble(),
@@ -138,6 +177,7 @@ Future<void> _showAppFontFamilyDialog(
   BuildContext context,
   VoidCallback setState,
 ) async {
+  final l10n = context.l10n;
   final current = Pref.appFontFamily;
   final res = await showDialog<AppFontFamily>(
     context: context,
@@ -145,7 +185,7 @@ Future<void> _showAppFontFamilyDialog(
   );
   if (res != null && res != current) {
     if (!res.isSystem) {
-      SmartDialog.showLoading(msg: '正在加载字体');
+      SmartDialog.showLoading(msg: l10n.settingsLoadingFont);
       try {
         await AppFontManager.load(res);
       } catch (error) {

@@ -1,0 +1,73 @@
+{
+  "@@locale": "zh",
+  "commonCancel": "取消",
+  "commonConfirm": "确定",
+  "settingsTitle": "设置",
+  "settingsSearch": "搜索",
+  "settingsPrivacyTitle": "隐私设置",
+  "settingsPrivacySummary": "黑名单",
+  "settingsRecommendationFeedTitle": "推荐流设置",
+  "settingsRecommendationFeedSummary": "推荐来源（Web/App）、刷新保留内容、过滤器",
+  "settingsAudioVideoTitle": "音视频设置",
+  "settingsAudioVideoSummary": "画质、音质、解码、缓冲、音频输出等",
+  "settingsPlayerTitle": "播放器设置",
+  "settingsPlayerSummary": "双击/长按、全屏、后台播放、弹幕、字幕、底部进度条等",
+  "settingsAppearanceTitle": "外观设置",
+  "settingsAppearanceSummary": "横屏适配、侧边栏、首页、动态、主题、字体和图片等",
+  "settingsGeneralTitle": "其它设置",
+  "settingsGeneralSummary": "震动、搜索、收藏、AI、评论、动态、代理和更新等",
+  "settingsExPiliPlusTitle": "ExPiliPlus 设置",
+  "settingsExPiliPlusSummary": "语言、自定义主题色、字体、随机播放和自动点赞等",
+  "settingsWebDavTitle": "WebDAV 设置",
+  "settingsAboutTitle": "关于",
+  "settingsSwitchAccount": "切换账号",
+  "settingsSignOut": "退出登录",
+  "settingsAppLanguage": "应用语言",
+  "settingsCurrentLanguage": "当前：{language}",
+  "@settingsCurrentLanguage": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "languagePickerTitle": "应用语言",
+  "languageSystemDefault": "跟随系统",
+  "languageSimplifiedChinese": "简体中文",
+  "languageTraditionalChinese": "繁體中文",
+  "languageEnglish": "英语",
+  "settingsCustomThemeColor": "自定义主题色",
+  "settingsCustomThemeColorDisabled": "未启用，使用动态取色或 PiliPlus 预设色",
+  "settingsCustomThemeColorSavedOverridden": "已保存 {color}，当前由动态取色覆盖",
+  "@settingsCustomThemeColorSavedOverridden": {
+    "placeholders": {
+      "color": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsCurrentValue": "当前：{value}",
+  "@settingsCurrentValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsAppFont": "应用字体",
+  "settingsAppFontWeight": "应用字体字重",
+  "settingsTapToConfigure": "点击设置",
+  "settingsUploaderProfileShuffle": "UP 主页显示随机播放按钮",
+  "settingsAutoLikeOpenedVideos": "自动点赞点开的视频",
+  "settingsAutoLikeOpenedVideosDescription": "进入视频详情后自动点赞一次，已点赞的视频会跳过",
+  "settingsPiliPlusThemeRestored": "已恢复 PiliPlus 主题色",
+  "settingsThemeColorSet": "主题色已设为 {color}",
+  "@settingsThemeColorSet": {
+    "placeholders": {
+      "color": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLoadingFont": "正在加载字体"
+}

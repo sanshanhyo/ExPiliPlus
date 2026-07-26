@@ -1,5 +1,6 @@
 import 'package:ex_piliplus/models/common/setting_type.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 class CommonSetting extends StatefulWidget {
@@ -21,13 +22,7 @@ class _CommonSettingState extends State<CommonSetting> {
   late List<SettingsModel> settings;
 
   void _initSetting() {
-    settings = widget.settingType.settings;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initSetting();
+    settings = widget.settingType.settings(context);
   }
 
   @override
@@ -42,6 +37,7 @@ class _CommonSettingState extends State<CommonSetting> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     padding = MediaQuery.viewPaddingOf(context);
+    _initSetting();
   }
 
   @override
@@ -49,7 +45,11 @@ class _CommonSettingState extends State<CommonSetting> {
     final showAppBar = widget.showAppBar;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: showAppBar ? AppBar(title: Text(widget.settingType.title)) : null,
+      appBar: showAppBar
+          ? AppBar(
+              title: Text(widget.settingType.localizedTitle(context.l10n)),
+            )
+          : null,
       body: ListView.builder(
         key: ValueKey(widget.settingType),
         padding: EdgeInsets.only(

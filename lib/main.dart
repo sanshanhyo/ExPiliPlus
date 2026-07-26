@@ -8,10 +8,12 @@ import 'package:ex_piliplus/common/widgets/route_aware_mixin.dart';
 import 'package:ex_piliplus/common/widgets/scale_app.dart';
 import 'package:ex_piliplus/common/widgets/scroll_behavior.dart';
 import 'package:ex_piliplus/http/init.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
 import 'package:ex_piliplus/router/app_pages.dart';
 import 'package:ex_piliplus/services/account_service.dart';
+import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/services/logger.dart';
@@ -38,7 +40,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
@@ -262,37 +263,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (light, dark) = getAllTheme();
-    return GetMaterialApp(
-      title: Constants.appName,
-      theme: light,
-      darkTheme: dark,
-      themeMode: ThemeUtils.themeMode = Pref.themeMode,
-      localizationsDelegates: const [
-        GlobalCupertinoLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      locale: const Locale("zh", "CN"),
-      fallbackLocale: const Locale("zh", "CN"),
-      supportedLocales: const [Locale("zh", "CN"), Locale("en", "US")],
-      initialRoute: '/',
-      getPages: Routes.getPages,
-      defaultTransition: Pref.pageTransition,
-      builder: FlutterSmartDialog.init(
-        toastBuilder: CustomToast.new,
-        loadingBuilder: LoadingWidget.new,
-        notifyStyle: const FlutterSmartNotifyStyle(
-          warningBuilder: NotifyWarning.new,
+    return ValueListenableBuilder<Locale?>(
+      valueListenable: AppLocaleController.locale,
+      builder: (_, locale, _) => GetMaterialApp(
+        title: Constants.appName,
+        theme: light,
+        darkTheme: dark,
+        themeMode: ThemeUtils.themeMode = Pref.themeMode,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: locale,
+        fallbackLocale: AppLocaleController.fallbackLocale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localeResolutionCallback: AppLocaleController.resolve,
+        initialRoute: '/',
+        getPages: Routes.getPages,
+        defaultTransition: Pref.pageTransition,
+        builder: FlutterSmartDialog.init(
+          toastBuilder: CustomToast.new,
+          loadingBuilder: LoadingWidget.new,
+          notifyStyle: const FlutterSmartNotifyStyle(
+            warningBuilder: NotifyWarning.new,
+          ),
+          builder: _builder,
         ),
-        builder: _builder,
+        navigatorObservers: [
+          routeObserver,
+          FlutterSmartDialog.observer,
+        ],
+        scrollBehavior: PlatformUtils.isDesktop
+            ? const CustomScrollBehavior()
+            : null,
       ),
-      navigatorObservers: [
-        routeObserver,
-        FlutterSmartDialog.observer,
-      ],
-      scrollBehavior: PlatformUtils.isDesktop
-          ? const CustomScrollBehavior()
-          : null,
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:ex_piliplus/utils/settings_backup.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -12,6 +13,10 @@ void main() {
       expect(result, contains(SettingBoxKey.customThemeColor));
       expect(result[SettingBoxKey.customThemeColor], isNull);
       expect(result[SettingBoxKey.customColor], 12);
+      expect(
+        result[SettingBoxKey.appLanguage],
+        AppLanguage.simplifiedChinese.storageValue,
+      );
     });
 
     test('preserves an enabled custom theme color', () {
@@ -59,5 +64,27 @@ void main() {
       expect(result[SettingBoxKey.customThemeColor], color);
       expect(result[SettingBoxKey.dynamicColor], isFalse);
     });
+
+    test(
+      'preserves language and defaults old backups to simplified Chinese',
+      () {
+        final english = SettingsBackup.prepareForImport({
+          SettingBoxKey.appLanguage: AppLanguage.english.storageValue,
+          SettingBoxKey.customThemeColor: null,
+        });
+        final legacy = SettingsBackup.prepareForImport({
+          SettingBoxKey.customThemeColor: null,
+        });
+
+        expect(
+          english[SettingBoxKey.appLanguage],
+          AppLanguage.english.storageValue,
+        );
+        expect(
+          legacy[SettingBoxKey.appLanguage],
+          AppLanguage.simplifiedChinese.storageValue,
+        );
+      },
+    );
   });
 }

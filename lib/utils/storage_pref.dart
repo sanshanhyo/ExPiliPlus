@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/gesture/horizontal_drag_gesture_recog
 import 'package:ex_piliplus/common/widgets/pair.dart';
 import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/models/common/app_font_family.dart';
+import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/bar_hide_type.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_badge_mode.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamics_type.dart';
@@ -737,6 +738,10 @@ abstract final class Pref {
 
   static int get customColor =>
       _setting.get(SettingBoxKey.customColor, defaultValue: 0);
+
+  static AppLanguage get appLanguage => AppLanguage.fromStorage(
+    _setting.get(SettingBoxKey.appLanguage),
+  );
 
   static Color? get customThemeColor {
     final value = _setting.get(SettingBoxKey.customThemeColor);

@@ -10,6 +10,7 @@ import 'package:ex_piliplus/common/widgets/dialog/export_import.dart';
 import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:ex_piliplus/common/widgets/flutter/list_tile.dart';
 import 'package:ex_piliplus/pages/mine/controller.dart';
+import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/services/logger.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
@@ -264,7 +265,10 @@ Commit Hash: ${BuildConfig.commitHash}''',
               title: '设置',
               localFileName: () => 'setting_${DeviceUtils.platformName}',
               onExport: GStorage.exportAllSettings,
-              onImport: GStorage.importAllJsonSettings,
+              onImport: (json) async {
+                await GStorage.importAllJsonSettings(json);
+                AppLocaleController.syncFromStorage();
+              },
             ),
           ),
           ListTile(

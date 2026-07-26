@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 
 abstract final class SettingsBackup {
@@ -8,6 +9,10 @@ abstract final class SettingsBackup {
   /// `null` means that the user is using dynamic color or a PiliPlus preset.
   static Map<String, dynamic> prepareForExport(Map<dynamic, dynamic> source) {
     return _stringKeyed(source)
+      ..putIfAbsent(
+        SettingBoxKey.appLanguage,
+        () => AppLanguage.simplifiedChinese.storageValue,
+      )
       ..putIfAbsent(SettingBoxKey.customThemeColor, () => null);
   }
 
@@ -17,6 +22,10 @@ abstract final class SettingsBackup {
   /// rather than inheriting the color currently stored on the device.
   static Map<String, dynamic> prepareForImport(Map<dynamic, dynamic> source) {
     final result = _stringKeyed(source);
+    result[SettingBoxKey.appLanguage] = AppLanguage.fromStorage(
+      result[SettingBoxKey.appLanguage],
+    ).storageValue;
+
     final hasCustomThemeColor = result.containsKey(
       SettingBoxKey.customThemeColor,
     );

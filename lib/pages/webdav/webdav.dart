@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/common/widgets/pair.dart';
+import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -83,6 +84,7 @@ class WebDav {
     try {
       final data = await readSettingsBackup();
       await GStorage.importAllSettings(data);
+      AppLocaleController.syncFromStorage();
       SmartDialog.showToast('恢复成功');
     } catch (e) {
       SmartDialog.showToast('恢复失败: $e');

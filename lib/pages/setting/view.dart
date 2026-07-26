@@ -9,6 +9,7 @@ import 'package:ex_piliplus/pages/setting/widgets/multi_select_dialog.dart';
 import 'package:ex_piliplus/pages/webdav/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -17,12 +18,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class _SettingsModel {
   final SettingType type;
-  final String? subtitle;
   final Icon icon;
 
   const _SettingsModel({
     required this.type,
-    this.subtitle,
     required this.icon,
   });
 }
@@ -43,37 +42,30 @@ class _SettingPageState extends State<SettingPage> {
   static const List<_SettingsModel> _items = [
     _SettingsModel(
       type: SettingType.privacySetting,
-      subtitle: '黑名单',
       icon: Icon(Icons.privacy_tip_outlined),
     ),
     _SettingsModel(
       type: SettingType.recommendSetting,
-      subtitle: '推荐来源（web/app）、刷新保留内容、过滤器',
       icon: Icon(Icons.explore_outlined),
     ),
     _SettingsModel(
       type: SettingType.videoSetting,
-      subtitle: '画质、音质、解码、缓冲、音频输出等',
       icon: Icon(Icons.video_settings_outlined),
     ),
     _SettingsModel(
       type: SettingType.playSetting,
-      subtitle: '双击/长按、全屏、后台播放、弹幕、字幕、底部进度条等',
       icon: Icon(Icons.touch_app_outlined),
     ),
     _SettingsModel(
       type: SettingType.styleSetting,
-      subtitle: '横屏适配（平板）、侧栏、列宽、首页、动态红点、主题、字号、图片、帧率等',
       icon: Icon(Icons.style_outlined),
     ),
     _SettingsModel(
       type: SettingType.extraSetting,
-      subtitle: '震动、搜索、收藏、ai、评论、动态、代理、更新检查等',
       icon: Icon(Icons.extension_outlined),
     ),
     _SettingsModel(
       type: SettingType.exPiliPlusSetting,
-      subtitle: '自定义主题色、字体、随机播放、自动点赞等分叉特色选项',
       icon: Icon(Icons.auto_awesome_outlined),
     ),
     _SettingsModel(
@@ -96,10 +88,13 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: _isPortrait ? const Text('设置') : Text(_type.title),
+        title: Text(
+          _isPortrait ? l10n.settingsTitle : _type.localizedTitle(l10n),
+        ),
       ),
       body: ViewSafeArea(
         child: _isPortrait
@@ -176,6 +171,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _buildList(ThemeData theme) {
+    final l10n = context.l10n;
     final padding = MediaQuery.viewPaddingOf(context);
     TextStyle titleStyle = theme.textTheme.titleMedium!;
     TextStyle subTitleStyle = theme.textTheme.labelMedium!.copyWith(
@@ -185,23 +181,27 @@ class _SettingPageState extends State<SettingPage> {
       padding: EdgeInsets.only(bottom: padding.bottom + 100),
       children: [
         _buildSearchItem(theme),
-        ..._items
-            .take(_items.length - 1)
-            .map(
-              (item) => ListTile(
-                tileColor: _getTileColor(theme, item.type),
-                onTap: () => _toPage(item.type),
-                leading: item.icon,
-                title: Text(item.type.title, style: titleStyle),
-                subtitle: item.subtitle == null
-                    ? null
-                    : Text(item.subtitle!, style: subTitleStyle),
+        ..._items.take(_items.length - 1).map(
+          (item) {
+            final subtitle = item.type.localizedSubtitle(l10n);
+            return ListTile(
+              tileColor: _getTileColor(theme, item.type),
+              onTap: () => _toPage(item.type),
+              leading: item.icon,
+              title: Text(
+                item.type.localizedTitle(l10n),
+                style: titleStyle,
               ),
-            ),
+              subtitle: subtitle == null
+                  ? null
+                  : Text(subtitle, style: subTitleStyle),
+            );
+          },
+        ),
         ListTile(
           onTap: () => LoginPageController.switchAccountDialog(context),
           leading: const Icon(Icons.switch_account_outlined),
-          title: Text('切换账号', style: titleStyle),
+          title: Text(l10n.settingsSwitchAccount, style: titleStyle),
         ),
         Obx(
           () => _noAccount.value
@@ -209,14 +209,17 @@ class _SettingPageState extends State<SettingPage> {
               : ListTile(
                   leading: const Icon(Icons.logout_outlined),
                   onTap: () => _logoutDialog(context),
-                  title: Text('退出登录', style: titleStyle),
+                  title: Text(l10n.settingsSignOut, style: titleStyle),
                 ),
         ),
         ListTile(
           tileColor: _getTileColor(theme, _items.last.type),
           onTap: () => _toPage(_items.last.type),
           leading: _items.last.icon,
-          title: Text(_items.last.type.title, style: titleStyle),
+          title: Text(
+            _items.last.type.localizedTitle(l10n),
+            style: titleStyle,
+          ),
         ),
       ],
     );
@@ -306,19 +309,19 @@ class _SettingPageState extends State<SettingPage> {
             borderRadius: const BorderRadius.all(Radius.circular(50)),
             color: theme.colorScheme.onInverseSurface,
           ),
-          child: const Center(
+          child: Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   size: 18,
                   applyTextScaling: true,
                   Icons.search,
                 ),
                 Text(
-                  ' 搜索',
-                  style: TextStyle(height: 1),
-                  strutStyle: StrutStyle(height: 1, leading: 0),
+                  ' ${context.l10n.settingsSearch}',
+                  style: const TextStyle(height: 1),
+                  strutStyle: const StrutStyle(height: 1, leading: 0),
                 ),
               ],
             ),

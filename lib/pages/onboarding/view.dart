@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/mine/controller.dart';
 import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
 import 'package:ex_piliplus/pages/webdav/webdav.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
+import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
@@ -490,6 +491,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
     Get.changeThemeMode(ThemeUtils.themeMode = Pref.themeMode);
     Get.updateMyAppTheme();
+    AppLocaleController.syncFromStorage();
   }
 
   Future<void> _importAccountFromLocal() async {
@@ -1067,6 +1069,7 @@ final class _SettingsImportDraft {
     final categories = <String>[
       if (_containsAny(setting, const {
         SettingBoxKey.themeMode,
+        SettingBoxKey.appLanguage,
         SettingBoxKey.defaultTextScale,
         SettingBoxKey.appFontFamily,
         SettingBoxKey.appFontWeight,

@@ -159,6 +159,8 @@ class NormalModel extends SettingsModel {
 class SwitchModel extends SettingsModel {
   @override
   final String? title;
+  final ValueGetter<String>? getTitle;
+  final ValueGetter<String>? getSubtitle;
   final String setKey;
   final bool defaultVal;
   final ValueChanged<bool>? onChanged;
@@ -170,13 +172,15 @@ class SwitchModel extends SettingsModel {
     super.leading,
     super.contentPadding,
     super.titleStyle,
-    required String this.title,
+    this.title,
+    this.getTitle,
+    this.getSubtitle,
     required this.setKey,
     this.defaultVal = false,
     this.onChanged,
     this.needReboot = false,
     this.onTap,
-  });
+  }) : assert(title != null || getTitle != null);
 
   const SwitchModel.split({
     required this.setKey,
@@ -184,17 +188,19 @@ class SwitchModel extends SettingsModel {
     this.needReboot = false,
     this.onChanged,
     this.onTap,
-  }) : title = null;
+  }) : title = null,
+       getTitle = null,
+       getSubtitle = null;
 
   @override
-  String get effectiveTitle => title!;
+  String get effectiveTitle => title ?? getTitle!();
   @override
-  String? get effectiveSubtitle => subtitle;
+  String? get effectiveSubtitle => subtitle ?? getSubtitle?.call();
 
   @override
   Widget get widget => SetSwitchItem(
-    title: title!,
-    subtitle: subtitle,
+    title: effectiveTitle,
+    subtitle: effectiveSubtitle,
     setKey: setKey,
     defaultVal: defaultVal,
     onChanged: onChanged,
