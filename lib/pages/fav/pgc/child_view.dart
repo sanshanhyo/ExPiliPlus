@@ -8,6 +8,7 @@ import 'package:ex_piliplus/models_new/fav/fav_pgc/list.dart';
 import 'package:ex_piliplus/pages/fav/pgc/controller.dart';
 import 'package:ex_piliplus/pages/fav/pgc/widget/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -89,7 +90,7 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                     const SizedBox(width: 16),
                     iconButton(
                       size: 32,
-                      tooltip: '取消',
+                      tooltip: context.l10n.commonCancel,
                       context: context,
                       icon: const Icon(Icons.clear),
                       onPressed: _favPgcController.onDisable,
@@ -112,20 +113,29 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                         checked: !_favPgcController.allSelected.value,
                         disableSelect: false,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.only(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
                           top: 14,
                           bottom: 14,
                           right: 12,
                         ),
-                        child: Text('全选'),
+                        child: Text(context.l10n.commonSelectAll),
                       ),
                     ),
                     const Spacer(),
-                    ...const [
-                          (followStatus: 1, title: '想看'),
-                          (followStatus: 2, title: '在看'),
-                          (followStatus: 3, title: '看过'),
+                    ...[
+                          (
+                            followStatus: 1,
+                            title: context.l10n.videoStatusWantToWatch,
+                          ),
+                          (
+                            followStatus: 2,
+                            title: context.l10n.videoStatusWatching,
+                          ),
+                          (
+                            followStatus: 3,
+                            title: context.l10n.videoStatusWatched,
+                          ),
                         ]
                         .where(
                           (item) => item.followStatus != widget.followStatus,
@@ -148,7 +158,7 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                                   horizontal: 5,
                                 ),
                                 child: Text(
-                                  '标记为${item.title}',
+                                  context.l10n.videoMarkAs(item.title),
                                   style: TextStyle(
                                     color: theme.colorScheme.onSurfaceVariant,
                                   ),
@@ -190,7 +200,9 @@ class _FavPgcChildPageState extends State<FavPgcChildPage>
                     onSelect: () => _favPgcController.onSelect(item),
                     onUpdateStatus: () => showPgcFollowDialog(
                       context: context,
-                      type: widget.type == 0 ? '追番' : '追剧',
+                      type: widget.type == 0
+                          ? context.l10n.favoriteTabAnime
+                          : context.l10n.favoriteTabSeries,
                       followStatus: widget.followStatus,
                       onUpdateStatus: (followStatus) {
                         if (followStatus == -1) {

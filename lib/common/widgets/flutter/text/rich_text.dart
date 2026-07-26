@@ -7,6 +7,7 @@
 import 'dart:ui' as ui show TextHeightBehavior;
 
 import 'package:ex_piliplus/common/widgets/flutter/text/paragraph.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart' hide RichText;
 import 'package:flutter/rendering.dart' hide RenderParagraph;
 
@@ -259,6 +260,7 @@ class RichText extends MultiChildRenderObjectWidget {
       selectionColor: selectionColor,
       primary: primary,
       onShowMore: onShowMore,
+      moreText: context.l10n.commonViewMore,
     );
   }
 
@@ -279,7 +281,8 @@ class RichText extends MultiChildRenderObjectWidget {
       ..locale = locale ?? Localizations.maybeLocaleOf(context)
       ..registrar = selectionRegistrar
       ..selectionColor = selectionColor
-      ..onShowMore = onShowMore;
+      ..onShowMore = onShowMore
+      ..moreText = context.l10n.commonViewMore;
   }
 
   @override

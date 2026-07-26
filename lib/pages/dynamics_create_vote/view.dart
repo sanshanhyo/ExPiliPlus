@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models/dynamics/vote_model.dart';
 import 'package:ex_piliplus/pages/dynamics_create_vote/controller.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -55,7 +56,11 @@ class _CreateVotePageState extends State<CreateVotePage> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text('${_controller.voteId != null ? '' : '发起'}投票'),
+        title: Text(
+          _controller.voteId != null
+              ? context.l10n.voteEditTitle
+              : context.l10n.voteCreateTitle,
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.only(
@@ -64,9 +69,9 @@ class _CreateVotePageState extends State<CreateVotePage> {
           bottom: padding.bottom + 100,
         ),
         children: [
-          const Text(
-            '投票类型',
-            style: TextStyle(fontSize: 14),
+          Text(
+            context.l10n.voteType,
+            style: const TextStyle(fontSize: 14),
           ),
           const SizedBox(height: 12),
           _buildType(theme),
@@ -79,8 +84,8 @@ class _CreateVotePageState extends State<CreateVotePage> {
               onChanged: (value) => _controller
                 ..title.value = value
                 ..updateCanCreate(),
-              desc: '投票标题',
-              hintText: '请填写标题',
+              desc: context.l10n.voteTitle,
+              hintText: context.l10n.voteTitleHint,
               inputFormatters: [LengthLimitingTextInputFormatter(32)],
             ),
           ),
@@ -91,7 +96,7 @@ class _CreateVotePageState extends State<CreateVotePage> {
               key: ValueKey('${_controller.key}desc'),
               initialValue: _controller.desc.value,
               onChanged: _controller.desc.call,
-              desc: '投票说明',
+              desc: context.l10n.voteDescription,
               inputFormatters: [LengthLimitingTextInputFormatter(100)],
             ),
           ),
@@ -125,8 +130,8 @@ class _CreateVotePageState extends State<CreateVotePage> {
                       onChanged: (value) => _controller
                         ..options[i].optDesc = value
                         ..updateCanCreate(),
-                      desc: '选项${i + 1}',
-                      hintText: '选项内容，最多20字',
+                      desc: context.l10n.voteOptionLabel(i + 1),
+                      hintText: context.l10n.voteOptionHint,
                       inputFormatters: [LengthLimitingTextInputFormatter(20)],
                     ),
                   )
@@ -155,13 +160,13 @@ class _CreateVotePageState extends State<CreateVotePage> {
                         foregroundColor: theme.colorScheme.onSurfaceVariant,
                         backgroundColor: theme.colorScheme.onInverseSurface,
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add, size: 16),
+                          const Icon(Icons.add, size: 16),
                           Text(
-                            ' 添加选项',
-                            style: TextStyle(fontSize: 13),
+                            context.l10n.voteAddOption,
+                            style: const TextStyle(fontSize: 13),
                           ),
                         ],
                       ),
@@ -176,7 +181,10 @@ class _CreateVotePageState extends State<CreateVotePage> {
             children: [
               SizedBox(
                 width: 100,
-                child: Text('单选/多选', style: _leadingStyle),
+                child: Text(
+                  context.l10n.voteChoiceMode,
+                  style: _leadingStyle,
+                ),
               ),
               Obx(() {
                 final choiceCnt = _controller.choiceCnt.value;
@@ -196,13 +204,19 @@ class _CreateVotePageState extends State<CreateVotePage> {
                           .map(
                             (e) => PopupMenuItem(
                               value: e,
-                              child: Text(e == 1 ? '单选' : '最多选$e项'),
+                              child: Text(
+                                e == 1
+                                    ? context.l10n.voteSingleChoice
+                                    : context.l10n.voteMaxChoices(e),
+                              ),
                             ),
                           )
                           .toList();
                     },
                     child: Text(
-                      choiceCnt == 1 ? '单选         ' : '最多选$choiceCnt项',
+                      choiceCnt == 1
+                          ? context.l10n.voteSingleChoice
+                          : context.l10n.voteMaxChoices(choiceCnt),
                     ),
                   ),
                 );
@@ -216,7 +230,10 @@ class _CreateVotePageState extends State<CreateVotePage> {
             children: [
               SizedBox(
                 width: 100,
-                child: Text('投票截止时间', style: _leadingStyle),
+                child: Text(
+                  context.l10n.voteEndTime,
+                  style: _leadingStyle,
+                ),
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -247,7 +264,9 @@ class _CreateVotePageState extends State<CreateVotePage> {
                           const Duration(minutes: 5)) {
                         _controller.endtime.value = newEndtime;
                       } else {
-                        SmartDialog.showToast('至少选择5分钟之后');
+                        SmartDialog.showToast(
+                          Get.context!.l10n.voteAtLeastFiveMinutes,
+                        );
                       }
                     }
                   }
@@ -271,7 +290,7 @@ class _CreateVotePageState extends State<CreateVotePage> {
             final canCreate = _controller.canCreate.value;
             return FilledButton.tonal(
               onPressed: canCreate ? _controller.onCreate : null,
-              child: const Text('发起投票'),
+              child: Text(context.l10n.voteCreate),
             );
           }),
         ],
@@ -337,7 +356,7 @@ class _CreateVotePageState extends State<CreateVotePage> {
           iconButton(
             size: 26,
             iconSize: 18,
-            tooltip: '移除',
+            tooltip: context.l10n.commonRemove,
             icon: const Icon(Icons.clear),
             onPressed: onDel,
             iconColor: theme.colorScheme.onSurfaceVariant,
@@ -379,7 +398,9 @@ class _CreateVotePageState extends State<CreateVotePage> {
                 ..type.value = index
                 ..updateCanCreate(),
               child: Text(
-                '${const ['文字', '图片'][index]}投票',
+                index == 0
+                    ? context.l10n.voteTextType
+                    : context.l10n.voteImageType,
                 style: const TextStyle(fontSize: 14, height: 1),
                 strutStyle: const StrutStyle(
                   height: 1,

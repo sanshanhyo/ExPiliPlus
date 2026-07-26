@@ -37,6 +37,7 @@ import 'package:ex_piliplus/plugin/pl_player/view/view.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -513,7 +514,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     child: Obx(() {
       if (_liveRoomController.onlineCount.value case final onlineCount?) {
         return Text(
-          '高能观众($onlineCount)',
+          context.l10n.liveHighEnergyAudience(onlineCount),
           style: const TextStyle(
             fontSize: 12,
             color: Colors.white,
@@ -627,35 +628,35 @@ class _LiveRoomPageState extends State<LiveRoomPage>
             return <PopupMenuEntry>[
               PopupMenuItem(
                 onTap: () => Utils.copyText(liveUrl),
-                child: const Row(
+                child: Row(
                   spacing: 10,
                   mainAxisSize: .min,
                   children: [
-                    Icon(Icons.copy, size: 19),
-                    Text('复制链接'),
+                    const Icon(Icons.copy, size: 19),
+                    Text(context.l10n.commonCopyLink),
                   ],
                 ),
               ),
               if (PlatformUtils.isMobile)
                 PopupMenuItem(
                   onTap: () => ShareUtils.shareText(liveUrl),
-                  child: const Row(
+                  child: Row(
                     spacing: 10,
                     mainAxisSize: .min,
                     children: [
-                      Icon(Icons.share, size: 19),
-                      Text('分享直播间'),
+                      const Icon(Icons.share, size: 19),
+                      Text(context.l10n.liveShareRoom),
                     ],
                   ),
                 ),
               PopupMenuItem(
                 onTap: () => PageUtils.inAppWebview(liveUrl, off: true),
-                child: const Row(
+                child: Row(
                   spacing: 10,
                   mainAxisSize: .min,
                   children: [
-                    Icon(Icons.open_in_browser, size: 19),
-                    Text('浏览器打开'),
+                    const Icon(Icons.open_in_browser, size: 19),
+                    Text(context.l10n.imageOpenInBrowser),
                   ],
                 ),
               ),
@@ -673,7 +674,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                           "title": roomInfo.roomInfo!.title!,
                           "url": liveUrl,
                           "authorID": roomInfo.roomInfo!.uid.toString(),
-                          "source": "直播",
+                          "source": context.l10n.liveTitle,
                           "desc": roomInfo.roomInfo!.title!,
                           "author": roomInfo.anchorInfo!.baseInfo!.uname,
                         },
@@ -682,12 +683,12 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                       SmartDialog.showToast(e.toString());
                     }
                   },
-                  child: const Row(
+                  child: Row(
                     spacing: 10,
                     mainAxisSize: .min,
                     children: [
-                      Icon(Icons.forward_to_inbox, size: 19),
-                      Text('分享至消息'),
+                      const Icon(Icons.forward_to_inbox, size: 19),
+                      Text(context.l10n.feedShareToMessages),
                     ],
                   ),
                 ),
@@ -839,10 +840,10 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                     );
                   },
                 ),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '发送弹幕',
-                    style: TextStyle(color: baseWhite),
+                    context.l10n.liveSendDanmaku,
+                    style: const TextStyle(color: baseWhite),
                   ),
                 ),
                 Builder(

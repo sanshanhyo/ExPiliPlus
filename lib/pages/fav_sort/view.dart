@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models_new/fav/fav_detail/media.dart';
 import 'package:ex_piliplus/pages/fav_detail/controller.dart';
 import 'package:ex_piliplus/pages/fav_detail/widget/fav_video_card.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -49,7 +50,11 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('排序: ${_favDetailController.folderInfo.value.title}'),
+        title: Text(
+          context.l10n.favoriteSortFolderTitle(
+            _favDetailController.folderInfo.value.title,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -57,12 +62,13 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
                 Get.back();
                 return;
               }
+              final successMessage = context.l10n.followSortCompleted;
               FavHttp.sortFav(
                 mediaId: _favDetailController.mediaId,
                 sort: sort.join(','),
               ).then((res) {
                 if (res.isSuccess) {
-                  SmartDialog.showToast('排序完成');
+                  SmartDialog.showToast(successMessage);
                   _favDetailController.loadingState.value = Success(sortList);
                   if (mounted) {
                     Get.back();
@@ -72,7 +78,7 @@ class _FavSortPageState extends State<FavSortPage> with ReorderMixin {
                 }
               });
             },
-            child: const Text('完成'),
+            child: Text(context.l10n.commonDone),
           ),
           const SizedBox(width: 16),
         ],

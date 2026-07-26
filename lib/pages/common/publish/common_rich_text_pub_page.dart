@@ -17,6 +17,7 @@ import 'package:ex_piliplus/pages/common/publish/common_publish_page.dart';
 import 'package:ex_piliplus/pages/dynamics_mention/view.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
@@ -200,16 +201,17 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     }
     if (!mounted || path.isEmpty) return;
     late final colorScheme = ColorScheme.of(context);
+    final l10n = context.l10n;
     final croppedFile = await ImageCropper.platform.cropImage(
       sourcePath: path,
       uiSettings: [
         AndroidUiSettings(
-          toolbarTitle: '裁剪',
+          toolbarTitle: l10n.favoriteCrop,
           toolbarColor: colorScheme.secondaryContainer,
           toolbarWidgetColor: colorScheme.onSecondaryContainer,
           statusBarLight: colorScheme.isLight,
         ),
-        IOSUiSettings(title: '裁剪'),
+        IOSUiSettings(title: l10n.favoriteCrop),
       ],
     );
     if (croppedFile != null) {
@@ -234,7 +236,9 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
           if (pickedFiles.isNotEmpty) {
             for (int i = 0; i < pickedFiles.length; i++) {
               if (imageList.length == limit) {
-                SmartDialog.showToast('最多选择$limit张图片');
+                if (mounted) {
+                  SmartDialog.showToast(context.l10n.replyMaxImages(limit));
+                }
                 break;
               } else {
                 imageList.add(FilePicModel(path: pickedFiles[i].path));
@@ -464,7 +468,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     () {
       final isEmoji = panelType.value == PanelType.emoji;
       return ToolbarIconButton(
-        tooltip: isEmoji ? '输入' : '表情',
+        tooltip: isEmoji ? context.l10n.commonInput : context.l10n.commonEmoji,
         onPressed: () {
           if (isEmoji) {
             updatePanelType(PanelType.keyboard);
@@ -491,7 +495,9 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     () {
       final isMore = panelType.value == PanelType.more;
       return ToolbarIconButton(
-        tooltip: isMore ? '输入' : '更多',
+        tooltip: isMore
+            ? context.l10n.commonInput
+            : context.l10n.feedMoreActions,
         onPressed: () {
           if (isMore) {
             updatePanelType(PanelType.keyboard);
@@ -512,7 +518,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     feedBack();
     List<Map<String, dynamic>>? pictures;
     if (imageList.isNotEmpty) {
-      SmartDialog.showLoading(msg: '正在上传图片...');
+      SmartDialog.showLoading(msg: context.l10n.messagesUploadingImage);
       final cancelToken = CancelToken();
       try {
         pictures = await Future.wait<Map<String, dynamic>>(

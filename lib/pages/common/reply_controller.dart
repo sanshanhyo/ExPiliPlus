@@ -9,6 +9,7 @@ import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/pages/common/publish/publish_route.dart';
 import 'package:ex_piliplus/pages/video/reply_new/view.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/reply_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:fixnum/fixnum.dart';
@@ -244,7 +245,11 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
           ..insert(0, list.removeAt(index));
       }
       loadingState.refresh();
-      SmartDialog.showToast('${isUpTop ? '取消' : ''}置顶成功');
+      SmartDialog.showToast(
+        isUpTop
+            ? Get.context!.l10n.replyUnpinned
+            : Get.context!.l10n.replyPinned,
+      );
     } else {
       res.toast();
     }

@@ -3,6 +3,8 @@ import 'package:ex_piliplus/http/user.dart';
 import 'package:ex_piliplus/models_new/coin_log/data.dart';
 import 'package:ex_piliplus/models_new/coin_log/list.dart';
 import 'package:ex_piliplus/pages/log_table/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:get/get.dart';
 
 class ExpLogController extends LogController<CoinLogData, CoinLogItem> {
   @override
@@ -19,12 +21,12 @@ class ExpLogController extends LogController<CoinLogData, CoinLogItem> {
   }
 
   @override
-  final CoinLogItem header = const CoinLogItem(
-    time: '时间',
-    delta: '变化',
-    reason: '原因',
+  CoinLogItem get header => CoinLogItem(
+    time: Get.context!.l10n.commonTime,
+    delta: Get.context!.l10n.logChange,
+    reason: Get.context!.l10n.commonReason,
   );
 
   @override
-  final String title = '经验记录';
+  String get title => Get.context!.l10n.logExperienceHistory;
 }

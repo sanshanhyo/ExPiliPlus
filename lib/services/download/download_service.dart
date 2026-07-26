@@ -18,6 +18,7 @@ import 'package:ex_piliplus/pages/danmaku/controller.dart';
 import 'package:ex_piliplus/services/download/download_manager.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
@@ -132,7 +133,7 @@ class DownloadService extends GetxService {
       width: 0,
       height: 0,
       rotate: 0,
-      downloadTitle: '视频已缓存完成',
+      downloadTitle: Get.context?.l10n.downloadVideoCachedNotification ?? '',
       downloadSubtitle: videoDetail?.title ?? videoArc!.title,
     );
     final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;

@@ -2,6 +2,7 @@ import 'package:ex_piliplus/common/widgets/flutter/vertical_tabs.dart';
 import 'package:ex_piliplus/models/common/rank_type.dart';
 import 'package:ex_piliplus/pages/rank/controller.dart';
 import 'package:ex_piliplus/pages/rank/zone/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,7 +53,9 @@ class _RankPageState extends State<RankPage>
       indicatorSize: .tab,
       controller: _rankController.tabController,
       padding: .only(bottom: MediaQuery.paddingOf(context).bottom + 105),
-      tabs: RankType.values.map((e) => VerticalTab(text: e.label)).toList(),
+      tabs: RankType.values
+          .map((e) => VerticalTab(text: e.localizedLabel(context.l10n)))
+          .toList(),
       onTap: (index) {
         if (!_rankController.tabController.indexIsChanging) {
           _rankController.animateToTop();

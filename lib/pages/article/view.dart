@@ -9,7 +9,8 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
 import 'package:ex_piliplus/common/widgets/sliver/sliver_to_box_adapter.dart';
 import 'package:ex_piliplus/models/common/image_preview_type.dart';
-import 'package:ex_piliplus/models/dynamics/article_content_model.dart' show Pic;
+import 'package:ex_piliplus/models/dynamics/article_content_model.dart'
+    show Pic;
 import 'package:ex_piliplus/models/dynamics/result.dart' show DynamicStat;
 import 'package:ex_piliplus/pages/article/controller.dart';
 import 'package:ex_piliplus/pages/article/widgets/article_ops.dart';
@@ -19,6 +20,7 @@ import 'package:ex_piliplus/pages/common/dyn/common_dyn_page.dart';
 import 'package:ex_piliplus/pages/dynamics_repost/view.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -257,7 +259,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
       const SizedBox(width: 4),
       if (!isPortrait) ratioWidget(maxWidth),
       IconButton(
-        tooltip: '浏览器打开',
+        tooltip: context.l10n.imageOpenInBrowser,
         onPressed: () => PageUtils.inAppWebview(controller.url),
         icon: const Icon(Icons.open_in_browser_outlined, size: 19),
       ),
@@ -266,23 +268,23 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
         itemBuilder: (BuildContext context) => <PopupMenuEntry>[
           PopupMenuItem(
             onTap: () => ShareUtils.shareText(controller.url),
-            child: const Row(
+            child: Row(
               spacing: 10,
               mainAxisSize: .min,
               children: [
-                Icon(Icons.share_outlined, size: 19),
-                Text('分享'),
+                const Icon(Icons.share_outlined, size: 19),
+                Text(context.l10n.commonShare),
               ],
             ),
           ),
           PopupMenuItem(
             onTap: () => Utils.copyText(controller.url),
-            child: const Row(
+            child: Row(
               spacing: 10,
               mainAxisSize: .min,
               children: [
-                Icon(Icons.copy_rounded, size: 19),
-                Text('复制链接'),
+                const Icon(Icons.copy_rounded, size: 19),
+                Text(context.l10n.commonCopyLink),
               ],
             ),
           ),
@@ -292,6 +294,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             PopupMenuItem(
               onTap: () async {
                 final summary = controller.summary;
+                final shareTitle = context.l10n.articleShareTitle;
                 try {
                   if (summary.cover == null) {
                     if (!await controller.getArticleInfo(true)) {
@@ -303,7 +306,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                       this.context,
                       content: {
                         "id": controller.commentId,
-                        "title": "- 哔哩哔哩专栏",
+                        "title": shareTitle,
                         "headline": summary.title!, // throw
                         "source": 6,
                         "thumb": summary.cover!,
@@ -316,12 +319,12 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                   SmartDialog.showToast(e.toString());
                 }
               },
-              child: const Row(
+              child: Row(
                 spacing: 10,
                 mainAxisSize: .min,
                 children: [
-                  Icon(Icons.forward_to_inbox, size: 19),
-                  Text('分享至消息'),
+                  const Icon(Icons.forward_to_inbox, size: 19),
+                  Text(context.l10n.feedShareToMessages),
                 ],
               ),
             ),
@@ -409,7 +412,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                       builder: (btnContext) {
                         final forward = stats.forward;
                         return textIconButton(
-                          text: '转发',
+                          text: context.l10n.feedRepostFeed,
                           icon: FontAwesomeIcons.shareFromSquare,
                           stat: forward,
                           onPressed: () {
@@ -450,7 +453,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                   ),
                   Expanded(
                     child: textIconButton(
-                      text: '分享',
+                      text: context.l10n.commonShare,
                       icon: CustomIcons.share_node,
                       stat: null,
                       onPressed: () => ShareUtils.shareText(controller.url),
@@ -460,7 +463,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                     child: textIconButton(
                       icon: FontAwesomeIcons.star,
                       activatedIcon: FontAwesomeIcons.solidStar,
-                      text: '收藏',
+                      text: context.l10n.commonAddToFavorites,
                       stat: stats.favorite,
                       onPressed: controller.onFav,
                     ),
@@ -469,7 +472,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                     child: textIconButton(
                       icon: FontAwesomeIcons.thumbsUp,
                       activatedIcon: FontAwesomeIcons.solidThumbsUp,
-                      text: '点赞',
+                      text: context.l10n.commonLike,
                       stat: stats.like,
                       onPressed: controller.onLike,
                     ),
@@ -547,10 +550,10 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                         placeholder: (_, _) => const SizedBox.shrink(),
                       ),
                       if (pic.isLongPic == true)
-                        const PBadge(
+                        PBadge(
                           right: 12,
                           bottom: 12,
-                          text: '长图',
+                          text: context.l10n.commonLongImage,
                           type: .primary,
                         ),
                     ],

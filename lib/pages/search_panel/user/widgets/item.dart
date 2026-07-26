@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/common/widgets/pendant_avatar.dart';
 import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -59,7 +60,10 @@ class SearchUserItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '粉丝：${NumUtils.numFormat(item.fans)}  视频：${NumUtils.numFormat(item.videos)}',
+                  context.l10n.memberFollowersAndVideos(
+                    NumUtils.numFormat(item.fans),
+                    NumUtils.numFormat(item.videos),
+                  ),
                   style: style,
                 ),
                 if (item.officialVerify?.desc?.isNotEmpty == true)

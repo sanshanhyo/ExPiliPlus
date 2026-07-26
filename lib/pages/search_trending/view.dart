@@ -12,6 +12,7 @@ import 'package:ex_piliplus/pages/search_trending/controller.dart';
 import 'package:ex_piliplus/utils/color_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -56,7 +57,7 @@ class _SearchTrendingPageState extends State<SearchTrendingPage> {
               title: Opacity(
                 opacity: scrollRatio,
                 child: Text(
-                  'bilibili热搜',
+                  context.l10n.searchTrending,
                   style: TextStyle(color: flag ? null : Colors.white),
                 ),
               ),

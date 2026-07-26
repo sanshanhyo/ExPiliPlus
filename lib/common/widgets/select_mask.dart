@@ -1,5 +1,7 @@
 import 'package:ex_piliplus/common/style.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget selectMask(
   ColorScheme colorScheme,
@@ -29,7 +31,7 @@ Widget selectMask(
           child: Icon(
             Icons.done_all_outlined,
             color: colorScheme.primary,
-            semanticLabel: '取消选择',
+            semanticLabel: Get.context!.l10n.commonCancelSelection,
           ),
         ),
       ),

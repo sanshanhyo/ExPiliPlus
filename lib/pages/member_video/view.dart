@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/common/fab_mixin.dart';
 import 'package:ex_piliplus/pages/member/controller.dart';
 import 'package:ex_piliplus/pages/member_video/controller.dart';
 import 'package:ex_piliplus/pages/member_video/widgets/video_card_h_member_video.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -152,7 +153,7 @@ class _MemberVideoState extends State<MemberVideo>
                               _jumpToIndex(locatedIndex);
                             }
                           },
-                          label: const Text('定位至上次观看'),
+                          label: Text(context.l10n.memberLocateLastWatched),
                         ),
                       ),
                     ),
@@ -227,7 +228,7 @@ class _MemberVideoState extends State<MemberVideo>
     final count = _controller.count;
     if (count != null) {
       return Text(
-        '共$count视频',
+        context.l10n.videoCount(count),
         style: const TextStyle(fontSize: 13),
       );
     }
@@ -250,7 +251,7 @@ class _MemberVideoState extends State<MemberVideo>
             color: theme.colorScheme.secondary,
           ),
           label: Text(
-            episodicButton?.text ?? '播放全部',
+            episodicButton?.text ?? context.l10n.commonPlayAll,
             style: TextStyle(
               fontSize: 13,
               color: theme.colorScheme.secondary,

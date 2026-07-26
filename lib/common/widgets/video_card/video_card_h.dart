@@ -10,6 +10,7 @@ import 'package:ex_piliplus/models/horizontal_video_model.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/dimension.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class VideoCardH extends StatelessWidget {
                             if (progress != null && progress != 0) ...[
                               PBadge(
                                 text: progress == -1
-                                    ? '已看完'
+                                    ? context.l10n.videoStatusWatched
                                     : '${DurationUtils.formatDuration(progress)}/${DurationUtils.formatDuration(videoItem.duration)}',
                                 right: 6,
                                 bottom: 8,

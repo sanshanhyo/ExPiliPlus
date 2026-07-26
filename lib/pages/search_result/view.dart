@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/search_panel/pgc/view.dart';
 import 'package:ex_piliplus/pages/search_panel/user/view.dart';
 import 'package:ex_piliplus/pages/search_panel/video/view.dart';
 import 'package:ex_piliplus/pages/search_result/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -112,7 +113,7 @@ class _SearchResultPageState extends State<SearchResultPage>
                         int count = _searchResultController.count[item.index];
                         return Tab(
                           text:
-                              '${item.label}${count != -1 ? ' ${count > 99 ? '99+' : count}' : ''}',
+                              '${item.localizedLabel(context.l10n)}${count != -1 ? ' ${count > 99 ? '99+' : count}' : ''}',
                         );
                       },
                     ),

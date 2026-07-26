@@ -8,6 +8,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/fav/fav_topic/topic_item.dart';
 import 'package:ex_piliplus/pages/fav/topic/controller.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -83,7 +84,7 @@ class _FavTopicPageState extends State<FavTopicPage>
 
                   void onLongPress() => showConfirmDialog(
                     context: context,
-                    title: const Text('确定取消收藏？'),
+                    title: Text(context.l10n.favoriteRemoveConfirm),
                     onConfirm: () => _controller.onRemove(index, item.id!),
                   );
 

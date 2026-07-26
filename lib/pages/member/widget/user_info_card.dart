@@ -29,6 +29,7 @@ import 'package:ex_piliplus/utils/bili_colors.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/color_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
@@ -93,6 +94,7 @@ class UserInfoCard extends StatelessWidget {
     required ColorScheme colorScheme,
     required UserInfoType type,
   }) {
+    final l10n = Get.context!.l10n;
     int? count;
     VoidCallback? onTap;
     switch (type) {
@@ -112,7 +114,7 @@ class UserInfoCard extends StatelessWidget {
         count = card.likes?.likeNum;
     }
     void onShowCount() => SmartDialog.showToast(
-      '${type.title}: $count',
+      '${type.localizedTitle(l10n)}: $count',
       alignment: const Alignment(0.0, -0.8),
     );
     return GestureDetector(
@@ -131,7 +133,7 @@ class UserInfoCard extends StatelessWidget {
               style: const TextStyle(fontSize: 14),
             ),
             Text(
-              type.title,
+              type.localizedTitle(l10n),
               style: TextStyle(
                 height: 1.2,
                 fontSize: 12,
@@ -232,7 +234,7 @@ class UserInfoCard extends StatelessWidget {
                 color: colorScheme.vipColor,
               ),
               child: Text(
-                card.vip?.label?.text ?? '大会员',
+                card.vip?.label?.text ?? context.l10n.accountPremium,
                 strutStyle: const StrutStyle(
                   height: 1,
                   leading: 0,
@@ -381,7 +383,7 @@ class UserInfoCard extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: ' 该账号封禁中',
+              text: ' ${Get.context!.l10n.memberAccountBanned}',
               style: TextStyle(
                 color: isLight
                     ? colorScheme.onErrorContainer
@@ -493,15 +495,15 @@ class UserInfoCard extends StatelessWidget {
                     ],
                     TextSpan(
                       text: isOwner
-                          ? '编辑资料'
+                          ? Get.context!.l10n.memberEditProfile
                           : switch (relation) {
-                              0 || -1 => '关注',
-                              1 => '悄悄关注',
-                              2 => '已关注',
+                              0 || -1 => Get.context!.l10n.memberFollow,
+                              1 => Get.context!.l10n.memberQuietlyFollowing,
+                              2 => Get.context!.l10n.memberFollowing,
                               // 3 => '回关',
-                              4 || 6 => '已互关',
-                              128 => '移除黑名单',
-                              -10 => '特别关注', // 该状态码并不是官方状态码
+                              4 || 6 => Get.context!.l10n.memberMutualFollow,
+                              128 => Get.context!.l10n.memberRemoveFromBlocked,
+                              -10 => Get.context!.l10n.memberSpecialFollow,
                               _ => relation.toString(),
                             },
                     ),
@@ -822,7 +824,6 @@ class UserInfoCard extends StatelessWidget {
   Widget _buildChargeItem(
     ColorScheme colorScheme,
     List<Owner>? list,
-    Object? count,
     String desc,
     VoidCallback onTap,
   ) {
@@ -837,24 +838,11 @@ class UserInfoCard extends StatelessWidget {
             users: list!.take(3),
           ),
           const SizedBox(width: 4),
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: NumUtils.numFormat(count),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                TextSpan(
-                  text: desc,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.outline,
-                  ),
-                ),
-              ],
+          Text(
+            desc,
+            style: TextStyle(
+              fontSize: 13,
+              color: colorScheme.outline,
             ),
           ),
           Icon(
@@ -873,8 +861,9 @@ class UserInfoCard extends StatelessWidget {
         _buildChargeItem(
           colorScheme,
           charges,
-          chargeCount,
-          '人为TA充电',
+          Get.context!.l10n.memberSupporterCount(
+            NumUtils.numFormat(chargeCount),
+          ),
           () => UpowerRankPage.toUpowerRank(
             mid: card.mid!,
             name: card.name!,
@@ -885,8 +874,9 @@ class UserInfoCard extends StatelessWidget {
         _buildChargeItem(
           colorScheme,
           guards,
-          guardCount,
-          '人加入大航海',
+          Get.context!.l10n.memberGuardCount(
+            NumUtils.numFormat(guardCount),
+          ),
           () => MemberGuard.toMemberGuard(
             mid: card.mid!,
             name: card.name!,
@@ -941,7 +931,11 @@ class UserInfoCard extends StatelessWidget {
             ),
           ),
           Text(
-            '${flag ? '等${item.items!.length}人' : ''}也关注了TA',
+            flag
+                ? Get.context!.l10n.memberAlsoFollowedWithOthers(
+                    item.items!.length,
+                  )
+                : Get.context!.l10n.memberAlsoFollowed,
             style: TextStyle(fontSize: 13, color: colorScheme.outline),
           ),
           Icon(

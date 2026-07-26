@@ -3,6 +3,8 @@ import 'package:ex_piliplus/http/user.dart';
 import 'package:ex_piliplus/models_new/login_log/data.dart';
 import 'package:ex_piliplus/models_new/login_log/list.dart';
 import 'package:ex_piliplus/pages/log_table/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:get/get.dart';
 
 class LoginLogController extends LogController<LoginLogData, LoginLogItem> {
   @override
@@ -19,12 +21,12 @@ class LoginLogController extends LogController<LoginLogData, LoginLogItem> {
   }
 
   @override
-  final LoginLogItem header = const LoginLogItem(
-    timeAt: '时间',
-    ip: '变化',
-    geo: '地理位置',
+  LoginLogItem get header => LoginLogItem(
+    timeAt: Get.context!.l10n.commonTime,
+    ip: Get.context!.l10n.logChange,
+    geo: Get.context!.l10n.logLocation,
   );
 
   @override
-  final String title = '登录记录';
+  String get title => Get.context!.l10n.logLoginHistory;
 }

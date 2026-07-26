@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/pages/search_panel/controller.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,7 +66,10 @@ class SearchArticleController
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 10),
-              const Text('排序', style: TextStyle(fontSize: 16)),
+              Text(
+                context.l10n.commonSort,
+                style: const TextStyle(fontSize: 16),
+              ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
@@ -74,11 +78,11 @@ class SearchArticleController
                   (e) {
                     final isCurr = e == articleOrderType.value;
                     return SearchText(
-                      text: e.label,
+                      text: e.localizedLabel(context.l10n),
                       onTap: (_) {
                         articleOrderType.value = e;
                         order = e.order;
-                        onSortSearch(label: e.label);
+                        onSortSearch(label: e.localizedLabel(context.l10n));
                       },
                       bgColor: isCurr
                           ? theme.colorScheme.secondaryContainer
@@ -91,7 +95,10 @@ class SearchArticleController
                 ).toList(),
               ),
               const SizedBox(height: 20),
-              const Text('分区', style: TextStyle(fontSize: 16)),
+              Text(
+                context.l10n.searchZone,
+                style: const TextStyle(fontSize: 16),
+              ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
@@ -100,10 +107,10 @@ class SearchArticleController
                   (e) {
                     final isCurr = e == articleZoneType!.value;
                     return SearchText(
-                      text: e.label,
+                      text: e.localizedLabel(context.l10n),
                       onTap: (_) {
                         articleZoneType!.value = e;
-                        onSortSearch(label: e.label);
+                        onSortSearch(label: e.localizedLabel(context.l10n));
                       },
                       bgColor: isCurr
                           ? theme.colorScheme.secondaryContainer

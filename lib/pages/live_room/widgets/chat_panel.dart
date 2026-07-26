@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/live_room/superchat/superchat_card.dart';
 import 'package:ex_piliplus/pages/member/widget/medal_widget.dart';
 import 'package:ex_piliplus/pages/video/widgets/header_control.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -223,7 +224,7 @@ class LiveRoomChatPanel extends StatelessWidget {
                   child: ElevatedButton.icon(
                     style: const ButtonStyle(visualDensity: .comfortable),
                     icon: const Icon(Icons.arrow_downward_rounded, size: 20),
-                    label: const Text('回到底部'),
+                    label: Text(context.l10n.liveBackToBottom),
                     onPressed: liveRoomController.handleJumpToBottom,
                   ),
                 )
@@ -333,17 +334,17 @@ class LiveRoomChatPanel extends StatelessWidget {
         PopupMenuItem(
           height: 38,
           onTap: () => Utils.copyText(Utils.jsonEncoder.convert(item.toJson())),
-          child: const Text(
-            '复制弹幕信息',
-            style: TextStyle(fontSize: 13),
+          child: Text(
+            context.l10n.liveCopyDanmakuInfo,
+            style: const TextStyle(fontSize: 13),
           ),
         ),
         PopupMenuItem(
           height: 38,
           onTap: () => Get.toNamed('/member?mid=${item.extra.mid}'),
-          child: const Text(
-            '去TA的个人空间',
-            style: TextStyle(fontSize: 13),
+          child: Text(
+            context.l10n.liveGoToUserProfile,
+            style: const TextStyle(fontSize: 13),
           ),
         ),
         PopupMenuItem(
@@ -358,20 +359,21 @@ class LiveRoomChatPanel extends StatelessWidget {
           height: 38,
           onTap: () async {
             if (!liveRoomController.isLogin) return;
+            final blockedMessage = context.l10n.liveBlocked;
             final res = await LiveHttp.liveShieldUser(
               uid: item.extra.mid,
               roomid: roomId,
               type: 1,
             );
             if (res.isSuccess) {
-              SmartDialog.showToast('屏蔽成功');
+              SmartDialog.showToast(blockedMessage);
             } else {
               res.toast();
             }
           },
-          child: const Text(
-            '屏蔽发送者',
-            style: TextStyle(fontSize: 13),
+          child: Text(
+            context.l10n.liveBlockSender,
+            style: const TextStyle(fontSize: 13),
           ),
         ),
         PopupMenuItem(
@@ -382,9 +384,9 @@ class LiveRoomChatPanel extends StatelessWidget {
             msg: item.text,
             extra: item.extra,
           ),
-          child: const Text(
-            '举报选中弹幕',
-            style: TextStyle(fontSize: 13),
+          child: Text(
+            context.l10n.liveReportSelectedDanmaku,
+            style: const TextStyle(fontSize: 13),
           ),
         ),
       ],

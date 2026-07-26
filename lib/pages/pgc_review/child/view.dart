@@ -16,6 +16,7 @@ import 'package:ex_piliplus/pages/pgc_review/child/controller.dart';
 import 'package:ex_piliplus/pages/pgc_review/post/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -128,7 +129,10 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
         children: [
           if (item.author!.mid == Accounts.main.mid) ...[
             DialogOption(
-              child: const Text('编辑', style: TextStyle(fontSize: 14)),
+              child: Text(
+                context.l10n.commonEdit,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 Get.back();
                 showModalBottomSheet(
@@ -148,19 +152,25 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
               },
             ),
             DialogOption(
-              child: const Text('删除', style: TextStyle(fontSize: 14)),
+              child: Text(
+                context.l10n.commonDelete,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 Get.back();
                 showConfirmDialog(
                   context: context,
-                  title: const Text('删除短评，同时删除评分？'),
+                  title: Text(context.l10n.reviewDeleteConfirm),
                   onConfirm: () => _controller.onDel(index, item.reviewId!),
                 );
               },
             ),
           ],
           DialogOption(
-            child: const Text('举报', style: TextStyle(fontSize: 14)),
+            child: Text(
+              context.l10n.commonReport,
+              style: const TextStyle(fontSize: 14),
+            ),
             onPressed: () => Get
               ..back()
               ..toNamed(
@@ -386,7 +396,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
               return count == null
                   ? const SizedBox.shrink()
                   : Text(
-                      '${NumUtils.numFormat(count)}条点评',
+                      context.l10n.reviewCount(NumUtils.numFormat(count)),
                       style: const TextStyle(fontSize: 13),
                     );
             },
@@ -401,7 +411,7 @@ class _PgcReviewChildPageState extends State<PgcReviewChildPage>
             ),
             label: Obx(
               () => Text(
-                _controller.sortType.value.label,
+                _controller.sortType.value.localizedLabel(context.l10n),
                 style: TextStyle(
                   fontSize: 13,
                   color: theme.colorScheme.secondary,

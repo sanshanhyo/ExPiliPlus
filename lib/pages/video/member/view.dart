@@ -390,7 +390,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
     return GestureDetector(
       onTap: onTap,
       child: Text(
-        '$num${type.title}',
+        '$num ${type.localizedTitle(context.l10n)}',
         style: TextStyle(
           fontSize: 14,
           color: theme.colorScheme.outline,

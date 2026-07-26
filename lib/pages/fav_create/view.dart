@@ -8,6 +8,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/msg.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -72,14 +73,19 @@ class _CreateFavPageState extends State<CreateFavPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_mediaId != null ? '编辑' : '创建'),
+        title: Text(
+          _mediaId != null
+              ? context.l10n.commonEdit
+              : context.l10n.commonCreate,
+        ),
         actions: [
           TextButton(
             onPressed: () {
               if (_titleController.text.isEmpty) {
-                SmartDialog.showToast('名称不能为空');
+                SmartDialog.showToast(context.l10n.favoriteNameRequired);
                 return;
               }
               FavHttp.addOrEditFolder(
@@ -91,7 +97,11 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 intro: _introController.text,
               ).then((res) {
                 if (res case Success(:final response)) {
-                  SmartDialog.showToast('${_mediaId != null ? '编辑' : '创建'}成功');
+                  SmartDialog.showToast(
+                    _mediaId != null
+                        ? l10n.favoriteFolderUpdated
+                        : l10n.favoriteFolderCreated,
+                  );
                   if (mounted) {
                     Get.back(result: response);
                   }
@@ -100,7 +110,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 }
               });
             },
-            child: const Text('完成'),
+            child: Text(context.l10n.commonDone),
           ),
           const SizedBox(width: 16),
         ],
@@ -116,6 +126,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
   }
 
   Future<void> _pickImg(BuildContext context, ThemeData theme) async {
+    final l10n = context.l10n;
     try {
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -129,7 +140,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
             sourcePath: imgPath,
             uiSettings: [
               AndroidUiSettings(
-                toolbarTitle: '裁剪',
+                toolbarTitle: l10n.favoriteCrop,
                 toolbarColor: theme.colorScheme.secondaryContainer,
                 toolbarWidgetColor: theme.colorScheme.onSecondaryContainer,
                 statusBarLight: theme.isLight,
@@ -139,7 +150,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 initAspectRatio: CropAspectRatioPreset.ratio16x9,
               ),
               IOSUiSettings(
-                title: '裁剪',
+                title: l10n.favoriteCrop,
                 // aspectRatioPresets: [CropAspectRatioPreset.ratio16x9],
                 // aspectRatioLockEnabled: false,
                 // resetAspectRatioEnabled: false,
@@ -205,9 +216,9 @@ class _CreateFavPageState extends State<CreateFavPage> {
                                   Get.back();
                                   _pickImg(context, theme);
                                 },
-                                child: const Text(
-                                  '替换封面',
-                                  style: TextStyle(fontSize: 14),
+                                child: Text(
+                                  context.l10n.favoriteReplaceCover,
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               DialogOption(
@@ -216,9 +227,9 @@ class _CreateFavPageState extends State<CreateFavPage> {
                                   _cover = null;
                                   (context as Element).markNeedsBuild();
                                 },
-                                child: const Text(
-                                  '移除封面',
-                                  style: TextStyle(fontSize: 14),
+                                child: Text(
+                                  context.l10n.favoriteRemoveCover,
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                             ],
@@ -231,7 +242,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                   );
                 },
                 leading: Text(
-                  '封面',
+                  context.l10n.favoriteCover,
                   style: leadingStyle,
                 ),
                 trailing: Row(
@@ -275,9 +286,9 @@ class _CreateFavPageState extends State<CreateFavPage> {
                           color: theme.colorScheme.error,
                         ),
                       ),
-                      const TextSpan(
-                        text: '名称',
-                        style: TextStyle(fontSize: 14),
+                      TextSpan(
+                        text: context.l10n.favoriteName,
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
@@ -299,7 +310,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                   ],
                   decoration: InputDecoration(
                     isDense: true,
-                    hintText: '名称',
+                    hintText: context.l10n.favoriteName,
                     hintStyle: TextStyle(
                       fontSize: 14,
                       color: theme.colorScheme.outline,
@@ -324,7 +335,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                 SizedBox(
                   width: 55,
                   child: Text(
-                    '简介',
+                    context.l10n.favoriteIntro,
                     style: TextStyle(
                       fontSize: 14,
                       color: theme.colorScheme.onSurfaceVariant,
@@ -342,7 +353,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
                     ],
                     decoration: InputDecoration(
                       isDense: true,
-                      hintText: '可填写简介',
+                      hintText: context.l10n.favoriteIntroHint,
                       hintStyle: TextStyle(
                         fontSize: 14,
                         color: theme.colorScheme.outline,
@@ -369,7 +380,7 @@ class _CreateFavPageState extends State<CreateFavPage> {
               onTap: onTap,
               tileColor: theme.colorScheme.onInverseSurface,
               leading: Text(
-                '公开',
+                context.l10n.favoritePublicSetting,
                 style: leadingStyle,
               ),
               trailing: Transform.scale(

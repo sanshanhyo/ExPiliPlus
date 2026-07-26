@@ -166,7 +166,9 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
                   margin: EdgeInsets.only(bottom: padding.bottom),
                   height: 125,
                   child: Text(
-                    controller.isEnd ? '没有更多了' : '加载中...',
+                    controller.isEnd
+                        ? context.l10n.commonNoMore
+                        : context.l10n.commonLoading,
                     style: TextStyle(
                       fontSize: 12,
                       color: theme.colorScheme.outline,
@@ -199,7 +201,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
         }
 
         final child = HttpError(
-          errMsg: '还没有评论',
+          errMsg: context.l10n.replyNoCommentsYet,
           onReload: controller.onReload,
         );
         if (controller.voteCard case final voteCard?) {
@@ -244,7 +246,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: const Text('评论详情'),
+              title: Text(context.l10n.replyDetails),
               shape: Border(
                 bottom: BorderSide(
                   color: theme.colorScheme.outline.withValues(alpha: 0.1),
@@ -283,7 +285,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
   }
 
   Widget ratioWidget(double maxWidth) => IconButton(
-    tooltip: '页面比例调节',
+    tooltip: context.l10n.playerAspectRatio,
     onPressed: () => showDialog(
       context: context,
       builder: (context) => Align(
@@ -342,7 +344,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
         );
       } catch (_) {}
     },
-    tooltip: '评论',
+    tooltip: context.l10n.feedComment,
     child: const Icon(Icons.reply),
   );
 }

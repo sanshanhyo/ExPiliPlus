@@ -6,6 +6,7 @@ import 'package:ex_piliplus/pages/common/multi_select/base.dart'
 import 'package:ex_piliplus/pages/common/search/common_search_controller.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/widgets.dart' show Text;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -54,7 +55,7 @@ class DownloadSearchController
   void onRemove() {
     showConfirmDialog(
       context: Get.context!,
-      title: const Text('确定删除选中视频？'),
+      title: Text(Get.context!.l10n.downloadDeleteSelectedConfirm),
       onConfirm: () async {
         SmartDialog.showLoading();
         final allChecked = this.allChecked.toSet();

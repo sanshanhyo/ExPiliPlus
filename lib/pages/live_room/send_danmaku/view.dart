@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/common/publish/common_rich_text_pub_page.dart'
 import 'package:ex_piliplus/pages/live_emote/controller.dart';
 import 'package:ex_piliplus/pages/live_emote/view.dart';
 import 'package:ex_piliplus/pages/live_room/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -111,10 +112,10 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
               onChanged: onChanged,
               onSubmitted: onSubmitted,
               focusNode: focusNode,
-              decoration: const InputDecoration(
-                hintText: "输入弹幕内容",
+              decoration: InputDecoration(
+                hintText: context.l10n.liveDanmakuInputHint,
                 border: InputBorder.none,
-                hintStyle: TextStyle(fontSize: 14),
+                hintStyle: const TextStyle(fontSize: 14),
               ),
               style: theme.textTheme.bodyLarge,
               // inputFormatters: [LengthLimitingTextInputFormatter(20)],
@@ -140,7 +141,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
                   visualDensity: .compact,
                   padding: const .symmetric(horizontal: 20, vertical: 10),
                 ),
-                child: const Text('发送'),
+                child: Text(context.l10n.commonSend),
               ),
             ),
           ],
@@ -170,6 +171,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
       }
       message = buffer.toString();
     }
+    final successMessage = context.l10n.messagesSent;
     final res = await LiveHttp.sendLiveMsg(
       roomId: liveRoomController.roomId,
       msg: message,
@@ -184,7 +186,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<LiveSendDmPanel> {
       liveRoomController
         ..savedDanmaku?.clear()
         ..savedDanmaku = null;
-      SmartDialog.showToast('发送成功');
+      SmartDialog.showToast(successMessage);
     } else {
       res.toast();
     }

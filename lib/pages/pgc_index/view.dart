@@ -10,6 +10,7 @@ import 'package:ex_piliplus/models_new/pgc/pgc_index_result/list.dart';
 import 'package:ex_piliplus/pages/pgc_index/controller.dart';
 import 'package:ex_piliplus/pages/pgc_index/widgets/pgc_card_v_pgc_index.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +47,7 @@ class _PgcIndexPageState extends State<PgcIndexPage>
     return widget.indexType == null
         ? Scaffold(
             resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('索引')),
+            appBar: AppBar(title: Text(context.l10n.homeMediaIndex)),
             body: Obx(() => _buildBody(theme, _ctr.conditionState.value)),
           )
         : Obx(() => _buildBody(theme, _ctr.conditionState.value));
@@ -204,7 +205,9 @@ class _PgcIndexPageState extends State<PgcIndexPage>
               mainAxisSize: .min,
               children: [
                 Text(
-                  _ctr.isExpand.value ? '收起' : '展开',
+                  _ctr.isExpand.value
+                      ? context.l10n.commonCollapse
+                      : context.l10n.commonExpand,
                   style: TextStyle(
                     color: theme.colorScheme.outline,
                   ),

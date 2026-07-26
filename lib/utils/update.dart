@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/api.dart';
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/init.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -14,11 +15,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 abstract final class Update {
   // 检查更新
   static Future<void> checkUpdate([bool isAuto = true]) async {
     if (kDebugMode) return;
+    final l10n = Get.context!.l10n;
     SmartDialog.dismiss();
     try {
       final res = await Request().get(
@@ -30,7 +33,7 @@ abstract final class Update {
       );
       if (res.data is Map || res.data.isEmpty) {
         if (!isAuto) {
-          SmartDialog.showToast('检查更新失败，GitHub接口未返回数据，请检查网络');
+          SmartDialog.showToast(l10n.updateCheckFailed);
         }
         return;
       }
@@ -39,7 +42,7 @@ abstract final class Update {
           DateTime.parse(data['created_at']).millisecondsSinceEpoch ~/ 1000;
       if (BuildConfig.buildTime >= latest) {
         if (!isAuto) {
-          SmartDialog.showToast('已是最新版本');
+          SmartDialog.showToast(l10n.updateAlreadyLatest);
         }
       } else {
         SmartDialog.show(
@@ -51,7 +54,7 @@ abstract final class Update {
               child: Text(text),
             );
             return AlertDialog(
-              title: const Text('🎉 发现新版本 '),
+              title: Text(l10n.updateNewVersion),
               content: SizedBox(
                 height: 280,
                 child: SingleChildScrollView(
@@ -69,7 +72,7 @@ abstract final class Update {
                           '${Constants.sourceCodeUrl}/commits/main',
                         ),
                         child: Text(
-                          "点此查看完整更新(即commit)内容",
+                          l10n.updateViewFullChanges,
                           style: TextStyle(color: colorScheme.primary),
                         ),
                       ),
@@ -85,14 +88,14 @@ abstract final class Update {
                       GStorage.setting.put(SettingBoxKey.autoUpdate, false);
                     },
                     child: Text(
-                      '不再提醒',
+                      l10n.updateStopReminding,
                       style: TextStyle(color: colorScheme.outline),
                     ),
                   ),
                 TextButton(
                   onPressed: SmartDialog.dismiss,
                   child: Text(
-                    '取消',
+                    l10n.commonCancel,
                     style: TextStyle(color: colorScheme.outline),
                   ),
                 ),

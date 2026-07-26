@@ -33,10 +33,12 @@ import 'package:ex_piliplus/models_new/space/space_shop/data.dart';
 import 'package:ex_piliplus/models_new/upower_rank/data.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/app_sign.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/wbi_sign.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 abstract final class MemberHttp {
   static Future<void> reportMember(
@@ -55,9 +57,9 @@ abstract final class MemberHttp {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     if (res.data['status'] == true) {
-      SmartDialog.showToast('举报成功');
+      SmartDialog.showToast(Get.context!.l10n.reportSucceeded);
     } else {
-      SmartDialog.showToast('举报失败');
+      SmartDialog.showToast(Get.context!.l10n.reportFailed);
     }
   }
 

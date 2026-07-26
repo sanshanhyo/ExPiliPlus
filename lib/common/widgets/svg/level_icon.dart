@@ -1,6 +1,7 @@
 // dart format width=120
 import 'dart:ui';
 
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
@@ -18,7 +19,12 @@ class UserLevel extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderLevel(height, level, flash);
+    return RenderLevel(
+      height,
+      level,
+      flash,
+      _localizedSemanticsLabel(context),
+    );
   }
 
   @override
@@ -29,12 +35,21 @@ class UserLevel extends LeafRenderObjectWidget {
     renderObject
       ..height = height
       ..level = level
-      ..flash = flash;
+      ..flash = flash
+      ..semanticsLabel = _localizedSemanticsLabel(context);
   }
+
+  String _localizedSemanticsLabel(BuildContext context) =>
+      flash ? context.l10n.memberHardcoreUserLevelSemantics(level) : context.l10n.memberUserLevelSemantics(level);
 }
 
 class RenderLevel extends RenderBox {
-  RenderLevel(this._height, this._level, this._flash);
+  RenderLevel(
+    this._height,
+    this._level,
+    this._flash,
+    this._semanticsLabel,
+  );
 
   double _height;
   set height(double value) {
@@ -56,6 +71,13 @@ class RenderLevel extends RenderBox {
     if (_flash == value) return;
     _flash = value;
     markNeedsLayout();
+  }
+
+  String _semanticsLabel;
+  set semanticsLabel(String value) {
+    if (_semanticsLabel == value) return;
+    _semanticsLabel = value;
+    markNeedsSemanticsUpdate();
   }
 
   @override
@@ -89,7 +111,7 @@ class RenderLevel extends RenderBox {
   @override
   void describeSemanticsConfiguration(SemanticsConfiguration config) {
     super.describeSemanticsConfiguration(config);
-    config.label = '${_flash ? "硬核" : ""}$_level级';
+    config.label = _semanticsLabel;
   }
 
   static Color lookupBackgroundColor(int level) {

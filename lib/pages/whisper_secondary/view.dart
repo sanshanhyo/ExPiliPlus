@@ -58,7 +58,9 @@ class _WhisperSecPageState extends State<WhisperSecPage> {
                           child: Row(
                             children: [
                               e.type.icon,
-                              Text('  ${e.title}'),
+                              Text(
+                                '  ${e.type.localizedTitle(context, e)}',
+                              ),
                             ],
                           ),
                         ),

@@ -62,9 +62,26 @@ class AppFontFamilyDialog extends StatelessWidget {
       }
     } catch (error) {
       if (context.mounted) {
-        SmartDialog.showToast(error.toString());
+        SmartDialog.showToast(_localizedDownloadError(context, error));
       }
     }
+  }
+
+  String _localizedDownloadError(BuildContext context, Object error) {
+    if (error is! AppFontDownloadException) return error.toString();
+    final l10n = context.l10n;
+    return switch (error.error) {
+      .incompleteFile => l10n.settingsFontErrorIncompleteFile,
+      .loadFailed => l10n.settingsFontErrorLoadFailed,
+      .http => l10n.settingsFontErrorHttp(error.statusCode?.toString() ?? '-'),
+      .licenseExtractionFailed => l10n.settingsFontErrorLicenseExtraction,
+      .downloadFailed => l10n.settingsFontErrorDownloadFailed,
+      .sizeMismatch => l10n.settingsFontErrorSizeMismatch,
+      .checksumMismatch => l10n.settingsFontErrorChecksumMismatch,
+      .timeout => l10n.settingsFontErrorTimeout,
+      .network => l10n.settingsFontErrorNetwork,
+      .saveFailed => l10n.settingsFontErrorSaveFailed,
+    };
   }
 
   void _select(BuildContext context, AppFontFamily font) {

@@ -4,6 +4,7 @@ import 'package:ex_piliplus/common/widgets/extra_hittest_stack.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/common/avatar_badge_type.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,7 @@ class PendantAvatar extends StatelessWidget {
         avatar,
         ?pendant,
         if (roomId != null)
-          _buildLive(colorScheme)
+          _buildLive(context, colorScheme)
         else if (badgeType != .none)
           _buildBadge(context, colorScheme),
       ],
@@ -104,7 +105,7 @@ class PendantAvatar extends StatelessWidget {
     return child;
   }
 
-  Widget _buildLive(ColorScheme colorScheme) {
+  Widget _buildLive(BuildContext context, ColorScheme colorScheme) {
     final fontSize = liveFontSize ?? 13.0;
     return Positioned(
       bottom: liveBottom ?? 0.0,
@@ -126,7 +127,7 @@ class PendantAvatar extends StatelessWidget {
                 color: colorScheme.onSecondaryContainer,
               ),
               Text(
-                '直播中',
+                context.l10n.liveNow,
                 style: TextStyle(
                   height: 1,
                   fontSize: fontSize,
@@ -146,13 +147,13 @@ class PendantAvatar extends StatelessWidget {
         Assets.vipIcon,
         width: badgeSize,
         height: badgeSize,
-        semanticsLabel: badgeType.desc,
+        semanticsLabel: badgeType.localizedDescription(context.l10n),
       ),
       _ => Icon(
         Icons.offline_bolt,
         color: badgeType.color,
         size: badgeSize,
-        semanticLabel: badgeType.desc,
+        semanticLabel: badgeType.localizedDescription(context.l10n),
       ),
     };
     return Positioned(

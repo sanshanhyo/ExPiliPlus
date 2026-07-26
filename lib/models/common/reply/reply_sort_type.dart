@@ -16,4 +16,10 @@ enum ReplySortType {
     .hot => l10n.replySortHottest,
     .select => l10n.replySortFeatured,
   };
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .time => l10n.replySortNewestShort,
+    .hot => l10n.replySortHottestShort,
+    .select => l10n.replySortFeaturedShort,
+  };
 }

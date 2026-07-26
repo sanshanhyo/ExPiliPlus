@@ -200,7 +200,7 @@ class _CdnSelectDialogState extends State<CdnSelectDialog> {
             _updateSpeedResult(index, downloaded, duration);
             downloaded = 0;
           } else {
-            throw TimeoutException('测速超时');
+            throw TimeoutException(context.l10n.settingsSpeedTestTimeout);
           }
         } else if (downloaded >= maxSize) {
           onClose();

@@ -1,29 +1,54 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum RankType {
-  all('全站', rid: 0),
-  anime('番剧', seasonType: 1),
-  guochuang('国创', seasonType: 4),
-  douga('动画', rid: 1005),
-  music('音乐', rid: 1003),
-  dance('舞蹈', rid: 1004),
-  game('游戏', rid: 1008),
-  knowledge('知识', rid: 1010),
-  tech('科技', rid: 1012),
-  sports('运动', rid: 1018),
-  car('汽车', rid: 1013),
-  food('美食', rid: 1020),
-  animal('动物', rid: 1024),
-  kichiku('鬼畜', rid: 1007),
-  fashion('时尚', rid: 1014),
-  ent('娱乐', rid: 1002),
-  cinephile('影视', rid: 1001),
-  documentary('记录', seasonType: 3),
-  movie('电影', seasonType: 2),
-  tv('剧集', seasonType: 5),
-  variety('综艺', seasonType: 7),
+  all(rid: 0),
+  anime(seasonType: 1),
+  guochuang(seasonType: 4),
+  douga(rid: 1005),
+  music(rid: 1003),
+  dance(rid: 1004),
+  game(rid: 1008),
+  knowledge(rid: 1010),
+  tech(rid: 1012),
+  sports(rid: 1018),
+  car(rid: 1013),
+  food(rid: 1020),
+  animal(rid: 1024),
+  kichiku(rid: 1007),
+  fashion(rid: 1014),
+  ent(rid: 1002),
+  cinephile(rid: 1001),
+  documentary(seasonType: 3),
+  movie(seasonType: 2),
+  tv(seasonType: 5),
+  variety(seasonType: 7),
   ;
 
-  final String label;
   final int? rid;
   final int? seasonType;
-  const RankType(this.label, {this.rid, this.seasonType});
+  const RankType({this.rid, this.seasonType});
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .all => l10n.searchAllZones,
+    .anime => l10n.searchZoneAnime,
+    .guochuang => l10n.searchZoneChineseAnimation,
+    .douga => l10n.searchZoneAnimation,
+    .music => l10n.searchZoneMusic,
+    .dance => l10n.searchZoneDance,
+    .game => l10n.searchZoneGames,
+    .knowledge => l10n.searchZoneKnowledge,
+    .tech => l10n.searchZoneTechnology,
+    .sports => l10n.searchZoneSports,
+    .car => l10n.searchZoneCars,
+    .food => l10n.searchZoneFood,
+    .animal => l10n.searchZoneAnimals,
+    .kichiku => l10n.searchZoneKichiku,
+    .fashion => l10n.searchZoneFashion,
+    .ent => l10n.searchZoneEntertainment,
+    .cinephile => l10n.searchZoneFilmTv,
+    .documentary => l10n.searchZoneDocumentary,
+    .movie => l10n.searchZoneMovies,
+    .tv => l10n.searchZoneTv,
+    .variety => l10n.homeVarietyShows,
+  };
 }

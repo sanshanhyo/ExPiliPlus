@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/live_area/controller.dart';
 import 'package:ex_piliplus/pages/live_area_detail/view.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sortable_wrap/sortable_wrap.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('全部标签'),
+        title: Text(context.l10n.liveAllTags),
         actions: _controller.isLogin
             ? [
                 TextButton(
@@ -42,7 +43,11 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
                     visualDensity: VisualDensity.compact,
                   ),
                   child: Obx(
-                    () => Text(_controller.isEditing.value ? '完成' : '编辑'),
+                    () => Text(
+                      _controller.isEditing.value
+                          ? context.l10n.commonDone
+                          : context.l10n.commonEdit,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -174,9 +179,9 @@ class _LiveAreaPageState extends State<LiveAreaPage> {
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(text: '我的常用标签  '),
+                  TextSpan(text: '${context.l10n.liveFavoriteTags}  '),
                   TextSpan(
-                    text: '点击进入标签',
+                    text: context.l10n.liveTapTagHint,
                     style: TextStyle(
                       fontSize: 13,
                       color: theme.colorScheme.outline,

@@ -15,6 +15,7 @@ import 'package:ex_piliplus/models/dynamics/article_content_model.dart'
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -451,7 +452,10 @@ class OpusContent extends StatelessWidget {
                           children: [
                             Text(opus.title!),
                             Text(
-                              '${opus.authorName} · ${opus.statView ?? 0}阅读',
+                              context.l10n.articleAuthorReads(
+                                opus.authorName ?? '',
+                                opus.statView ?? 0,
+                              ),
                               style: TextStyle(
                                 fontSize: 13,
                                 color: colorScheme.outline,
@@ -486,7 +490,9 @@ class OpusContent extends StatelessWidget {
                           children: [
                             Text(vote.desc!),
                             Text(
-                              '${vote.joinNum}人参与',
+                              context.l10n.replyVoteParticipants(
+                                vote.joinNum.toString(),
+                              ),
                               style: TextStyle(
                                 fontSize: 13,
                                 color: colorScheme.outline,
@@ -562,7 +568,7 @@ class OpusContent extends StatelessWidget {
                                     ),
                                   if (e.price?.isNotEmpty == true)
                                     Text(
-                                      '${e.price!}起',
+                                      context.l10n.articlePriceFrom(e.price!),
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: colorScheme.outline,
@@ -616,14 +622,16 @@ class OpusContent extends StatelessWidget {
                                           null,
                                         );
                                       },
-                                      child: const Text('视频'),
+                                      child: Text(context.l10n.commonVideo),
                                     ),
                                     DialogOption(
                                       onPressed: () {
                                         Get.back();
                                         PageUtils.pushDynFromId(id: card.oid!);
                                       },
-                                      child: const Text('动态/专栏'),
+                                      child: Text(
+                                        context.l10n.articleFeedOrArticle,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -709,7 +717,9 @@ class OpusContent extends StatelessWidget {
               }
 
               return Text(
-                '不支持的类型 (${element.paraType})',
+                context.l10n.articleUnsupportedType(
+                  element.paraType.toString(),
+                ),
                 style: const TextStyle(
                   fontWeight: .bold,
                   color: Colors.red,
@@ -718,7 +728,9 @@ class OpusContent extends StatelessWidget {
           }
         } catch (e, s) {
           return Text(
-            '错误的类型 $e${kDebugMode ? '\n$s' : ''}',
+            context.l10n.articleInvalidType(
+              '$e${kDebugMode ? '\n$s' : ''}',
+            ),
             style: const TextStyle(
               fontWeight: .bold,
               color: Colors.red,

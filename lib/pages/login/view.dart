@@ -377,10 +377,19 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(width: 12),
                 Builder(
                   builder: (context) {
+                    final locale = Localizations.localeOf(context);
+                    final useSimplifiedCountryName =
+                        locale.languageCode == 'zh' &&
+                        locale.scriptCode != 'Hant';
+                    String countryName(
+                      ({int id, String cname, int countryId}) item,
+                    ) => useSimplifiedCountryName
+                        ? item.cname
+                        : context.l10n.loginCountryOrRegion;
                     return PopupMenuButton(
                       padding: EdgeInsets.zero,
                       tooltip: context.l10n.loginCountryCodeTooltip(
-                        _loginPageCtr.selectedCountryCodeId.cname,
+                        countryName(_loginPageCtr.selectedCountryCodeId),
                         _loginPageCtr.selectedCountryCodeId.countryId,
                       ),
                       onSelected: (item) {
@@ -393,7 +402,7 @@ class _LoginPageState extends State<LoginPage> {
                           value: item,
                           child: Row(
                             children: [
-                              Text(item.cname),
+                              Text(countryName(item)),
                               const Spacer(),
                               Text("+${item.countryId}"),
                             ],

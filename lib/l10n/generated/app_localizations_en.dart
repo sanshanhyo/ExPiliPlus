@@ -801,6 +801,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonArticles => 'Articles';
 
   @override
+  String get commonLiveRooms => 'Live rooms';
+
+  @override
+  String get commonUsers => 'Users';
+
+  @override
+  String get commonAllTypes => 'All types';
+
+  @override
+  String get commonViewDetails => 'View details';
+
+  @override
   String get commonDetails => 'Details';
 
   @override
@@ -2275,6 +2287,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String timeDaysAgo(int count) {
     return '$count days ago';
+  }
+
+  @override
+  String durationYears(int count) {
+    return '$count yr ';
+  }
+
+  @override
+  String durationMonths(int count) {
+    return '$count mo ';
+  }
+
+  @override
+  String durationDays(int count) {
+    return '$count d ';
+  }
+
+  @override
+  String durationHours(int count) {
+    return '$count hr ';
+  }
+
+  @override
+  String durationMinutes(int count) {
+    return '$count min';
   }
 
   @override
@@ -3911,6 +3948,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get replySortFeatured => 'Featured comments';
 
   @override
+  String get replySortNewestShort => 'Newest';
+
+  @override
+  String get replySortHottestShort => 'Top';
+
+  @override
+  String get replySortFeaturedShort => 'Featured';
+
+  @override
   String get memberTabDefault => 'Default';
 
   @override
@@ -4132,6 +4178,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDownloadFont => 'Download font';
+
+  @override
+  String get settingsFontErrorIncompleteFile =>
+      'The font file is incomplete. Download it again';
+
+  @override
+  String get settingsFontErrorLoadFailed =>
+      'Couldn\'t load the font. Download it again';
+
+  @override
+  String settingsFontErrorHttp(String status) {
+    return 'Couldn\'t download the font (HTTP $status)';
+  }
+
+  @override
+  String get settingsFontErrorLicenseExtraction =>
+      'Couldn\'t extract the font license. Try again';
+
+  @override
+  String get settingsFontErrorDownloadFailed =>
+      'Couldn\'t download the font. Try again later';
+
+  @override
+  String get settingsFontErrorSizeMismatch =>
+      'The font file size didn\'t match. Try again';
+
+  @override
+  String get settingsFontErrorChecksumMismatch =>
+      'The font checksum didn\'t match. Try again';
+
+  @override
+  String get settingsFontErrorTimeout =>
+      'The font download timed out. Check your network and try again';
+
+  @override
+  String get settingsFontErrorNetwork =>
+      'Couldn\'t download the font. Check your network';
+
+  @override
+  String get settingsFontErrorSaveFailed =>
+      'Couldn\'t save the font. Check your available storage';
 
   @override
   String get settingsAppFontTitle => 'App font';
@@ -5219,6 +5306,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get loginCountryOrRegion => 'Country/region';
+
+  @override
   String get loginPhoneNumber => 'Phone number';
 
   @override
@@ -5338,6 +5428,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonServerError => 'Server error';
 
   @override
+  String get networkBadCertificate => 'Invalid certificate';
+
+  @override
+  String get networkServerError => 'Server error. Try again later';
+
+  @override
+  String get networkRequestCancelled => 'Request cancelled';
+
+  @override
+  String get networkConnectionError =>
+      'Connection error. Check your network settings';
+
+  @override
+  String get networkConnectionTimeout =>
+      'Connection timed out. Check your network settings';
+
+  @override
+  String get networkResponseTimeout => 'Response timed out. Try again later';
+
+  @override
+  String get networkSendTimeout =>
+      'Request timed out. Check your network settings';
+
+  @override
+  String get networkTransformTimeout => 'Response processing timed out';
+
+  @override
+  String networkUnknownError(String error) {
+    return 'Network error: $error';
+  }
+
+  @override
   String get searchSecurityCheckTriggered => 'A security check is required';
 
   @override
@@ -5388,4 +5510,1779 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get memberAddToHomeScreen => 'Add to Home Screen';
+
+  @override
+  String get memberRandomPlay => 'Shuffle';
+
+  @override
+  String get memberReservation => 'Reservation';
+
+  @override
+  String get memberReserved => 'Reserved';
+
+  @override
+  String get memberReservationPost => 'Reservation post';
+
+  @override
+  String memberReservationCount(Object count) {
+    return '$count reservations';
+  }
+
+  @override
+  String get memberWebUploads => 'Web uploads';
+
+  @override
+  String get memberPremiumXp => 'Premium XP';
+
+  @override
+  String get memberSignInHistory => 'Sign-in history';
+
+  @override
+  String get memberCoinHistory => 'Coin history';
+
+  @override
+  String get memberXpHistory => 'XP history';
+
+  @override
+  String memberFollowingSince(Object date) {
+    return 'Following since: $date';
+  }
+
+  @override
+  String get memberAccountBanned => 'This account is suspended';
+
+  @override
+  String memberSupporterCount(Object count) {
+    return '$count supporters';
+  }
+
+  @override
+  String memberGuardCount(Object count) {
+    return '$count members joined the guard';
+  }
+
+  @override
+  String get memberMyRecommendations => 'My recommendations';
+
+  @override
+  String memberRecommendationsBy(String name) {
+    return '$name\'s recommendations';
+  }
+
+  @override
+  String memberCollectionCount(int count) {
+    return 'Collection: $count';
+  }
+
+  @override
+  String memberListCount(int count) {
+    return 'List: $count';
+  }
+
+  @override
+  String memberGuardTitle(String name) {
+    return '$name\'s guard';
+  }
+
+  @override
+  String memberGuardTitleWithCount(String name, Object count) {
+    return '$name\'s guard ($count)';
+  }
+
+  @override
+  String get memberAlsoFollowed => 'Also followed';
+
+  @override
+  String memberAlsoFollowedWithOthers(Object count) {
+    return 'and $count others also followed';
+  }
+
+  @override
+  String get memberLikesReceived => 'Likes';
+
+  @override
+  String get memberFollowingTime => 'Follow time';
+
+  @override
+  String commonSelectedCount(Object count) {
+    return 'Selected: $count';
+  }
+
+  @override
+  String get commonSelectAll => 'Select all';
+
+  @override
+  String get commonCancelSelection => 'Cancel selection';
+
+  @override
+  String get imageSaveImage => 'Save image';
+
+  @override
+  String get imageSaveAll => 'Save all';
+
+  @override
+  String get imageSaveAllImages => 'Save all images';
+
+  @override
+  String get imageSaveVideo => 'Save video';
+
+  @override
+  String get imageSaveLivePhoto => 'Save Live Photo';
+
+  @override
+  String get imageOpenInBrowser => 'Open in browser';
+
+  @override
+  String get commonDone => 'Done';
+
+  @override
+  String get commonCreate => 'Create';
+
+  @override
+  String get favoriteSortMethod => 'Sort by';
+
+  @override
+  String favoriteContentCount(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String favoriteContentSummary(num count, Object visibility) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items · $visibility',
+      one: '1 item · $visibility',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get favoriteEditInfo => 'Edit details';
+
+  @override
+  String get favoriteShareToPost => 'Share to post';
+
+  @override
+  String get favoriteClearUnavailable => 'Clear unavailable items';
+
+  @override
+  String get favoriteDeleteFolderConfirm => 'Delete this favorites folder?';
+
+  @override
+  String get favoriteRemoveSelectedConfirm => 'Remove the selected favorites?';
+
+  @override
+  String get favoriteRemoved => 'Removed from favorites';
+
+  @override
+  String get favoriteFolderAdded => 'Favorites folder added';
+
+  @override
+  String get favoriteFolderRemoved => 'Favorites folder removed';
+
+  @override
+  String get favoriteClearSucceeded => 'Unavailable items cleared';
+
+  @override
+  String get favoriteTooManyToSort =>
+      'Folders with more than 1,000 items can\'t be sorted';
+
+  @override
+  String get favoriteRemoveConfirm => 'Remove this item from favorites?';
+
+  @override
+  String get favoriteConfirmRemove => 'Remove';
+
+  @override
+  String get favoriteAudio => 'Audio';
+
+  @override
+  String get favoriteAddToFolder => 'Add to favorites';
+
+  @override
+  String get favoriteNameRequired => 'Enter a name';
+
+  @override
+  String get favoriteFolderCreated => 'Favorites folder created';
+
+  @override
+  String get favoriteFolderUpdated => 'Favorites folder updated';
+
+  @override
+  String get favoriteCrop => 'Crop';
+
+  @override
+  String get favoriteReplaceCover => 'Replace cover';
+
+  @override
+  String get favoriteRemoveCover => 'Remove cover';
+
+  @override
+  String get favoriteCover => 'Cover';
+
+  @override
+  String get favoriteName => 'Name';
+
+  @override
+  String get favoriteIntro => 'Description';
+
+  @override
+  String get favoriteIntroHint => 'Add a description';
+
+  @override
+  String get favoritePublicSetting => 'Public';
+
+  @override
+  String get favoriteCollectionBadge => 'Collection';
+
+  @override
+  String get favoriteFolderBadge => 'Favorites folder';
+
+  @override
+  String favoriteUploaderCollectionSummary(Object count, Object name) {
+    return '$count items · $name';
+  }
+
+  @override
+  String favoriteCreatedCollectionSummary(
+    Object count,
+    Object name,
+    Object views,
+  ) {
+    return 'Creator: $name\n$count videos · $views views';
+  }
+
+  @override
+  String get favoriteOrderRecentlyAdded => 'Recently added';
+
+  @override
+  String get favoriteOrderMostPlayed => 'Most played';
+
+  @override
+  String get favoriteOrderRecentlyPublished => 'Recently published';
+
+  @override
+  String get profileTitle => 'Account profile';
+
+  @override
+  String get profileAvatar => 'Avatar';
+
+  @override
+  String get profileNickname => 'Name';
+
+  @override
+  String get profileGender => 'Gender';
+
+  @override
+  String get profileBirthday => 'Birthday';
+
+  @override
+  String get profileBio => 'Bio';
+
+  @override
+  String get profileAvatarDecoration => 'Avatar decoration';
+
+  @override
+  String get profileVerification => 'bilibili verification';
+
+  @override
+  String get profileInsufficientCoins => 'Not enough coins';
+
+  @override
+  String get profileGenderMale => 'Male';
+
+  @override
+  String get profileGenderPrivate => 'Prefer not to say';
+
+  @override
+  String get profileGenderFemale => 'Female';
+
+  @override
+  String profileEditField(Object field) {
+    return 'Edit $field';
+  }
+
+  @override
+  String profileSameAsCurrent(Object field) {
+    return 'This is the same as your current $field';
+  }
+
+  @override
+  String get profileReloginRequired => 'Sign out and sign in again';
+
+  @override
+  String get profileUpdateSucceeded => 'Profile updated';
+
+  @override
+  String get profileGifNotSupported => 'GIF avatars aren\'t supported';
+
+  @override
+  String get shutdownPauseVideo => 'Pause video';
+
+  @override
+  String get shutdownExitApp => 'Exit app';
+
+  @override
+  String get shutdownTitle => 'Sleep timer';
+
+  @override
+  String get shutdownCanceled => 'Sleep timer canceled';
+
+  @override
+  String shutdownScheduledAfter(Object duration) {
+    return 'Sleep timer set for $duration';
+  }
+
+  @override
+  String get shutdownTimeReachedPaused => 'Timer ended. Playback paused';
+
+  @override
+  String shutdownHoursMinutes(Object hours, Object minutes) {
+    return '$hours hr $minutes min';
+  }
+
+  @override
+  String shutdownHours(Object hours) {
+    return '$hours hr';
+  }
+
+  @override
+  String shutdownMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get shutdownCustom => 'Custom';
+
+  @override
+  String get shutdownWaitUntilVideoEnds => 'Wait until the video ends';
+
+  @override
+  String get shutdownActionAtEnd => 'When timer ends:';
+
+  @override
+  String get replyViewComments => 'View comments';
+
+  @override
+  String get replyAppeal => 'Appeal';
+
+  @override
+  String get replyCheckResult => 'Comment check result';
+
+  @override
+  String replyMainListError(Object error) {
+    return 'Couldn\'t load the main comment list: $error';
+  }
+
+  @override
+  String replyCheckNormal(Object message) {
+    return 'Your comment is visible while signed out, so it appears normal.\n\nYour comment: $message';
+  }
+
+  @override
+  String replyCheckNotFound(Object message) {
+    return 'Your comment couldn\'t be found.\n\nYour comment: $message';
+  }
+
+  @override
+  String replyCheckShadowBanned(Object message) {
+    return 'Your comment may be visible only to you.\n\nYour comment: $message';
+  }
+
+  @override
+  String replyCheckInvisible(Object error, Object message) {
+    return 'Comment isn\'t visible ($error): $message';
+  }
+
+  @override
+  String replyCheckSuspicious(Object message, Object url) {
+    return 'Your comment status looks unusual. It isn\'t visible while browsing the comment section signed out, but it can be retrieved directly at:\n$url\nThe comment section may be restricted, or this may be your own video.\n\nYour comment: $message';
+  }
+
+  @override
+  String replyCheckInvisibleSimple(Object message) {
+    return 'Comment isn\'t visible: $message';
+  }
+
+  @override
+  String get replyContentText => 'Text';
+
+  @override
+  String get replyContentEmoji => 'Emoji';
+
+  @override
+  String get replyFilterChangeConfirm => 'Apply this comment filter change?';
+
+  @override
+  String get replyAddToFilter => 'Add to filter';
+
+  @override
+  String memberReportTitle(Object name) {
+    return 'Report $name';
+  }
+
+  @override
+  String get memberReportContentRequired =>
+      'Report content (required; choose one or more)';
+
+  @override
+  String get memberReportReasonOptional => 'Reason (optional; choose one)';
+
+  @override
+  String get memberReportAvatar => 'Inappropriate avatar';
+
+  @override
+  String get memberReportNickname => 'Inappropriate name';
+
+  @override
+  String get memberReportBio => 'Inappropriate bio';
+
+  @override
+  String get memberReportChooseContent => 'Choose at least one item to report';
+
+  @override
+  String get reportFailed => 'Couldn\'t submit report';
+
+  @override
+  String get feedPinned => 'Post pinned';
+
+  @override
+  String get feedUnpinned => 'Post unpinned';
+
+  @override
+  String get updateCheckFailed =>
+      'Couldn\'t check for updates. GitHub returned no data; check your connection';
+
+  @override
+  String get updateAlreadyLatest => 'You\'re using the latest version';
+
+  @override
+  String get updateNewVersion => '🎉 New version available';
+
+  @override
+  String get updateViewFullChanges => 'View the full commit history';
+
+  @override
+  String get updateStopReminding => 'Don\'t remind me again';
+
+  @override
+  String get commonUnsupportedType =>
+      'This content type isn\'t supported yet. Contact the developer';
+
+  @override
+  String get commonGettingResource => 'Getting resource…';
+
+  @override
+  String get commonResourceLoadFailed => 'Couldn\'t load resource';
+
+  @override
+  String routeUnknown(Object uri) {
+    return 'Unknown link: $uri. Take a screenshot and report it to the developer';
+  }
+
+  @override
+  String videoLoadFailed(Object error) {
+    return 'Couldn\'t load video: $error';
+  }
+
+  @override
+  String get liveTitle => 'Live';
+
+  @override
+  String get rankingTitle => 'Rankings';
+
+  @override
+  String get commonPlaylist => 'Playlist';
+
+  @override
+  String get videoParts => 'Parts';
+
+  @override
+  String get videoChargingOnly => 'Supporters only';
+
+  @override
+  String get videoTrailerBadge => 'Trailer';
+
+  @override
+  String get videoLimitedFreeBadge => 'Limited free';
+
+  @override
+  String get subscriptionSubscribe => 'Subscribe';
+
+  @override
+  String get subscriptionUnsubscribe => 'Unsubscribe';
+
+  @override
+  String get subscriptionSubscribed => 'Subscribed';
+
+  @override
+  String get commonJumpToTop => 'Jump to top';
+
+  @override
+  String get commonJumpToBottom => 'Jump to bottom';
+
+  @override
+  String get commonJumpToCurrent => 'Jump to current';
+
+  @override
+  String get commonAscendingOrder => 'Ascending';
+
+  @override
+  String get commonDescendingOrder => 'Descending';
+
+  @override
+  String get searchUserByUid => 'Find user by UID';
+
+  @override
+  String get searchTrending => 'Trending searches';
+
+  @override
+  String get searchDiscover => 'Discover';
+
+  @override
+  String get searchFullRanking => 'Full ranking';
+
+  @override
+  String get searchHistory => 'Search history';
+
+  @override
+  String get searchRecordHistory => 'Save searches';
+
+  @override
+  String get searchIncognito => 'Incognito search';
+
+  @override
+  String get searchImportExportHistory => 'Import or export search history';
+
+  @override
+  String get searchClearHistoryConfirm => 'Clear search history?';
+
+  @override
+  String searchTabCount(Object count, Object label) {
+    return '$label $count';
+  }
+
+  @override
+  String memberSearchHint(Object name) {
+    return 'Search $name\'s posts and videos';
+  }
+
+  @override
+  String get favoriteDeleteSelectedNotesConfirm => 'Delete the selected notes?';
+
+  @override
+  String get favoriteRemoveCourseConfirm =>
+      'Remove this course from favorites?';
+
+  @override
+  String get downloadDeleteSelectedConfirm => 'Delete the selected videos?';
+
+  @override
+  String get downloadQueueTitle => 'Download queue';
+
+  @override
+  String get downloadViewDetails => 'View details';
+
+  @override
+  String get downloadOpenLocalFolder => 'Open local folder';
+
+  @override
+  String downloadVisitUploader(Object name) {
+    return 'Visit $name';
+  }
+
+  @override
+  String get downloadUserProfile => 'user profile';
+
+  @override
+  String get downloadWatched => 'Watched';
+
+  @override
+  String get downloadStatusDownloading => 'Downloading';
+
+  @override
+  String get downloadStatusAudioDownloading => 'Downloading audio';
+
+  @override
+  String get downloadStatusGettingDanmaku => 'Getting danmaku';
+
+  @override
+  String get downloadStatusGettingPlayUrl => 'Getting playback URL';
+
+  @override
+  String get downloadStatusCompleted => 'Downloaded';
+
+  @override
+  String get downloadStatusFailed => 'Download failed';
+
+  @override
+  String get downloadStatusAudioFailed => 'Audio download failed';
+
+  @override
+  String get downloadStatusDanmakuFailed => 'Couldn\'t get danmaku';
+
+  @override
+  String get downloadStatusPlayUrlFailed => 'Couldn\'t get playback URL';
+
+  @override
+  String get downloadStatusPaused => 'Paused';
+
+  @override
+  String get downloadStatusWaiting => 'Waiting';
+
+  @override
+  String get commonSettings => 'Settings';
+
+  @override
+  String get commonEmoji => 'Emoji';
+
+  @override
+  String get messagesRecall => 'Recall';
+
+  @override
+  String get messagesRecalled => 'Message recalled';
+
+  @override
+  String get messagesSent => 'Message sent';
+
+  @override
+  String get messagesInputHint => 'Send a message…';
+
+  @override
+  String get messagesUploadingImage => 'Uploading image…';
+
+  @override
+  String get messagesChatSettings => 'Chat settings';
+
+  @override
+  String get messagesAddToBlocked => 'Block user';
+
+  @override
+  String get messagesReceivePush => 'Receive content updates';
+
+  @override
+  String get messagesPushDescription =>
+      'Turn this off to stop receiving this account\'s image, article, and upload updates. Notification messages aren\'t affected.';
+
+  @override
+  String get messagesPinChat => 'Pin chat';
+
+  @override
+  String get messagesMute => 'Mute notifications';
+
+  @override
+  String get messagesDisablePushConfirm => 'Turn off content updates?';
+
+  @override
+  String get messagesBlockConfirm => 'Block this user?';
+
+  @override
+  String get messagesBlockDescription =>
+      'Blocking removes your follow relationship and collection subscriptions with this user, and prevents them from interacting with you or viewing your profile.';
+
+  @override
+  String get messagesBvNotFound => 'No BV number found';
+
+  @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get messagesBlockedKeywords => 'Blocked message keywords';
+
+  @override
+  String get messagesTapKeywordToDelete => 'Tap a keyword to delete it';
+
+  @override
+  String get messagesDeleteKeywordConfirm => 'Delete this blocked keyword?';
+
+  @override
+  String get messagesKeywordNoLongerApplies =>
+      'This keyword will no longer be blocked';
+
+  @override
+  String get messagesAddBlockedKeyword => 'Add blocked keyword';
+
+  @override
+  String get messagesNoBlockedKeywords => 'No blocked keywords';
+
+  @override
+  String get messagesBlockedKeywordDescription =>
+      'Messages containing a blocked keyword won\'t be received';
+
+  @override
+  String get messagesEnterKeyword => 'Enter a keyword';
+
+  @override
+  String get messagesMarkAllRead => 'Mark all as read';
+
+  @override
+  String get messagesMarkAllReadConfirm =>
+      'Clear all unread message indicators?';
+
+  @override
+  String get messagesClearList => 'Clear list';
+
+  @override
+  String get messagesClearListConfirm =>
+      'All messages will be deleted and can\'t be recovered';
+
+  @override
+  String get messagesMenuSettings => 'Message settings';
+
+  @override
+  String get messagesUploaderAssistant => 'Uploader assistant';
+
+  @override
+  String get messagesContacts => 'Contacts';
+
+  @override
+  String get messagesFanGroupAssistant => 'Fan group assistant';
+
+  @override
+  String get feedSelectTopic => 'Choose topic';
+
+  @override
+  String get feedOptionalTitleHint => 'Title (optional, up to 20 characters)';
+
+  @override
+  String get feedEditPostTitle => 'Edit post';
+
+  @override
+  String get feedCreatePostTitle => 'Create post';
+
+  @override
+  String get feedScheduledPost => 'Schedule';
+
+  @override
+  String feedScheduleAtLeastMinutes(Object minutes) {
+    return 'Choose a time at least $minutes minutes from now';
+  }
+
+  @override
+  String get feedLiveReservation => 'Live reservation';
+
+  @override
+  String get feedStartedPoll => 'I started a poll';
+
+  @override
+  String get feedPosting => 'Posting…';
+
+  @override
+  String get feedPosted => 'Posted';
+
+  @override
+  String feedLiveReservationTitle(Object title) {
+    return 'Live reservation: $title';
+  }
+
+  @override
+  String feedLiveStartsAt(Object time) {
+    return 'Live at $time';
+  }
+
+  @override
+  String get feedAllowComments => 'Allow comments';
+
+  @override
+  String get feedCloseComments => 'Turn off comments';
+
+  @override
+  String get feedFeaturedComments => 'Featured comments';
+
+  @override
+  String get voteCreateTitle => 'Create poll';
+
+  @override
+  String get voteEditTitle => 'Poll';
+
+  @override
+  String get voteType => 'Poll type';
+
+  @override
+  String get voteTitle => 'Poll title';
+
+  @override
+  String get voteTitleHint => 'Enter a title';
+
+  @override
+  String get voteDescription => 'Description';
+
+  @override
+  String voteOptionLabel(Object number) {
+    return 'Option $number';
+  }
+
+  @override
+  String get voteOptionHint => 'Option text, up to 20 characters';
+
+  @override
+  String get voteAddOption => 'Add option';
+
+  @override
+  String get voteChoiceMode => 'Single or multiple choice';
+
+  @override
+  String get voteSingleChoice => 'Single choice';
+
+  @override
+  String voteMaxChoices(Object count) {
+    return 'Choose up to $count';
+  }
+
+  @override
+  String get voteEndTime => 'Poll end time';
+
+  @override
+  String get voteAtLeastFiveMinutes =>
+      'Choose a time at least 5 minutes from now';
+
+  @override
+  String get voteCreate => 'Create poll';
+
+  @override
+  String get voteTextType => 'Text poll';
+
+  @override
+  String get voteImageType => 'Image poll';
+
+  @override
+  String get reserveAddLive => 'Add live reservation';
+
+  @override
+  String get reserveType => 'Type';
+
+  @override
+  String get reservePublicLive => 'Public live';
+
+  @override
+  String get reserveSupporterLive => 'Supporters-only live';
+
+  @override
+  String get reserveTime => 'Time';
+
+  @override
+  String get reserveTitle => 'Title';
+
+  @override
+  String get reserveTitleHint => 'Enter a title, up to 14 characters';
+
+  @override
+  String get reserveAdd => 'Add reservation';
+
+  @override
+  String get mentionInputHint => 'Enter someone to mention';
+
+  @override
+  String get topicSearchHint => 'Search topics';
+
+  @override
+  String get commonBlock => 'Block';
+
+  @override
+  String get commonShow => 'Show';
+
+  @override
+  String get commonHide => 'Hide';
+
+  @override
+  String get playerEnterFullscreen => 'Enter full screen';
+
+  @override
+  String get playerExitFullscreen => 'Exit full screen';
+
+  @override
+  String get playerTurnOffBackgroundPlayback => 'Turn off background playback';
+
+  @override
+  String get liveSendDanmaku => 'Send Danmaku';
+
+  @override
+  String get liveSwitchRoute => 'Switch route';
+
+  @override
+  String get liveShareRoom => 'Share live room';
+
+  @override
+  String livePlayerVolume(Object value) {
+    return 'Player volume: $value%';
+  }
+
+  @override
+  String get liveBackToBottom => 'Back to bottom';
+
+  @override
+  String get liveCopyDanmakuInfo => 'Copy Danmaku details';
+
+  @override
+  String get liveGoToUserProfile => 'View user profile';
+
+  @override
+  String get liveBlockSender => 'Block sender';
+
+  @override
+  String get liveBlocked => 'Sender blocked';
+
+  @override
+  String get liveLikeSucceeded => 'Liked';
+
+  @override
+  String get liveDanmakuInputHint => 'Enter Danmaku';
+
+  @override
+  String get audioNoOrder => 'No order';
+
+  @override
+  String audioPlaybackSpeed(Object speed) {
+    return 'Playback speed ($speed×)';
+  }
+
+  @override
+  String get audioPlaybackMode => 'Playback mode';
+
+  @override
+  String get videoTripleSucceeded => 'Liked, Coined, and added to favorites';
+
+  @override
+  String get danmakuBlockTitle => 'Danmaku blocking';
+
+  @override
+  String get danmakuBlockKeyword => 'Keyword';
+
+  @override
+  String get danmakuBlockRegex => 'Regular expression';
+
+  @override
+  String get danmakuBlockUser => 'User';
+
+  @override
+  String danmakuBlockTabCount(Object count, Object label) {
+    return '$label ($count)';
+  }
+
+  @override
+  String get danmakuDeleteRuleConfirm => 'Delete this rule?';
+
+  @override
+  String get danmakuKeywordHint =>
+      'Enter a keyword. Switch tabs to add another rule type.';
+
+  @override
+  String get danmakuRegexHint =>
+      'Enter the regular expression between // without the slashes.';
+
+  @override
+  String get danmakuUidHint => 'Enter a user UID';
+
+  @override
+  String danmakuRuleDialogTitle(Object action, Object type) {
+    return '$action $type rule';
+  }
+
+  @override
+  String get danmakuInputEmpty => 'Input can\'t be empty';
+
+  @override
+  String get danmakuInputUnchanged => 'Input is unchanged';
+
+  @override
+  String get danmakuSyncingRules => 'Syncing Danmaku block rules…';
+
+  @override
+  String get danmakuDeletingRule => 'Deleting Danmaku block rule…';
+
+  @override
+  String get danmakuAddingRule => 'Adding Danmaku block rule…';
+
+  @override
+  String get liveDanmakuGlobalBlock => 'Global blocking';
+
+  @override
+  String get liveDanmakuBlockEnabled => 'Blocking is on';
+
+  @override
+  String get liveDanmakuBlockDisabled => 'Blocking is off';
+
+  @override
+  String get liveDanmakuUserLevel => 'User level';
+
+  @override
+  String liveDanmakuBelowLevel(Object level) {
+    return 'Below $level';
+  }
+
+  @override
+  String get liveDanmakuUnofficialUser => 'Non-full members';
+
+  @override
+  String get liveDanmakuUnverifiedPhone => 'Users without verified phone';
+
+  @override
+  String get liveDanmakuKeywordBlock => 'Keyword blocking';
+
+  @override
+  String get commonInput => 'Keyboard';
+
+  @override
+  String get favoriteFolderSortTitle => 'Sort favorites';
+
+  @override
+  String get favoriteDefaultFolderSortUnsupported =>
+      'The default favorites folder can\'t be reordered';
+
+  @override
+  String favoriteSortFolderTitle(String folder) {
+    return 'Sort: $folder';
+  }
+
+  @override
+  String get followSaveToDefaultGroup => 'Save to default group';
+
+  @override
+  String get commonVideo => 'Video';
+
+  @override
+  String get commonLongImage => 'Long image';
+
+  @override
+  String imagePositionSemantics(int position, int total) {
+    return 'Image $position of $total';
+  }
+
+  @override
+  String get downloadVideoCachedNotification => 'Video downloaded';
+
+  @override
+  String get topicJoin => 'Join topic';
+
+  @override
+  String get topicStarted => 'Started this topic';
+
+  @override
+  String topicStats(String views, String discussions) {
+    return '$views views · $discussions discussions';
+  }
+
+  @override
+  String get replyPinned => 'Comment pinned';
+
+  @override
+  String get replyUnpinned => 'Comment unpinned';
+
+  @override
+  String get webRefresh => 'Refresh';
+
+  @override
+  String get webCopyLink => 'Copy link';
+
+  @override
+  String get webOpenInBrowser => 'Open in browser';
+
+  @override
+  String get webClearCache => 'Clear cache';
+
+  @override
+  String get webResetCookie => 'Reset cookies';
+
+  @override
+  String get webGoBack => 'Back';
+
+  @override
+  String get webCacheCleared => 'Cache cleared';
+
+  @override
+  String get webCookieResetSucceeded =>
+      'Cookies reset. Refresh or reopen the page.';
+
+  @override
+  String webDownloadFileConfirm(String filename) {
+    return 'Download $filename?';
+  }
+
+  @override
+  String webConfirmWithFileSize(String size) {
+    return 'Confirm ($size)';
+  }
+
+  @override
+  String get webExternalLinkConfirm =>
+      'This page wants to open an external link.';
+
+  @override
+  String get webOpen => 'Open';
+
+  @override
+  String get commonUnliked => 'Like removed';
+
+  @override
+  String get articleShareTitle => 'Bilibili article';
+
+  @override
+  String articleCount(String count) {
+    return '$count articles';
+  }
+
+  @override
+  String articleWordCount(String count) {
+    return '$count words';
+  }
+
+  @override
+  String articleReadCount(String count) {
+    return '$count reads';
+  }
+
+  @override
+  String articleUpdatedAt(String date) {
+    return 'Updated $date';
+  }
+
+  @override
+  String articleCollectionId(int id) {
+    return 'Collection ID: $id';
+  }
+
+  @override
+  String followUserFollowers(String name) {
+    return '$name\'s followers';
+  }
+
+  @override
+  String followRemoveFollowerConfirm(String name) {
+    return 'Remove $name from your followers?';
+  }
+
+  @override
+  String get followFollowerRemoved => 'Follower removed';
+
+  @override
+  String get matchDetails => 'Match details';
+
+  @override
+  String get matchWatchLive => 'Watch live';
+
+  @override
+  String matchEndedAt(String date) {
+    return '$date · Ended';
+  }
+
+  @override
+  String get castNoDevices => 'No casting devices found';
+
+  @override
+  String get liveSearchHint => 'Search rooms or Uploaders';
+
+  @override
+  String get liveContributionRankOnline => 'Online rank';
+
+  @override
+  String get liveContributionRankDaily => 'Daily rank';
+
+  @override
+  String get liveContributionRankWeekly => 'Weekly rank';
+
+  @override
+  String get liveContributionRankMonthly => 'Monthly rank';
+
+  @override
+  String liveSearchRooms(String count) {
+    return 'Live $count';
+  }
+
+  @override
+  String liveSearchUploaders(String count) {
+    return 'Uploaders $count';
+  }
+
+  @override
+  String get liveAllTags => 'All tags';
+
+  @override
+  String get liveFavoriteTags => 'My favorite tags';
+
+  @override
+  String get liveTapTagHint => 'Tap a tag to open it';
+
+  @override
+  String get favoriteWantToWatch => 'Want to watch';
+
+  @override
+  String get favoriteWatching => 'Watching';
+
+  @override
+  String get favoriteWatched => 'Watched';
+
+  @override
+  String get favoriteUnpublishedNotes => 'Unpublished notes';
+
+  @override
+  String get favoritePublicNotes => 'Public notes';
+
+  @override
+  String get memberOrderMostPlayed => 'Most played';
+
+  @override
+  String get memberOrderMostFavorited => 'Most favorited';
+
+  @override
+  String get memberReverseOrder => 'Reverse';
+
+  @override
+  String get memberJumpToPage => 'Go to page';
+
+  @override
+  String get memberPageNumber => 'Page';
+
+  @override
+  String get memberLocateLastWatched => 'Go to last watched';
+
+  @override
+  String audioTrackCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tracks',
+      one: '1 track',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberMyRecentCoinedVideos => 'My recently supported videos';
+
+  @override
+  String memberUserRecentCoinedVideos(String name) {
+    return '$name\'s recently supported videos';
+  }
+
+  @override
+  String get memberFanMedalWall => 'Fan medal wall';
+
+  @override
+  String memberFanMedalCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fan medals',
+      one: '1 fan medal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberMedalWearing => 'Wearing';
+
+  @override
+  String favoriteAddedAt(String date) {
+    return 'Saved $date';
+  }
+
+  @override
+  String get memberLastWatched => 'Last watched';
+
+  @override
+  String get reviewLong => 'Long reviews';
+
+  @override
+  String get reviewShort => 'Short reviews';
+
+  @override
+  String get reviewWriteLong => 'Write a long review';
+
+  @override
+  String get reviewWriteShort => 'Write a short review';
+
+  @override
+  String get reviewLatest => 'Latest';
+
+  @override
+  String get reviewRatingAwful => 'Awful';
+
+  @override
+  String get reviewRatingPoor => 'Poor';
+
+  @override
+  String get reviewRatingOkay => 'Okay';
+
+  @override
+  String get reviewRatingGreat => 'Great';
+
+  @override
+  String get reviewRatingExcellent => 'Excellent';
+
+  @override
+  String get reviewTapToRate => 'Tap to rate';
+
+  @override
+  String get reviewEdited => 'Review updated';
+
+  @override
+  String get reviewPublished => 'Review published';
+
+  @override
+  String get reviewDeleteConfirm => 'Delete this short review and its rating?';
+
+  @override
+  String reviewCount(String count) {
+    return '$count reviews';
+  }
+
+  @override
+  String get searchFilter => 'Filter';
+
+  @override
+  String searchFilteredBy(String filter) {
+    return 'Filtered by “$filter”';
+  }
+
+  @override
+  String searchSortValue(String value) {
+    return 'Sort: $value';
+  }
+
+  @override
+  String searchZoneValue(String value) {
+    return 'Category: $value';
+  }
+
+  @override
+  String searchUserTypeValue(String value) {
+    return 'User type: $value';
+  }
+
+  @override
+  String get searchZone => 'Category';
+
+  @override
+  String get searchUserSort => 'Followers and level order';
+
+  @override
+  String get searchUserType => 'User type';
+
+  @override
+  String get searchPublishedTime => 'Published';
+
+  @override
+  String get searchDateTo => 'to';
+
+  @override
+  String get searchContentDuration => 'Duration';
+
+  @override
+  String get searchContentZone => 'Category';
+
+  @override
+  String get searchOrderRelevance => 'Relevance';
+
+  @override
+  String get searchOrderNewest => 'Newest';
+
+  @override
+  String get searchOrderMostClicked => 'Most viewed';
+
+  @override
+  String get searchOrderMostLiked => 'Most liked';
+
+  @override
+  String get searchOrderMostCommented => 'Most commented';
+
+  @override
+  String get searchOrderDefault => 'Default';
+
+  @override
+  String get searchOrderMostPlayed => 'Most played';
+
+  @override
+  String get searchOrderMostDanmaku => 'Most Danmaku';
+
+  @override
+  String get searchOrderMostFavorited => 'Most favorited';
+
+  @override
+  String get searchFollowersHighToLow => 'Most followers';
+
+  @override
+  String get searchFollowersLowToHigh => 'Fewest followers';
+
+  @override
+  String get searchLevelHighToLow => 'Highest level';
+
+  @override
+  String get searchLevelLowToHigh => 'Lowest level';
+
+  @override
+  String get searchAllUsers => 'All users';
+
+  @override
+  String get searchUploaders => 'Uploaders';
+
+  @override
+  String get searchRegularUsers => 'Regular users';
+
+  @override
+  String get searchVerifiedUsers => 'Verified users';
+
+  @override
+  String get searchAnyTime => 'Any time';
+
+  @override
+  String get searchLastDay => 'Past day';
+
+  @override
+  String get searchLastWeek => 'Past week';
+
+  @override
+  String get searchLastSixMonths => 'Past six months';
+
+  @override
+  String get searchAllDurations => 'Any duration';
+
+  @override
+  String get searchDurationUnderTen => 'Under 10 minutes';
+
+  @override
+  String get searchDurationTenToThirty => '10–30 minutes';
+
+  @override
+  String get searchDurationThirtyToSixty => '30–60 minutes';
+
+  @override
+  String get searchDurationOverSixty => 'Over 60 minutes';
+
+  @override
+  String get searchAllZones => 'All categories';
+
+  @override
+  String get searchZoneAnimation => 'Animation';
+
+  @override
+  String get searchZoneAnime => 'Anime';
+
+  @override
+  String get searchZoneChineseAnimation => 'Chinese animation';
+
+  @override
+  String get searchZoneMusic => 'Music';
+
+  @override
+  String get searchZoneDance => 'Dance';
+
+  @override
+  String get searchZoneGames => 'Gaming';
+
+  @override
+  String get searchZoneKnowledge => 'Knowledge';
+
+  @override
+  String get searchZoneTechnology => 'Technology';
+
+  @override
+  String get searchZoneSports => 'Sports';
+
+  @override
+  String get searchZoneCars => 'Cars';
+
+  @override
+  String get searchZoneLife => 'Lifestyle';
+
+  @override
+  String get searchZoneFood => 'Food';
+
+  @override
+  String get searchZoneAnimals => 'Animals';
+
+  @override
+  String get searchZoneKichiku => 'Kichiku';
+
+  @override
+  String get searchZoneFashion => 'Fashion';
+
+  @override
+  String get searchZoneNews => 'News';
+
+  @override
+  String get searchZoneEntertainment => 'Entertainment';
+
+  @override
+  String get searchZoneFilmTv => 'Film & TV';
+
+  @override
+  String get searchZoneDocumentary => 'Documentary';
+
+  @override
+  String get searchZoneMovies => 'Movies';
+
+  @override
+  String get searchZoneTv => 'TV';
+
+  @override
+  String get searchZoneInterests => 'Interests';
+
+  @override
+  String get searchZoneLightNovels => 'Light novels';
+
+  @override
+  String get searchZoneNotes => 'Notes';
+
+  @override
+  String get commonAlbum => 'Album';
+
+  @override
+  String get commonArticle => 'Article';
+
+  @override
+  String get messagesAutoReply => 'This is an automated reply';
+
+  @override
+  String messagesLiveBy(String author) {
+    return '$author · Live';
+  }
+
+  @override
+  String get liveNow => 'LIVE';
+
+  @override
+  String memberFollowerCount(String count) {
+    return '$count followers';
+  }
+
+  @override
+  String get commonViewMore => 'View more';
+
+  @override
+  String get commonExit => 'Exit';
+
+  @override
+  String get audioWatchMv => 'Watch MV';
+
+  @override
+  String liveHighEnergyAudience(String count) {
+    return 'Top viewers ($count)';
+  }
+
+  @override
+  String get liveJustStarted => 'Just started';
+
+  @override
+  String liveStartedFor(String duration) {
+    return 'Live for $duration';
+  }
+
+  @override
+  String get livePlaybackUrlUnavailable => 'Couldn\'t get the playback URL';
+
+  @override
+  String liveVisitUser(String name) {
+    return 'View $name';
+  }
+
+  @override
+  String get liveCopySuperChatInfo => 'Copy Super Chat info';
+
+  @override
+  String get commonExpand => 'Expand';
+
+  @override
+  String get commonCollapse => 'Collapse';
+
+  @override
+  String get feedTopics => 'Topics';
+
+  @override
+  String get commonTime => 'Time';
+
+  @override
+  String get commonReason => 'Reason';
+
+  @override
+  String get logChange => 'Change';
+
+  @override
+  String get logLocation => 'Location';
+
+  @override
+  String get logExperienceHistory => 'Experience history';
+
+  @override
+  String get logLoginHistory => 'Sign-in history';
+
+  @override
+  String get saveWatch => 'watch';
+
+  @override
+  String get saveContent => 'content';
+
+  @override
+  String get saveCollection => 'collection';
+
+  @override
+  String saveScanQrToOpen(String action, String item) {
+    return 'Scan the QR code to $action this $item';
+  }
+
+  @override
+  String musicReleaseDate(String date) {
+    return 'Released: $date';
+  }
+
+  @override
+  String musicOriginalArtist(String artist) {
+    return 'Original artist: $artist';
+  }
+
+  @override
+  String musicAlbum(String album) {
+    return 'Album: $album';
+  }
+
+  @override
+  String musicSource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String get musicHotSongRanking => 'Hot song ranking';
+
+  @override
+  String get musicPopularity => 'Popularity';
+
+  @override
+  String get musicTotalPlays => 'Total plays';
+
+  @override
+  String get musicVideosUsingTrack => 'Videos using this track';
+
+  @override
+  String musicRecentPopularityTrend(int days) {
+    return 'Popularity over the past $days days';
+  }
+
+  @override
+  String articleAuthorReads(String author, int count) {
+    return '$author · $count reads';
+  }
+
+  @override
+  String articlePriceFrom(String price) {
+    return 'From $price';
+  }
+
+  @override
+  String get articleFeedOrArticle => 'Post / article';
+
+  @override
+  String articleUnsupportedType(String type) {
+    return 'Unsupported type ($type)';
+  }
+
+  @override
+  String articleInvalidType(String error) {
+    return 'Invalid type: $error';
+  }
+
+  @override
+  String memberShopFrom(String source) {
+    return 'From $source';
+  }
+
+  @override
+  String get loginMainAccountSucceeded => 'Main account signed in';
+
+  @override
+  String loginCookieFailed(String error) {
+    return 'Sign-in failed. Check your cookies. $error';
+  }
+
+  @override
+  String get memberAllCollectionsAndLists => 'All collections / lists';
+
+  @override
+  String get memberAllPosts => 'All posts';
+
+  @override
+  String get memberPosts => 'Posts';
+
+  @override
+  String memberSupportRanking(String name, String count) {
+    return '$name\'s supporter ranking $count';
+  }
+
+  @override
+  String get memberSupport => 'Support';
+
+  @override
+  String get memberSupportDaysSuffix => ' days';
+
+  @override
+  String liveSearchUserStats(String area, String followers) {
+    return 'Category: $area · $followers followers';
+  }
+
+  @override
+  String bubbleSiteTitle(String name) {
+    return '$name community';
+  }
+
+  @override
+  String liveSwitchPreviewTo(String target) {
+    return 'Switch to $target';
+  }
+
+  @override
+  String get liveCover => 'cover';
+
+  @override
+  String get liveFirstFrame => 'first frame';
+
+  @override
+  String get liveShowMenu => 'Show menu';
+
+  @override
+  String get liveReportSelectedDanmaku => 'Report selected Danmaku';
+
+  @override
+  String get mediaTvSeries => 'TV series';
+
+  @override
+  String get mediaComics => 'Comics';
+
+  @override
+  String get mediaVarietyShows => 'Variety shows';
+
+  @override
+  String memberUserLevelSemantics(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String get avatarVipBadge => 'Premium member';
+
+  @override
+  String get avatarVerifiedIndividual => 'Verified individual';
+
+  @override
+  String get avatarVerifiedOrganization => 'Verified organization';
+
+  @override
+  String memberHardcoreUserLevelSemantics(int level) {
+    return 'Hardcore Level $level';
+  }
+
+  @override
+  String get playerProgressBar => 'Progress bar';
+
+  @override
+  String get commonPlay => 'Play';
+
+  @override
+  String get settingsSpeedTestTimeout => 'Speed test timed out';
+
+  @override
+  String get commonSave => 'Save';
 }

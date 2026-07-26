@@ -2,6 +2,7 @@ import 'package:ex_piliplus/grpc/bilibili/app/im/v1.pb.dart';
 import 'package:ex_piliplus/grpc/im.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -38,7 +39,7 @@ class WhisperBlockController
         ..value.data!.add(KeywordBlockingItem(keyword: keyword))
         ..refresh();
       count.value += 1;
-      SmartDialog.showToast('添加成功');
+      SmartDialog.showToast(Get.context!.l10n.commonSucceeded);
     } else {
       res.toast();
     }
@@ -51,7 +52,7 @@ class WhisperBlockController
         ..value.data!.remove(item)
         ..refresh();
       count.value -= 1;
-      SmartDialog.showToast('删除成功');
+      SmartDialog.showToast(Get.context!.l10n.commonDeleteSucceeded);
     } else {
       res.toast();
     }

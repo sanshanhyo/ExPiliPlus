@@ -5,6 +5,7 @@ import 'package:ex_piliplus/pages/common/search/common_search_page.dart';
 import 'package:ex_piliplus/pages/fav_detail/widget/fav_video_card.dart';
 import 'package:ex_piliplus/pages/fav_search/controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -44,7 +45,7 @@ class _FavSearchPageState
           mediaId: controller.mediaId,
           mid: Accounts.main.mid,
         ),
-        child: Text('复制', style: textStyle),
+        child: Text(context.l10n.commonCopy, style: textStyle),
       ),
       TextButton(
         style: btnStyle,
@@ -55,7 +56,7 @@ class _FavSearchPageState
           mediaId: controller.mediaId,
           mid: Accounts.main.mid,
         ),
-        child: Text('移动', style: textStyle),
+        child: Text(context.l10n.commonMove, style: textStyle),
       ),
     ];
   }
@@ -68,7 +69,7 @@ class _FavSearchPageState
           icon: const Icon(Icons.sort),
           requestFocus: false,
           initialValue: controller.order.value,
-          tooltip: '排序方式',
+          tooltip: context.l10n.favoriteSortMethod,
           onSelected: (value) => controller
             ..order.value = value
             ..onReload(),
@@ -76,7 +77,7 @@ class _FavSearchPageState
               .map(
                 (e) => PopupMenuItem(
                   value: e,
-                  child: Text(e.label),
+                  child: Text(e.localizedLabel(context.l10n)),
                 ),
               )
               .toList(),

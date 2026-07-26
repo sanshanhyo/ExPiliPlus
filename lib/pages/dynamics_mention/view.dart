@@ -8,8 +8,10 @@ import 'package:ex_piliplus/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/dynamic/dyn_mention/group.dart';
 import 'package:ex_piliplus/pages/dynamics_mention/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/pages/dynamics_mention/widgets/item.dart';
-import 'package:ex_piliplus/pages/search/controller.dart' show DebounceStreamState;
+import 'package:ex_piliplus/pages/search/controller.dart'
+    show DebounceStreamState;
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
@@ -117,7 +119,7 @@ class _DynMentionPanelState
               isDense: true,
               filled: true,
               fillColor: theme.colorScheme.onInverseSurface,
-              hintText: '输入你想@的人',
+              hintText: context.l10n.mentionInputHint,
               hintStyle: const TextStyle(fontSize: 14),
               prefixIcon: const Padding(
                 padding: EdgeInsets.only(left: 12, right: 4),

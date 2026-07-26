@@ -9,6 +9,7 @@ import 'package:ex_piliplus/pages/search_panel/controller.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -165,7 +166,10 @@ class SearchVideoController
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 10),
-                const Text('发布时间', style: TextStyle(fontSize: 16)),
+                Text(
+                  context.l10n.searchPublishedTime,
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
@@ -174,7 +178,7 @@ class SearchVideoController
                     (e) {
                       final isCurr = e == pubTimeType;
                       return SearchText(
-                        text: e.label,
+                        text: e.localizedLabel(context.l10n),
                         onTap: (text) {
                           pubTimeType = e;
                           DateTime now = DateTime.now();
@@ -225,12 +229,18 @@ class SearchVideoController
                   spacing: 8,
                   children: [
                     Expanded(child: dateWidget()),
-                    const Text('至', style: TextStyle(fontSize: 13)),
+                    Text(
+                      context.l10n.searchDateTo,
+                      style: const TextStyle(fontSize: 13),
+                    ),
                     Expanded(child: dateWidget(false)),
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text('内容时长', style: TextStyle(fontSize: 16)),
+                Text(
+                  context.l10n.searchContentDuration,
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
@@ -239,10 +249,10 @@ class SearchVideoController
                     (e) {
                       final isCurr = e == videoDurationType;
                       return SearchText(
-                        text: e.label,
+                        text: e.localizedLabel(context.l10n),
                         onTap: (_) {
                           videoDurationType = e;
-                          onSortSearch(label: e.label);
+                          onSortSearch(label: e.localizedLabel(context.l10n));
                         },
                         bgColor: isCurr
                             ? theme.colorScheme.secondaryContainer
@@ -255,7 +265,10 @@ class SearchVideoController
                   ).toList(),
                 ),
                 const SizedBox(height: 20),
-                const Text('内容分区', style: TextStyle(fontSize: 16)),
+                Text(
+                  context.l10n.searchContentZone,
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
@@ -264,10 +277,10 @@ class SearchVideoController
                     (e) {
                       final isCurr = e == videoZoneType;
                       return SearchText(
-                        text: e.label,
+                        text: e.localizedLabel(context.l10n),
                         onTap: (_) {
                           videoZoneType = e;
-                          onSortSearch(label: e.label);
+                          onSortSearch(label: e.localizedLabel(context.l10n));
                         },
                         bgColor: isCurr
                             ? theme.colorScheme.secondaryContainer

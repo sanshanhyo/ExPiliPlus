@@ -79,7 +79,9 @@ class _WhisperPageState extends State<WhisperPage> {
                           child: Row(
                             children: [
                               e.type.icon,
-                              Text('  ${e.title}'),
+                              Text(
+                                '  ${e.type.localizedTitle(context, e)}',
+                              ),
                             ],
                           ),
                         ),

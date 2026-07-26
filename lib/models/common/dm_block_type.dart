@@ -1,9 +1,14 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum DmBlockType {
-  keyword('关键词'),
-  regex('正则'),
-  uid('用户'),
+  keyword,
+  regex,
+  uid,
   ;
 
-  final String label;
-  const DmBlockType(this.label);
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .keyword => l10n.danmakuBlockKeyword,
+    .regex => l10n.danmakuBlockRegex,
+    .uid => l10n.danmakuBlockUser,
+  };
 }

@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models_new/fav/fav_note/list.dart';
 import 'package:ex_piliplus/pages/fav/note/controller.dart';
 import 'package:ex_piliplus/pages/fav/note/widget/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -83,7 +84,7 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                     const SizedBox(width: 16),
                     iconButton(
                       size: 32,
-                      tooltip: '取消',
+                      tooltip: context.l10n.commonCancel,
                       context: context,
                       icon: const Icon(Icons.clear),
                       onPressed: _favNoteController.onDisable,
@@ -106,13 +107,13 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                         checked: !_favNoteController.allSelected.value,
                         disableSelect: false,
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.only(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
                           top: 14,
                           bottom: 14,
                           right: 12,
                         ),
-                        child: Text('全选'),
+                        child: Text(context.l10n.commonSelectAll),
                       ),
                     ),
                     const Spacer(),
@@ -125,12 +126,14 @@ class _FavNoteChildPageState extends State<FavNoteChildPage>
                         if (_favNoteController.checkedCount != 0) {
                           showConfirmDialog(
                             context: context,
-                            title: const Text('确定删除已选中的笔记吗？'),
+                            title: Text(
+                              context.l10n.favoriteDeleteSelectedNotesConfirm,
+                            ),
                             onConfirm: _favNoteController.onRemove,
                           );
                         }
                       },
-                      child: const Text('删除'),
+                      child: Text(context.l10n.commonDelete),
                     ),
                     const SizedBox(width: 16),
                   ],

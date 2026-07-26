@@ -9,7 +9,7 @@ abstract final class AppFontArchiveExtractor {
       void extractEntry(String entryName, String outputPath) {
         final entry = archive.findFile(entryName);
         if (entry == null || !entry.isFile) {
-          throw StateError('压缩包中缺少所需文件');
+          throw StateError('Required file is missing from the archive');
         }
         final output = OutputFileStream(outputPath);
         try {

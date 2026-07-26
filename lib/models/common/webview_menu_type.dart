@@ -1,12 +1,20 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum WebviewMenuItem {
-  refresh('刷新'),
-  copy('复制链接'),
-  openInBrowser('浏览器中打开'),
-  clearCache('清除缓存'),
-  resetCookie('重新设置Cookie'),
-  goBack('返回'),
+  refresh,
+  copy,
+  openInBrowser,
+  clearCache,
+  resetCookie,
+  goBack,
   ;
 
-  final String title;
-  const WebviewMenuItem(this.title);
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .refresh => l10n.webRefresh,
+    .copy => l10n.webCopyLink,
+    .openInBrowser => l10n.webOpenInBrowser,
+    .clearCache => l10n.webClearCache,
+    .resetCookie => l10n.webResetCookie,
+    .goBack => l10n.webGoBack,
+  };
 }

@@ -2,6 +2,7 @@ import 'package:ex_piliplus/http/fav.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/fav/fav_note/list.dart';
 import 'package:ex_piliplus/pages/common/multi_select/multi_select_controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -44,7 +45,7 @@ class FavNoteController
     );
     if (res.isSuccess) {
       afterDelete(removeList);
-      SmartDialog.showToast('删除成功');
+      SmartDialog.showToast(Get.context!.l10n.commonDeleteSucceeded);
     } else {
       res.toast();
     }

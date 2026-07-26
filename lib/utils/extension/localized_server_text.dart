@@ -23,4 +23,10 @@ extension LocalizedServerText on AppLocalizations {
     final match = RegExp(r'^全\s*(\d+)\s*[话話]$').firstMatch(value);
     return match == null ? value : videoAllEpisodes(match.group(1)!);
   }
+
+  String localizedEpisodeBadge(String value) => switch (value) {
+    '预告' || '預告' => videoTrailerBadge,
+    '限免' => videoLimitedFreeBadge,
+    _ => value,
+  };
 }

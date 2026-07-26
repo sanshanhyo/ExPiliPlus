@@ -12,6 +12,7 @@ import 'package:ex_piliplus/pages/common/dyn/common_dyn_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/url_utils.dart';
@@ -196,7 +197,11 @@ class ArticleController extends CommonDynController {
         favorite?.count++;
       }
       stats.refresh();
-      SmartDialog.showToast('${isFav ? '取消' : ''}收藏成功');
+      SmartDialog.showToast(
+        isFav
+            ? Get.context!.l10n.videoRemovedFromFavorites
+            : Get.context!.l10n.videoAddedToFavorites,
+      );
     } else {
       res.toast();
     }
@@ -217,7 +222,11 @@ class ArticleController extends CommonDynController {
         like?.count++;
       }
       stats.refresh();
-      SmartDialog.showToast(!isLike ? '点赞成功' : '取消赞');
+      SmartDialog.showToast(
+        !isLike
+            ? Get.context!.l10n.commonLiked
+            : Get.context!.l10n.commonUnliked,
+      );
     } else {
       res.toast();
     }

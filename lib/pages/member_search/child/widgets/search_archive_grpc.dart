@@ -88,8 +88,8 @@ class SearchArchiveGrpc extends StatelessWidget {
                               height: maxHeight,
                             ),
                             if (item.isPugv)
-                              const PBadge(
-                                text: '课堂',
+                              PBadge(
+                                text: context.l10n.downloadCourse,
                                 top: 6.0,
                                 right: 6.0,
                               ),

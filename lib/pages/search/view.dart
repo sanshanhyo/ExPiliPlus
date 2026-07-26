@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/search/controller.dart';
 import 'package:ex_piliplus/pages/search/widgets/hot_keyword.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/utils/em.dart' show Em;
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -96,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
       Obx(
         () => _searchController.showUidBtn.value
             ? IconButton(
-                tooltip: 'UID搜索用户',
+                tooltip: context.l10n.searchUserByUid,
                 icon: const Icon(Icons.person_outline, size: 22),
                 onPressed: () => Get.toNamed(
                   '/member?mid=${_searchController.controller.text}',
@@ -105,12 +106,12 @@ class _SearchPageState extends State<SearchPage> {
             : const SizedBox.shrink(),
       ),
       IconButton(
-        tooltip: '清空',
+        tooltip: context.l10n.commonClear,
         icon: const Icon(Icons.clear, size: 22),
         onPressed: _searchController.onClear,
       ),
       IconButton(
-        tooltip: '搜索',
+        tooltip: context.l10n.commonSearch,
         onPressed: _searchController.submit,
         icon: const Icon(Icons.search, size: 22),
       ),
@@ -124,7 +125,7 @@ class _SearchPageState extends State<SearchPage> {
       onChanged: _searchController.onChange,
       decoration: InputDecoration(
         visualDensity: .standard,
-        hintText: _searchController.hintText ?? '搜索',
+        hintText: _searchController.hintText ?? context.l10n.commonSearch,
         border: InputBorder.none,
       ),
       onSubmitted: (value) => _searchController.submit(),
@@ -177,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
     bool isTrending = true,
   }) {
     final text = Text(
-      isTrending ? '大家都在搜' : '搜索发现',
+      isTrending ? context.l10n.searchTrending : context.l10n.searchDiscover,
       strutStyle: const StrutStyle(leading: 0, height: 1),
       style: theme.textTheme.titleMedium!.copyWith(
         height: 1,
@@ -226,7 +227,7 @@ class _SearchPageState extends State<SearchPage> {
                               child: Row(
                                 children: [
                                   Text(
-                                    '完整榜单',
+                                    context.l10n.searchFullRanking,
                                     strutStyle: const StrutStyle(
                                       leading: 0,
                                       height: 1,
@@ -261,7 +262,7 @@ class _SearchPageState extends State<SearchPage> {
                       color: secondary,
                     ),
                     label: Text(
-                      '刷新',
+                      context.l10n.commonRefresh,
                       strutStyle: const StrutStyle(leading: 0, height: 1),
                       style: TextStyle(height: 1, color: secondary),
                     ),
@@ -311,7 +312,7 @@ class _SearchPageState extends State<SearchPage> {
                   child: Row(
                     children: [
                       Text(
-                        '搜索历史',
+                        context.l10n.searchHistory,
                         strutStyle: const StrutStyle(leading: 0, height: 1),
                         style: theme.textTheme.titleMedium!.copyWith(
                           height: 1,
@@ -337,7 +338,7 @@ class _SearchPageState extends State<SearchPage> {
                           color: secondary,
                         ),
                         label: Text(
-                          '清空',
+                          context.l10n.commonClear,
                           style: TextStyle(height: 1, color: secondary),
                         ),
                       ),
@@ -375,7 +376,9 @@ class _SearchPageState extends State<SearchPage> {
       bool enable = _searchController.recordSearchHistory.value;
       return IconButton(
         iconSize: 22,
-        tooltip: enable ? '记录搜索' : '无痕搜索',
+        tooltip: enable
+            ? context.l10n.searchRecordHistory
+            : context.l10n.searchIncognito,
         icon: DisabledIcon(
           disable: !enable,
           child: Icon(
@@ -402,7 +405,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget get _exportBtn => IconButton(
     iconSize: 22,
-    tooltip: '导入/导出历史记录',
+    tooltip: context.l10n.searchImportExportHistory,
     icon: Icon(
       Icons.import_export_outlined,
       color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
@@ -414,7 +417,7 @@ class _SearchPageState extends State<SearchPage> {
     ),
     onPressed: () => showImportExportDialog<List>(
       context,
-      title: '历史记录',
+      title: context.l10n.searchHistory,
       localFileName: () => 'search',
       onExport: () => jsonEncode(_searchController.historyList),
       onImport: (json) {

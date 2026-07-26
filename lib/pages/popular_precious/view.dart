@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/video/source_type.dart';
 import 'package:ex_piliplus/models/model_hot_video_item.dart';
 import 'package:ex_piliplus/pages/popular_precious/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _PopularPreciousPageState extends State<PopularPreciousPage>
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('入站必刷')),
+      appBar: AppBar(title: Text(context.l10n.homeEssentialVideos)),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,
         child: CustomScrollView(
@@ -60,7 +61,7 @@ class _PopularPreciousPageState extends State<PopularPreciousPage>
                   dimension: item.dimension,
                   extraArguments: {
                     'sourceType': SourceType.playlist,
-                    'favTitle': '入站必刷',
+                    'favTitle': context.l10n.homeEssentialVideos,
                     'mediaId': _controller.mediaId,
                     'desc': true,
                     'oid': item.aid,

@@ -8,6 +8,7 @@ import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/color_utils.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -111,24 +112,24 @@ class _SuperChatCardState extends State<SuperChatCard> {
           height: 38,
           onTap: () => Get.toNamed('/member?mid=${item.uid}'),
           child: Text(
-            '访问: ${item.userInfo.uname}',
+            context.l10n.liveVisitUser(item.userInfo.uname),
             style: const TextStyle(fontSize: 13),
           ),
         ),
         PopupMenuItem(
           height: 38,
           onTap: () => Utils.copyText(Utils.jsonEncoder.convert(item.toJson())),
-          child: const Text(
-            '复制 SC 信息',
-            style: TextStyle(fontSize: 13),
+          child: Text(
+            context.l10n.liveCopySuperChatInfo,
+            style: const TextStyle(fontSize: 13),
           ),
         ),
         PopupMenuItem(
           height: 38,
           onTap: widget.onReport,
-          child: const Text(
-            '举报',
-            style: TextStyle(fontSize: 13),
+          child: Text(
+            context.l10n.commonReport,
+            style: const TextStyle(fontSize: 13),
           ),
         ),
       ],

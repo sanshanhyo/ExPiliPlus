@@ -4,7 +4,9 @@ import 'package:ex_piliplus/http/member.dart';
 import 'package:ex_piliplus/http/msg.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 class MemberDynamicsController
     extends CommonListController<DynamicsDataModel, DynamicItemModel> {
@@ -54,7 +56,7 @@ class MemberDynamicsController
       loadingState
         ..value.data!.removeWhere((item) => item.idStr == dynamicId)
         ..refresh();
-      SmartDialog.showToast('删除成功');
+      SmartDialog.showToast(Get.context!.l10n.commonDeleteSucceeded);
     } else {
       res.toast();
     }
@@ -71,17 +73,17 @@ class MemberDynamicsController
         ..moduleAuthor?.isTop = false;
       if (isTop) {
         loadingState.refresh();
-        SmartDialog.showToast('取消置顶成功');
+        SmartDialog.showToast(Get.context!.l10n.feedUnpinned);
       } else {
         final item = list.firstWhere((item) => item.idStr == dynamicId);
         item.modules
-          ..moduleTag = ModuleTag(text: '置顶')
+          ..moduleTag = ModuleTag(text: Get.context!.l10n.commonPin)
           ..moduleAuthor?.isTop = true;
         list
           ..remove(item)
           ..insert(0, item);
         loadingState.refresh();
-        SmartDialog.showToast('置顶成功');
+        SmartDialog.showToast(Get.context!.l10n.feedPinned);
       }
     } else {
       res.toast();

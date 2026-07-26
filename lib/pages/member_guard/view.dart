@@ -7,6 +7,7 @@ import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/member_guard/guard_top_list.dart';
 import 'package:ex_piliplus/pages/member_guard/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
@@ -56,7 +57,11 @@ class _MemberGuardState extends State<MemberGuard> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('$_userName的舰队${_count == null ? '' : '($_count)'}'),
+        title: Text(
+          _count == null
+              ? context.l10n.memberGuardTitle(_userName)
+              : context.l10n.memberGuardTitleWithCount(_userName, _count),
+        ),
       ),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,

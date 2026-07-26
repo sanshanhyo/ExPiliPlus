@@ -6,6 +6,7 @@ import 'package:ex_piliplus/grpc/bilibili/app/im/v1.pb.dart'
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/pages/whisper_block/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_svg/svg.dart';
@@ -28,7 +29,7 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('消息屏蔽词')),
+      appBar: AppBar(title: Text(context.l10n.messagesBlockedKeywords)),
       body: Obx(() => _buildBody(theme, _controller.loadingState.value)),
     );
   }
@@ -50,7 +51,7 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '点击屏蔽词即可删除',
+                          context.l10n.messagesTapKeywordToDelete,
                           style: TextStyle(
                             fontSize: 13,
                             color: theme.colorScheme.outline,
@@ -82,8 +83,14 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                                 onTap: (keyword) {
                                   showConfirmDialog(
                                     context: context,
-                                    title: const Text('删除屏蔽词？'),
-                                    content: const Text('该屏蔽词将不再生效'),
+                                    title: Text(
+                                      context.l10n.messagesDeleteKeywordConfirm,
+                                    ),
+                                    content: Text(
+                                      context
+                                          .l10n
+                                          .messagesKeywordNoLongerApplies,
+                                    ),
                                     onConfirm: () => _controller.onRemove(e),
                                   );
                                 },
@@ -101,9 +108,12 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                     ),
                     child: FilledButton.tonal(
                       onPressed: _onAdd,
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Icon(Icons.add, size: 22), Text('添加消息屏蔽词')],
+                        children: [
+                          const Icon(Icons.add, size: 22),
+                          Text(context.l10n.messagesAddBlockedKeyword),
+                        ],
                       ),
                     ),
                   ),
@@ -116,24 +126,24 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SvgPicture.asset(Assets.error, height: 156),
-                    const Text(
-                      '还未添加屏蔽词',
-                      style: TextStyle(
+                    Text(
+                      context.l10n.messagesNoBlockedKeywords,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text('添加后，将不再接受包含屏蔽词的消息'),
+                    Text(context.l10n.messagesBlockedKeywordDescription),
                     FilledButton.tonal(
                       onPressed: _onAdd,
                       style: FilledButton.styleFrom(
                         visualDensity: VisualDensity.compact,
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add, size: 22),
-                          Text('添加'),
+                          const Icon(Icons.add, size: 22),
+                          Text(context.l10n.commonAdd),
                         ],
                       ),
                     ),
@@ -171,9 +181,9 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '添加消息屏蔽词',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.messagesAddBlockedKeyword,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -194,7 +204,7 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                 maxLength: _controller.charLimit,
                 decoration: InputDecoration(
                   isDense: true,
-                  hintText: '请输入',
+                  hintText: context.l10n.messagesEnterKeyword,
                   visualDensity: .standard,
                   hintStyle: const TextStyle(fontSize: 14),
                   contentPadding: const EdgeInsets.symmetric(
@@ -218,9 +228,12 @@ class _WhisperBlockPageState extends State<WhisperBlockPage> {
                     _controller.onAdd(keyword);
                   }
                 },
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(Icons.add, size: 22), Text('添加消息屏蔽词')],
+                  children: [
+                    const Icon(Icons.add, size: 22),
+                    Text(context.l10n.messagesAddBlockedKeyword),
+                  ],
                 ),
               ),
             ],

@@ -12,8 +12,8 @@ import 'package:ex_piliplus/pages/main_reply/controller.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
-import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +59,7 @@ class _MainReplyPageState extends State<MainReplyPage>
     final colorScheme = ColorScheme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('查看评论')),
+      appBar: AppBar(title: Text(context.l10n.replyViewComments)),
       body: fabAnimWrapper(
         child: refreshIndicator(
           onRefresh: _controller.onRefresh,
@@ -97,7 +97,7 @@ class _MainReplyPageState extends State<MainReplyPage>
                 );
               } catch (_) {}
             },
-            tooltip: '评论',
+            tooltip: context.l10n.feedComment,
             child: const Icon(Icons.reply),
           ),
         ),
@@ -127,7 +127,9 @@ class _MainReplyPageState extends State<MainReplyPage>
                       margin: EdgeInsets.only(bottom: padding.bottom),
                       height: 125,
                       child: Text(
-                        _controller.isEnd ? '没有更多了' : '加载中...',
+                        _controller.isEnd
+                            ? context.l10n.commonNoMore
+                            : context.l10n.commonLoading,
                         style: TextStyle(
                           fontSize: 12,
                           color: colorScheme.outline,
@@ -157,7 +159,7 @@ class _MainReplyPageState extends State<MainReplyPage>
                 },
               )
             : HttpError(
-                errMsg: '还没有评论',
+                errMsg: context.l10n.replyNoCommentsYet,
                 onReload: _controller.onReload,
               ),
       Error(:final errMsg) => HttpError(
@@ -180,7 +182,9 @@ class _MainReplyPageState extends State<MainReplyPage>
               () {
                 final count = _controller.count.value;
                 return Text(
-                  '${count == -1 ? 0 : NumUtils.numFormat(count)}条回复',
+                  context.l10n.replyCount(
+                    count == -1 ? 0 : count,
+                  ),
                 );
               },
             ),
@@ -190,7 +194,7 @@ class _MainReplyPageState extends State<MainReplyPage>
               icon: Icon(Icons.sort, size: 16, color: secondary),
               label: Obx(
                 () => Text(
-                  _controller.sortType.value.label,
+                  _controller.sortType.value.localizedTitle(context.l10n),
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),
@@ -214,7 +218,7 @@ class _MainReplyPageState extends State<MainReplyPage>
         Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text('评论详情'),
+            title: Text(context.l10n.replyDetails),
             shape: Border(
               bottom: BorderSide(
                 color: colorScheme.outline.withValues(alpha: 0.1),

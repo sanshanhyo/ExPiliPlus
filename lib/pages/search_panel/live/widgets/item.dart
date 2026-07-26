@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class LiveItem extends StatelessWidget {
                         right: 0,
                         bottom: 0,
                         child: liveStat(
+                          context,
                           liveItem.online,
                           liveItem.cateName,
                         ),
@@ -100,7 +102,7 @@ class LiveItem extends StatelessWidget {
     ),
   );
 
-  Widget liveStat(int? online, String? cateName) {
+  Widget liveStat(BuildContext context, int? online, String? cateName) {
     return Container(
       height: 45,
       padding: const EdgeInsets.only(top: 22, left: 8, right: 8),
@@ -123,7 +125,7 @@ class LiveItem extends StatelessWidget {
             style: const TextStyle(fontSize: 11, color: Colors.white),
           ),
           Text(
-            '${NumUtils.numFormat(online)}围观',
+            context.l10n.playerWatchingNow(NumUtils.numFormat(online)),
             style: const TextStyle(fontSize: 11, color: Colors.white),
           ),
         ],

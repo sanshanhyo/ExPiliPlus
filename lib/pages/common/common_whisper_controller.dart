@@ -5,8 +5,10 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/msg.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 abstract class CommonWhisperController<R>
     extends CommonListController<R, Session> {
@@ -18,7 +20,7 @@ abstract class CommonWhisperController<R>
       loadingState
         ..value.data!.removeAt(index)
         ..refresh();
-      SmartDialog.showToast('删除成功');
+      SmartDialog.showToast(Get.context!.l10n.commonDeleteSucceeded);
     } else {
       res.toast();
     }
@@ -41,7 +43,9 @@ abstract class CommonWhisperController<R>
         list.insert(0, list.removeAt(index));
       }
       loadingState.refresh();
-      SmartDialog.showToast('${isTop ? '移除' : ''}置顶成功');
+      SmartDialog.showToast(
+        isTop ? Get.context!.l10n.feedUnpinned : Get.context!.l10n.feedPinned,
+      );
     } else {
       res.toast();
     }
@@ -56,7 +60,7 @@ abstract class CommonWhisperController<R>
     if (res.isSuccess) {
       item.isMuted = !isMuted;
       loadingState.refresh();
-      SmartDialog.showToast('设置成功');
+      SmartDialog.showToast(Get.context!.l10n.settingsSucceeded);
     } else {
       res.toast();
     }
@@ -75,7 +79,7 @@ abstract class CommonWhisperController<R>
           loadingState.refresh();
         }
       }
-      SmartDialog.showToast('已标记为已读');
+      SmartDialog.showToast(Get.context!.l10n.messagesMarkedAsRead);
     } else {
       res.toast();
     }

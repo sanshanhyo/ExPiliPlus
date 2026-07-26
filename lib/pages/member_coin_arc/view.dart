@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models_new/member/coin_like_arc/item.dart';
 import 'package:ex_piliplus/pages/member_coin_arc/controller.dart';
 import 'package:ex_piliplus/pages/member_coin_arc/widgets/item.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,9 @@ class _MemberCoinArcPageState extends State<MemberCoinArcPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          '${widget.mid == mid ? '我' : '${widget.name}'}的最近投币',
+          widget.mid == mid
+              ? context.l10n.memberMyRecentCoinedVideos
+              : context.l10n.memberUserRecentCoinedVideos(widget.name ?? ''),
         ),
       ),
       body: refreshIndicator(

@@ -10,6 +10,7 @@ import 'package:ex_piliplus/models_new/live/live_contribution_rank/item.dart';
 import 'package:ex_piliplus/pages/live_room/contribution_rank/controller.dart';
 import 'package:ex_piliplus/pages/member/widget/medal_widget.dart';
 import 'package:ex_piliplus/utils/color_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -58,7 +59,7 @@ class _ContributionRankPanelState extends State<ContributionRankPanel>
           child: TabBar(
             controller: _tabController,
             tabs: LiveContributionRankType.values
-                .map((e) => Tab(text: e.title))
+                .map((e) => Tab(text: e.localizedTitle(context.l10n)))
                 .toList(),
             dividerColor: Theme.of(
               context,

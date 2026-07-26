@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models_new/music/bgm_recommend_list.dart';
 import 'package:ex_piliplus/pages/music/video/controller.dart';
 import 'package:ex_piliplus/pages/music/widget/music_video_card_h.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -101,7 +102,7 @@ class _MusicRecommendPageState extends State<MusicRecommendPage>
                 return count == null
                     ? const SizedBox.shrink()
                     : Text(
-                        '共$count条视频',
+                        context.l10n.videoCount(count),
                         style: theme.textTheme.labelMedium,
                       );
               }),

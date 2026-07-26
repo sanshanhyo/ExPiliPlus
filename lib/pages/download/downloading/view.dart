@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
 import 'package:ex_piliplus/pages/download/detail/widgets/item.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -46,10 +47,10 @@ class _DownloadingPageState extends State<DownloadingPage>
           appBar: MultiSelectAppBarWidget(
             ctr: this,
             child: AppBar(
-              title: const Text('正在缓存'),
+              title: Text(context.l10n.downloadQueueTitle),
               actions: [
                 IconButton(
-                  tooltip: '多选',
+                  tooltip: context.l10n.commonMultiSelect,
                   onPressed: () {
                     if (enableMultiSelect) {
                       handleSelect();
@@ -105,7 +106,7 @@ class _DownloadingPageState extends State<DownloadingPage>
   void onRemove() {
     showConfirmDialog(
       context: context,
-      title: const Text('确定删除选中视频？'),
+      title: Text(context.l10n.downloadDeleteSelectedConfirm),
       onConfirm: () async {
         SmartDialog.showLoading();
         final allChecked = this.allChecked.toSet();

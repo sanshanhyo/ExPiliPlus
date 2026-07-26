@@ -9,6 +9,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models_new/upower_rank/rank_info.dart';
 import 'package:ex_piliplus/pages/member_upower_rank/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:get/get.dart';
@@ -89,7 +90,12 @@ class _UpowerRankPageState extends State<UpowerRankPage>
       return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('$_name的充电排行榜${_count == null ? '' : '($_count)'}'),
+          title: Text(
+            context.l10n.memberSupportRanking(
+              _name ?? '',
+              _count?.toString() ?? '',
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Get.toNamed(
@@ -100,7 +106,7 @@ class _UpowerRankPageState extends State<UpowerRankPage>
                 },
               ),
               style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
-              child: const Text('充电'),
+              child: Text(context.l10n.memberSupport),
             ),
             const SizedBox(width: 12),
           ],
@@ -238,9 +244,9 @@ class _UpowerRankPageState extends State<UpowerRankPage>
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const TextSpan(
-                              text: ' 天',
-                              style: TextStyle(fontSize: 13),
+                            TextSpan(
+                              text: context.l10n.memberSupportDaysSuffix,
+                              style: const TextStyle(fontSize: 13),
                             ),
                           ],
                         ),

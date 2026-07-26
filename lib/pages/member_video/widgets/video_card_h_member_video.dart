@@ -11,6 +11,7 @@ import 'package:ex_piliplus/models_new/space/space_archive/item.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/dimension_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -96,16 +97,16 @@ class VideoCardHMemberVideo extends StatelessWidget {
                               height: maxHeight,
                             ),
                             if (fromViewAid == videoItem.param)
-                              const Positioned.fill(
+                              Positioned.fill(
                                 child: DecoratedBox(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     borderRadius: Style.mdRadius,
                                     color: Colors.black54,
                                   ),
                                   child: Center(
                                     child: Text(
-                                      '上次观看',
-                                      style: TextStyle(
+                                      context.l10n.memberLastWatched,
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
                                         letterSpacing: 5,
@@ -155,7 +156,7 @@ class VideoCardHMemberVideo extends StatelessWidget {
                                       text:
                                           videoItem.history!.progress ==
                                               videoItem.history!.duration
-                                          ? '已看完'
+                                          ? context.l10n.videoStatusWatched
                                           : '${DurationUtils.formatDuration(videoItem.history!.progress)}/${DurationUtils.formatDuration(videoItem.history!.duration)}',
                                       right: 6.0,
                                       bottom: 6.0,

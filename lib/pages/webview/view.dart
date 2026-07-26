@@ -6,6 +6,7 @@ import 'package:ex_piliplus/main.dart';
 import 'package:ex_piliplus/models/common/webview_menu_type.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -108,6 +109,7 @@ class _WebviewPageState extends State<WebviewPage> {
               actions: [
                 PopupMenuButton(
                   onSelected: (item) async {
+                    final l10n = context.l10n;
                     switch (item) {
                       case WebviewMenuItem.refresh:
                         _webViewController?.reload();
@@ -128,7 +130,7 @@ class _WebviewPageState extends State<WebviewPage> {
                         try {
                           await InAppWebViewController.clearAllCache();
                           await _webViewController?.clearHistory();
-                          SmartDialog.showToast('已清理');
+                          SmartDialog.showToast(l10n.webCacheCleared);
                         } catch (e) {
                           SmartDialog.showToast(e.toString());
                         }
@@ -142,7 +144,9 @@ class _WebviewPageState extends State<WebviewPage> {
                         break;
                       case WebviewMenuItem.resetCookie:
                         await LoginUtils.setWebCookie();
-                        SmartDialog.showToast('设置成功，刷新或重新打开网页');
+                        SmartDialog.showToast(
+                          l10n.webCookieResetSucceeded,
+                        );
                         break;
                     }
                   },
@@ -152,14 +156,14 @@ class _WebviewPageState extends State<WebviewPage> {
                         .map(
                           (item) => PopupMenuItem(
                             value: item,
-                            child: Text(item.title),
+                            child: Text(item.localizedTitle(context.l10n)),
                           ),
                         ),
                     const PopupMenuDivider(),
                     PopupMenuItem(
                       value: WebviewMenuItem.goBack,
                       child: Text(
-                        WebviewMenuItem.goBack.title,
+                        WebviewMenuItem.goBack.localizedTitle(context.l10n),
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.error,
                         ),
@@ -266,7 +270,9 @@ class _WebviewPageState extends State<WebviewPage> {
                       }
                       return AlertDialog(
                         title: Text(
-                          '下载文件: $suggestedFilename ?',
+                          context.l10n.webDownloadFileConfirm(
+                            suggestedFilename,
+                          ),
                           style: const TextStyle(fontSize: 18),
                         ),
                         content: SelectionText(request.url.toString()),
@@ -274,7 +280,7 @@ class _WebviewPageState extends State<WebviewPage> {
                           TextButton(
                             onPressed: Get.back,
                             child: Text(
-                              '取消',
+                              context.l10n.commonCancel,
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.outline,
                               ),
@@ -285,7 +291,9 @@ class _WebviewPageState extends State<WebviewPage> {
                               Get.back();
                               PageUtils.launchURL(request.url.toString());
                             },
-                            child: Text('确定 ($fileSize)'),
+                            child: Text(
+                              context.l10n.webConfirmWithFileSize(fileSize),
+                            ),
                           ),
                         ],
                       );
@@ -335,9 +343,9 @@ class _WebviewPageState extends State<WebviewPage> {
                 final snackBar = SnackBar(
                   persist: false,
                   showCloseIcon: true,
-                  content: const Text('当前网页将要打开外部链接，是否打开'),
+                  content: Text(context.l10n.webExternalLinkConfirm),
                   action: SnackBarAction(
-                    label: '打开',
+                    label: context.l10n.webOpen,
                     onPressed: () => PageUtils.launchURL(url),
                   ),
                 );

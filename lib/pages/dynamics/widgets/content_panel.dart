@@ -10,6 +10,7 @@ import 'package:ex_piliplus/common/widgets/selection_text.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/rich_node_panel.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:collection/collection.dart' show IterableExtension;

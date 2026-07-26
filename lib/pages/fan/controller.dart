@@ -4,6 +4,7 @@ import 'package:ex_piliplus/http/video.dart';
 import 'package:ex_piliplus/models_new/follow/data.dart';
 import 'package:ex_piliplus/pages/follow_type/controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -46,7 +47,7 @@ class FansController extends FollowTypeController {
       loadingState
         ..value.data!.removeAt(index)
         ..refresh();
-      SmartDialog.showToast('移除成功');
+      SmartDialog.showToast(Get.context!.l10n.followFollowerRemoved);
     } else {
       res.toast();
     }

@@ -9,6 +9,7 @@ import 'package:ex_piliplus/models/common/search/video_search_type.dart';
 import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/pages/search_result/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -50,7 +51,7 @@ class SearchPanelController<R extends SearchNumData<T>, T>
     if (getBack) Get.back();
     SmartDialog.dismiss();
     if (label != null) {
-      SmartDialog.showToast("「$label」的筛选结果");
+      SmartDialog.showToast(Get.context!.l10n.searchFilteredBy(label));
     }
     SmartDialog.showLoading(msg: 'loading');
     onReload().whenComplete(SmartDialog.dismiss);

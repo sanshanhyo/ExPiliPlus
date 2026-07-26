@@ -2,6 +2,7 @@ import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:ex_piliplus/models/common/pgc_review_type.dart';
 import 'package:ex_piliplus/pages/pgc_review/child/controller.dart';
 import 'package:ex_piliplus/pages/pgc_review/child/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/pages/pgc_review/post/view.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
@@ -78,7 +79,7 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                   const TextStyle(fontSize: 13),
               dividerColor: Colors.transparent,
               tabs: PgcReviewType.values
-                  .map((e) => Tab(text: e.label))
+                  .map((e) => Tab(text: e.localizedLabel(context.l10n)))
                   .toList(),
               onTap: (index) {
                 try {
@@ -121,7 +122,10 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 children: [
                   DialogOption(
-                    child: const Text('写短评', style: TextStyle(fontSize: 14)),
+                    child: Text(
+                      context.l10n.reviewWriteShort,
+                      style: const TextStyle(fontSize: 14),
+                    ),
                     onPressed: () {
                       Get.back();
                       showModalBottomSheet(
@@ -138,7 +142,10 @@ class _PgcReviewPageState extends State<PgcReviewPage>
                     },
                   ),
                   DialogOption(
-                    child: const Text('写长评', style: TextStyle(fontSize: 14)),
+                    child: Text(
+                      context.l10n.reviewWriteLong,
+                      style: const TextStyle(fontSize: 14),
+                    ),
                     onPressed: () => Get
                       ..back()
                       ..toNamed(

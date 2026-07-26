@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -192,6 +193,7 @@ class ProgressBar extends LeafRenderObjectWidget {
       thumbGlowColor: thumbGlowColor,
       thumbGlowRadius: thumbGlowRadius,
       thumbCanPaintOutsideBar: thumbCanPaintOutsideBar,
+      semanticsLabel: context.l10n.playerProgressBar,
     );
   }
 
@@ -216,7 +218,8 @@ class ProgressBar extends LeafRenderObjectWidget {
       ..thumbColor = thumbColor
       ..thumbGlowColor = thumbGlowColor
       ..thumbGlowRadius = thumbGlowRadius
-      ..thumbCanPaintOutsideBar = thumbCanPaintOutsideBar;
+      ..thumbCanPaintOutsideBar = thumbCanPaintOutsideBar
+      ..semanticsLabel = context.l10n.playerProgressBar;
   }
 
   @override
@@ -341,6 +344,7 @@ class RenderProgressBar extends RenderBox implements MouseTrackerAnnotation {
     required this._thumbGlowColor,
     double thumbGlowRadius = 30.0,
     this._thumbCanPaintOutsideBar = true,
+    required this._semanticsLabel,
   }) : _onDragStartUserCallback = onDragStart,
        _onDragUpdateUserCallback = onDragUpdate,
        _onDragEndUserCallback = onDragEnd,
@@ -373,6 +377,12 @@ class RenderProgressBar extends RenderBox implements MouseTrackerAnnotation {
   // This is a value between 0.0 and 1.0 used to indicate the position on
   // the bar.
   late double _thumbValue;
+  String _semanticsLabel;
+  set semanticsLabel(String value) {
+    if (_semanticsLabel == value) return;
+    _semanticsLabel = value;
+    markNeedsSemanticsUpdate();
+  }
 
   // The thumb can move for two reasons. One is that the [progress] changed.
   // The other is that the user is dragging the thumb. This variable keeps
@@ -768,8 +778,7 @@ class RenderProgressBar extends RenderBox implements MouseTrackerAnnotation {
     // description
     config
       ..textDirection = TextDirection.ltr
-      ..label =
-          '进度条' //'Progress bar';
+      ..label = _semanticsLabel
       ..value = '${(_thumbValue * 100).round()}%'
       // increase action
       ..onIncrease = increaseAction;

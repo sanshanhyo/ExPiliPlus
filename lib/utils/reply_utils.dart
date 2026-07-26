@@ -10,6 +10,7 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
@@ -65,6 +66,7 @@ abstract final class ReplyUtils {
     required bool biliSendCommAntifraud,
     required sourceId,
   }) async {
+    final l10n = Get.context!.l10n;
     // biliSendCommAntifraud
     if (Platform.isAndroid && biliSendCommAntifraud) {
       try {
@@ -122,13 +124,13 @@ abstract final class ReplyUtils {
                 },
               );
             },
-            child: const Text('申诉'),
+            child: Text(l10n.replyAppeal),
           ),
         if (!isManual)
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '关闭',
+              l10n.commonClose,
               style: TextStyle(color: theme.colorScheme.outline),
             ),
           ),
@@ -137,7 +139,7 @@ abstract final class ReplyUtils {
         context: Get.context!,
         barrierDismissible: isManual,
         builder: (context) => AlertDialog(
-          title: const Text('评论检查结果'),
+          title: Text(l10n.replyCheckResult),
           content: SelectionText(message),
           actions: actions.isEmpty ? null : actions,
         ),
@@ -157,14 +159,14 @@ abstract final class ReplyUtils {
       );
 
       if (res case Error(:final errMsg)) {
-        SmartDialog.showToast('获取评论主列表时发生错误：$errMsg');
+        SmartDialog.showToast(l10n.replyMainListError(errMsg ?? ''));
         return;
       } else if (res case Success(:final response)) {
         final index =
             response.replies?.indexWhere((item) => item.rpid == id) ?? -1;
         if (index != -1) {
           // found
-          showReplyCheckResult('无账号状态下找到了你的评论，评论正常！\n\n你的评论：$message');
+          showReplyCheckResult(l10n.replyCheckNormal(message));
         } else {
           // not found
 
@@ -179,7 +181,10 @@ abstract final class ReplyUtils {
 
           if (res1 is Error) {
             // not found
-            showReplyCheckResult('无法找到你的评论。\n\n你的评论：$message', isBan: true);
+            showReplyCheckResult(
+              l10n.replyCheckNotFound(message),
+              isBan: true,
+            );
           } else {
             // found
 
@@ -197,21 +202,19 @@ abstract final class ReplyUtils {
               // not found
               showReplyCheckResult(
                 res2.errMsg?.startsWith('12022') == true
-                    ? '你的评论被shadow ban（仅自己可见）！\n\n你的评论: $message'
-                    : '评论不可见(${res2.errMsg}): $message',
+                    ? l10n.replyCheckShadowBanned(message)
+                    : l10n.replyCheckInvisible(res2.errMsg ?? '', message),
                 isBan: true,
               );
             } else {
               // found
               showReplyCheckResult(
                 isManual
-                    ? '无账号状态下找到了你的评论，评论正常！\n\n你的评论：$message'
-                    : '''
-你评论状态有点可疑，虽然无账号翻找评论区获取不到你的评论，但是无账号可通过
-https://api.bilibili.com/x/v2/reply/reply?oid=$oid&pn=1&ps=20&root=$id&type=$type
-获取你的评论，疑似评论区被戒严或者这是你的视频。
-
-你的评论：$message''',
+                    ? l10n.replyCheckNormal(message)
+                    : l10n.replyCheckSuspicious(
+                        'https://api.bilibili.com/x/v2/reply/reply?oid=$oid&pn=1&ps=20&root=$id&type=$type',
+                        message,
+                      ),
               );
             }
           }
@@ -239,7 +242,7 @@ https://api.bilibili.com/x/v2/reply/reply?oid=$oid&pn=1&ps=20&root=$id&type=$typ
             // not found
           } else {
             // found
-            showReplyCheckResult('无账号状态下找到了你的评论，评论正常！\n\n你的评论：$message');
+            showReplyCheckResult(l10n.replyCheckNormal(message));
             return;
           }
         }
@@ -267,7 +270,7 @@ https://api.bilibili.com/x/v2/reply/reply?oid=$oid&pn=1&ps=20&root=$id&type=$typ
           } else {
             // found
             showReplyCheckResult(
-              '你的评论被shadow ban（仅自己可见）！\n\n你的评论: $message',
+              l10n.replyCheckShadowBanned(message),
               isBan: true,
             );
             return;
@@ -275,7 +278,10 @@ https://api.bilibili.com/x/v2/reply/reply?oid=$oid&pn=1&ps=20&root=$id&type=$typ
         }
       }
 
-      showReplyCheckResult('评论不可见: $message', isBan: true);
+      showReplyCheckResult(
+        l10n.replyCheckInvisibleSimple(message),
+        isBan: true,
+      );
     }
   }
 }

@@ -413,7 +413,7 @@ class AudioController extends GetxController
   @override
   Future<void> actionLikeVideo() async {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     final newVal = !hasLike.value;
@@ -442,7 +442,7 @@ class AudioController extends GetxController
   @override
   Future<void> actionTriple() async {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     final res = await AudioGrpc.audioTripleLike(
@@ -464,9 +464,9 @@ class AudioController extends GetxController
       }
       hasFav.value = true;
       if (!hasCoin) {
-        SmartDialog.showToast('投币失败');
+        SmartDialog.showToast(Get.context!.l10n.videoCoinFailed);
       } else {
-        SmartDialog.showToast('三连成功');
+        SmartDialog.showToast(Get.context!.l10n.videoTripleSucceeded);
       }
     } else {
       res.toast();
@@ -511,7 +511,7 @@ class AudioController extends GetxController
   @override
   void showFavBottomSheet(BuildContext context, {bool isLongPress = false}) {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     if (enableQuickFav) {
@@ -614,7 +614,10 @@ class AudioController extends GetxController
             ),
           if (isUgc && isLogin)
             DialogOption(
-              child: const Text('分享至消息', style: TextStyle(fontSize: 14)),
+              child: Text(
+                l10n.feedShareToMessages,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 Get.back();
                 if (audioItem.value case DetailItem(

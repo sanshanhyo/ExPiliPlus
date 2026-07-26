@@ -7,6 +7,7 @@ import 'package:ex_piliplus/main.dart';
 import 'package:ex_piliplus/services/account_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -60,7 +61,7 @@ abstract final class LoginUtils {
           accountService.isLogin.value = true;
         }
 
-        SmartDialog.showToast('main登录成功');
+        SmartDialog.showToast(Get.context!.l10n.loginMainAccountSucceeded);
         if (response != Pref.userInfoCache) {
           await GStorage.userInfo.put('userInfoCache', response);
         }
@@ -71,7 +72,7 @@ abstract final class LoginUtils {
       if (errMsg == '账号未登录') {
         await Accounts.deleteAll({account});
         SmartDialog.showNotify(
-          msg: '登录失败，请检查cookie是否正确，$errMsg',
+          msg: Get.context!.l10n.loginCookieFailed(errMsg),
           notifyType: .warning,
         );
       } else {

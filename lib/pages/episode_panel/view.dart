@@ -493,15 +493,17 @@ class _EpisodePanelState extends State<EpisodePanel>
                             type: PBadgeType.gray,
                           ),
                         if (isCharging == true)
-                          const PBadge(
-                            text: '充电专属',
+                          PBadge(
+                            text: context.l10n.videoChargingOnly,
                             top: 6,
                             right: 6,
                             type: PBadgeType.error,
                           )
                         else if (episode.badge != null)
                           PBadge(
-                            text: episode.badge,
+                            text: context.l10n.localizedEpisodeBadge(
+                              episode.badge!,
+                            ),
                             top: 6,
                             right: 6,
                             type: switch (episode.badge) {
@@ -518,7 +520,7 @@ class _EpisodePanelState extends State<EpisodePanel>
                       color: primary,
                       height: 12,
                       cacheHeight: 12.cacheSize(context),
-                      semanticLabel: "正在播放：",
+                      semanticLabel: context.l10n.playerNowPlaying,
                     ),
                   Expanded(
                     child: Column(
@@ -583,10 +585,13 @@ class _EpisodePanelState extends State<EpisodePanel>
   }
 
   Widget _buildFavBtn(LoadingState<bool> loadingState) {
+    final l10n = context.l10n;
     return switch (loadingState) {
       Success(:final response) => iconButton(
         iconSize: 22,
-        tooltip: response ? '取消订阅' : '订阅',
+        tooltip: response
+            ? context.l10n.subscriptionUnsubscribe
+            : context.l10n.subscriptionSubscribe,
         icon: response
             ? const Icon(Icons.notifications_off_outlined)
             : const Icon(Icons.notifications_active_outlined),
@@ -596,7 +601,11 @@ class _EpisodePanelState extends State<EpisodePanel>
             seasonId: widget.seasonId,
           );
           if (res.isSuccess) {
-            SmartDialog.showToast('${response ? '取消' : ''}订阅成功');
+            SmartDialog.showToast(
+              response
+                  ? l10n.subscriptionCanceled
+                  : l10n.subscriptionSubscribed,
+            );
             _favState!.value = Success(!response);
             widget.ugcIntroController?.seasonFavState[widget.seasonId] =
                 !response;
@@ -611,7 +620,9 @@ class _EpisodePanelState extends State<EpisodePanel>
 
   Widget get _buildReverseBtn => iconButton(
     iconSize: 22,
-    tooltip: widget.isReversed == true ? '正序播放' : '倒序播放',
+    tooltip: widget.isReversed == true
+        ? context.l10n.playerPlayInOrder
+        : context.l10n.playerPlayInReverse,
     icon: widget.isReversed == true
         ? const Icon(MdiIcons.sortDescending)
         : const Icon(MdiIcons.sortAscending),
@@ -642,25 +653,25 @@ class _EpisodePanelState extends State<EpisodePanel>
       children: [
         if (showTitle)
           Text(
-            widget.type.title,
+            widget.type.localizedTitle(context.l10n),
             style: theme.textTheme.titleMedium,
           ),
         if (_favState != null) Obx(() => _buildFavBtn(_favState!.value)),
         iconButton(
           iconSize: 22,
-          tooltip: '跳至顶部',
+          tooltip: context.l10n.commonJumpToTop,
           icon: const Icon(Icons.vertical_align_top),
           onPressed: _animToTopOrBottom,
         ),
         iconButton(
           iconSize: 22,
-          tooltip: '跳至底部',
+          tooltip: context.l10n.commonJumpToBottom,
           icon: const Icon(Icons.vertical_align_bottom),
           onPressed: () => _animToTopOrBottom(top: false),
         ),
         iconButton(
           iconSize: 22,
-          tooltip: '跳至当前',
+          tooltip: context.l10n.commonJumpToCurrent,
           icon: const Icon(Icons.my_location),
           onPressed: () async {
             final currentTabIndex = _currentTabIndex.value;
@@ -688,7 +699,9 @@ class _EpisodePanelState extends State<EpisodePanel>
             final currentTabIndex = _currentTabIndex.value;
             return iconButton(
               iconSize: 22,
-              tooltip: _isReversed[currentTabIndex] ? '顺序' : '倒序',
+              tooltip: _isReversed[currentTabIndex]
+                  ? context.l10n.commonAscendingOrder
+                  : context.l10n.commonDescendingOrder,
               icon: !_isReversed[currentTabIndex]
                   ? const Icon(MdiIcons.sortNumericAscending)
                   : const Icon(MdiIcons.sortNumericDescending),
@@ -701,7 +714,7 @@ class _EpisodePanelState extends State<EpisodePanel>
         if (widget.onClose != null)
           iconButton(
             iconSize: 22,
-            tooltip: '关闭',
+            tooltip: context.l10n.commonClose,
             icon: const Icon(Icons.close),
             onPressed: widget.onClose,
           ),

@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum VideoPubTimeType {
   all('不限'),
   day('最近一天'),
@@ -7,6 +9,13 @@ enum VideoPubTimeType {
 
   final String label;
   const VideoPubTimeType(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .all => l10n.searchAnyTime,
+    .day => l10n.searchLastDay,
+    .week => l10n.searchLastWeek,
+    .halfYear => l10n.searchLastSixMonths,
+  };
 }
 
 enum VideoDurationType {
@@ -19,6 +28,14 @@ enum VideoDurationType {
 
   final String label;
   const VideoDurationType(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .all => l10n.searchAllDurations,
+    .tenMins => l10n.searchDurationUnderTen,
+    .halfHour => l10n.searchDurationTenToThirty,
+    .hour => l10n.searchDurationThirtyToSixty,
+    .hourPlus => l10n.searchDurationOverSixty,
+  };
 }
 
 enum VideoZoneType {
@@ -49,6 +66,31 @@ enum VideoZoneType {
   final String label;
   final int? tids;
   const VideoZoneType(this.label, {this.tids});
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .all => l10n.searchAllZones,
+    .douga => l10n.searchZoneAnimation,
+    .anime => l10n.searchZoneAnime,
+    .guochuang => l10n.searchZoneChineseAnimation,
+    .music => l10n.searchZoneMusic,
+    .dance => l10n.searchZoneDance,
+    .game => l10n.searchZoneGames,
+    .knowledge => l10n.searchZoneKnowledge,
+    .tech => l10n.searchZoneTechnology,
+    .sports => l10n.searchZoneSports,
+    .car => l10n.searchZoneCars,
+    .life => l10n.searchZoneLife,
+    .food => l10n.searchZoneFood,
+    .animal => l10n.searchZoneAnimals,
+    .kichiku => l10n.searchZoneKichiku,
+    .fashion => l10n.searchZoneFashion,
+    .info => l10n.searchZoneNews,
+    .ent => l10n.searchZoneEntertainment,
+    .cinephile => l10n.searchZoneFilmTv,
+    .documentary => l10n.searchZoneDocumentary,
+    .movie => l10n.searchZoneMovies,
+    .tv => l10n.searchZoneTv,
+  };
 }
 
 // 搜索类型为视频、专栏及相簿时
@@ -65,4 +107,13 @@ enum ArchiveFilterType {
 
   final String desc;
   const ArchiveFilterType(this.desc);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .totalrank => l10n.searchOrderDefault,
+    .click => l10n.searchOrderMostPlayed,
+    .pubdate => l10n.searchOrderNewest,
+    .dm => l10n.searchOrderMostDanmaku,
+    .stow => l10n.searchOrderMostFavorited,
+    .scores => l10n.searchOrderMostCommented,
+  };
 }

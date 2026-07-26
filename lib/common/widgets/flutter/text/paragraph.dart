@@ -88,6 +88,7 @@ class RenderParagraph extends RenderBox
     SelectionRegistrar? registrar,
     required Color primary,
     VoidCallback? onShowMore,
+    required String moreText,
   }) : assert(text.debugAssertIsValid()),
        assert(maxLines == null || maxLines > 0),
        assert(
@@ -97,6 +98,7 @@ class RenderParagraph extends RenderBox
        ),
        _primary = primary,
        _onShowMore = onShowMore,
+       _moreText = moreText,
        _softWrap = softWrap,
        _overflow = overflow,
        _selectionColor = selectionColor,
@@ -734,9 +736,17 @@ class RenderParagraph extends RenderBox
 
   TapGestureRecognizer? _tapGestureRecognizer;
 
+  String _moreText;
+  set moreText(String value) {
+    if (_moreText == value) return;
+    _moreText = value;
+    _morePainter = null;
+    markNeedsLayout();
+  }
+
   TextSpan _moreTextSpan([TextStyle? style]) => TextSpan(
     style: (style ?? text.style!).copyWith(color: _primary),
-    text: '查看更多',
+    text: _moreText,
     recognizer: _tapGestureRecognizer,
   );
   TextPainter? _morePainter;
@@ -2966,8 +2976,7 @@ class _SelectableFragment
     final TextPosition? existingSelectionEnd = _textSelectionEnd;
 
     _setSelectionPosition(null, isEnd: isEnd);
-    final Matrix4 transform = paragraph.getTransformTo(null);
-    transform.invert();
+    final Matrix4 transform = paragraph.getTransformTo(null)..invert();
     final Offset localPosition = MatrixUtils.transformPoint(
       transform,
       globalPosition,

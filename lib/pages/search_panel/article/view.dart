@@ -3,6 +3,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search_panel/article/controller.dart';
 import 'package:ex_piliplus/pages/search_panel/article/widgets/item.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,7 +54,11 @@ class _SearchArticlePanelState
           children: [
             Obx(
               () => Text(
-                '排序: ${controller.articleOrderType.value.label}',
+                context.l10n.searchSortValue(
+                  controller.articleOrderType.value.localizedLabel(
+                    context.l10n,
+                  ),
+                ),
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
@@ -61,7 +66,11 @@ class _SearchArticlePanelState
             const Spacer(),
             Obx(
               () => Text(
-                '分区: ${controller.articleZoneType!.value.label}',
+                context.l10n.searchZoneValue(
+                  controller.articleZoneType!.value.localizedLabel(
+                    context.l10n,
+                  ),
+                ),
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
@@ -71,7 +80,7 @@ class _SearchArticlePanelState
               width: 32,
               height: 32,
               child: IconButton(
-                tooltip: '筛选',
+                tooltip: context.l10n.searchFilter,
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(EdgeInsets.zero),
                 ),

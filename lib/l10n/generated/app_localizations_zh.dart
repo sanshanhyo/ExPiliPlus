@@ -787,6 +787,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonArticles => '专栏';
 
   @override
+  String get commonLiveRooms => '直播间';
+
+  @override
+  String get commonUsers => '用户';
+
+  @override
+  String get commonAllTypes => '全部类型';
+
+  @override
+  String get commonViewDetails => '查看详情';
+
+  @override
   String get commonDetails => '详情';
 
   @override
@@ -2226,6 +2238,31 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String timeDaysAgo(int count) {
     return '$count 天前';
+  }
+
+  @override
+  String durationYears(int count) {
+    return '$count年';
+  }
+
+  @override
+  String durationMonths(int count) {
+    return '$count个月';
+  }
+
+  @override
+  String durationDays(int count) {
+    return '$count天';
+  }
+
+  @override
+  String durationHours(int count) {
+    return '$count小时';
+  }
+
+  @override
+  String durationMinutes(int count) {
+    return '$count分钟';
   }
 
   @override
@@ -3775,6 +3812,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get replySortFeatured => '精选评论';
 
   @override
+  String get replySortNewestShort => '最新';
+
+  @override
+  String get replySortHottestShort => '最热';
+
+  @override
+  String get replySortFeaturedShort => '精选';
+
+  @override
   String get memberTabDefault => '默认';
 
   @override
@@ -3986,6 +4032,38 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsDownloadFont => '下载字体';
+
+  @override
+  String get settingsFontErrorIncompleteFile => '字体文件不完整，请重新下载';
+
+  @override
+  String get settingsFontErrorLoadFailed => '字体加载失败，请重新下载';
+
+  @override
+  String settingsFontErrorHttp(String status) {
+    return '字体下载失败（HTTP $status）';
+  }
+
+  @override
+  String get settingsFontErrorLicenseExtraction => '字体许可文件提取失败，请重试';
+
+  @override
+  String get settingsFontErrorDownloadFailed => '字体下载失败，请稍后重试';
+
+  @override
+  String get settingsFontErrorSizeMismatch => '字体文件大小校验失败，请重试';
+
+  @override
+  String get settingsFontErrorChecksumMismatch => '字体校验失败，请重试';
+
+  @override
+  String get settingsFontErrorTimeout => '字体下载连接超时，请检查网络后重试';
+
+  @override
+  String get settingsFontErrorNetwork => '无法下载字体，请检查网络';
+
+  @override
+  String get settingsFontErrorSaveFailed => '字体文件保存失败，请检查存储空间';
 
   @override
   String get settingsAppFontTitle => 'App 字体';
@@ -5050,6 +5128,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get loginCountryOrRegion => '国家/地区';
+
+  @override
   String get loginPhoneNumber => '手机号';
 
   @override
@@ -5164,6 +5245,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonServerError => '服务器错误';
 
   @override
+  String get networkBadCertificate => '证书无效';
+
+  @override
+  String get networkServerError => '服务器异常，请稍后重试';
+
+  @override
+  String get networkRequestCancelled => '请求已取消';
+
+  @override
+  String get networkConnectionError => '连接错误，请检查网络设置';
+
+  @override
+  String get networkConnectionTimeout => '网络连接超时，请检查网络设置';
+
+  @override
+  String get networkResponseTimeout => '响应超时，请稍后重试';
+
+  @override
+  String get networkSendTimeout => '发送请求超时，请检查网络设置';
+
+  @override
+  String get networkTransformTimeout => '转换响应数据超时';
+
+  @override
+  String networkUnknownError(String error) {
+    return '网络异常：$error';
+  }
+
+  @override
   String get searchSecurityCheckTriggered => '触发风控校验';
 
   @override
@@ -5212,6 +5322,1751 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get memberAddToHomeScreen => '添加至桌面';
+
+  @override
+  String get memberRandomPlay => '随机播放';
+
+  @override
+  String get memberReservation => '预约';
+
+  @override
+  String get memberReserved => '已预约';
+
+  @override
+  String get memberReservationPost => '预约动态';
+
+  @override
+  String memberReservationCount(Object count) {
+    return '$count 人预约';
+  }
+
+  @override
+  String get memberWebUploads => '网页投稿';
+
+  @override
+  String get memberPremiumXp => '大会员经验';
+
+  @override
+  String get memberSignInHistory => '登录记录';
+
+  @override
+  String get memberCoinHistory => '硬币记录';
+
+  @override
+  String get memberXpHistory => '经验记录';
+
+  @override
+  String memberFollowingSince(Object date) {
+    return '关注时间：$date';
+  }
+
+  @override
+  String get memberAccountBanned => '该账号封禁中';
+
+  @override
+  String memberSupporterCount(Object count) {
+    return '$count 人为 TA 充电';
+  }
+
+  @override
+  String memberGuardCount(Object count) {
+    return '$count 人加入大航海';
+  }
+
+  @override
+  String get memberMyRecommendations => '我的推荐';
+
+  @override
+  String memberRecommendationsBy(String name) {
+    return '$name的推荐';
+  }
+
+  @override
+  String memberCollectionCount(int count) {
+    return '合集：$count';
+  }
+
+  @override
+  String memberListCount(int count) {
+    return '列表：$count';
+  }
+
+  @override
+  String memberGuardTitle(String name) {
+    return '$name的舰队';
+  }
+
+  @override
+  String memberGuardTitleWithCount(String name, Object count) {
+    return '$name的舰队（$count）';
+  }
+
+  @override
+  String get memberAlsoFollowed => '也关注了 TA';
+
+  @override
+  String memberAlsoFollowedWithOthers(Object count) {
+    return '等 $count 人也关注了 TA';
+  }
+
+  @override
+  String get memberLikesReceived => '获赞';
+
+  @override
+  String get memberFollowingTime => '关注时间';
+
+  @override
+  String commonSelectedCount(Object count) {
+    return '已选：$count';
+  }
+
+  @override
+  String get commonSelectAll => '全选';
+
+  @override
+  String get commonCancelSelection => '取消选择';
+
+  @override
+  String get imageSaveImage => '保存图片';
+
+  @override
+  String get imageSaveAll => '保存全部';
+
+  @override
+  String get imageSaveAllImages => '保存全部图片';
+
+  @override
+  String get imageSaveVideo => '保存视频';
+
+  @override
+  String get imageSaveLivePhoto => '保存实况照片';
+
+  @override
+  String get imageOpenInBrowser => '在浏览器中打开';
+
+  @override
+  String get commonDone => '完成';
+
+  @override
+  String get commonCreate => '创建';
+
+  @override
+  String get favoriteSortMethod => '排序方式';
+
+  @override
+  String favoriteContentCount(num count) {
+    return '$count个内容';
+  }
+
+  @override
+  String favoriteContentSummary(num count, Object visibility) {
+    return '$count个内容 · $visibility';
+  }
+
+  @override
+  String get favoriteEditInfo => '编辑信息';
+
+  @override
+  String get favoriteShareToPost => '分享至动态';
+
+  @override
+  String get favoriteClearUnavailable => '清除失效内容';
+
+  @override
+  String get favoriteDeleteFolderConfirm => '确定删除该收藏夹？';
+
+  @override
+  String get favoriteRemoveSelectedConfirm => '确认删除所选收藏吗？';
+
+  @override
+  String get favoriteRemoved => '已取消收藏';
+
+  @override
+  String get favoriteFolderAdded => '收藏夹收藏成功';
+
+  @override
+  String get favoriteFolderRemoved => '已取消收藏夹收藏';
+
+  @override
+  String get favoriteClearSucceeded => '清除成功';
+
+  @override
+  String get favoriteTooManyToSort => '内容超过 1000 条，不支持排序';
+
+  @override
+  String get favoriteRemoveConfirm => '要取消收藏吗？';
+
+  @override
+  String get favoriteConfirmRemove => '确定取消';
+
+  @override
+  String get favoriteAudio => '音频';
+
+  @override
+  String get favoriteAddToFolder => '添加到收藏夹';
+
+  @override
+  String get favoriteNameRequired => '名称不能为空';
+
+  @override
+  String get favoriteFolderCreated => '创建成功';
+
+  @override
+  String get favoriteFolderUpdated => '编辑成功';
+
+  @override
+  String get favoriteCrop => '裁剪';
+
+  @override
+  String get favoriteReplaceCover => '替换封面';
+
+  @override
+  String get favoriteRemoveCover => '移除封面';
+
+  @override
+  String get favoriteCover => '封面';
+
+  @override
+  String get favoriteName => '名称';
+
+  @override
+  String get favoriteIntro => '简介';
+
+  @override
+  String get favoriteIntroHint => '可填写简介';
+
+  @override
+  String get favoritePublicSetting => '公开';
+
+  @override
+  String get favoriteCollectionBadge => '合集';
+
+  @override
+  String get favoriteFolderBadge => '收藏夹';
+
+  @override
+  String favoriteUploaderCollectionSummary(Object count, Object name) {
+    return '$count个内容 · $name';
+  }
+
+  @override
+  String favoriteCreatedCollectionSummary(
+    Object count,
+    Object name,
+    Object views,
+  ) {
+    return '创建者：$name\n$count个视频 · $views播放';
+  }
+
+  @override
+  String get favoriteOrderRecentlyAdded => '最近收藏';
+
+  @override
+  String get favoriteOrderMostPlayed => '最多播放';
+
+  @override
+  String get favoriteOrderRecentlyPublished => '最近投稿';
+
+  @override
+  String get profileTitle => '账号资料';
+
+  @override
+  String get profileAvatar => '头像';
+
+  @override
+  String get profileNickname => '昵称';
+
+  @override
+  String get profileGender => '性别';
+
+  @override
+  String get profileBirthday => '出生年月';
+
+  @override
+  String get profileBio => '个性签名';
+
+  @override
+  String get profileAvatarDecoration => '头像挂件';
+
+  @override
+  String get profileVerification => '哔哩哔哩认证';
+
+  @override
+  String get profileInsufficientCoins => '硬币不足';
+
+  @override
+  String get profileGenderMale => '男';
+
+  @override
+  String get profileGenderPrivate => '保密';
+
+  @override
+  String get profileGenderFemale => '女';
+
+  @override
+  String profileEditField(Object field) {
+    return '修改$field';
+  }
+
+  @override
+  String profileSameAsCurrent(Object field) {
+    return '与原$field相同';
+  }
+
+  @override
+  String get profileReloginRequired => '请退出账号后重新登录';
+
+  @override
+  String get profileUpdateSucceeded => '修改成功';
+
+  @override
+  String get profileGifNotSupported => '不能选择 GIF';
+
+  @override
+  String get shutdownPauseVideo => '暂停视频';
+
+  @override
+  String get shutdownExitApp => '退出应用';
+
+  @override
+  String get shutdownTitle => '定时关闭';
+
+  @override
+  String get shutdownCanceled => '已取消定时关闭';
+
+  @override
+  String shutdownScheduledAfter(Object duration) {
+    return '已设置在 $duration 后定时关闭';
+  }
+
+  @override
+  String get shutdownTimeReachedPaused => '定时时间已到，已暂停';
+
+  @override
+  String shutdownHoursMinutes(Object hours, Object minutes) {
+    return '$hours小时$minutes分钟';
+  }
+
+  @override
+  String shutdownHours(Object hours) {
+    return '$hours小时';
+  }
+
+  @override
+  String shutdownMinutes(Object minutes) {
+    return '$minutes分钟';
+  }
+
+  @override
+  String get shutdownCustom => '自定义';
+
+  @override
+  String get shutdownWaitUntilVideoEnds => '额外等待视频播放完毕';
+
+  @override
+  String get shutdownActionAtEnd => '倒计时结束：';
+
+  @override
+  String get replyViewComments => '查看评论';
+
+  @override
+  String get replyAppeal => '申诉';
+
+  @override
+  String get replyCheckResult => '评论检查结果';
+
+  @override
+  String replyMainListError(Object error) {
+    return '获取评论主列表时发生错误：$error';
+  }
+
+  @override
+  String replyCheckNormal(Object message) {
+    return '无账号状态下找到了你的评论，评论正常！\n\n你的评论：$message';
+  }
+
+  @override
+  String replyCheckNotFound(Object message) {
+    return '无法找到你的评论。\n\n你的评论：$message';
+  }
+
+  @override
+  String replyCheckShadowBanned(Object message) {
+    return '你的评论可能仅自己可见！\n\n你的评论：$message';
+  }
+
+  @override
+  String replyCheckInvisible(Object error, Object message) {
+    return '评论不可见（$error）：$message';
+  }
+
+  @override
+  String replyCheckSuspicious(Object message, Object url) {
+    return '你的评论状态有些可疑。无账号浏览评论区时无法看到，但可以通过以下地址直接获取：\n$url\n评论区可能受到限制，或者这是你的视频。\n\n你的评论：$message';
+  }
+
+  @override
+  String replyCheckInvisibleSimple(Object message) {
+    return '评论不可见：$message';
+  }
+
+  @override
+  String get replyContentText => '文本';
+
+  @override
+  String get replyContentEmoji => '表情';
+
+  @override
+  String get replyFilterChangeConfirm => '确认应用评论过滤变更？';
+
+  @override
+  String get replyAddToFilter => '加入过滤';
+
+  @override
+  String memberReportTitle(Object name) {
+    return '举报：$name';
+  }
+
+  @override
+  String get memberReportContentRequired => '举报内容（必选，可多选）';
+
+  @override
+  String get memberReportReasonOptional => '举报理由（单选，非必选）';
+
+  @override
+  String get memberReportAvatar => '头像违规';
+
+  @override
+  String get memberReportNickname => '昵称违规';
+
+  @override
+  String get memberReportBio => '签名违规';
+
+  @override
+  String get memberReportChooseContent => '至少选择一项作为举报内容';
+
+  @override
+  String get reportFailed => '举报失败';
+
+  @override
+  String get feedPinned => '置顶成功';
+
+  @override
+  String get feedUnpinned => '取消置顶成功';
+
+  @override
+  String get updateCheckFailed => '检查更新失败，GitHub 接口未返回数据，请检查网络';
+
+  @override
+  String get updateAlreadyLatest => '已是最新版本';
+
+  @override
+  String get updateNewVersion => '🎉 发现新版本';
+
+  @override
+  String get updateViewFullChanges => '查看完整提交记录';
+
+  @override
+  String get updateStopReminding => '不再提醒';
+
+  @override
+  String get commonUnsupportedType => '暂未支持此类型，请联系开发者';
+
+  @override
+  String get commonGettingResource => '资源获取中…';
+
+  @override
+  String get commonResourceLoadFailed => '资源加载失败';
+
+  @override
+  String routeUnknown(Object uri) {
+    return '未知路径：$uri，请截图反馈给开发者';
+  }
+
+  @override
+  String videoLoadFailed(Object error) {
+    return '视频获取失败：$error';
+  }
+
+  @override
+  String get liveTitle => '直播';
+
+  @override
+  String get rankingTitle => '排行榜';
+
+  @override
+  String get commonPlaylist => '播放列表';
+
+  @override
+  String get videoParts => '分 P';
+
+  @override
+  String get videoChargingOnly => '充电专属';
+
+  @override
+  String get videoTrailerBadge => '预告';
+
+  @override
+  String get videoLimitedFreeBadge => '限免';
+
+  @override
+  String get subscriptionSubscribe => '订阅';
+
+  @override
+  String get subscriptionUnsubscribe => '取消订阅';
+
+  @override
+  String get subscriptionSubscribed => '订阅成功';
+
+  @override
+  String get commonJumpToTop => '跳至顶部';
+
+  @override
+  String get commonJumpToBottom => '跳至底部';
+
+  @override
+  String get commonJumpToCurrent => '跳至当前';
+
+  @override
+  String get commonAscendingOrder => '顺序';
+
+  @override
+  String get commonDescendingOrder => '倒序';
+
+  @override
+  String get searchUserByUid => '通过 UID 搜索用户';
+
+  @override
+  String get searchTrending => '大家都在搜';
+
+  @override
+  String get searchDiscover => '搜索发现';
+
+  @override
+  String get searchFullRanking => '完整榜单';
+
+  @override
+  String get searchHistory => '搜索历史';
+
+  @override
+  String get searchRecordHistory => '记录搜索';
+
+  @override
+  String get searchIncognito => '无痕搜索';
+
+  @override
+  String get searchImportExportHistory => '导入或导出搜索历史';
+
+  @override
+  String get searchClearHistoryConfirm => '确定清空搜索历史？';
+
+  @override
+  String searchTabCount(Object count, Object label) {
+    return '$label $count';
+  }
+
+  @override
+  String memberSearchHint(Object name) {
+    return '搜索「$name」的动态、视频';
+  }
+
+  @override
+  String get favoriteDeleteSelectedNotesConfirm => '确定删除已选中的笔记吗？';
+
+  @override
+  String get favoriteRemoveCourseConfirm => '确定取消收藏该课堂？';
+
+  @override
+  String get downloadDeleteSelectedConfirm => '确定删除选中视频？';
+
+  @override
+  String get downloadQueueTitle => '正在缓存';
+
+  @override
+  String get downloadViewDetails => '查看详情页';
+
+  @override
+  String get downloadOpenLocalFolder => '打开本地文件夹';
+
+  @override
+  String downloadVisitUploader(Object name) {
+    return '访问$name';
+  }
+
+  @override
+  String get downloadUserProfile => '用户主页';
+
+  @override
+  String get downloadWatched => '已看完';
+
+  @override
+  String get downloadStatusDownloading => '正在下载';
+
+  @override
+  String get downloadStatusAudioDownloading => '正在下载音频';
+
+  @override
+  String get downloadStatusGettingDanmaku => '获取弹幕';
+
+  @override
+  String get downloadStatusGettingPlayUrl => '获取播放地址';
+
+  @override
+  String get downloadStatusCompleted => '下载完成';
+
+  @override
+  String get downloadStatusFailed => '下载失败';
+
+  @override
+  String get downloadStatusAudioFailed => '音频下载失败';
+
+  @override
+  String get downloadStatusDanmakuFailed => '获取弹幕失败';
+
+  @override
+  String get downloadStatusPlayUrlFailed => '获取播放地址失败';
+
+  @override
+  String get downloadStatusPaused => '暂停中';
+
+  @override
+  String get downloadStatusWaiting => '等待中';
+
+  @override
+  String get commonSettings => '设置';
+
+  @override
+  String get commonEmoji => '表情';
+
+  @override
+  String get messagesRecall => '撤回';
+
+  @override
+  String get messagesRecalled => '撤回成功';
+
+  @override
+  String get messagesSent => '发送成功';
+
+  @override
+  String get messagesInputHint => '发个消息聊聊吧…';
+
+  @override
+  String get messagesUploadingImage => '正在上传图片…';
+
+  @override
+  String get messagesChatSettings => '聊天设置';
+
+  @override
+  String get messagesAddToBlocked => '加入黑名单';
+
+  @override
+  String get messagesReceivePush => '接收消息推送';
+
+  @override
+  String get messagesPushDescription => '关闭后将不再收到该账号的图文消息与稿件推送，但通知类消息不受影响。';
+
+  @override
+  String get messagesPinChat => '置顶聊天';
+
+  @override
+  String get messagesMute => '消息免打扰';
+
+  @override
+  String get messagesDisablePushConfirm => '确认关闭内容推送吗？';
+
+  @override
+  String get messagesBlockConfirm => '确认拉黑该用户？';
+
+  @override
+  String get messagesBlockDescription =>
+      '加入黑名单后，将自动解除关注关系和对该用户的合集订阅关系，并禁止该用户与你互动或查看你的空间。';
+
+  @override
+  String get messagesBvNotFound => '未匹配到 BV 号';
+
+  @override
+  String get commonAdd => '添加';
+
+  @override
+  String get messagesBlockedKeywords => '消息屏蔽词';
+
+  @override
+  String get messagesTapKeywordToDelete => '点击屏蔽词即可删除';
+
+  @override
+  String get messagesDeleteKeywordConfirm => '删除屏蔽词？';
+
+  @override
+  String get messagesKeywordNoLongerApplies => '该屏蔽词将不再生效';
+
+  @override
+  String get messagesAddBlockedKeyword => '添加消息屏蔽词';
+
+  @override
+  String get messagesNoBlockedKeywords => '还未添加屏蔽词';
+
+  @override
+  String get messagesBlockedKeywordDescription => '添加后，将不再接收包含屏蔽词的消息';
+
+  @override
+  String get messagesEnterKeyword => '请输入';
+
+  @override
+  String get messagesMarkAllRead => '一键已读';
+
+  @override
+  String get messagesMarkAllReadConfirm => '是否清除全部新消息提醒？';
+
+  @override
+  String get messagesClearList => '清空列表';
+
+  @override
+  String get messagesClearListConfirm => '清空后所有消息将被删除，无法恢复';
+
+  @override
+  String get messagesMenuSettings => '消息设置';
+
+  @override
+  String get messagesUploaderAssistant => 'UP主助手';
+
+  @override
+  String get messagesContacts => '联系人';
+
+  @override
+  String get messagesFanGroupAssistant => '粉丝团助手';
+
+  @override
+  String get feedSelectTopic => '选择话题';
+
+  @override
+  String get feedOptionalTitleHint => '标题，选填 20 字';
+
+  @override
+  String get feedEditPostTitle => '编辑动态';
+
+  @override
+  String get feedCreatePostTitle => '发布动态';
+
+  @override
+  String get feedScheduledPost => '定时发布';
+
+  @override
+  String feedScheduleAtLeastMinutes(Object minutes) {
+    return '请至少选择 $minutes 分钟之后的时间';
+  }
+
+  @override
+  String get feedLiveReservation => '直播预约';
+
+  @override
+  String get feedStartedPoll => '我发起了一个投票';
+
+  @override
+  String get feedPosting => '正在发布…';
+
+  @override
+  String get feedPosted => '发布成功';
+
+  @override
+  String feedLiveReservationTitle(Object title) {
+    return '直播预约：$title';
+  }
+
+  @override
+  String feedLiveStartsAt(Object time) {
+    return '$time 直播';
+  }
+
+  @override
+  String get feedAllowComments => '允许评论';
+
+  @override
+  String get feedCloseComments => '关闭评论';
+
+  @override
+  String get feedFeaturedComments => '精选评论';
+
+  @override
+  String get voteCreateTitle => '发起投票';
+
+  @override
+  String get voteEditTitle => '投票';
+
+  @override
+  String get voteType => '投票类型';
+
+  @override
+  String get voteTitle => '投票标题';
+
+  @override
+  String get voteTitleHint => '请填写标题';
+
+  @override
+  String get voteDescription => '投票说明';
+
+  @override
+  String voteOptionLabel(Object number) {
+    return '选项$number';
+  }
+
+  @override
+  String get voteOptionHint => '选项内容，最多 20 字';
+
+  @override
+  String get voteAddOption => '添加选项';
+
+  @override
+  String get voteChoiceMode => '单选或多选';
+
+  @override
+  String get voteSingleChoice => '单选';
+
+  @override
+  String voteMaxChoices(Object count) {
+    return '最多选 $count 项';
+  }
+
+  @override
+  String get voteEndTime => '投票截止时间';
+
+  @override
+  String get voteAtLeastFiveMinutes => '至少选择 5 分钟之后';
+
+  @override
+  String get voteCreate => '发起投票';
+
+  @override
+  String get voteTextType => '文字投票';
+
+  @override
+  String get voteImageType => '图片投票';
+
+  @override
+  String get reserveAddLive => '添加直播预约';
+
+  @override
+  String get reserveType => '类型';
+
+  @override
+  String get reservePublicLive => '公开直播';
+
+  @override
+  String get reserveSupporterLive => '大航海直播';
+
+  @override
+  String get reserveTime => '时间';
+
+  @override
+  String get reserveTitle => '标题';
+
+  @override
+  String get reserveTitleHint => '请填写标题，最多 14 字';
+
+  @override
+  String get reserveAdd => '添加预约';
+
+  @override
+  String get mentionInputHint => '输入你想 @ 的人';
+
+  @override
+  String get topicSearchHint => '搜索话题';
+
+  @override
+  String get commonBlock => '屏蔽';
+
+  @override
+  String get commonShow => '显示';
+
+  @override
+  String get commonHide => '隐藏';
+
+  @override
+  String get playerEnterFullscreen => '进入全屏';
+
+  @override
+  String get playerExitFullscreen => '退出全屏';
+
+  @override
+  String get playerTurnOffBackgroundPlayback => '关闭后台播放';
+
+  @override
+  String get liveSendDanmaku => '发弹幕';
+
+  @override
+  String get liveSwitchRoute => '切换路线';
+
+  @override
+  String get liveShareRoom => '分享直播间';
+
+  @override
+  String livePlayerVolume(Object value) {
+    return '播放器音量：$value%';
+  }
+
+  @override
+  String get liveBackToBottom => '回到底部';
+
+  @override
+  String get liveCopyDanmakuInfo => '复制弹幕信息';
+
+  @override
+  String get liveGoToUserProfile => '去 TA 的个人空间';
+
+  @override
+  String get liveBlockSender => '屏蔽发送者';
+
+  @override
+  String get liveBlocked => '屏蔽成功';
+
+  @override
+  String get liveLikeSucceeded => '点赞成功';
+
+  @override
+  String get liveDanmakuInputHint => '输入弹幕内容';
+
+  @override
+  String get audioNoOrder => '无序';
+
+  @override
+  String audioPlaybackSpeed(Object speed) {
+    return '播放倍速（$speed×）';
+  }
+
+  @override
+  String get audioPlaybackMode => '播放模式';
+
+  @override
+  String get videoTripleSucceeded => '三连成功';
+
+  @override
+  String get danmakuBlockTitle => '弹幕屏蔽';
+
+  @override
+  String get danmakuBlockKeyword => '关键词';
+
+  @override
+  String get danmakuBlockRegex => '正则';
+
+  @override
+  String get danmakuBlockUser => '用户';
+
+  @override
+  String danmakuBlockTabCount(Object count, Object label) {
+    return '$label（$count）';
+  }
+
+  @override
+  String get danmakuDeleteRuleConfirm => '确定删除该规则？';
+
+  @override
+  String get danmakuKeywordHint => '输入过滤关键词；其他类别请切换标签页后添加。';
+
+  @override
+  String get danmakuRegexHint => '输入 // 之间的正则表达式，无需包含首尾斜杠。';
+
+  @override
+  String get danmakuUidHint => '输入用户 UID';
+
+  @override
+  String danmakuRuleDialogTitle(Object action, Object type) {
+    return '$action$type规则';
+  }
+
+  @override
+  String get danmakuInputEmpty => '输入内容不能为空';
+
+  @override
+  String get danmakuInputUnchanged => '输入内容与上次相同';
+
+  @override
+  String get danmakuSyncingRules => '正在同步弹幕屏蔽规则…';
+
+  @override
+  String get danmakuDeletingRule => '正在删除弹幕屏蔽规则…';
+
+  @override
+  String get danmakuAddingRule => '正在添加弹幕屏蔽规则…';
+
+  @override
+  String get liveDanmakuGlobalBlock => '全局屏蔽';
+
+  @override
+  String get liveDanmakuBlockEnabled => '屏蔽已开启';
+
+  @override
+  String get liveDanmakuBlockDisabled => '屏蔽未开启';
+
+  @override
+  String get liveDanmakuUserLevel => '用户等级';
+
+  @override
+  String liveDanmakuBelowLevel(Object level) {
+    return '$level 以下';
+  }
+
+  @override
+  String get liveDanmakuUnofficialUser => '非正式会员';
+
+  @override
+  String get liveDanmakuUnverifiedPhone => '未绑定手机用户';
+
+  @override
+  String get liveDanmakuKeywordBlock => '关键词屏蔽';
+
+  @override
+  String get commonInput => '输入';
+
+  @override
+  String get favoriteFolderSortTitle => '收藏夹排序';
+
+  @override
+  String get favoriteDefaultFolderSortUnsupported => '默认收藏夹不支持排序';
+
+  @override
+  String favoriteSortFolderTitle(String folder) {
+    return '排序：$folder';
+  }
+
+  @override
+  String get followSaveToDefaultGroup => '保存至默认分组';
+
+  @override
+  String get commonVideo => '视频';
+
+  @override
+  String get commonLongImage => '长图';
+
+  @override
+  String imagePositionSemantics(int position, int total) {
+    return '图片，第 $position 张，共 $total 张';
+  }
+
+  @override
+  String get downloadVideoCachedNotification => '视频已缓存完成';
+
+  @override
+  String get topicJoin => '参与话题';
+
+  @override
+  String get topicStarted => '发起';
+
+  @override
+  String topicStats(String views, String discussions) {
+    return '$views 浏览 · $discussions 讨论';
+  }
+
+  @override
+  String get replyPinned => '评论置顶成功';
+
+  @override
+  String get replyUnpinned => '已取消评论置顶';
+
+  @override
+  String get webRefresh => '刷新';
+
+  @override
+  String get webCopyLink => '复制链接';
+
+  @override
+  String get webOpenInBrowser => '在浏览器中打开';
+
+  @override
+  String get webClearCache => '清除缓存';
+
+  @override
+  String get webResetCookie => '重新设置 Cookie';
+
+  @override
+  String get webGoBack => '返回';
+
+  @override
+  String get webCacheCleared => '已清理';
+
+  @override
+  String get webCookieResetSucceeded => '设置成功，请刷新或重新打开网页';
+
+  @override
+  String webDownloadFileConfirm(String filename) {
+    return '下载文件：$filename？';
+  }
+
+  @override
+  String webConfirmWithFileSize(String size) {
+    return '确定（$size）';
+  }
+
+  @override
+  String get webExternalLinkConfirm => '当前网页将要打开外部链接，是否打开？';
+
+  @override
+  String get webOpen => '打开';
+
+  @override
+  String get commonUnliked => '已取消点赞';
+
+  @override
+  String get articleShareTitle => '哔哩哔哩专栏';
+
+  @override
+  String articleCount(String count) {
+    return '$count 篇专栏';
+  }
+
+  @override
+  String articleWordCount(String count) {
+    return '$count 个字';
+  }
+
+  @override
+  String articleReadCount(String count) {
+    return '$count 次阅读';
+  }
+
+  @override
+  String articleUpdatedAt(String date) {
+    return '$date 更新';
+  }
+
+  @override
+  String articleCollectionId(int id) {
+    return '文集号：$id';
+  }
+
+  @override
+  String followUserFollowers(String name) {
+    return '$name 的粉丝';
+  }
+
+  @override
+  String followRemoveFollowerConfirm(String name) {
+    return '确定移除 $name？';
+  }
+
+  @override
+  String get followFollowerRemoved => '移除成功';
+
+  @override
+  String get matchDetails => '比赛详情';
+
+  @override
+  String get matchWatchLive => '看直播';
+
+  @override
+  String matchEndedAt(String date) {
+    return '$date · 已结束';
+  }
+
+  @override
+  String get castNoDevices => '没有找到投屏设备';
+
+  @override
+  String get liveSearchHint => '搜索房间或主播';
+
+  @override
+  String get liveContributionRankOnline => '在线榜';
+
+  @override
+  String get liveContributionRankDaily => '日榜';
+
+  @override
+  String get liveContributionRankWeekly => '周榜';
+
+  @override
+  String get liveContributionRankMonthly => '月榜';
+
+  @override
+  String liveSearchRooms(String count) {
+    return '正在直播 $count';
+  }
+
+  @override
+  String liveSearchUploaders(String count) {
+    return '主播 $count';
+  }
+
+  @override
+  String get liveAllTags => '全部标签';
+
+  @override
+  String get liveFavoriteTags => '我的常用标签';
+
+  @override
+  String get liveTapTagHint => '点击进入标签';
+
+  @override
+  String get favoriteWantToWatch => '想看';
+
+  @override
+  String get favoriteWatching => '在看';
+
+  @override
+  String get favoriteWatched => '看过';
+
+  @override
+  String get favoriteUnpublishedNotes => '未发布笔记';
+
+  @override
+  String get favoritePublicNotes => '公开笔记';
+
+  @override
+  String get memberOrderMostPlayed => '最多播放';
+
+  @override
+  String get memberOrderMostFavorited => '最多收藏';
+
+  @override
+  String get memberReverseOrder => '倒序';
+
+  @override
+  String get memberJumpToPage => '跳至';
+
+  @override
+  String get memberPageNumber => '页数';
+
+  @override
+  String get memberLocateLastWatched => '定位至上次观看';
+
+  @override
+  String audioTrackCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共 $count 首',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberMyRecentCoinedVideos => '我的最近投币';
+
+  @override
+  String memberUserRecentCoinedVideos(String name) {
+    return '$name 的最近投币';
+  }
+
+  @override
+  String get memberFanMedalWall => '粉丝勋章墙';
+
+  @override
+  String memberFanMedalCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共拥有 $count 枚粉丝勋章',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberMedalWearing => '佩戴中';
+
+  @override
+  String favoriteAddedAt(String date) {
+    return '收藏于 $date';
+  }
+
+  @override
+  String get memberLastWatched => '上次观看';
+
+  @override
+  String get reviewLong => '长评';
+
+  @override
+  String get reviewShort => '短评';
+
+  @override
+  String get reviewWriteLong => '写长评';
+
+  @override
+  String get reviewWriteShort => '写短评';
+
+  @override
+  String get reviewLatest => '最新';
+
+  @override
+  String get reviewRatingAwful => '很差';
+
+  @override
+  String get reviewRatingPoor => '较差';
+
+  @override
+  String get reviewRatingOkay => '还行';
+
+  @override
+  String get reviewRatingGreat => '很好';
+
+  @override
+  String get reviewRatingExcellent => '佳作';
+
+  @override
+  String get reviewTapToRate => '轻触评分';
+
+  @override
+  String get reviewEdited => '编辑成功';
+
+  @override
+  String get reviewPublished => '点评成功';
+
+  @override
+  String get reviewDeleteConfirm => '删除短评，同时删除评分？';
+
+  @override
+  String reviewCount(String count) {
+    return '$count 条点评';
+  }
+
+  @override
+  String get searchFilter => '筛选';
+
+  @override
+  String searchFilteredBy(String filter) {
+    return '“$filter”的筛选结果';
+  }
+
+  @override
+  String searchSortValue(String value) {
+    return '排序：$value';
+  }
+
+  @override
+  String searchZoneValue(String value) {
+    return '分区：$value';
+  }
+
+  @override
+  String searchUserTypeValue(String value) {
+    return '用户类型：$value';
+  }
+
+  @override
+  String get searchZone => '分区';
+
+  @override
+  String get searchUserSort => '用户粉丝数及等级排序顺序';
+
+  @override
+  String get searchUserType => '用户分类';
+
+  @override
+  String get searchPublishedTime => '发布时间';
+
+  @override
+  String get searchDateTo => '至';
+
+  @override
+  String get searchContentDuration => '内容时长';
+
+  @override
+  String get searchContentZone => '内容分区';
+
+  @override
+  String get searchOrderRelevance => '综合排序';
+
+  @override
+  String get searchOrderNewest => '最新发布';
+
+  @override
+  String get searchOrderMostClicked => '最多点击';
+
+  @override
+  String get searchOrderMostLiked => '最多喜欢';
+
+  @override
+  String get searchOrderMostCommented => '最多评论';
+
+  @override
+  String get searchOrderDefault => '默认排序';
+
+  @override
+  String get searchOrderMostPlayed => '播放多';
+
+  @override
+  String get searchOrderMostDanmaku => '弹幕多';
+
+  @override
+  String get searchOrderMostFavorited => '收藏多';
+
+  @override
+  String get searchFollowersHighToLow => '粉丝数由高到低';
+
+  @override
+  String get searchFollowersLowToHigh => '粉丝数由低到高';
+
+  @override
+  String get searchLevelHighToLow => '等级由高到低';
+
+  @override
+  String get searchLevelLowToHigh => '等级由低到高';
+
+  @override
+  String get searchAllUsers => '全部用户';
+
+  @override
+  String get searchUploaders => 'UP 主';
+
+  @override
+  String get searchRegularUsers => '普通用户';
+
+  @override
+  String get searchVerifiedUsers => '认证用户';
+
+  @override
+  String get searchAnyTime => '不限';
+
+  @override
+  String get searchLastDay => '最近一天';
+
+  @override
+  String get searchLastWeek => '最近一周';
+
+  @override
+  String get searchLastSixMonths => '最近半年';
+
+  @override
+  String get searchAllDurations => '全部时长';
+
+  @override
+  String get searchDurationUnderTen => '0–10 分钟';
+
+  @override
+  String get searchDurationTenToThirty => '10–30 分钟';
+
+  @override
+  String get searchDurationThirtyToSixty => '30–60 分钟';
+
+  @override
+  String get searchDurationOverSixty => '60 分钟以上';
+
+  @override
+  String get searchAllZones => '全部分区';
+
+  @override
+  String get searchZoneAnimation => '动画';
+
+  @override
+  String get searchZoneAnime => '番剧';
+
+  @override
+  String get searchZoneChineseAnimation => '国创';
+
+  @override
+  String get searchZoneMusic => '音乐';
+
+  @override
+  String get searchZoneDance => '舞蹈';
+
+  @override
+  String get searchZoneGames => '游戏';
+
+  @override
+  String get searchZoneKnowledge => '知识';
+
+  @override
+  String get searchZoneTechnology => '科技';
+
+  @override
+  String get searchZoneSports => '运动';
+
+  @override
+  String get searchZoneCars => '汽车';
+
+  @override
+  String get searchZoneLife => '生活';
+
+  @override
+  String get searchZoneFood => '美食';
+
+  @override
+  String get searchZoneAnimals => '动物';
+
+  @override
+  String get searchZoneKichiku => '鬼畜';
+
+  @override
+  String get searchZoneFashion => '时尚';
+
+  @override
+  String get searchZoneNews => '资讯';
+
+  @override
+  String get searchZoneEntertainment => '娱乐';
+
+  @override
+  String get searchZoneFilmTv => '影视';
+
+  @override
+  String get searchZoneDocumentary => '纪录片';
+
+  @override
+  String get searchZoneMovies => '电影';
+
+  @override
+  String get searchZoneTv => '电视';
+
+  @override
+  String get searchZoneInterests => '兴趣';
+
+  @override
+  String get searchZoneLightNovels => '轻小说';
+
+  @override
+  String get searchZoneNotes => '笔记';
+
+  @override
+  String get commonAlbum => '相簿';
+
+  @override
+  String get commonArticle => '专栏';
+
+  @override
+  String get messagesAutoReply => '此条消息为自动回复';
+
+  @override
+  String messagesLiveBy(String author) {
+    return '$author · 直播';
+  }
+
+  @override
+  String get liveNow => '直播中';
+
+  @override
+  String memberFollowerCount(String count) {
+    return '$count 粉丝';
+  }
+
+  @override
+  String get commonViewMore => '查看更多内容';
+
+  @override
+  String get commonExit => '退出';
+
+  @override
+  String get audioWatchMv => '看 MV';
+
+  @override
+  String liveHighEnergyAudience(String count) {
+    return '高能观众（$count）';
+  }
+
+  @override
+  String get liveJustStarted => '刚刚开播';
+
+  @override
+  String liveStartedFor(String duration) {
+    return '开播 $duration';
+  }
+
+  @override
+  String get livePlaybackUrlUnavailable => '无法获取播放地址';
+
+  @override
+  String liveVisitUser(String name) {
+    return '访问：$name';
+  }
+
+  @override
+  String get liveCopySuperChatInfo => '复制 SC 信息';
+
+  @override
+  String get commonExpand => '展开';
+
+  @override
+  String get commonCollapse => '收起';
+
+  @override
+  String get feedTopics => '话题';
+
+  @override
+  String get commonTime => '时间';
+
+  @override
+  String get commonReason => '原因';
+
+  @override
+  String get logChange => '变化';
+
+  @override
+  String get logLocation => '地理位置';
+
+  @override
+  String get logExperienceHistory => '经验记录';
+
+  @override
+  String get logLoginHistory => '登录记录';
+
+  @override
+  String get saveWatch => '观看';
+
+  @override
+  String get saveContent => '内容';
+
+  @override
+  String get saveCollection => '合集';
+
+  @override
+  String saveScanQrToOpen(String action, String item) {
+    return '识别二维码，$action$item';
+  }
+
+  @override
+  String musicReleaseDate(String date) {
+    return '发行日期：$date';
+  }
+
+  @override
+  String musicOriginalArtist(String artist) {
+    return '原唱：$artist';
+  }
+
+  @override
+  String musicAlbum(String album) {
+    return '专辑：$album';
+  }
+
+  @override
+  String musicSource(String source) {
+    return '出处：$source';
+  }
+
+  @override
+  String get musicHotSongRanking => '热歌榜排名';
+
+  @override
+  String get musicPopularity => '热度';
+
+  @override
+  String get musicTotalPlays => '总播放量';
+
+  @override
+  String get musicVideosUsingTrack => '使用稿件量';
+
+  @override
+  String musicRecentPopularityTrend(int days) {
+    return '近 $days 日热度趋势';
+  }
+
+  @override
+  String articleAuthorReads(String author, int count) {
+    return '$author · $count 阅读';
+  }
+
+  @override
+  String articlePriceFrom(String price) {
+    return '$price 起';
+  }
+
+  @override
+  String get articleFeedOrArticle => '动态 / 专栏';
+
+  @override
+  String articleUnsupportedType(String type) {
+    return '不支持的类型（$type）';
+  }
+
+  @override
+  String articleInvalidType(String error) {
+    return '错误的类型：$error';
+  }
+
+  @override
+  String memberShopFrom(String source) {
+    return '来自 $source';
+  }
+
+  @override
+  String get loginMainAccountSucceeded => '主账号登录成功';
+
+  @override
+  String loginCookieFailed(String error) {
+    return '登录失败，请检查 Cookie 是否正确。$error';
+  }
+
+  @override
+  String get memberAllCollectionsAndLists => '全部合集 / 列表';
+
+  @override
+  String get memberAllPosts => '全部图文';
+
+  @override
+  String get memberPosts => '图文';
+
+  @override
+  String memberSupportRanking(String name, String count) {
+    return '$name 的充电排行榜 $count';
+  }
+
+  @override
+  String get memberSupport => '充电';
+
+  @override
+  String get memberSupportDaysSuffix => ' 天';
+
+  @override
+  String liveSearchUserStats(String area, String followers) {
+    return '分区：$area · 关注数：$followers';
+  }
+
+  @override
+  String bubbleSiteTitle(String name) {
+    return '$name 小站';
+  }
+
+  @override
+  String liveSwitchPreviewTo(String target) {
+    return '切换至$target';
+  }
+
+  @override
+  String get liveCover => '封面';
+
+  @override
+  String get liveFirstFrame => '首帧';
+
+  @override
+  String get liveShowMenu => '显示菜单';
+
+  @override
+  String get liveReportSelectedDanmaku => '举报选中弹幕';
+
+  @override
+  String get mediaTvSeries => '电视剧';
+
+  @override
+  String get mediaComics => '漫画';
+
+  @override
+  String get mediaVarietyShows => '综艺';
+
+  @override
+  String memberUserLevelSemantics(int level) {
+    return '$level 级';
+  }
+
+  @override
+  String get avatarVipBadge => '大会员';
+
+  @override
+  String get avatarVerifiedIndividual => '认证个人';
+
+  @override
+  String get avatarVerifiedOrganization => '认证机构';
+
+  @override
+  String memberHardcoreUserLevelSemantics(int level) {
+    return '硬核 $level 级';
+  }
+
+  @override
+  String get playerProgressBar => '进度条';
+
+  @override
+  String get commonPlay => '播放';
+
+  @override
+  String get settingsSpeedTestTimeout => '测速超时';
+
+  @override
+  String get commonSave => '保存';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -5995,6 +7850,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get commonArticles => '專欄';
+
+  @override
+  String get commonLiveRooms => '直播間';
+
+  @override
+  String get commonUsers => '使用者';
+
+  @override
+  String get commonAllTypes => '全部類型';
+
+  @override
+  String get commonViewDetails => '查看詳情';
 
   @override
   String get commonDetails => '詳細資料';
@@ -7436,6 +9303,31 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String timeDaysAgo(int count) {
     return '$count 天前';
+  }
+
+  @override
+  String durationYears(int count) {
+    return '$count年';
+  }
+
+  @override
+  String durationMonths(int count) {
+    return '$count個月';
+  }
+
+  @override
+  String durationDays(int count) {
+    return '$count天';
+  }
+
+  @override
+  String durationHours(int count) {
+    return '$count小時';
+  }
+
+  @override
+  String durationMinutes(int count) {
+    return '$count分鐘';
   }
 
   @override
@@ -8986,6 +10878,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get replySortFeatured => '精選評論';
 
   @override
+  String get replySortNewestShort => '最新';
+
+  @override
+  String get replySortHottestShort => '最熱門';
+
+  @override
+  String get replySortFeaturedShort => '精選';
+
+  @override
   String get memberTabDefault => '預設';
 
   @override
@@ -9197,6 +11098,38 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsDownloadFont => '下載字型';
+
+  @override
+  String get settingsFontErrorIncompleteFile => '字型檔案不完整，請重新下載';
+
+  @override
+  String get settingsFontErrorLoadFailed => '字型載入失敗，請重新下載';
+
+  @override
+  String settingsFontErrorHttp(String status) {
+    return '字型下載失敗（HTTP $status）';
+  }
+
+  @override
+  String get settingsFontErrorLicenseExtraction => '字型授權檔案擷取失敗，請重試';
+
+  @override
+  String get settingsFontErrorDownloadFailed => '字型下載失敗，請稍後再試';
+
+  @override
+  String get settingsFontErrorSizeMismatch => '字型檔案大小驗證失敗，請重試';
+
+  @override
+  String get settingsFontErrorChecksumMismatch => '字型校驗失敗，請重試';
+
+  @override
+  String get settingsFontErrorTimeout => '字型下載連線逾時，請檢查網路後重試';
+
+  @override
+  String get settingsFontErrorNetwork => '無法下載字型，請檢查網路';
+
+  @override
+  String get settingsFontErrorSaveFailed => '字型檔案儲存失敗，請檢查儲存空間';
 
   @override
   String get settingsAppFontTitle => 'App 字型';
@@ -10261,6 +12194,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
+  String get loginCountryOrRegion => '國家/地區';
+
+  @override
   String get loginPhoneNumber => '手機號碼';
 
   @override
@@ -10375,6 +12311,35 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get commonServerError => '伺服器錯誤';
 
   @override
+  String get networkBadCertificate => '憑證無效';
+
+  @override
+  String get networkServerError => '伺服器異常，請稍後再試';
+
+  @override
+  String get networkRequestCancelled => '請求已取消';
+
+  @override
+  String get networkConnectionError => '連線錯誤，請檢查網路設定';
+
+  @override
+  String get networkConnectionTimeout => '網路連線逾時，請檢查網路設定';
+
+  @override
+  String get networkResponseTimeout => '回應逾時，請稍後再試';
+
+  @override
+  String get networkSendTimeout => '傳送請求逾時，請檢查網路設定';
+
+  @override
+  String get networkTransformTimeout => '處理回應資料逾時';
+
+  @override
+  String networkUnknownError(String error) {
+    return '網路異常：$error';
+  }
+
+  @override
   String get searchSecurityCheckTriggered => '需要進行安全驗證';
 
   @override
@@ -10423,4 +12388,1749 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get memberAddToHomeScreen => '加入主畫面';
+
+  @override
+  String get memberRandomPlay => '隨機播放';
+
+  @override
+  String get memberReservation => '預約';
+
+  @override
+  String get memberReserved => '已預約';
+
+  @override
+  String get memberReservationPost => '預約動態';
+
+  @override
+  String memberReservationCount(Object count) {
+    return '$count 人預約';
+  }
+
+  @override
+  String get memberWebUploads => '網頁投稿';
+
+  @override
+  String get memberPremiumXp => '大會員經驗';
+
+  @override
+  String get memberSignInHistory => '登入記錄';
+
+  @override
+  String get memberCoinHistory => '硬幣記錄';
+
+  @override
+  String get memberXpHistory => '經驗記錄';
+
+  @override
+  String memberFollowingSince(Object date) {
+    return '關注時間：$date';
+  }
+
+  @override
+  String get memberAccountBanned => '此帳號已被停權';
+
+  @override
+  String memberSupporterCount(Object count) {
+    return '$count 人為 TA 充電';
+  }
+
+  @override
+  String memberGuardCount(Object count) {
+    return '$count 人加入大航海';
+  }
+
+  @override
+  String get memberMyRecommendations => '我的推薦';
+
+  @override
+  String memberRecommendationsBy(String name) {
+    return '$name的推薦';
+  }
+
+  @override
+  String memberCollectionCount(int count) {
+    return '合集：$count';
+  }
+
+  @override
+  String memberListCount(int count) {
+    return '清單：$count';
+  }
+
+  @override
+  String memberGuardTitle(String name) {
+    return '$name的艦隊';
+  }
+
+  @override
+  String memberGuardTitleWithCount(String name, Object count) {
+    return '$name的艦隊（$count）';
+  }
+
+  @override
+  String get memberAlsoFollowed => '也關注了 TA';
+
+  @override
+  String memberAlsoFollowedWithOthers(Object count) {
+    return '等 $count 人也關注了 TA';
+  }
+
+  @override
+  String get memberLikesReceived => '獲讚';
+
+  @override
+  String get memberFollowingTime => '關注時間';
+
+  @override
+  String commonSelectedCount(Object count) {
+    return '已選：$count';
+  }
+
+  @override
+  String get commonSelectAll => '全選';
+
+  @override
+  String get commonCancelSelection => '取消選擇';
+
+  @override
+  String get imageSaveImage => '儲存圖片';
+
+  @override
+  String get imageSaveAll => '全部儲存';
+
+  @override
+  String get imageSaveAllImages => '儲存全部圖片';
+
+  @override
+  String get imageSaveVideo => '儲存影片';
+
+  @override
+  String get imageSaveLivePhoto => '儲存原況照片';
+
+  @override
+  String get imageOpenInBrowser => '在瀏覽器中開啟';
+
+  @override
+  String get commonDone => '完成';
+
+  @override
+  String get commonCreate => '建立';
+
+  @override
+  String get favoriteSortMethod => '排序方式';
+
+  @override
+  String favoriteContentCount(num count) {
+    return '$count個內容';
+  }
+
+  @override
+  String favoriteContentSummary(num count, Object visibility) {
+    return '$count個內容 · $visibility';
+  }
+
+  @override
+  String get favoriteEditInfo => '編輯資訊';
+
+  @override
+  String get favoriteShareToPost => '分享到動態';
+
+  @override
+  String get favoriteClearUnavailable => '清除失效內容';
+
+  @override
+  String get favoriteDeleteFolderConfirm => '確定刪除這個收藏夾？';
+
+  @override
+  String get favoriteRemoveSelectedConfirm => '確認刪除所選收藏嗎？';
+
+  @override
+  String get favoriteRemoved => '已取消收藏';
+
+  @override
+  String get favoriteFolderAdded => '收藏夾收藏成功';
+
+  @override
+  String get favoriteFolderRemoved => '已取消收藏夾收藏';
+
+  @override
+  String get favoriteClearSucceeded => '清除成功';
+
+  @override
+  String get favoriteTooManyToSort => '內容超過 1000 筆，不支援排序';
+
+  @override
+  String get favoriteRemoveConfirm => '要取消收藏嗎？';
+
+  @override
+  String get favoriteConfirmRemove => '確定取消';
+
+  @override
+  String get favoriteAudio => '音訊';
+
+  @override
+  String get favoriteAddToFolder => '加入收藏夾';
+
+  @override
+  String get favoriteNameRequired => '名稱不能為空';
+
+  @override
+  String get favoriteFolderCreated => '建立成功';
+
+  @override
+  String get favoriteFolderUpdated => '編輯成功';
+
+  @override
+  String get favoriteCrop => '裁切';
+
+  @override
+  String get favoriteReplaceCover => '替換封面';
+
+  @override
+  String get favoriteRemoveCover => '移除封面';
+
+  @override
+  String get favoriteCover => '封面';
+
+  @override
+  String get favoriteName => '名稱';
+
+  @override
+  String get favoriteIntro => '簡介';
+
+  @override
+  String get favoriteIntroHint => '可填寫簡介';
+
+  @override
+  String get favoritePublicSetting => '公開';
+
+  @override
+  String get favoriteCollectionBadge => '合集';
+
+  @override
+  String get favoriteFolderBadge => '收藏夾';
+
+  @override
+  String favoriteUploaderCollectionSummary(Object count, Object name) {
+    return '$count個內容 · $name';
+  }
+
+  @override
+  String favoriteCreatedCollectionSummary(
+    Object count,
+    Object name,
+    Object views,
+  ) {
+    return '建立者：$name\n$count個影片 · $views播放';
+  }
+
+  @override
+  String get favoriteOrderRecentlyAdded => '最近收藏';
+
+  @override
+  String get favoriteOrderMostPlayed => '最多播放';
+
+  @override
+  String get favoriteOrderRecentlyPublished => '最近投稿';
+
+  @override
+  String get profileTitle => '帳號資料';
+
+  @override
+  String get profileAvatar => '頭像';
+
+  @override
+  String get profileNickname => '暱稱';
+
+  @override
+  String get profileGender => '性別';
+
+  @override
+  String get profileBirthday => '出生年月';
+
+  @override
+  String get profileBio => '個人簽名';
+
+  @override
+  String get profileAvatarDecoration => '頭像掛件';
+
+  @override
+  String get profileVerification => '嗶哩嗶哩認證';
+
+  @override
+  String get profileInsufficientCoins => '硬幣不足';
+
+  @override
+  String get profileGenderMale => '男';
+
+  @override
+  String get profileGenderPrivate => '保密';
+
+  @override
+  String get profileGenderFemale => '女';
+
+  @override
+  String profileEditField(Object field) {
+    return '修改$field';
+  }
+
+  @override
+  String profileSameAsCurrent(Object field) {
+    return '與原$field相同';
+  }
+
+  @override
+  String get profileReloginRequired => '請登出帳號後重新登入';
+
+  @override
+  String get profileUpdateSucceeded => '修改成功';
+
+  @override
+  String get profileGifNotSupported => '不能選擇 GIF';
+
+  @override
+  String get shutdownPauseVideo => '暫停影片';
+
+  @override
+  String get shutdownExitApp => '退出應用程式';
+
+  @override
+  String get shutdownTitle => '定時關閉';
+
+  @override
+  String get shutdownCanceled => '已取消定時關閉';
+
+  @override
+  String shutdownScheduledAfter(Object duration) {
+    return '已設定在 $duration 後定時關閉';
+  }
+
+  @override
+  String get shutdownTimeReachedPaused => '定時時間已到，已暫停';
+
+  @override
+  String shutdownHoursMinutes(Object hours, Object minutes) {
+    return '$hours小時$minutes分鐘';
+  }
+
+  @override
+  String shutdownHours(Object hours) {
+    return '$hours小時';
+  }
+
+  @override
+  String shutdownMinutes(Object minutes) {
+    return '$minutes分鐘';
+  }
+
+  @override
+  String get shutdownCustom => '自訂';
+
+  @override
+  String get shutdownWaitUntilVideoEnds => '額外等待影片播放完畢';
+
+  @override
+  String get shutdownActionAtEnd => '倒數結束：';
+
+  @override
+  String get replyViewComments => '查看評論';
+
+  @override
+  String get replyAppeal => '申訴';
+
+  @override
+  String get replyCheckResult => '評論檢查結果';
+
+  @override
+  String replyMainListError(Object error) {
+    return '取得評論主列表時發生錯誤：$error';
+  }
+
+  @override
+  String replyCheckNormal(Object message) {
+    return '未登入狀態下找到了你的評論，評論正常！\n\n你的評論：$message';
+  }
+
+  @override
+  String replyCheckNotFound(Object message) {
+    return '無法找到你的評論。\n\n你的評論：$message';
+  }
+
+  @override
+  String replyCheckShadowBanned(Object message) {
+    return '你的評論可能僅自己可見！\n\n你的評論：$message';
+  }
+
+  @override
+  String replyCheckInvisible(Object error, Object message) {
+    return '評論不可見（$error）：$message';
+  }
+
+  @override
+  String replyCheckSuspicious(Object message, Object url) {
+    return '你的評論狀態有些可疑。未登入瀏覽評論區時無法看到，但可以透過以下網址直接取得：\n$url\n評論區可能受到限制，或者這是你的影片。\n\n你的評論：$message';
+  }
+
+  @override
+  String replyCheckInvisibleSimple(Object message) {
+    return '評論不可見：$message';
+  }
+
+  @override
+  String get replyContentText => '文字';
+
+  @override
+  String get replyContentEmoji => '表情';
+
+  @override
+  String get replyFilterChangeConfirm => '確認套用評論過濾變更？';
+
+  @override
+  String get replyAddToFilter => '加入過濾';
+
+  @override
+  String memberReportTitle(Object name) {
+    return '檢舉：$name';
+  }
+
+  @override
+  String get memberReportContentRequired => '檢舉內容（必選，可複選）';
+
+  @override
+  String get memberReportReasonOptional => '檢舉理由（單選，非必選）';
+
+  @override
+  String get memberReportAvatar => '頭像違規';
+
+  @override
+  String get memberReportNickname => '暱稱違規';
+
+  @override
+  String get memberReportBio => '簽名違規';
+
+  @override
+  String get memberReportChooseContent => '至少選擇一項作為檢舉內容';
+
+  @override
+  String get reportFailed => '檢舉失敗';
+
+  @override
+  String get feedPinned => '置頂成功';
+
+  @override
+  String get feedUnpinned => '取消置頂成功';
+
+  @override
+  String get updateCheckFailed => '檢查更新失敗，GitHub 介面未回傳資料，請檢查網路';
+
+  @override
+  String get updateAlreadyLatest => '已是最新版本';
+
+  @override
+  String get updateNewVersion => '🎉 發現新版本';
+
+  @override
+  String get updateViewFullChanges => '查看完整提交記錄';
+
+  @override
+  String get updateStopReminding => '不再提醒';
+
+  @override
+  String get commonUnsupportedType => '尚未支援此類型，請聯絡開發者';
+
+  @override
+  String get commonGettingResource => '資源取得中…';
+
+  @override
+  String get commonResourceLoadFailed => '資源載入失敗';
+
+  @override
+  String routeUnknown(Object uri) {
+    return '未知路徑：$uri，請截圖回報給開發者';
+  }
+
+  @override
+  String videoLoadFailed(Object error) {
+    return '影片取得失敗：$error';
+  }
+
+  @override
+  String get liveTitle => '直播';
+
+  @override
+  String get rankingTitle => '排行榜';
+
+  @override
+  String get commonPlaylist => '播放清單';
+
+  @override
+  String get videoParts => '分 P';
+
+  @override
+  String get videoChargingOnly => '充電專屬';
+
+  @override
+  String get videoTrailerBadge => '預告';
+
+  @override
+  String get videoLimitedFreeBadge => '限免';
+
+  @override
+  String get subscriptionSubscribe => '訂閱';
+
+  @override
+  String get subscriptionUnsubscribe => '取消訂閱';
+
+  @override
+  String get subscriptionSubscribed => '訂閱成功';
+
+  @override
+  String get commonJumpToTop => '跳至頂部';
+
+  @override
+  String get commonJumpToBottom => '跳至底部';
+
+  @override
+  String get commonJumpToCurrent => '跳至目前';
+
+  @override
+  String get commonAscendingOrder => '順序';
+
+  @override
+  String get commonDescendingOrder => '倒序';
+
+  @override
+  String get searchUserByUid => '透過 UID 搜尋使用者';
+
+  @override
+  String get searchTrending => '大家都在搜';
+
+  @override
+  String get searchDiscover => '搜尋發現';
+
+  @override
+  String get searchFullRanking => '完整榜單';
+
+  @override
+  String get searchHistory => '搜尋記錄';
+
+  @override
+  String get searchRecordHistory => '記錄搜尋';
+
+  @override
+  String get searchIncognito => '無痕搜尋';
+
+  @override
+  String get searchImportExportHistory => '匯入或匯出搜尋記錄';
+
+  @override
+  String get searchClearHistoryConfirm => '確定清空搜尋記錄？';
+
+  @override
+  String searchTabCount(Object count, Object label) {
+    return '$label $count';
+  }
+
+  @override
+  String memberSearchHint(Object name) {
+    return '搜尋「$name」的動態、影片';
+  }
+
+  @override
+  String get favoriteDeleteSelectedNotesConfirm => '確定刪除已選取的筆記嗎？';
+
+  @override
+  String get favoriteRemoveCourseConfirm => '確定取消收藏這個課程？';
+
+  @override
+  String get downloadDeleteSelectedConfirm => '確定刪除選取的影片？';
+
+  @override
+  String get downloadQueueTitle => '正在快取';
+
+  @override
+  String get downloadViewDetails => '查看詳情頁';
+
+  @override
+  String get downloadOpenLocalFolder => '開啟本機資料夾';
+
+  @override
+  String downloadVisitUploader(Object name) {
+    return '前往$name';
+  }
+
+  @override
+  String get downloadUserProfile => '使用者主頁';
+
+  @override
+  String get downloadWatched => '已看完';
+
+  @override
+  String get downloadStatusDownloading => '正在下載';
+
+  @override
+  String get downloadStatusAudioDownloading => '正在下載音訊';
+
+  @override
+  String get downloadStatusGettingDanmaku => '取得彈幕';
+
+  @override
+  String get downloadStatusGettingPlayUrl => '取得播放位址';
+
+  @override
+  String get downloadStatusCompleted => '下載完成';
+
+  @override
+  String get downloadStatusFailed => '下載失敗';
+
+  @override
+  String get downloadStatusAudioFailed => '音訊下載失敗';
+
+  @override
+  String get downloadStatusDanmakuFailed => '取得彈幕失敗';
+
+  @override
+  String get downloadStatusPlayUrlFailed => '取得播放位址失敗';
+
+  @override
+  String get downloadStatusPaused => '已暫停';
+
+  @override
+  String get downloadStatusWaiting => '等待中';
+
+  @override
+  String get commonSettings => '設定';
+
+  @override
+  String get commonEmoji => '表情';
+
+  @override
+  String get messagesRecall => '收回';
+
+  @override
+  String get messagesRecalled => '收回成功';
+
+  @override
+  String get messagesSent => '傳送成功';
+
+  @override
+  String get messagesInputHint => '傳送訊息…';
+
+  @override
+  String get messagesUploadingImage => '正在上傳圖片…';
+
+  @override
+  String get messagesChatSettings => '聊天設定';
+
+  @override
+  String get messagesAddToBlocked => '加入黑名單';
+
+  @override
+  String get messagesReceivePush => '接收訊息推播';
+
+  @override
+  String get messagesPushDescription => '關閉後將不再收到該帳號的圖文訊息與稿件推播，但通知類訊息不受影響。';
+
+  @override
+  String get messagesPinChat => '置頂聊天';
+
+  @override
+  String get messagesMute => '訊息勿擾';
+
+  @override
+  String get messagesDisablePushConfirm => '確認關閉內容推播嗎？';
+
+  @override
+  String get messagesBlockConfirm => '確認封鎖這位使用者？';
+
+  @override
+  String get messagesBlockDescription =>
+      '加入黑名單後，將自動解除關注關係和對該使用者的合集訂閱關係，並禁止對方與你互動或查看你的個人空間。';
+
+  @override
+  String get messagesBvNotFound => '未找到 BV 號';
+
+  @override
+  String get commonAdd => '新增';
+
+  @override
+  String get messagesBlockedKeywords => '訊息封鎖關鍵字';
+
+  @override
+  String get messagesTapKeywordToDelete => '點選封鎖關鍵字即可刪除';
+
+  @override
+  String get messagesDeleteKeywordConfirm => '刪除封鎖關鍵字？';
+
+  @override
+  String get messagesKeywordNoLongerApplies => '這個封鎖關鍵字將不再生效';
+
+  @override
+  String get messagesAddBlockedKeyword => '新增訊息封鎖關鍵字';
+
+  @override
+  String get messagesNoBlockedKeywords => '尚未新增封鎖關鍵字';
+
+  @override
+  String get messagesBlockedKeywordDescription => '新增後，將不再接收包含封鎖關鍵字的訊息';
+
+  @override
+  String get messagesEnterKeyword => '請輸入';
+
+  @override
+  String get messagesMarkAllRead => '全部標為已讀';
+
+  @override
+  String get messagesMarkAllReadConfirm => '是否清除全部新訊息提醒？';
+
+  @override
+  String get messagesClearList => '清空列表';
+
+  @override
+  String get messagesClearListConfirm => '清空後所有訊息將被刪除，無法復原';
+
+  @override
+  String get messagesMenuSettings => '訊息設定';
+
+  @override
+  String get messagesUploaderAssistant => 'UP主助手';
+
+  @override
+  String get messagesContacts => '聯絡人';
+
+  @override
+  String get messagesFanGroupAssistant => '粉絲團助手';
+
+  @override
+  String get feedSelectTopic => '選擇話題';
+
+  @override
+  String get feedOptionalTitleHint => '標題，選填 20 字';
+
+  @override
+  String get feedEditPostTitle => '編輯動態';
+
+  @override
+  String get feedCreatePostTitle => '發佈動態';
+
+  @override
+  String get feedScheduledPost => '定時發佈';
+
+  @override
+  String feedScheduleAtLeastMinutes(Object minutes) {
+    return '請至少選擇 $minutes 分鐘之後的時間';
+  }
+
+  @override
+  String get feedLiveReservation => '直播預約';
+
+  @override
+  String get feedStartedPoll => '我發起了一個投票';
+
+  @override
+  String get feedPosting => '正在發佈…';
+
+  @override
+  String get feedPosted => '發佈成功';
+
+  @override
+  String feedLiveReservationTitle(Object title) {
+    return '直播預約：$title';
+  }
+
+  @override
+  String feedLiveStartsAt(Object time) {
+    return '$time 直播';
+  }
+
+  @override
+  String get feedAllowComments => '允許評論';
+
+  @override
+  String get feedCloseComments => '關閉評論';
+
+  @override
+  String get feedFeaturedComments => '精選評論';
+
+  @override
+  String get voteCreateTitle => '發起投票';
+
+  @override
+  String get voteEditTitle => '投票';
+
+  @override
+  String get voteType => '投票類型';
+
+  @override
+  String get voteTitle => '投票標題';
+
+  @override
+  String get voteTitleHint => '請填寫標題';
+
+  @override
+  String get voteDescription => '投票說明';
+
+  @override
+  String voteOptionLabel(Object number) {
+    return '選項$number';
+  }
+
+  @override
+  String get voteOptionHint => '選項內容，最多 20 字';
+
+  @override
+  String get voteAddOption => '新增選項';
+
+  @override
+  String get voteChoiceMode => '單選或多選';
+
+  @override
+  String get voteSingleChoice => '單選';
+
+  @override
+  String voteMaxChoices(Object count) {
+    return '最多選 $count 項';
+  }
+
+  @override
+  String get voteEndTime => '投票截止時間';
+
+  @override
+  String get voteAtLeastFiveMinutes => '至少選擇 5 分鐘之後';
+
+  @override
+  String get voteCreate => '發起投票';
+
+  @override
+  String get voteTextType => '文字投票';
+
+  @override
+  String get voteImageType => '圖片投票';
+
+  @override
+  String get reserveAddLive => '新增直播預約';
+
+  @override
+  String get reserveType => '類型';
+
+  @override
+  String get reservePublicLive => '公開直播';
+
+  @override
+  String get reserveSupporterLive => '大航海直播';
+
+  @override
+  String get reserveTime => '時間';
+
+  @override
+  String get reserveTitle => '標題';
+
+  @override
+  String get reserveTitleHint => '請填寫標題，最多 14 字';
+
+  @override
+  String get reserveAdd => '新增預約';
+
+  @override
+  String get mentionInputHint => '輸入你想 @ 的人';
+
+  @override
+  String get topicSearchHint => '搜尋話題';
+
+  @override
+  String get commonBlock => '封鎖';
+
+  @override
+  String get commonShow => '顯示';
+
+  @override
+  String get commonHide => '隱藏';
+
+  @override
+  String get playerEnterFullscreen => '進入全螢幕';
+
+  @override
+  String get playerExitFullscreen => '退出全螢幕';
+
+  @override
+  String get playerTurnOffBackgroundPlayback => '關閉背景播放';
+
+  @override
+  String get liveSendDanmaku => '發彈幕';
+
+  @override
+  String get liveSwitchRoute => '切換路線';
+
+  @override
+  String get liveShareRoom => '分享直播間';
+
+  @override
+  String livePlayerVolume(Object value) {
+    return '播放器音量：$value%';
+  }
+
+  @override
+  String get liveBackToBottom => '回到底部';
+
+  @override
+  String get liveCopyDanmakuInfo => '複製彈幕資訊';
+
+  @override
+  String get liveGoToUserProfile => '前往 TA 的個人空間';
+
+  @override
+  String get liveBlockSender => '封鎖傳送者';
+
+  @override
+  String get liveBlocked => '封鎖成功';
+
+  @override
+  String get liveLikeSucceeded => '按讚成功';
+
+  @override
+  String get liveDanmakuInputHint => '輸入彈幕內容';
+
+  @override
+  String get audioNoOrder => '無序';
+
+  @override
+  String audioPlaybackSpeed(Object speed) {
+    return '播放倍速（$speed×）';
+  }
+
+  @override
+  String get audioPlaybackMode => '播放模式';
+
+  @override
+  String get videoTripleSucceeded => '三連成功';
+
+  @override
+  String get danmakuBlockTitle => '彈幕封鎖';
+
+  @override
+  String get danmakuBlockKeyword => '關鍵字';
+
+  @override
+  String get danmakuBlockRegex => '正規表示式';
+
+  @override
+  String get danmakuBlockUser => '使用者';
+
+  @override
+  String danmakuBlockTabCount(Object count, Object label) {
+    return '$label（$count）';
+  }
+
+  @override
+  String get danmakuDeleteRuleConfirm => '確定刪除這個規則？';
+
+  @override
+  String get danmakuKeywordHint => '輸入過濾關鍵字；其他類別請切換分頁後新增。';
+
+  @override
+  String get danmakuRegexHint => '輸入 // 之間的正規表示式，無需包含首尾斜線。';
+
+  @override
+  String get danmakuUidHint => '輸入使用者 UID';
+
+  @override
+  String danmakuRuleDialogTitle(Object action, Object type) {
+    return '$action$type規則';
+  }
+
+  @override
+  String get danmakuInputEmpty => '輸入內容不能為空';
+
+  @override
+  String get danmakuInputUnchanged => '輸入內容與上次相同';
+
+  @override
+  String get danmakuSyncingRules => '正在同步彈幕封鎖規則…';
+
+  @override
+  String get danmakuDeletingRule => '正在刪除彈幕封鎖規則…';
+
+  @override
+  String get danmakuAddingRule => '正在新增彈幕封鎖規則…';
+
+  @override
+  String get liveDanmakuGlobalBlock => '全域封鎖';
+
+  @override
+  String get liveDanmakuBlockEnabled => '封鎖已開啟';
+
+  @override
+  String get liveDanmakuBlockDisabled => '封鎖未開啟';
+
+  @override
+  String get liveDanmakuUserLevel => '使用者等級';
+
+  @override
+  String liveDanmakuBelowLevel(Object level) {
+    return '$level 以下';
+  }
+
+  @override
+  String get liveDanmakuUnofficialUser => '非正式會員';
+
+  @override
+  String get liveDanmakuUnverifiedPhone => '未綁定手機的使用者';
+
+  @override
+  String get liveDanmakuKeywordBlock => '關鍵字封鎖';
+
+  @override
+  String get commonInput => '輸入';
+
+  @override
+  String get favoriteFolderSortTitle => '收藏夾排序';
+
+  @override
+  String get favoriteDefaultFolderSortUnsupported => '預設收藏夾不支援排序';
+
+  @override
+  String favoriteSortFolderTitle(String folder) {
+    return '排序：$folder';
+  }
+
+  @override
+  String get followSaveToDefaultGroup => '儲存至預設分組';
+
+  @override
+  String get commonVideo => '影片';
+
+  @override
+  String get commonLongImage => '長圖';
+
+  @override
+  String imagePositionSemantics(int position, int total) {
+    return '圖片，第 $position 張，共 $total 張';
+  }
+
+  @override
+  String get downloadVideoCachedNotification => '影片已快取完成';
+
+  @override
+  String get topicJoin => '參與話題';
+
+  @override
+  String get topicStarted => '發起';
+
+  @override
+  String topicStats(String views, String discussions) {
+    return '$views 次瀏覽 · $discussions 則討論';
+  }
+
+  @override
+  String get replyPinned => '留言置頂成功';
+
+  @override
+  String get replyUnpinned => '已取消留言置頂';
+
+  @override
+  String get webRefresh => '重新整理';
+
+  @override
+  String get webCopyLink => '複製連結';
+
+  @override
+  String get webOpenInBrowser => '在瀏覽器中開啟';
+
+  @override
+  String get webClearCache => '清除快取';
+
+  @override
+  String get webResetCookie => '重新設定 Cookie';
+
+  @override
+  String get webGoBack => '返回';
+
+  @override
+  String get webCacheCleared => '已清理';
+
+  @override
+  String get webCookieResetSucceeded => '設定成功，請重新整理或重新開啟網頁';
+
+  @override
+  String webDownloadFileConfirm(String filename) {
+    return '下載檔案：$filename？';
+  }
+
+  @override
+  String webConfirmWithFileSize(String size) {
+    return '確定（$size）';
+  }
+
+  @override
+  String get webExternalLinkConfirm => '目前網頁將要開啟外部連結，是否開啟？';
+
+  @override
+  String get webOpen => '開啟';
+
+  @override
+  String get commonUnliked => '已取消按讚';
+
+  @override
+  String get articleShareTitle => 'bilibili 專欄';
+
+  @override
+  String articleCount(String count) {
+    return '$count 篇專欄';
+  }
+
+  @override
+  String articleWordCount(String count) {
+    return '$count 個字';
+  }
+
+  @override
+  String articleReadCount(String count) {
+    return '$count 次閱讀';
+  }
+
+  @override
+  String articleUpdatedAt(String date) {
+    return '$date 更新';
+  }
+
+  @override
+  String articleCollectionId(int id) {
+    return '文集編號：$id';
+  }
+
+  @override
+  String followUserFollowers(String name) {
+    return '$name 的粉絲';
+  }
+
+  @override
+  String followRemoveFollowerConfirm(String name) {
+    return '確定移除 $name？';
+  }
+
+  @override
+  String get followFollowerRemoved => '移除成功';
+
+  @override
+  String get matchDetails => '比賽詳情';
+
+  @override
+  String get matchWatchLive => '觀看直播';
+
+  @override
+  String matchEndedAt(String date) {
+    return '$date · 已結束';
+  }
+
+  @override
+  String get castNoDevices => '找不到投放裝置';
+
+  @override
+  String get liveSearchHint => '搜尋直播間或實況主';
+
+  @override
+  String get liveContributionRankOnline => '線上榜';
+
+  @override
+  String get liveContributionRankDaily => '日榜';
+
+  @override
+  String get liveContributionRankWeekly => '週榜';
+
+  @override
+  String get liveContributionRankMonthly => '月榜';
+
+  @override
+  String liveSearchRooms(String count) {
+    return '正在直播 $count';
+  }
+
+  @override
+  String liveSearchUploaders(String count) {
+    return '實況主 $count';
+  }
+
+  @override
+  String get liveAllTags => '全部標籤';
+
+  @override
+  String get liveFavoriteTags => '我的常用標籤';
+
+  @override
+  String get liveTapTagHint => '點擊進入標籤';
+
+  @override
+  String get favoriteWantToWatch => '想看';
+
+  @override
+  String get favoriteWatching => '在看';
+
+  @override
+  String get favoriteWatched => '看過';
+
+  @override
+  String get favoriteUnpublishedNotes => '未發佈筆記';
+
+  @override
+  String get favoritePublicNotes => '公開筆記';
+
+  @override
+  String get memberOrderMostPlayed => '最多播放';
+
+  @override
+  String get memberOrderMostFavorited => '最多收藏';
+
+  @override
+  String get memberReverseOrder => '反向';
+
+  @override
+  String get memberJumpToPage => '跳至';
+
+  @override
+  String get memberPageNumber => '頁數';
+
+  @override
+  String get memberLocateLastWatched => '定位至上次觀看';
+
+  @override
+  String audioTrackCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共 $count 首',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberMyRecentCoinedVideos => '我的最近投幣';
+
+  @override
+  String memberUserRecentCoinedVideos(String name) {
+    return '$name 的最近投幣';
+  }
+
+  @override
+  String get memberFanMedalWall => '粉絲勳章牆';
+
+  @override
+  String memberFanMedalCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '共擁有 $count 枚粉絲勳章',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get memberMedalWearing => '佩戴中';
+
+  @override
+  String favoriteAddedAt(String date) {
+    return '收藏於 $date';
+  }
+
+  @override
+  String get memberLastWatched => '上次觀看';
+
+  @override
+  String get reviewLong => '長評';
+
+  @override
+  String get reviewShort => '短評';
+
+  @override
+  String get reviewWriteLong => '撰寫長評';
+
+  @override
+  String get reviewWriteShort => '撰寫短評';
+
+  @override
+  String get reviewLatest => '最新';
+
+  @override
+  String get reviewRatingAwful => '很差';
+
+  @override
+  String get reviewRatingPoor => '較差';
+
+  @override
+  String get reviewRatingOkay => '還行';
+
+  @override
+  String get reviewRatingGreat => '很好';
+
+  @override
+  String get reviewRatingExcellent => '佳作';
+
+  @override
+  String get reviewTapToRate => '輕觸評分';
+
+  @override
+  String get reviewEdited => '編輯成功';
+
+  @override
+  String get reviewPublished => '點評成功';
+
+  @override
+  String get reviewDeleteConfirm => '刪除短評，同時刪除評分？';
+
+  @override
+  String reviewCount(String count) {
+    return '$count 則點評';
+  }
+
+  @override
+  String get searchFilter => '篩選';
+
+  @override
+  String searchFilteredBy(String filter) {
+    return '「$filter」的篩選結果';
+  }
+
+  @override
+  String searchSortValue(String value) {
+    return '排序：$value';
+  }
+
+  @override
+  String searchZoneValue(String value) {
+    return '分區：$value';
+  }
+
+  @override
+  String searchUserTypeValue(String value) {
+    return '使用者類型：$value';
+  }
+
+  @override
+  String get searchZone => '分區';
+
+  @override
+  String get searchUserSort => '依粉絲數與等級排序';
+
+  @override
+  String get searchUserType => '使用者分類';
+
+  @override
+  String get searchPublishedTime => '發佈時間';
+
+  @override
+  String get searchDateTo => '至';
+
+  @override
+  String get searchContentDuration => '內容時長';
+
+  @override
+  String get searchContentZone => '內容分區';
+
+  @override
+  String get searchOrderRelevance => '綜合排序';
+
+  @override
+  String get searchOrderNewest => '最新發佈';
+
+  @override
+  String get searchOrderMostClicked => '最多點擊';
+
+  @override
+  String get searchOrderMostLiked => '最多喜歡';
+
+  @override
+  String get searchOrderMostCommented => '最多留言';
+
+  @override
+  String get searchOrderDefault => '預設排序';
+
+  @override
+  String get searchOrderMostPlayed => '播放最多';
+
+  @override
+  String get searchOrderMostDanmaku => '彈幕最多';
+
+  @override
+  String get searchOrderMostFavorited => '收藏最多';
+
+  @override
+  String get searchFollowersHighToLow => '粉絲數由高到低';
+
+  @override
+  String get searchFollowersLowToHigh => '粉絲數由低到高';
+
+  @override
+  String get searchLevelHighToLow => '等級由高到低';
+
+  @override
+  String get searchLevelLowToHigh => '等級由低到高';
+
+  @override
+  String get searchAllUsers => '全部使用者';
+
+  @override
+  String get searchUploaders => 'UP 主';
+
+  @override
+  String get searchRegularUsers => '一般使用者';
+
+  @override
+  String get searchVerifiedUsers => '認證使用者';
+
+  @override
+  String get searchAnyTime => '不限';
+
+  @override
+  String get searchLastDay => '最近一天';
+
+  @override
+  String get searchLastWeek => '最近一週';
+
+  @override
+  String get searchLastSixMonths => '最近半年';
+
+  @override
+  String get searchAllDurations => '全部時長';
+
+  @override
+  String get searchDurationUnderTen => '0–10 分鐘';
+
+  @override
+  String get searchDurationTenToThirty => '10–30 分鐘';
+
+  @override
+  String get searchDurationThirtyToSixty => '30–60 分鐘';
+
+  @override
+  String get searchDurationOverSixty => '60 分鐘以上';
+
+  @override
+  String get searchAllZones => '全部分區';
+
+  @override
+  String get searchZoneAnimation => '動畫';
+
+  @override
+  String get searchZoneAnime => '番劇';
+
+  @override
+  String get searchZoneChineseAnimation => '國創';
+
+  @override
+  String get searchZoneMusic => '音樂';
+
+  @override
+  String get searchZoneDance => '舞蹈';
+
+  @override
+  String get searchZoneGames => '遊戲';
+
+  @override
+  String get searchZoneKnowledge => '知識';
+
+  @override
+  String get searchZoneTechnology => '科技';
+
+  @override
+  String get searchZoneSports => '運動';
+
+  @override
+  String get searchZoneCars => '汽車';
+
+  @override
+  String get searchZoneLife => '生活';
+
+  @override
+  String get searchZoneFood => '美食';
+
+  @override
+  String get searchZoneAnimals => '動物';
+
+  @override
+  String get searchZoneKichiku => '鬼畜';
+
+  @override
+  String get searchZoneFashion => '時尚';
+
+  @override
+  String get searchZoneNews => '資訊';
+
+  @override
+  String get searchZoneEntertainment => '娛樂';
+
+  @override
+  String get searchZoneFilmTv => '影視';
+
+  @override
+  String get searchZoneDocumentary => '紀錄片';
+
+  @override
+  String get searchZoneMovies => '電影';
+
+  @override
+  String get searchZoneTv => '電視';
+
+  @override
+  String get searchZoneInterests => '興趣';
+
+  @override
+  String get searchZoneLightNovels => '輕小說';
+
+  @override
+  String get searchZoneNotes => '筆記';
+
+  @override
+  String get commonAlbum => '相簿';
+
+  @override
+  String get commonArticle => '專欄';
+
+  @override
+  String get messagesAutoReply => '此訊息為自動回覆';
+
+  @override
+  String messagesLiveBy(String author) {
+    return '$author · 直播';
+  }
+
+  @override
+  String get liveNow => '直播中';
+
+  @override
+  String memberFollowerCount(String count) {
+    return '$count 位粉絲';
+  }
+
+  @override
+  String get commonViewMore => '查看更多內容';
+
+  @override
+  String get commonExit => '退出';
+
+  @override
+  String get audioWatchMv => '看 MV';
+
+  @override
+  String liveHighEnergyAudience(String count) {
+    return '高能觀眾（$count）';
+  }
+
+  @override
+  String get liveJustStarted => '剛剛開播';
+
+  @override
+  String liveStartedFor(String duration) {
+    return '開播 $duration';
+  }
+
+  @override
+  String get livePlaybackUrlUnavailable => '無法取得播放位址';
+
+  @override
+  String liveVisitUser(String name) {
+    return '造訪：$name';
+  }
+
+  @override
+  String get liveCopySuperChatInfo => '複製 SC 資訊';
+
+  @override
+  String get commonExpand => '展開';
+
+  @override
+  String get commonCollapse => '收起';
+
+  @override
+  String get feedTopics => '話題';
+
+  @override
+  String get commonTime => '時間';
+
+  @override
+  String get commonReason => '原因';
+
+  @override
+  String get logChange => '變化';
+
+  @override
+  String get logLocation => '地理位置';
+
+  @override
+  String get logExperienceHistory => '經驗記錄';
+
+  @override
+  String get logLoginHistory => '登入記錄';
+
+  @override
+  String get saveWatch => '觀看';
+
+  @override
+  String get saveContent => '內容';
+
+  @override
+  String get saveCollection => '合集';
+
+  @override
+  String saveScanQrToOpen(String action, String item) {
+    return '掃描 QR Code，$action$item';
+  }
+
+  @override
+  String musicReleaseDate(String date) {
+    return '發行日期：$date';
+  }
+
+  @override
+  String musicOriginalArtist(String artist) {
+    return '原唱：$artist';
+  }
+
+  @override
+  String musicAlbum(String album) {
+    return '專輯：$album';
+  }
+
+  @override
+  String musicSource(String source) {
+    return '出處：$source';
+  }
+
+  @override
+  String get musicHotSongRanking => '熱門歌曲排行';
+
+  @override
+  String get musicPopularity => '熱度';
+
+  @override
+  String get musicTotalPlays => '總播放量';
+
+  @override
+  String get musicVideosUsingTrack => '使用稿件數';
+
+  @override
+  String musicRecentPopularityTrend(int days) {
+    return '近 $days 日熱度趨勢';
+  }
+
+  @override
+  String articleAuthorReads(String author, int count) {
+    return '$author · $count 次閱讀';
+  }
+
+  @override
+  String articlePriceFrom(String price) {
+    return '$price 起';
+  }
+
+  @override
+  String get articleFeedOrArticle => '動態 / 專欄';
+
+  @override
+  String articleUnsupportedType(String type) {
+    return '不支援的類型（$type）';
+  }
+
+  @override
+  String articleInvalidType(String error) {
+    return '錯誤的類型：$error';
+  }
+
+  @override
+  String memberShopFrom(String source) {
+    return '來自 $source';
+  }
+
+  @override
+  String get loginMainAccountSucceeded => '主帳號登入成功';
+
+  @override
+  String loginCookieFailed(String error) {
+    return '登入失敗，請檢查 Cookie 是否正確。$error';
+  }
+
+  @override
+  String get memberAllCollectionsAndLists => '全部合集 / 清單';
+
+  @override
+  String get memberAllPosts => '全部圖文';
+
+  @override
+  String get memberPosts => '圖文';
+
+  @override
+  String memberSupportRanking(String name, String count) {
+    return '$name 的充電排行榜 $count';
+  }
+
+  @override
+  String get memberSupport => '充電';
+
+  @override
+  String get memberSupportDaysSuffix => ' 天';
+
+  @override
+  String liveSearchUserStats(String area, String followers) {
+    return '分區：$area · 關注數：$followers';
+  }
+
+  @override
+  String bubbleSiteTitle(String name) {
+    return '$name 小站';
+  }
+
+  @override
+  String liveSwitchPreviewTo(String target) {
+    return '切換至$target';
+  }
+
+  @override
+  String get liveCover => '封面';
+
+  @override
+  String get liveFirstFrame => '首幀';
+
+  @override
+  String get liveShowMenu => '顯示選單';
+
+  @override
+  String get liveReportSelectedDanmaku => '檢舉選取的彈幕';
+
+  @override
+  String get mediaTvSeries => '電視劇';
+
+  @override
+  String get mediaComics => '漫畫';
+
+  @override
+  String get mediaVarietyShows => '綜藝';
+
+  @override
+  String memberUserLevelSemantics(int level) {
+    return '$level 級';
+  }
+
+  @override
+  String get avatarVipBadge => '大會員';
+
+  @override
+  String get avatarVerifiedIndividual => '個人認證';
+
+  @override
+  String get avatarVerifiedOrganization => '機構認證';
+
+  @override
+  String memberHardcoreUserLevelSemantics(int level) {
+    return '硬核 $level 級';
+  }
+
+  @override
+  String get playerProgressBar => '進度條';
+
+  @override
+  String get commonPlay => '播放';
+
+  @override
+  String get settingsSpeedTestTimeout => '測速逾時';
+
+  @override
+  String get commonSave => '儲存';
 }

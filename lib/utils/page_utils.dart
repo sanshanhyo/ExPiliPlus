@@ -21,6 +21,7 @@ import 'package:ex_piliplus/pages/share/view.dart';
 import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
@@ -318,7 +319,7 @@ abstract final class PageUtils {
 
       case 'DYNAMIC_TYPE_PGC':
         // if (kDebugMode) debugPrint('番剧');
-        SmartDialog.showToast('暂未支持的类型，请联系开发者');
+        SmartDialog.showToast(Get.context!.l10n.commonUnsupportedType);
         break;
 
       case 'DYNAMIC_TYPE_LIVE':
@@ -656,7 +657,7 @@ abstract final class PageUtils {
     bool off = false,
   }) async {
     try {
-      SmartDialog.showLoading(msg: '资源获取中');
+      SmartDialog.showLoading(msg: Get.context!.l10n.commonGettingResource);
       final res = await SearchHttp.pgcInfo(seasonId: seasonId, epId: epId);
       SmartDialog.dismiss();
       if (res case Success(:final response)) {
@@ -738,7 +739,7 @@ abstract final class PageUtils {
           }
         }
 
-        SmartDialog.showToast('资源加载失败');
+        SmartDialog.showToast(Get.context!.l10n.commonResourceLoadFailed);
       } else {
         res.toast();
       }
@@ -757,7 +758,7 @@ abstract final class PageUtils {
     bool off = false,
   }) async {
     try {
-      SmartDialog.showLoading(msg: '资源获取中');
+      SmartDialog.showLoading(msg: Get.context!.l10n.commonGettingResource);
       final res = await SearchHttp.pugvInfo(seasonId: seasonId, epId: epId);
       SmartDialog.dismiss();
       if (res case Success(:final response)) {
@@ -786,7 +787,7 @@ abstract final class PageUtils {
             off: off,
           );
         } else {
-          SmartDialog.showToast('资源加载失败');
+          SmartDialog.showToast(Get.context!.l10n.commonResourceLoadFailed);
         }
       } else {
         res.toast();

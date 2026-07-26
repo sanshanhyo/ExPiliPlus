@@ -1,10 +1,14 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum FavOrderType {
-  mtime('最近收藏'),
-  view('最多播放'),
-  pubtime('最近投稿'),
+  mtime,
+  view,
+  pubtime,
   ;
 
-  final String label;
-
-  const FavOrderType(this.label);
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .mtime => l10n.favoriteOrderRecentlyAdded,
+    .view => l10n.favoriteOrderMostPlayed,
+    .pubtime => l10n.favoriteOrderRecentlyPublished,
+  };
 }

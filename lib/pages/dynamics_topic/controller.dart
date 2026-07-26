@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models_new/dynamic/dyn_topic_feed/topic_sort_by_conf
 import 'package:ex_piliplus/models_new/dynamic/dyn_topic_top/top_details.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -96,7 +97,7 @@ class DynTopicController
 
   Future<void> onFav() async {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     final isFav = this.isFav.value;
@@ -117,7 +118,7 @@ class DynTopicController
 
   Future<void> onLike() async {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     final isLike = this.isLike.value;

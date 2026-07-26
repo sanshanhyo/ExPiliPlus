@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
 enum ArchiveOrderTypeWeb with EnumWithLabel {
@@ -9,4 +10,10 @@ enum ArchiveOrderTypeWeb with EnumWithLabel {
   @override
   final String label;
   const ArchiveOrderTypeWeb(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .pubdate => l10n.favoriteOrderRecentlyPublished,
+    .click => l10n.memberOrderMostPlayed,
+    .stow => l10n.memberOrderMostFavorited,
+  };
 }

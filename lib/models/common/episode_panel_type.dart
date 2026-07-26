@@ -1,9 +1,14 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum EpisodeType {
-  part('分P'),
-  season('合集'),
-  pgc('剧集'),
+  part,
+  season,
+  pgc,
   ;
 
-  final String title;
-  const EpisodeType(this.title);
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .part => l10n.videoParts,
+    .season => l10n.subscriptionCollection,
+    .pgc => l10n.playerEpisodes,
+  };
 }

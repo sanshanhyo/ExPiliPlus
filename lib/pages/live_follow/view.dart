@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/live/live_follow/item.dart';
 import 'package:ex_piliplus/pages/live_follow/controller.dart';
 import 'package:ex_piliplus/pages/live_follow/widgets/live_item_follow.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +30,11 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
         title: Obx(
           () {
             final count = _controller.count.value;
-            return Text(count != null ? '$count人正在直播' : '关注直播');
+            return Text(
+              count != null
+                  ? context.l10n.homeLiveFollowingCount(count.toString())
+                  : context.l10n.homeMyLiveFollowing,
+            );
           },
         ),
       ),

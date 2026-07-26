@@ -24,6 +24,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/image_grid/image_grid_builder.dart';
 import 'package:ex_piliplus/models/common/image_preview_type.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -150,25 +151,37 @@ class ImageGridView extends StatelessWidget {
           PopupMenuItem(
             height: 42,
             onTap: () => ImageUtils.onShareImg(item.url),
-            child: const Text('分享', style: TextStyle(fontSize: 14)),
+            child: Text(
+              context.l10n.commonShare,
+              style: const TextStyle(fontSize: 14),
+            ),
           ),
         PopupMenuItem(
           height: 42,
           onTap: () => ImageUtils.downloadImg([item.url]),
-          child: const Text('保存图片', style: TextStyle(fontSize: 14)),
+          child: Text(
+            context.l10n.imageSaveImage,
+            style: const TextStyle(fontSize: 14),
+          ),
         ),
         if (PlatformUtils.isDesktop)
           PopupMenuItem(
             height: 42,
             onTap: () => PageUtils.launchURL(item.url),
-            child: const Text('网页打开', style: TextStyle(fontSize: 14)),
+            child: Text(
+              context.l10n.imageOpenInBrowser,
+              style: const TextStyle(fontSize: 14),
+            ),
           )
         else if (picArr.length > 1)
           PopupMenuItem(
             height: 42,
             onTap: () =>
                 ImageUtils.downloadImg(picArr.map((item) => item.url).toList()),
-            child: const Text('保存全部', style: TextStyle(fontSize: 14)),
+            child: Text(
+              context.l10n.imageSaveAll,
+              style: const TextStyle(fontSize: 14),
+            ),
           ),
         if (item.isLivePhoto)
           PopupMenuItem(
@@ -180,7 +193,9 @@ class ImageGridView extends StatelessWidget {
               height: item.height.toInt(),
             ),
             child: Text(
-              '保存${Platform.isIOS ? '实况' : '视频'}',
+              Platform.isIOS
+                  ? context.l10n.imageSaveLivePhoto
+                  : context.l10n.imageSaveVideo,
               style: const TextStyle(fontSize: 14),
             ),
           ),
@@ -243,14 +258,21 @@ class ImageGridView extends StatelessWidget {
                 if (item.isLivePhoto)
                   const PBadge(text: 'Live', right: 8, bottom: 8, type: .gray)
                 else if (item.isLongPic)
-                  const PBadge(text: '长图', right: 8, bottom: 8),
+                  PBadge(
+                    text: context.l10n.commonLongImage,
+                    right: 8,
+                    bottom: 8,
+                  ),
               ],
             );
             if (!item.isLongPic) {
               child = Hero(tag: '${item.url}$hashCode', child: child);
             }
             child = Semantics(
-              label: '图片，第 ${index + 1} 张，共 ${picArr.length} 张',
+              label: context.l10n.imagePositionSemantics(
+                index + 1,
+                picArr.length,
+              ),
               button: true,
               onTap: onTap,
               child: child,

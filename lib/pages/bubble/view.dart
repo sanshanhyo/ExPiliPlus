@@ -7,6 +7,7 @@ import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/bubble/dyn_list.dart';
 import 'package:ex_piliplus/pages/bubble/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:collection/collection.dart';
@@ -88,7 +89,7 @@ class _BubblePageState extends State<BubblePage>
                 );
                 if (item != null) {
                   return FloatingActionButton.extended(
-                    tooltip: '排序',
+                    tooltip: context.l10n.commonSort,
                     onPressed: () => showDialog(
                       context: context,
                       builder: (context) => SimpleDialog(
@@ -137,7 +138,7 @@ class _BubblePageState extends State<BubblePage>
           if (tribeName == null) {
             return const SizedBox.shrink();
           }
-          return Text('$tribeName小站');
+          return Text(context.l10n.bubbleSiteTitle(tribeName));
         }),
       ),
       body: Padding(

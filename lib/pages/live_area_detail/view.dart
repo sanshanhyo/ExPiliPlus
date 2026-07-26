@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/live_area_detail/child/controller.dart';
 import 'package:ex_piliplus/pages/live_area_detail/child/view.dart';
 import 'package:ex_piliplus/pages/live_area_detail/controller.dart';
 import 'package:ex_piliplus/pages/live_search/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -103,8 +104,11 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
                       ),
                       iconButton(
                         iconSize: 20,
-                        tooltip:
-                            '切换${_controller.showFirstFrame ? '封面' : '首帧'}',
+                        tooltip: context.l10n.liveSwitchPreviewTo(
+                          _controller.showFirstFrame
+                              ? context.l10n.liveCover
+                              : context.l10n.liveFirstFrame,
+                        ),
                         icon: _controller.showFirstFrame
                             ? const Icon(MdiIcons.alphaFBox)
                             : const Icon(MdiIcons.image),
@@ -116,7 +120,7 @@ class _LiveAreaDetailPageState extends State<LiveAreaDetailPage> {
                       ),
                       iconButton(
                         iconSize: 20,
-                        tooltip: '显示菜单',
+                        tooltip: context.l10n.liveShowMenu,
                         icon: const Icon(Icons.menu),
                         onPressed: () =>
                             _showTags(context, theme, bottom, response),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ex_piliplus/models_new/space/space/tab2.dart';
 import 'package:ex_piliplus/pages/member/controller.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,9 +33,9 @@ class MemberContributeCtr extends GetxController
         // show if exist
         if (_ctr.hasSeasonOrSeries == true) {
           items!.add(
-            const SpaceTab2Item(
+            SpaceTab2Item(
               param: 'ugcSeason',
-              title: '全部合集/列表',
+              title: Get.context!.l10n.memberAllCollectionsAndLists,
             ),
           );
         }

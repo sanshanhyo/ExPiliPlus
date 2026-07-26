@@ -27,6 +27,7 @@ import 'package:ex_piliplus/services/shutdown_timer_service.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
@@ -76,7 +77,13 @@ class AudioPage extends StatefulWidget {
 }
 
 extension _ListOrderExt on ListOrder {
-  String get title => const ['无序', '正序', '倒序', '随机'][value];
+  String localizedTitle(BuildContext context) => switch (this) {
+    ListOrder.NO_ORDER => context.l10n.audioNoOrder,
+    ListOrder.ORDER_NORMAL => context.l10n.commonAscendingOrder,
+    ListOrder.ORDER_REVERSE => context.l10n.commonDescendingOrder,
+    ListOrder.ORDER_RANDOM => context.l10n.memberRandomPlay,
+    _ => name,
+  };
 }
 
 class _AudioPageState extends State<AudioPage> {
@@ -104,7 +111,7 @@ class _AudioPageState extends State<AudioPage> {
             Obx(() {
               if (_controller.segmentProgressList.isNotEmpty) {
                 return IconButton(
-                  tooltip: '片段信息',
+                  tooltip: context.l10n.playerSegmentInfo,
                   onPressed: _controller.showSBDetail,
                   icon: const Icon(MdiIcons.advertisements, size: 22),
                 );
@@ -114,7 +121,7 @@ class _AudioPageState extends State<AudioPage> {
           Builder(
             builder: (context) {
               return PopupMenuButton<ListOrder>(
-                tooltip: '排序',
+                tooltip: context.l10n.commonSort,
                 icon: const Icon(Icons.sort, size: 22),
                 initialValue: _controller.order,
                 onSelected: (value) {
@@ -122,13 +129,18 @@ class _AudioPageState extends State<AudioPage> {
                   (context as Element).markNeedsBuild();
                 },
                 itemBuilder: (context) => ListOrder.values
-                    .map((e) => PopupMenuItem(value: e, child: Text(e.title)))
+                    .map(
+                      (e) => PopupMenuItem(
+                        value: e,
+                        child: Text(e.localizedTitle(context)),
+                      ),
+                    )
                     .toList(),
               );
             },
           ),
           IconButton(
-            tooltip: '定时关闭',
+            tooltip: context.l10n.shutdownTitle,
             onPressed: () => shutdownTimerService
               ..onPause ??= _controller.onPause
               ..isPlaying ??= _controller.isPlaying
@@ -140,7 +152,7 @@ class _AudioPageState extends State<AudioPage> {
           ),
           if (_controller.isUgc)
             IconButton(
-              tooltip: '更多',
+              tooltip: context.l10n.feedMoreActions,
               onPressed: _showMore,
               icon: const Icon(Icons.more_vert, size: 22),
             ),
@@ -439,7 +451,7 @@ class _AudioPageState extends State<AudioPage> {
                       height: 45,
                       child: Center(
                         child: Text(
-                          '关闭',
+                          context.l10n.commonClose,
                           style: TextStyle(color: colorScheme.outline),
                         ),
                       ),
@@ -503,7 +515,9 @@ class _AudioPageState extends State<AudioPage> {
                       spacing: 12,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('播放倍速(${_controller.speed})'),
+                        Text(
+                          context.l10n.audioPlaybackSpeed(_controller.speed),
+                        ),
                         Slider(
                           padding: EdgeInsets.zero,
                           min: 0.5,
@@ -520,7 +534,7 @@ class _AudioPageState extends State<AudioPage> {
                       ],
                     ),
                   ),
-                  const Text('播放模式'),
+                  Text(context.l10n.audioPlaybackMode),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: PlayRepeat.values
@@ -578,7 +592,7 @@ class _AudioPageState extends State<AudioPage> {
             ),
           ),
           Text(
-            playMode.label,
+            playMode.localizedLabel(context.l10n),
             style: TextStyle(fontSize: 13, color: color),
           ),
         ],
@@ -625,7 +639,10 @@ class _AudioPageState extends State<AudioPage> {
               ListTile(
                 dense: true,
                 leading: const Icon(Icons.warning_amber_rounded, size: 20),
-                title: const Text('举报', style: TextStyle(fontSize: 14)),
+                title: Text(
+                  context.l10n.commonReport,
+                  style: const TextStyle(fontSize: 14),
+                ),
                 onTap: () {
                   Get.back();
                   PageUtils.reportVideo(_controller.oid.toInt());
@@ -635,7 +652,10 @@ class _AudioPageState extends State<AudioPage> {
                 ListTile(
                   dense: true,
                   leading: const Icon(Icons.info_outline, size: 20),
-                  title: const Text('播放信息', style: TextStyle(fontSize: 14)),
+                  title: Text(
+                    context.l10n.playerPlaybackInfo,
+                    style: const TextStyle(fontSize: 14),
+                  ),
                   onTap: () {
                     Get.back();
                     HeaderControlState.showPlayerInfo(context, player: player);
@@ -646,7 +666,9 @@ class _AudioPageState extends State<AudioPage> {
                     dense: true,
                     leading: const Icon(Icons.volume_up, size: 20),
                     title: Text(
-                      '播放器音量: ${player.getProperty('volume').subLength(3)}%',
+                      context.l10n.livePlayerVolume(
+                        player.getProperty('volume').subLength(3),
+                      ),
                       style: const TextStyle(fontSize: 14),
                     ),
                     onTap: () {
@@ -680,7 +702,7 @@ class _AudioPageState extends State<AudioPage> {
                 FontAwesomeIcons.solidThumbsUp,
               ),
               selectStatus: _controller.hasLike.value,
-              semanticsLabel: '点赞',
+              semanticsLabel: context.l10n.commonLike,
               text: NumUtils.numFormat(audioItem.stat.like),
               onStartTriple: _controller.onStartTriple,
               onCancelTriple: _controller.onCancelTriple,
@@ -693,7 +715,7 @@ class _AudioPageState extends State<AudioPage> {
               selectIcon: const Icon(FontAwesomeIcons.b),
               onTap: _controller.actionCoinVideo,
               selectStatus: _controller.hasCoin,
-              semanticsLabel: '投币',
+              semanticsLabel: context.l10n.videoCoin,
               text: NumUtils.numFormat(
                 audioItem.stat.coin,
               ),
@@ -712,7 +734,7 @@ class _AudioPageState extends State<AudioPage> {
                 isLongPress: true,
               ),
               selectStatus: _controller.hasFav.value,
-              semanticsLabel: '收藏',
+              semanticsLabel: context.l10n.commonAddToFavorites,
               text: NumUtils.numFormat(
                 audioItem.stat.favourite,
               ),
@@ -721,7 +743,7 @@ class _AudioPageState extends State<AudioPage> {
           ActionItem(
             icon: const Icon(FontAwesomeIcons.comment),
             onTap: _controller.showReply,
-            semanticsLabel: '评论',
+            semanticsLabel: context.l10n.feedComment,
             text: NumUtils.numFormat(
               audioItem.stat.reply,
             ),
@@ -732,7 +754,7 @@ class _AudioPageState extends State<AudioPage> {
             ),
             onTap: () => _controller.actionShareVideo(context),
             selectStatus: false,
-            semanticsLabel: '分享',
+            semanticsLabel: context.l10n.commonShare,
             text: NumUtils.numFormat(
               audioItem.stat.share,
             ),
@@ -749,8 +771,8 @@ class _AudioPageState extends State<AudioPage> {
                 );
               },
               selectStatus: false,
-              semanticsLabel: '看MV',
-              text: '看MV',
+              semanticsLabel: context.l10n.audioWatchMv,
+              text: context.l10n.audioWatchMv,
             ),
         ],
       ),

@@ -17,6 +17,7 @@ import 'package:ex_piliplus/pages/common/fab_mixin.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/dynamic_panel.dart';
 import 'package:ex_piliplus/pages/dynamics_create/view.dart';
 import 'package:ex_piliplus/pages/dynamics_topic/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
@@ -164,11 +165,11 @@ class _DynTopicPageState extends State<DynTopicPage>
                         ),
                       );
                     } else {
-                      SmartDialog.showToast('账号未登录');
+                      SmartDialog.showToast(context.l10n.accountPleaseSignIn);
                     }
                   },
                   icon: const Icon(CustomIcons.topic_tag, size: 20),
-                  label: const Text('参与话题'),
+                  label: Text(context.l10n.topicJoin),
                 ),
               ),
             ),
@@ -235,7 +236,7 @@ class _DynTopicPageState extends State<DynTopicPage>
                         ),
                       ),
                       Text(
-                        ' 发起',
+                        context.l10n.topicStarted,
                         style: TextStyle(color: colorScheme.outline),
                       ),
                     ],
@@ -258,7 +259,10 @@ class _DynTopicPageState extends State<DynTopicPage>
               Row(
                 children: [
                   Text(
-                    '${NumUtils.numFormat(response.topicItem!.view)}浏览 · ${NumUtils.numFormat(response.topicItem!.discuss)}讨论',
+                    context.l10n.topicStats(
+                      NumUtils.numFormat(response.topicItem!.view),
+                      NumUtils.numFormat(response.topicItem!.discuss),
+                    ),
                     style: TextStyle(
                       fontSize: 13,
                       color: colorScheme.outline,
@@ -335,14 +339,16 @@ class _DynTopicPageState extends State<DynTopicPage>
                 PopupMenuItem(
                   onTap: _controller.onFav,
                   child: Text(
-                    '${_controller.isFav.value ? '取消' : ''}收藏',
+                    _controller.isFav.value
+                        ? context.l10n.commonRemoveFromFavorites
+                        : context.l10n.commonAddToFavorites,
                   ),
                 ),
                 PopupMenuItem(
-                  child: const Text('举报'),
+                  child: Text(context.l10n.commonReport),
                   onTap: () {
                     if (!_controller.isLogin) {
-                      SmartDialog.showToast('账号未登录');
+                      SmartDialog.showToast(context.l10n.accountPleaseSignIn);
                       return;
                     }
                     PageUtils.inAppWebview(

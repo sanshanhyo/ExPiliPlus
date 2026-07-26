@@ -32,6 +32,7 @@ import 'package:ex_piliplus/utils/connectivity_utils.dart';
 import 'package:ex_piliplus/utils/danmaku_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -84,8 +85,11 @@ class LiveRoomController extends GetxController {
       final duration = DurationUtils.formatDurationBetween(
         liveTime * 1000,
         DateTime.now().millisecondsSinceEpoch,
+        Get.context!.l10n,
       );
-      text += duration.isEmpty ? '刚刚开播' : '开播$duration';
+      text += duration.isEmpty
+          ? Get.context!.l10n.liveJustStarted
+          : Get.context!.l10n.liveStartedFor(duration);
     }
     if (text.isEmpty) {
       return const SizedBox.shrink();
@@ -214,12 +218,12 @@ class LiveRoomController extends GetxController {
     );
     if (res case Success(:final response)) {
       if (response.liveStatus != 1) {
-        _showDialog('当前直播间未开播');
+        _showDialog(Get.context!.l10n.liveNotStarted);
         return;
       }
       final playurl = response.playurlInfo?.playurl;
       if (playurl == null) {
-        _showDialog('无法获取播放地址');
+        _showDialog(Get.context!.l10n.livePlaybackUrlUnavailable);
         return;
       }
       ruid = response.uid;
@@ -298,11 +302,16 @@ class LiveRoomController extends GetxController {
     acceptQnList = item.acceptQn.map((e) {
       return (
         code: e,
-        desc: LiveQuality.fromCode(e)?.desc ?? e.toString(),
+        desc:
+            LiveQuality.fromCode(e)?.localizedLabel(Get.context!.l10n) ??
+            e.toString(),
       );
     }).toList();
     currentQnDesc.value =
-        LiveQuality.fromCode(currentQn)?.desc ?? currentQn.toString();
+        LiveQuality.fromCode(
+          currentQn,
+        )?.localizedLabel(Get.context!.l10n) ??
+        currentQn.toString();
     videoUrl = VideoUtils.getLiveCdnUrl(item, index: liveUrlIndex);
     return playerInit()?.whenComplete(_startSizeSub);
   }
@@ -328,7 +337,7 @@ class LiveRoomController extends GetxController {
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '关闭',
+              Get.context!.l10n.commonClose,
               style: TextStyle(color: ThemeUtils.theme.colorScheme.outline),
             ),
           ),
@@ -341,7 +350,7 @@ class LiveRoomController extends GetxController {
                 ..back()
                 ..back();
             },
-            child: const Text('退出'),
+            child: Text(Get.context!.l10n.commonExit),
           ),
         ],
       ),
@@ -485,7 +494,10 @@ class LiveRoomController extends GetxController {
     }
     currentQn = qn;
     currentQnDesc.value =
-        LiveQuality.fromCode(currentQn)?.desc ?? currentQn.toString();
+        LiveQuality.fromCode(
+          currentQn,
+        )?.localizedLabel(Get.context!.l10n) ??
+        currentQn.toString();
     return queryLiveUrl();
   }
 
@@ -666,7 +678,7 @@ class LiveRoomController extends GetxController {
       anchorId: roomInfoH5.value?.roomInfo?.uid,
     );
     if (res.isSuccess) {
-      SmartDialog.showToast('点赞成功');
+      SmartDialog.showToast(Get.context!.l10n.liveLikeSucceeded);
     } else {
       res.toast();
     }
@@ -675,7 +687,7 @@ class LiveRoomController extends GetxController {
 
   void onSendDanmaku([bool fromEmote = false]) {
     if (kReleaseMode && !isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     Get.key.currentState!.push(
@@ -709,7 +721,7 @@ class LiveRoomController extends GetxController {
 
   void reportSC(SuperChatItem item) {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     autoWrapReportDialog(

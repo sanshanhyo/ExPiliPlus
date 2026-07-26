@@ -1,14 +1,18 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 enum ReplyOptionType {
-  allow('允许评论'),
-  close('关闭评论'),
-  choose('精选评论'),
+  allow,
+  close,
+  choose,
   ;
 
-  final String title;
-  const ReplyOptionType(this.title);
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .allow => l10n.feedAllowComments,
+    .close => l10n.feedCloseComments,
+    .choose => l10n.feedFeaturedComments,
+  };
 
   IconData get iconData => switch (this) {
     ReplyOptionType.allow => MdiIcons.commentTextOutline,

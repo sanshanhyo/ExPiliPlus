@@ -1,16 +1,26 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart' show IconData, Icons;
 
 enum StatType {
-  view(Icons.remove_red_eye_outlined, '观看'),
-  danmaku(Icons.subtitles_outlined, '弹幕'),
-  like(Icons.thumb_up_outlined, '点赞'),
-  reply(Icons.comment_outlined, '评论'),
-  follow(Icons.favorite_border, '关注'),
-  play(Icons.play_circle_outlined, '播放'),
-  listen(Icons.headset_outlined, '播放'),
+  view(Icons.remove_red_eye_outlined),
+  danmaku(Icons.subtitles_outlined),
+  like(Icons.thumb_up_outlined),
+  reply(Icons.comment_outlined),
+  follow(Icons.favorite_border),
+  play(Icons.play_circle_outlined),
+  listen(Icons.headset_outlined),
   ;
 
   final IconData iconData;
-  final String label;
-  const StatType(this.iconData, this.label);
+  const StatType(this.iconData);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .view => l10n.commonView,
+    .danmaku => l10n.settingsDanmakuEnabled,
+    .like => l10n.commonLike,
+    .reply => l10n.commonReply,
+    .follow => l10n.memberFollow,
+    .play => l10n.commonPlay,
+    .listen => l10n.videoListenToAudio,
+  };
 }

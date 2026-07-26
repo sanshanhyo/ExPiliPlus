@@ -15,6 +15,7 @@ import 'package:ex_piliplus/services/shutdown_timer_service.dart'
     show shutdownTimerService;
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -120,7 +121,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           if (isFullScreen || plPlayerController.isDesktopPip)
             ComBtn(
               height: 30,
-              tooltip: '返回',
+              tooltip: context.l10n.commonBack,
               icon: const Icon(FontAwesomeIcons.arrowLeft, size: 15),
               onTap: () {
                 if (plPlayerController.isDesktopPip) {
@@ -138,7 +139,9 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
               final isAlwaysOnTop = plPlayerController.isAlwaysOnTop.value;
               return ComBtn(
                 height: 30,
-                tooltip: '${isAlwaysOnTop ? '取消' : ''}置顶',
+                tooltip: isAlwaysOnTop
+                    ? context.l10n.commonUnpin
+                    : context.l10n.commonPin,
                 icon: isAlwaysOnTop
                     ? const Icon(
                         size: 18,
@@ -156,7 +159,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           if (isFullScreen || PlatformUtils.isDesktop)
             ComBtn(
               height: 30,
-              tooltip: '发弹幕',
+              tooltip: context.l10n.liveSendDanmaku,
               icon: const Icon(
                 size: 18,
                 Icons.comment_outlined,
@@ -167,7 +170,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           if (Platform.isAndroid || (PlatformUtils.isDesktop && !isFullScreen))
             ComBtn(
               height: 30,
-              tooltip: '画中画',
+              tooltip: context.l10n.playerPictureInPicture,
               onTap: () {
                 if (PlatformUtils.isDesktop) {
                   plPlayerController.toggleDesktopPip();
@@ -186,7 +189,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
           Obx(
             () => ComBtn(
               height: 30,
-              tooltip: '仅播放音频',
+              tooltip: context.l10n.playerAudioOnly,
               onTap: () {
                 plPlayerController.onlyPlayAudio.toggle();
                 widget.onPlayAudio();
@@ -210,7 +213,9 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
                   plPlayerController.continuePlayInBackground.value;
               return ComBtn(
                 height: 30,
-                tooltip: '${continuePlayInBackground ? '关闭' : ''}后台播放',
+                tooltip: continuePlayInBackground
+                    ? context.l10n.playerTurnOffBackgroundPlayback
+                    : context.l10n.playerBackgroundPlayback,
                 onTap: plPlayerController.setContinuePlayInBackground,
                 icon: continuePlayInBackground
                     ? const Icon(
@@ -227,7 +232,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
             }),
           ComBtn(
             height: 30,
-            tooltip: '定时关闭',
+            tooltip: context.l10n.shutdownTitle,
             onTap: () => shutdownTimerService.showScheduleExitDialog(
               context,
               isFullScreen: isFullScreen,
@@ -250,21 +255,27 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
                   PopupMenuItem(
                     height: 35,
                     onTap: _showLiveStreamDialog,
-                    child: const Row(
+                    child: Row(
                       spacing: 8,
                       children: [
-                        Icon(Icons.alt_route, size: 17),
-                        Text('切换路线', style: TextStyle(fontSize: 14)),
+                        const Icon(Icons.alt_route, size: 17),
+                        Text(
+                          context.l10n.liveSwitchRoute,
+                          style: const TextStyle(fontSize: 14),
+                        ),
                       ],
                     ),
                   ),
                   PopupMenuItem(
                     height: 35,
-                    child: const Row(
+                    child: Row(
                       spacing: 8,
                       children: [
-                        Icon(Icons.info_outline, size: 17),
-                        Text('播放信息', style: TextStyle(fontSize: 14)),
+                        const Icon(Icons.info_outline, size: 17),
+                        Text(
+                          context.l10n.playerPlaybackInfo,
+                          style: const TextStyle(fontSize: 14),
+                        ),
                       ],
                     ),
                     onTap: () => HeaderControlState.showPlayerInfo(
@@ -280,7 +291,9 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
                         children: [
                           const Icon(Icons.volume_up, size: 17),
                           Text(
-                            '播放器音量: ${player.getProperty('volume').subLength(3)}%',
+                            context.l10n.livePlayerVolume(
+                              player.getProperty('volume').subLength(3),
+                            ),
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
@@ -394,7 +407,7 @@ class _LiveHeaderControlState extends State<LiveHeaderControl>
                                   iconColor: codecColor,
                                   collapsedIconColor: codecColor,
                                   title: Text(
-                                    '${codec.codecName ?? ci.toString()} (${LiveQuality.fromCode(codec.currentQn)?.desc ?? codec.currentQn})',
+                                    '${codec.codecName ?? ci.toString()} (${LiveQuality.fromCode(codec.currentQn)?.localizedLabel(context.l10n) ?? codec.currentQn})',
                                     style: isCurrCodec
                                         ? currStyle
                                         : const TextStyle(fontSize: 14),

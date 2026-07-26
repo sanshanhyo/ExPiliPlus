@@ -9,7 +9,7 @@ Widget dynTextMenuBuilder(
     ..insertOrAdd(
       3,
       ContextMenuButtonItem(
-        label: '文本',
+        label: state.context.l10n.replyContentText,
         onPressed: () {
           state.hideAndClear();
           _showTextDialog(text);
@@ -19,7 +19,7 @@ Widget dynTextMenuBuilder(
     ..insertOrAdd(
       4,
       ContextMenuButtonItem(
-        label: '表情',
+        label: state.context.l10n.commonEmoji,
         onPressed: () {
           state.hideAndClear();
           _showEmoteDialog(moduleDynamic);

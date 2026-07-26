@@ -238,7 +238,7 @@ class DetailItem extends StatelessWidget {
                                 ),
                                 PBadge(
                                   text: progress >= entry.totalTimeMilli - 400
-                                      ? '已看完'
+                                      ? context.l10n.downloadWatched
                                       : '${DurationUtils.formatDuration(
                                               progress ~/ 1000,
                                             )}/'
@@ -368,7 +368,9 @@ class DetailItem extends StatelessWidget {
                                           ? theme.colorScheme.primary
                                           : theme.colorScheme.outline;
                                       return progressWidget(
-                                        statusMsg: status.message,
+                                        statusMsg: status.localizedMessage(
+                                          context.l10n,
+                                        ),
                                         progressStr:
                                             status ==
                                                     DownloadStatus
@@ -401,7 +403,7 @@ class DetailItem extends StatelessWidget {
   }
 
   Widget entryProgress(ThemeData theme) => progressWidget(
-    statusMsg: entry.status.message,
+    statusMsg: entry.status.localizedMessage(Get.context!.l10n),
     progressStr: entry.totalBytes == 0
         ? ''
         : '${CacheManager.formatSize(entry.downloadedBytes)}/${CacheManager.formatSize(entry.totalBytes)}',

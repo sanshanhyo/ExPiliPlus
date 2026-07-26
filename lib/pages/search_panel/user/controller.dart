@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/pages/search_panel/controller.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,7 +46,10 @@ class SearchUserController
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 10),
-              const Text('用户粉丝数及等级排序顺序', style: TextStyle(fontSize: 16)),
+              Text(
+                context.l10n.searchUserSort,
+                style: const TextStyle(fontSize: 16),
+              ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
@@ -54,11 +58,11 @@ class SearchUserController
                   (e) {
                     final isCurr = e == userOrderType!.value;
                     return SearchText(
-                      text: e.label,
+                      text: e.localizedLabel(context.l10n),
                       onTap: (_) {
                         userOrderType!.value = e;
                         order = e.order;
-                        onSortSearch(label: e.label);
+                        onSortSearch(label: e.localizedLabel(context.l10n));
                       },
                       bgColor: isCurr
                           ? theme.colorScheme.secondaryContainer
@@ -71,7 +75,10 @@ class SearchUserController
                 ).toList(),
               ),
               const SizedBox(height: 20),
-              const Text('用户分类', style: TextStyle(fontSize: 16)),
+              Text(
+                context.l10n.searchUserType,
+                style: const TextStyle(fontSize: 16),
+              ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
@@ -80,10 +87,10 @@ class SearchUserController
                   (e) {
                     final isCurr = e == userType!.value;
                     return SearchText(
-                      text: e.label,
+                      text: e.localizedLabel(context.l10n),
                       onTap: (_) {
                         userType!.value = e;
-                        onSortSearch(label: e.label);
+                        onSortSearch(label: e.localizedLabel(context.l10n));
                       },
                       bgColor: isCurr
                           ? theme.colorScheme.secondaryContainer

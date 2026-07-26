@@ -4,6 +4,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search_panel/user/controller.dart';
 import 'package:ex_piliplus/pages/search_panel/user/widgets/item.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -54,7 +55,9 @@ class _SearchUserPanelState
           children: [
             Obx(
               () => Text(
-                '排序: ${controller.userOrderType!.value.label}',
+                context.l10n.searchSortValue(
+                  controller.userOrderType!.value.localizedLabel(context.l10n),
+                ),
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
@@ -62,7 +65,9 @@ class _SearchUserPanelState
             const Spacer(),
             Obx(
               () => Text(
-                '用户类型: ${controller.userType!.value.label}',
+                context.l10n.searchUserTypeValue(
+                  controller.userType!.value.localizedLabel(context.l10n),
+                ),
                 maxLines: 1,
                 style: TextStyle(color: theme.colorScheme.outline),
               ),
@@ -72,7 +77,7 @@ class _SearchUserPanelState
               width: 32,
               height: 32,
               child: IconButton(
-                tooltip: '筛选',
+                tooltip: context.l10n.searchFilter,
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(EdgeInsets.zero),
                 ),

@@ -2,6 +2,7 @@ import 'package:ex_piliplus/common/widgets/badge.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/common/badge_type.dart';
 import 'package:ex_piliplus/models_new/space/space_shop/item.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -105,7 +106,7 @@ class MemberShopItem extends StatelessWidget {
                   ),
                   if (item.itemSourceName?.isNotEmpty == true)
                     Text(
-                      '来自${item.itemSourceName}',
+                      context.l10n.memberShopFrom(item.itemSourceName!),
                       style: TextStyle(
                         fontSize: 11,
                         color: colorScheme.freeColor,

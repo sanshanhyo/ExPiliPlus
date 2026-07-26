@@ -36,6 +36,28 @@ void main() {
     }
   });
 
+  test('English resources do not contain Chinese fallback text', () {
+    final messages =
+        jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync())
+            as Map<String, dynamic>;
+    final han = RegExp(r'[\u3400-\u9fff]');
+    final violations = <String>[
+      for (final entry in messages.entries)
+        if (!entry.key.startsWith('@') &&
+            entry.value is String &&
+            han.hasMatch(entry.value as String))
+          entry.key,
+    ];
+
+    expect(
+      violations,
+      isEmpty,
+      reason:
+          'English ARB values must not fall back to Chinese: '
+          '${violations.join(', ')}',
+    );
+  });
+
   test('compact numbers use western K/M/B magnitudes', () {
     expect(NumUtils.numFormat(999), '999');
     expect(NumUtils.numFormat(1000), '1K');

@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/pages/search_panel/video/controller.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,7 +63,7 @@ class _SearchVideoPanelState
                       Obx(
                         () => SearchText(
                           fontSize: 13,
-                          text: e.desc,
+                          text: e.localizedLabel(context.l10n),
                           bgColor: Colors.transparent,
                           textColor: controller.selectedType.value == e
                               ? theme.colorScheme.primary
@@ -83,7 +84,7 @@ class _SearchVideoPanelState
               width: 32,
               height: 32,
               child: IconButton(
-                tooltip: '筛选',
+                tooltip: context.l10n.searchFilter,
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(EdgeInsets.zero),
                 ),

@@ -4,6 +4,7 @@ import 'package:ex_piliplus/pages/fan/controller.dart';
 import 'package:ex_piliplus/pages/follow_type/view.dart';
 import 'package:ex_piliplus/pages/follow_type/widgets/item.dart';
 import 'package:ex_piliplus/pages/share/view.dart' show UserModel;
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/parse_int.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -55,10 +56,12 @@ class _FansPageState extends FollowTypePageState<FansPage> {
   PreferredSizeWidget? get appBar => widget.showName
       ? AppBar(
           title: controller.isOwner
-              ? const Text('我的粉丝')
+              ? Text(context.l10n.mineFollowers)
               : Obx(() {
                   final name = controller.name.value;
-                  if (name != null) return Text('$name的粉丝');
+                  if (name != null) {
+                    return Text(context.l10n.followUserFollowers(name));
+                  }
                   return const SizedBox.shrink();
                 }),
         )
@@ -68,7 +71,7 @@ class _FansPageState extends FollowTypePageState<FansPage> {
   Widget buildItem(int index, FollowItemModel item) {
     void onRemove() => showConfirmDialog(
       context: context,
-      title: Text('确定移除 ${item.uname} ？'),
+      title: Text(context.l10n.followRemoveFollowerConfirm(item.uname!)),
       onConfirm: () => controller.onRemoveFan(index, item.mid),
     );
 

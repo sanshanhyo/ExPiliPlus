@@ -3,6 +3,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/member.dart';
 import 'package:ex_piliplus/models/member/tags.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
@@ -60,7 +61,9 @@ class _GroupPanelState extends State<GroupPanel> {
       tags.isEmpty ? '0' : tags.join(','),
     );
     if (res.isSuccess) {
-      SmartDialog.showToast('保存成功');
+      if (mounted) {
+        SmartDialog.showToast(context.l10n.settingsSaved);
+      }
       Get.back(result: tags);
     } else {
       res.toast();
@@ -131,17 +134,17 @@ class _GroupPanelState extends State<GroupPanel> {
         AppBar(
           backgroundColor: Colors.transparent,
           leading: IconButton(
-            tooltip: '关闭',
+            tooltip: context.l10n.commonClose,
             onPressed: Get.back,
             icon: const Icon(Icons.close_outlined),
           ),
-          title: const Text('设置关注分组'),
+          title: Text(context.l10n.followSetGroup),
           actions: [
             TextButton.icon(
               onPressed: () =>
                   RequestUtils.createFavTag(context, _onCreateFavTag),
               icon: Icon(Icons.add, color: theme.colorScheme.primary),
-              label: const Text('新建分组'),
+              label: Text(context.l10n.followNewGroup),
               style: const ButtonStyle(
                 visualDensity: .compact,
                 padding: WidgetStatePropertyAll(
@@ -166,7 +169,13 @@ class _GroupPanelState extends State<GroupPanel> {
           child: FilledButton.tonal(
             onPressed: onSave,
             style: const ButtonStyle(visualDensity: .compact),
-            child: Obx(() => Text(showDefaultBtn.value ? '保存至默认分组' : '保存')),
+            child: Obx(
+              () => Text(
+                showDefaultBtn.value
+                    ? context.l10n.followSaveToDefaultGroup
+                    : context.l10n.commonSave,
+              ),
+            ),
           ),
         ),
       ],

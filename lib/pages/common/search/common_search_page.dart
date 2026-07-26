@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/multi_select/base.dart';
 import 'package:ex_piliplus/pages/common/search/common_search_controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +55,7 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
     final AppBar bar = AppBar(
       actions: [
         IconButton(
-          tooltip: '搜索',
+          tooltip: context.l10n.commonSearch,
           onPressed: controller.onRefresh,
           icon: const Icon(Icons.search_outlined, size: 22),
         ),
@@ -68,11 +69,11 @@ abstract class CommonSearchPageState<S extends StatefulWidget, R, T>
         textInputAction: TextInputAction.search,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-          hintText: '搜索',
+          hintText: context.l10n.commonSearch,
           visualDensity: .standard,
           border: InputBorder.none,
           suffixIcon: IconButton(
-            tooltip: '清空',
+            tooltip: context.l10n.commonClear,
             icon: const Icon(Icons.clear, size: 22),
             onPressed: () => controller
               ..loadingState.value = LoadingState.loading()

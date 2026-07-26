@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:PiliPlus/services/app_font_archive_extractor.dart';
+import 'package:ex_piliplus/services/app_font_archive_extractor.dart';
 import 'package:archive/archive.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/space/space_fav/list.dart';
 import 'package:ex_piliplus/pages/subscription_detail/view.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -73,16 +74,16 @@ class MemberFavItem extends StatelessWidget {
                     ),
                   ),
                   if (item.type == 21)
-                    const PBadge(
+                    PBadge(
                       right: 6,
                       top: 6,
-                      text: '合集',
+                      text: context.l10n.favoriteCollectionBadge,
                     )
                   else if (item.type == 11)
-                    const PBadge(
+                    PBadge(
                       right: 6,
                       top: 6,
-                      text: '收藏夹',
+                      text: context.l10n.favoriteFolderBadge,
                     ),
                 ],
               ),
@@ -100,12 +101,26 @@ class MemberFavItem extends StatelessWidget {
                     const Spacer(),
                     Text(
                       item.type == 0
-                          ? '${item.mediaCount}个内容 · ${BiliUtils.isPublicFavText(item.attr)}'
+                          ? context.l10n.favoriteContentSummary(
+                              item.mediaCount ?? 0,
+                              BiliUtils.isPublicFav(item.attr ?? 0)
+                                  ? context.l10n.favoritePublic
+                                  : context.l10n.favoritePrivate,
+                            )
                           : item.type == 11
-                          ? '${item.mediaCount}个内容 · ${item.upper?.name}'
+                          ? context.l10n.favoriteUploaderCollectionSummary(
+                              item.mediaCount ?? 0,
+                              item.upper?.name ?? '',
+                            )
                           : item.type == 21
-                          ? '创建者: ${item.upper?.name}\n${item.mediaCount}个视频 · ${NumUtils.numFormat(item.viewCount)}播放'
-                          : '${item.mediaCount}个内容',
+                          ? context.l10n.favoriteCreatedCollectionSummary(
+                              item.upper?.name ?? '',
+                              item.mediaCount ?? 0,
+                              NumUtils.numFormat(item.viewCount),
+                            )
+                          : context.l10n.favoriteContentCount(
+                              item.mediaCount ?? 0,
+                            ),
                       style: TextStyle(
                         fontSize: 12,
                         color: theme.colorScheme.outline,

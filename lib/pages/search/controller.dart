@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models/search/suggest.dart';
 import 'package:ex_piliplus/models_new/search/search_rcmd/data.dart';
 import 'package:ex_piliplus/models_new/search/search_trending/data.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -222,7 +223,7 @@ class SSearchController extends GetxController
   void onClearHistory() {
     showConfirmDialog(
       context: Get.context!,
-      title: const Text('确定清空搜索历史？'),
+      title: Text(Get.context!.l10n.searchClearHistoryConfirm),
       onConfirm: () {
         historyList.clear();
         GStorage.historyWord.delete('cacheList');

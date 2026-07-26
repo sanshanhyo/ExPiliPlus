@@ -1485,6 +1485,30 @@ abstract class AppLocalizations {
   /// **'专栏'**
   String get commonArticles;
 
+  /// No description provided for @commonLiveRooms.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播间'**
+  String get commonLiveRooms;
+
+  /// No description provided for @commonUsers.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户'**
+  String get commonUsers;
+
+  /// No description provided for @commonAllTypes.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部类型'**
+  String get commonAllTypes;
+
+  /// No description provided for @commonViewDetails.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看详情'**
+  String get commonViewDetails;
+
   /// No description provided for @commonDetails.
   ///
   /// In zh, this message translates to:
@@ -3962,6 +3986,36 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{count} 天前'**
   String timeDaysAgo(int count);
+
+  /// No description provided for @durationYears.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}年'**
+  String durationYears(int count);
+
+  /// No description provided for @durationMonths.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}个月'**
+  String durationMonths(int count);
+
+  /// No description provided for @durationDays.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}天'**
+  String durationDays(int count);
+
+  /// No description provided for @durationHours.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}小时'**
+  String durationHours(int count);
+
+  /// No description provided for @durationMinutes.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}分钟'**
+  String durationMinutes(int count);
 
   /// No description provided for @timeTodayAt.
   ///
@@ -6807,6 +6861,24 @@ abstract class AppLocalizations {
   /// **'精选评论'**
   String get replySortFeatured;
 
+  /// No description provided for @replySortNewestShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'最新'**
+  String get replySortNewestShort;
+
+  /// No description provided for @replySortHottestShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'最热'**
+  String get replySortHottestShort;
+
+  /// No description provided for @replySortFeaturedShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'精选'**
+  String get replySortFeaturedShort;
+
   /// No description provided for @memberTabDefault.
   ///
   /// In zh, this message translates to:
@@ -7202,6 +7274,66 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'下载字体'**
   String get settingsDownloadFont;
+
+  /// No description provided for @settingsFontErrorIncompleteFile.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体文件不完整，请重新下载'**
+  String get settingsFontErrorIncompleteFile;
+
+  /// No description provided for @settingsFontErrorLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体加载失败，请重新下载'**
+  String get settingsFontErrorLoadFailed;
+
+  /// No description provided for @settingsFontErrorHttp.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体下载失败（HTTP {status}）'**
+  String settingsFontErrorHttp(String status);
+
+  /// No description provided for @settingsFontErrorLicenseExtraction.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体许可文件提取失败，请重试'**
+  String get settingsFontErrorLicenseExtraction;
+
+  /// No description provided for @settingsFontErrorDownloadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体下载失败，请稍后重试'**
+  String get settingsFontErrorDownloadFailed;
+
+  /// No description provided for @settingsFontErrorSizeMismatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体文件大小校验失败，请重试'**
+  String get settingsFontErrorSizeMismatch;
+
+  /// No description provided for @settingsFontErrorChecksumMismatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体校验失败，请重试'**
+  String get settingsFontErrorChecksumMismatch;
+
+  /// No description provided for @settingsFontErrorTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体下载连接超时，请检查网络后重试'**
+  String get settingsFontErrorTimeout;
+
+  /// No description provided for @settingsFontErrorNetwork.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法下载字体，请检查网络'**
+  String get settingsFontErrorNetwork;
+
+  /// No description provided for @settingsFontErrorSaveFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'字体文件保存失败，请检查存储空间'**
+  String get settingsFontErrorSaveFailed;
 
   /// No description provided for @settingsAppFontTitle.
   ///
@@ -9157,6 +9289,12 @@ abstract class AppLocalizations {
   /// **'选择国际冠码，当前为 {name}（+{code}）'**
   String loginCountryCodeTooltip(Object code, Object name);
 
+  /// No description provided for @loginCountryOrRegion.
+  ///
+  /// In zh, this message translates to:
+  /// **'国家/地区'**
+  String get loginCountryOrRegion;
+
   /// No description provided for @loginPhoneNumber.
   ///
   /// In zh, this message translates to:
@@ -9361,6 +9499,60 @@ abstract class AppLocalizations {
   /// **'服务器错误'**
   String get commonServerError;
 
+  /// No description provided for @networkBadCertificate.
+  ///
+  /// In zh, this message translates to:
+  /// **'证书无效'**
+  String get networkBadCertificate;
+
+  /// No description provided for @networkServerError.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器异常，请稍后重试'**
+  String get networkServerError;
+
+  /// No description provided for @networkRequestCancelled.
+  ///
+  /// In zh, this message translates to:
+  /// **'请求已取消'**
+  String get networkRequestCancelled;
+
+  /// No description provided for @networkConnectionError.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接错误，请检查网络设置'**
+  String get networkConnectionError;
+
+  /// No description provided for @networkConnectionTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络连接超时，请检查网络设置'**
+  String get networkConnectionTimeout;
+
+  /// No description provided for @networkResponseTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'响应超时，请稍后重试'**
+  String get networkResponseTimeout;
+
+  /// No description provided for @networkSendTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送请求超时，请检查网络设置'**
+  String get networkSendTimeout;
+
+  /// No description provided for @networkTransformTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'转换响应数据超时'**
+  String get networkTransformTimeout;
+
+  /// No description provided for @networkUnknownError.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络异常：{error}'**
+  String networkUnknownError(String error);
+
   /// No description provided for @searchSecurityCheckTriggered.
   ///
   /// In zh, this message translates to:
@@ -9456,6 +9648,3106 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'添加至桌面'**
   String get memberAddToHomeScreen;
+
+  /// No description provided for @memberRandomPlay.
+  ///
+  /// In zh, this message translates to:
+  /// **'随机播放'**
+  String get memberRandomPlay;
+
+  /// No description provided for @memberReservation.
+  ///
+  /// In zh, this message translates to:
+  /// **'预约'**
+  String get memberReservation;
+
+  /// No description provided for @memberReserved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已预约'**
+  String get memberReserved;
+
+  /// No description provided for @memberReservationPost.
+  ///
+  /// In zh, this message translates to:
+  /// **'预约动态'**
+  String get memberReservationPost;
+
+  /// No description provided for @memberReservationCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 人预约'**
+  String memberReservationCount(Object count);
+
+  /// No description provided for @memberWebUploads.
+  ///
+  /// In zh, this message translates to:
+  /// **'网页投稿'**
+  String get memberWebUploads;
+
+  /// No description provided for @memberPremiumXp.
+  ///
+  /// In zh, this message translates to:
+  /// **'大会员经验'**
+  String get memberPremiumXp;
+
+  /// No description provided for @memberSignInHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录记录'**
+  String get memberSignInHistory;
+
+  /// No description provided for @memberCoinHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'硬币记录'**
+  String get memberCoinHistory;
+
+  /// No description provided for @memberXpHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'经验记录'**
+  String get memberXpHistory;
+
+  /// No description provided for @memberFollowingSince.
+  ///
+  /// In zh, this message translates to:
+  /// **'关注时间：{date}'**
+  String memberFollowingSince(Object date);
+
+  /// No description provided for @memberAccountBanned.
+  ///
+  /// In zh, this message translates to:
+  /// **'该账号封禁中'**
+  String get memberAccountBanned;
+
+  /// No description provided for @memberSupporterCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 人为 TA 充电'**
+  String memberSupporterCount(Object count);
+
+  /// No description provided for @memberGuardCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 人加入大航海'**
+  String memberGuardCount(Object count);
+
+  /// No description provided for @memberMyRecommendations.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的推荐'**
+  String get memberMyRecommendations;
+
+  /// No description provided for @memberRecommendationsBy.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name}的推荐'**
+  String memberRecommendationsBy(String name);
+
+  /// No description provided for @memberCollectionCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'合集：{count}'**
+  String memberCollectionCount(int count);
+
+  /// No description provided for @memberListCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'列表：{count}'**
+  String memberListCount(int count);
+
+  /// No description provided for @memberGuardTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name}的舰队'**
+  String memberGuardTitle(String name);
+
+  /// No description provided for @memberGuardTitleWithCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name}的舰队（{count}）'**
+  String memberGuardTitleWithCount(String name, Object count);
+
+  /// No description provided for @memberAlsoFollowed.
+  ///
+  /// In zh, this message translates to:
+  /// **'也关注了 TA'**
+  String get memberAlsoFollowed;
+
+  /// No description provided for @memberAlsoFollowedWithOthers.
+  ///
+  /// In zh, this message translates to:
+  /// **'等 {count} 人也关注了 TA'**
+  String memberAlsoFollowedWithOthers(Object count);
+
+  /// No description provided for @memberLikesReceived.
+  ///
+  /// In zh, this message translates to:
+  /// **'获赞'**
+  String get memberLikesReceived;
+
+  /// No description provided for @memberFollowingTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'关注时间'**
+  String get memberFollowingTime;
+
+  /// No description provided for @commonSelectedCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'已选：{count}'**
+  String commonSelectedCount(Object count);
+
+  /// No description provided for @commonSelectAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全选'**
+  String get commonSelectAll;
+
+  /// No description provided for @commonCancelSelection.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消选择'**
+  String get commonCancelSelection;
+
+  /// No description provided for @imageSaveImage.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存图片'**
+  String get imageSaveImage;
+
+  /// No description provided for @imageSaveAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存全部'**
+  String get imageSaveAll;
+
+  /// No description provided for @imageSaveAllImages.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存全部图片'**
+  String get imageSaveAllImages;
+
+  /// No description provided for @imageSaveVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存视频'**
+  String get imageSaveVideo;
+
+  /// No description provided for @imageSaveLivePhoto.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存实况照片'**
+  String get imageSaveLivePhoto;
+
+  /// No description provided for @imageOpenInBrowser.
+  ///
+  /// In zh, this message translates to:
+  /// **'在浏览器中打开'**
+  String get imageOpenInBrowser;
+
+  /// No description provided for @commonDone.
+  ///
+  /// In zh, this message translates to:
+  /// **'完成'**
+  String get commonDone;
+
+  /// No description provided for @commonCreate.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建'**
+  String get commonCreate;
+
+  /// No description provided for @favoriteSortMethod.
+  ///
+  /// In zh, this message translates to:
+  /// **'排序方式'**
+  String get favoriteSortMethod;
+
+  /// No description provided for @favoriteContentCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}个内容'**
+  String favoriteContentCount(num count);
+
+  /// No description provided for @favoriteContentSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}个内容 · {visibility}'**
+  String favoriteContentSummary(num count, Object visibility);
+
+  /// No description provided for @favoriteEditInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑信息'**
+  String get favoriteEditInfo;
+
+  /// No description provided for @favoriteShareToPost.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享至动态'**
+  String get favoriteShareToPost;
+
+  /// No description provided for @favoriteClearUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除失效内容'**
+  String get favoriteClearUnavailable;
+
+  /// No description provided for @favoriteDeleteFolderConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除该收藏夹？'**
+  String get favoriteDeleteFolderConfirm;
+
+  /// No description provided for @favoriteRemoveSelectedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认删除所选收藏吗？'**
+  String get favoriteRemoveSelectedConfirm;
+
+  /// No description provided for @favoriteRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消收藏'**
+  String get favoriteRemoved;
+
+  /// No description provided for @favoriteFolderAdded.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏夹收藏成功'**
+  String get favoriteFolderAdded;
+
+  /// No description provided for @favoriteFolderRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消收藏夹收藏'**
+  String get favoriteFolderRemoved;
+
+  /// No description provided for @favoriteClearSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除成功'**
+  String get favoriteClearSucceeded;
+
+  /// No description provided for @favoriteTooManyToSort.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容超过 1000 条，不支持排序'**
+  String get favoriteTooManyToSort;
+
+  /// No description provided for @favoriteRemoveConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'要取消收藏吗？'**
+  String get favoriteRemoveConfirm;
+
+  /// No description provided for @favoriteConfirmRemove.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定取消'**
+  String get favoriteConfirmRemove;
+
+  /// No description provided for @favoriteAudio.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频'**
+  String get favoriteAudio;
+
+  /// No description provided for @favoriteAddToFolder.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加到收藏夹'**
+  String get favoriteAddToFolder;
+
+  /// No description provided for @favoriteNameRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称不能为空'**
+  String get favoriteNameRequired;
+
+  /// No description provided for @favoriteFolderCreated.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建成功'**
+  String get favoriteFolderCreated;
+
+  /// No description provided for @favoriteFolderUpdated.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑成功'**
+  String get favoriteFolderUpdated;
+
+  /// No description provided for @favoriteCrop.
+  ///
+  /// In zh, this message translates to:
+  /// **'裁剪'**
+  String get favoriteCrop;
+
+  /// No description provided for @favoriteReplaceCover.
+  ///
+  /// In zh, this message translates to:
+  /// **'替换封面'**
+  String get favoriteReplaceCover;
+
+  /// No description provided for @favoriteRemoveCover.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除封面'**
+  String get favoriteRemoveCover;
+
+  /// No description provided for @favoriteCover.
+  ///
+  /// In zh, this message translates to:
+  /// **'封面'**
+  String get favoriteCover;
+
+  /// No description provided for @favoriteName.
+  ///
+  /// In zh, this message translates to:
+  /// **'名称'**
+  String get favoriteName;
+
+  /// No description provided for @favoriteIntro.
+  ///
+  /// In zh, this message translates to:
+  /// **'简介'**
+  String get favoriteIntro;
+
+  /// No description provided for @favoriteIntroHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'可填写简介'**
+  String get favoriteIntroHint;
+
+  /// No description provided for @favoritePublicSetting.
+  ///
+  /// In zh, this message translates to:
+  /// **'公开'**
+  String get favoritePublicSetting;
+
+  /// No description provided for @favoriteCollectionBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'合集'**
+  String get favoriteCollectionBadge;
+
+  /// No description provided for @favoriteFolderBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏夹'**
+  String get favoriteFolderBadge;
+
+  /// No description provided for @favoriteUploaderCollectionSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count}个内容 · {name}'**
+  String favoriteUploaderCollectionSummary(Object count, Object name);
+
+  /// No description provided for @favoriteCreatedCollectionSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建者：{name}\n{count}个视频 · {views}播放'**
+  String favoriteCreatedCollectionSummary(
+    Object count,
+    Object name,
+    Object views,
+  );
+
+  /// No description provided for @favoriteOrderRecentlyAdded.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近收藏'**
+  String get favoriteOrderRecentlyAdded;
+
+  /// No description provided for @favoriteOrderMostPlayed.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多播放'**
+  String get favoriteOrderMostPlayed;
+
+  /// No description provided for @favoriteOrderRecentlyPublished.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近投稿'**
+  String get favoriteOrderRecentlyPublished;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号资料'**
+  String get profileTitle;
+
+  /// No description provided for @profileAvatar.
+  ///
+  /// In zh, this message translates to:
+  /// **'头像'**
+  String get profileAvatar;
+
+  /// No description provided for @profileNickname.
+  ///
+  /// In zh, this message translates to:
+  /// **'昵称'**
+  String get profileNickname;
+
+  /// No description provided for @profileGender.
+  ///
+  /// In zh, this message translates to:
+  /// **'性别'**
+  String get profileGender;
+
+  /// No description provided for @profileBirthday.
+  ///
+  /// In zh, this message translates to:
+  /// **'出生年月'**
+  String get profileBirthday;
+
+  /// No description provided for @profileBio.
+  ///
+  /// In zh, this message translates to:
+  /// **'个性签名'**
+  String get profileBio;
+
+  /// No description provided for @profileAvatarDecoration.
+  ///
+  /// In zh, this message translates to:
+  /// **'头像挂件'**
+  String get profileAvatarDecoration;
+
+  /// No description provided for @profileVerification.
+  ///
+  /// In zh, this message translates to:
+  /// **'哔哩哔哩认证'**
+  String get profileVerification;
+
+  /// No description provided for @profileInsufficientCoins.
+  ///
+  /// In zh, this message translates to:
+  /// **'硬币不足'**
+  String get profileInsufficientCoins;
+
+  /// No description provided for @profileGenderMale.
+  ///
+  /// In zh, this message translates to:
+  /// **'男'**
+  String get profileGenderMale;
+
+  /// No description provided for @profileGenderPrivate.
+  ///
+  /// In zh, this message translates to:
+  /// **'保密'**
+  String get profileGenderPrivate;
+
+  /// No description provided for @profileGenderFemale.
+  ///
+  /// In zh, this message translates to:
+  /// **'女'**
+  String get profileGenderFemale;
+
+  /// No description provided for @profileEditField.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改{field}'**
+  String profileEditField(Object field);
+
+  /// No description provided for @profileSameAsCurrent.
+  ///
+  /// In zh, this message translates to:
+  /// **'与原{field}相同'**
+  String profileSameAsCurrent(Object field);
+
+  /// No description provided for @profileReloginRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'请退出账号后重新登录'**
+  String get profileReloginRequired;
+
+  /// No description provided for @profileUpdateSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'修改成功'**
+  String get profileUpdateSucceeded;
+
+  /// No description provided for @profileGifNotSupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'不能选择 GIF'**
+  String get profileGifNotSupported;
+
+  /// No description provided for @shutdownPauseVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂停视频'**
+  String get shutdownPauseVideo;
+
+  /// No description provided for @shutdownExitApp.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出应用'**
+  String get shutdownExitApp;
+
+  /// No description provided for @shutdownTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'定时关闭'**
+  String get shutdownTitle;
+
+  /// No description provided for @shutdownCanceled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消定时关闭'**
+  String get shutdownCanceled;
+
+  /// No description provided for @shutdownScheduledAfter.
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置在 {duration} 后定时关闭'**
+  String shutdownScheduledAfter(Object duration);
+
+  /// No description provided for @shutdownTimeReachedPaused.
+  ///
+  /// In zh, this message translates to:
+  /// **'定时时间已到，已暂停'**
+  String get shutdownTimeReachedPaused;
+
+  /// No description provided for @shutdownHoursMinutes.
+  ///
+  /// In zh, this message translates to:
+  /// **'{hours}小时{minutes}分钟'**
+  String shutdownHoursMinutes(Object hours, Object minutes);
+
+  /// No description provided for @shutdownHours.
+  ///
+  /// In zh, this message translates to:
+  /// **'{hours}小时'**
+  String shutdownHours(Object hours);
+
+  /// No description provided for @shutdownMinutes.
+  ///
+  /// In zh, this message translates to:
+  /// **'{minutes}分钟'**
+  String shutdownMinutes(Object minutes);
+
+  /// No description provided for @shutdownCustom.
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义'**
+  String get shutdownCustom;
+
+  /// No description provided for @shutdownWaitUntilVideoEnds.
+  ///
+  /// In zh, this message translates to:
+  /// **'额外等待视频播放完毕'**
+  String get shutdownWaitUntilVideoEnds;
+
+  /// No description provided for @shutdownActionAtEnd.
+  ///
+  /// In zh, this message translates to:
+  /// **'倒计时结束：'**
+  String get shutdownActionAtEnd;
+
+  /// No description provided for @replyViewComments.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看评论'**
+  String get replyViewComments;
+
+  /// No description provided for @replyAppeal.
+  ///
+  /// In zh, this message translates to:
+  /// **'申诉'**
+  String get replyAppeal;
+
+  /// No description provided for @replyCheckResult.
+  ///
+  /// In zh, this message translates to:
+  /// **'评论检查结果'**
+  String get replyCheckResult;
+
+  /// No description provided for @replyMainListError.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取评论主列表时发生错误：{error}'**
+  String replyMainListError(Object error);
+
+  /// No description provided for @replyCheckNormal.
+  ///
+  /// In zh, this message translates to:
+  /// **'无账号状态下找到了你的评论，评论正常！\n\n你的评论：{message}'**
+  String replyCheckNormal(Object message);
+
+  /// No description provided for @replyCheckNotFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法找到你的评论。\n\n你的评论：{message}'**
+  String replyCheckNotFound(Object message);
+
+  /// No description provided for @replyCheckShadowBanned.
+  ///
+  /// In zh, this message translates to:
+  /// **'你的评论可能仅自己可见！\n\n你的评论：{message}'**
+  String replyCheckShadowBanned(Object message);
+
+  /// No description provided for @replyCheckInvisible.
+  ///
+  /// In zh, this message translates to:
+  /// **'评论不可见（{error}）：{message}'**
+  String replyCheckInvisible(Object error, Object message);
+
+  /// No description provided for @replyCheckSuspicious.
+  ///
+  /// In zh, this message translates to:
+  /// **'你的评论状态有些可疑。无账号浏览评论区时无法看到，但可以通过以下地址直接获取：\n{url}\n评论区可能受到限制，或者这是你的视频。\n\n你的评论：{message}'**
+  String replyCheckSuspicious(Object message, Object url);
+
+  /// No description provided for @replyCheckInvisibleSimple.
+  ///
+  /// In zh, this message translates to:
+  /// **'评论不可见：{message}'**
+  String replyCheckInvisibleSimple(Object message);
+
+  /// No description provided for @replyContentText.
+  ///
+  /// In zh, this message translates to:
+  /// **'文本'**
+  String get replyContentText;
+
+  /// No description provided for @replyContentEmoji.
+  ///
+  /// In zh, this message translates to:
+  /// **'表情'**
+  String get replyContentEmoji;
+
+  /// No description provided for @replyFilterChangeConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认应用评论过滤变更？'**
+  String get replyFilterChangeConfirm;
+
+  /// No description provided for @replyAddToFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入过滤'**
+  String get replyAddToFilter;
+
+  /// No description provided for @memberReportTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'举报：{name}'**
+  String memberReportTitle(Object name);
+
+  /// No description provided for @memberReportContentRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'举报内容（必选，可多选）'**
+  String get memberReportContentRequired;
+
+  /// No description provided for @memberReportReasonOptional.
+  ///
+  /// In zh, this message translates to:
+  /// **'举报理由（单选，非必选）'**
+  String get memberReportReasonOptional;
+
+  /// No description provided for @memberReportAvatar.
+  ///
+  /// In zh, this message translates to:
+  /// **'头像违规'**
+  String get memberReportAvatar;
+
+  /// No description provided for @memberReportNickname.
+  ///
+  /// In zh, this message translates to:
+  /// **'昵称违规'**
+  String get memberReportNickname;
+
+  /// No description provided for @memberReportBio.
+  ///
+  /// In zh, this message translates to:
+  /// **'签名违规'**
+  String get memberReportBio;
+
+  /// No description provided for @memberReportChooseContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'至少选择一项作为举报内容'**
+  String get memberReportChooseContent;
+
+  /// No description provided for @reportFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'举报失败'**
+  String get reportFailed;
+
+  /// No description provided for @feedPinned.
+  ///
+  /// In zh, this message translates to:
+  /// **'置顶成功'**
+  String get feedPinned;
+
+  /// No description provided for @feedUnpinned.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消置顶成功'**
+  String get feedUnpinned;
+
+  /// No description provided for @updateCheckFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'检查更新失败，GitHub 接口未返回数据，请检查网络'**
+  String get updateCheckFailed;
+
+  /// No description provided for @updateAlreadyLatest.
+  ///
+  /// In zh, this message translates to:
+  /// **'已是最新版本'**
+  String get updateAlreadyLatest;
+
+  /// No description provided for @updateNewVersion.
+  ///
+  /// In zh, this message translates to:
+  /// **'🎉 发现新版本'**
+  String get updateNewVersion;
+
+  /// No description provided for @updateViewFullChanges.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看完整提交记录'**
+  String get updateViewFullChanges;
+
+  /// No description provided for @updateStopReminding.
+  ///
+  /// In zh, this message translates to:
+  /// **'不再提醒'**
+  String get updateStopReminding;
+
+  /// No description provided for @commonUnsupportedType.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂未支持此类型，请联系开发者'**
+  String get commonUnsupportedType;
+
+  /// No description provided for @commonGettingResource.
+  ///
+  /// In zh, this message translates to:
+  /// **'资源获取中…'**
+  String get commonGettingResource;
+
+  /// No description provided for @commonResourceLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'资源加载失败'**
+  String get commonResourceLoadFailed;
+
+  /// No description provided for @routeUnknown.
+  ///
+  /// In zh, this message translates to:
+  /// **'未知路径：{uri}，请截图反馈给开发者'**
+  String routeUnknown(Object uri);
+
+  /// No description provided for @videoLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'视频获取失败：{error}'**
+  String videoLoadFailed(Object error);
+
+  /// No description provided for @liveTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播'**
+  String get liveTitle;
+
+  /// No description provided for @rankingTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'排行榜'**
+  String get rankingTitle;
+
+  /// No description provided for @commonPlaylist.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放列表'**
+  String get commonPlaylist;
+
+  /// No description provided for @videoParts.
+  ///
+  /// In zh, this message translates to:
+  /// **'分 P'**
+  String get videoParts;
+
+  /// No description provided for @videoChargingOnly.
+  ///
+  /// In zh, this message translates to:
+  /// **'充电专属'**
+  String get videoChargingOnly;
+
+  /// No description provided for @videoTrailerBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'预告'**
+  String get videoTrailerBadge;
+
+  /// No description provided for @videoLimitedFreeBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'限免'**
+  String get videoLimitedFreeBadge;
+
+  /// No description provided for @subscriptionSubscribe.
+  ///
+  /// In zh, this message translates to:
+  /// **'订阅'**
+  String get subscriptionSubscribe;
+
+  /// No description provided for @subscriptionUnsubscribe.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消订阅'**
+  String get subscriptionUnsubscribe;
+
+  /// No description provided for @subscriptionSubscribed.
+  ///
+  /// In zh, this message translates to:
+  /// **'订阅成功'**
+  String get subscriptionSubscribed;
+
+  /// No description provided for @commonJumpToTop.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳至顶部'**
+  String get commonJumpToTop;
+
+  /// No description provided for @commonJumpToBottom.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳至底部'**
+  String get commonJumpToBottom;
+
+  /// No description provided for @commonJumpToCurrent.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳至当前'**
+  String get commonJumpToCurrent;
+
+  /// No description provided for @commonAscendingOrder.
+  ///
+  /// In zh, this message translates to:
+  /// **'顺序'**
+  String get commonAscendingOrder;
+
+  /// No description provided for @commonDescendingOrder.
+  ///
+  /// In zh, this message translates to:
+  /// **'倒序'**
+  String get commonDescendingOrder;
+
+  /// No description provided for @searchUserByUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'通过 UID 搜索用户'**
+  String get searchUserByUid;
+
+  /// No description provided for @searchTrending.
+  ///
+  /// In zh, this message translates to:
+  /// **'大家都在搜'**
+  String get searchTrending;
+
+  /// No description provided for @searchDiscover.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索发现'**
+  String get searchDiscover;
+
+  /// No description provided for @searchFullRanking.
+  ///
+  /// In zh, this message translates to:
+  /// **'完整榜单'**
+  String get searchFullRanking;
+
+  /// No description provided for @searchHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索历史'**
+  String get searchHistory;
+
+  /// No description provided for @searchRecordHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录搜索'**
+  String get searchRecordHistory;
+
+  /// No description provided for @searchIncognito.
+  ///
+  /// In zh, this message translates to:
+  /// **'无痕搜索'**
+  String get searchIncognito;
+
+  /// No description provided for @searchImportExportHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入或导出搜索历史'**
+  String get searchImportExportHistory;
+
+  /// No description provided for @searchClearHistoryConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空搜索历史？'**
+  String get searchClearHistoryConfirm;
+
+  /// No description provided for @searchTabCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{label} {count}'**
+  String searchTabCount(Object count, Object label);
+
+  /// No description provided for @memberSearchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索「{name}」的动态、视频'**
+  String memberSearchHint(Object name);
+
+  /// No description provided for @favoriteDeleteSelectedNotesConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除已选中的笔记吗？'**
+  String get favoriteDeleteSelectedNotesConfirm;
+
+  /// No description provided for @favoriteRemoveCourseConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定取消收藏该课堂？'**
+  String get favoriteRemoveCourseConfirm;
+
+  /// No description provided for @downloadDeleteSelectedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除选中视频？'**
+  String get downloadDeleteSelectedConfirm;
+
+  /// No description provided for @downloadQueueTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在缓存'**
+  String get downloadQueueTitle;
+
+  /// No description provided for @downloadViewDetails.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看详情页'**
+  String get downloadViewDetails;
+
+  /// No description provided for @downloadOpenLocalFolder.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开本地文件夹'**
+  String get downloadOpenLocalFolder;
+
+  /// No description provided for @downloadVisitUploader.
+  ///
+  /// In zh, this message translates to:
+  /// **'访问{name}'**
+  String downloadVisitUploader(Object name);
+
+  /// No description provided for @downloadUserProfile.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户主页'**
+  String get downloadUserProfile;
+
+  /// No description provided for @downloadWatched.
+  ///
+  /// In zh, this message translates to:
+  /// **'已看完'**
+  String get downloadWatched;
+
+  /// No description provided for @downloadStatusDownloading.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在下载'**
+  String get downloadStatusDownloading;
+
+  /// No description provided for @downloadStatusAudioDownloading.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在下载音频'**
+  String get downloadStatusAudioDownloading;
+
+  /// No description provided for @downloadStatusGettingDanmaku.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取弹幕'**
+  String get downloadStatusGettingDanmaku;
+
+  /// No description provided for @downloadStatusGettingPlayUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取播放地址'**
+  String get downloadStatusGettingPlayUrl;
+
+  /// No description provided for @downloadStatusCompleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载完成'**
+  String get downloadStatusCompleted;
+
+  /// No description provided for @downloadStatusFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载失败'**
+  String get downloadStatusFailed;
+
+  /// No description provided for @downloadStatusAudioFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'音频下载失败'**
+  String get downloadStatusAudioFailed;
+
+  /// No description provided for @downloadStatusDanmakuFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取弹幕失败'**
+  String get downloadStatusDanmakuFailed;
+
+  /// No description provided for @downloadStatusPlayUrlFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取播放地址失败'**
+  String get downloadStatusPlayUrlFailed;
+
+  /// No description provided for @downloadStatusPaused.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂停中'**
+  String get downloadStatusPaused;
+
+  /// No description provided for @downloadStatusWaiting.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待中'**
+  String get downloadStatusWaiting;
+
+  /// No description provided for @commonSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置'**
+  String get commonSettings;
+
+  /// No description provided for @commonEmoji.
+  ///
+  /// In zh, this message translates to:
+  /// **'表情'**
+  String get commonEmoji;
+
+  /// No description provided for @messagesRecall.
+  ///
+  /// In zh, this message translates to:
+  /// **'撤回'**
+  String get messagesRecall;
+
+  /// No description provided for @messagesRecalled.
+  ///
+  /// In zh, this message translates to:
+  /// **'撤回成功'**
+  String get messagesRecalled;
+
+  /// No description provided for @messagesSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送成功'**
+  String get messagesSent;
+
+  /// No description provided for @messagesInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'发个消息聊聊吧…'**
+  String get messagesInputHint;
+
+  /// No description provided for @messagesUploadingImage.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在上传图片…'**
+  String get messagesUploadingImage;
+
+  /// No description provided for @messagesChatSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'聊天设置'**
+  String get messagesChatSettings;
+
+  /// No description provided for @messagesAddToBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入黑名单'**
+  String get messagesAddToBlocked;
+
+  /// No description provided for @messagesReceivePush.
+  ///
+  /// In zh, this message translates to:
+  /// **'接收消息推送'**
+  String get messagesReceivePush;
+
+  /// No description provided for @messagesPushDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后将不再收到该账号的图文消息与稿件推送，但通知类消息不受影响。'**
+  String get messagesPushDescription;
+
+  /// No description provided for @messagesPinChat.
+  ///
+  /// In zh, this message translates to:
+  /// **'置顶聊天'**
+  String get messagesPinChat;
+
+  /// No description provided for @messagesMute.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息免打扰'**
+  String get messagesMute;
+
+  /// No description provided for @messagesDisablePushConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认关闭内容推送吗？'**
+  String get messagesDisablePushConfirm;
+
+  /// No description provided for @messagesBlockConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认拉黑该用户？'**
+  String get messagesBlockConfirm;
+
+  /// No description provided for @messagesBlockDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入黑名单后，将自动解除关注关系和对该用户的合集订阅关系，并禁止该用户与你互动或查看你的空间。'**
+  String get messagesBlockDescription;
+
+  /// No description provided for @messagesBvNotFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'未匹配到 BV 号'**
+  String get messagesBvNotFound;
+
+  /// No description provided for @commonAdd.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加'**
+  String get commonAdd;
+
+  /// No description provided for @messagesBlockedKeywords.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息屏蔽词'**
+  String get messagesBlockedKeywords;
+
+  /// No description provided for @messagesTapKeywordToDelete.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击屏蔽词即可删除'**
+  String get messagesTapKeywordToDelete;
+
+  /// No description provided for @messagesDeleteKeywordConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除屏蔽词？'**
+  String get messagesDeleteKeywordConfirm;
+
+  /// No description provided for @messagesKeywordNoLongerApplies.
+  ///
+  /// In zh, this message translates to:
+  /// **'该屏蔽词将不再生效'**
+  String get messagesKeywordNoLongerApplies;
+
+  /// No description provided for @messagesAddBlockedKeyword.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加消息屏蔽词'**
+  String get messagesAddBlockedKeyword;
+
+  /// No description provided for @messagesNoBlockedKeywords.
+  ///
+  /// In zh, this message translates to:
+  /// **'还未添加屏蔽词'**
+  String get messagesNoBlockedKeywords;
+
+  /// No description provided for @messagesBlockedKeywordDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加后，将不再接收包含屏蔽词的消息'**
+  String get messagesBlockedKeywordDescription;
+
+  /// No description provided for @messagesEnterKeyword.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入'**
+  String get messagesEnterKeyword;
+
+  /// No description provided for @messagesMarkAllRead.
+  ///
+  /// In zh, this message translates to:
+  /// **'一键已读'**
+  String get messagesMarkAllRead;
+
+  /// No description provided for @messagesMarkAllReadConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'是否清除全部新消息提醒？'**
+  String get messagesMarkAllReadConfirm;
+
+  /// No description provided for @messagesClearList.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空列表'**
+  String get messagesClearList;
+
+  /// No description provided for @messagesClearListConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'清空后所有消息将被删除，无法恢复'**
+  String get messagesClearListConfirm;
+
+  /// No description provided for @messagesMenuSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'消息设置'**
+  String get messagesMenuSettings;
+
+  /// No description provided for @messagesUploaderAssistant.
+  ///
+  /// In zh, this message translates to:
+  /// **'UP主助手'**
+  String get messagesUploaderAssistant;
+
+  /// No description provided for @messagesContacts.
+  ///
+  /// In zh, this message translates to:
+  /// **'联系人'**
+  String get messagesContacts;
+
+  /// No description provided for @messagesFanGroupAssistant.
+  ///
+  /// In zh, this message translates to:
+  /// **'粉丝团助手'**
+  String get messagesFanGroupAssistant;
+
+  /// No description provided for @feedSelectTopic.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择话题'**
+  String get feedSelectTopic;
+
+  /// No description provided for @feedOptionalTitleHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'标题，选填 20 字'**
+  String get feedOptionalTitleHint;
+
+  /// No description provided for @feedEditPostTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑动态'**
+  String get feedEditPostTitle;
+
+  /// No description provided for @feedCreatePostTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发布动态'**
+  String get feedCreatePostTitle;
+
+  /// No description provided for @feedScheduledPost.
+  ///
+  /// In zh, this message translates to:
+  /// **'定时发布'**
+  String get feedScheduledPost;
+
+  /// No description provided for @feedScheduleAtLeastMinutes.
+  ///
+  /// In zh, this message translates to:
+  /// **'请至少选择 {minutes} 分钟之后的时间'**
+  String feedScheduleAtLeastMinutes(Object minutes);
+
+  /// No description provided for @feedLiveReservation.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播预约'**
+  String get feedLiveReservation;
+
+  /// No description provided for @feedStartedPoll.
+  ///
+  /// In zh, this message translates to:
+  /// **'我发起了一个投票'**
+  String get feedStartedPoll;
+
+  /// No description provided for @feedPosting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在发布…'**
+  String get feedPosting;
+
+  /// No description provided for @feedPosted.
+  ///
+  /// In zh, this message translates to:
+  /// **'发布成功'**
+  String get feedPosted;
+
+  /// No description provided for @feedLiveReservationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播预约：{title}'**
+  String feedLiveReservationTitle(Object title);
+
+  /// No description provided for @feedLiveStartsAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'{time} 直播'**
+  String feedLiveStartsAt(Object time);
+
+  /// No description provided for @feedAllowComments.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许评论'**
+  String get feedAllowComments;
+
+  /// No description provided for @feedCloseComments.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭评论'**
+  String get feedCloseComments;
+
+  /// No description provided for @feedFeaturedComments.
+  ///
+  /// In zh, this message translates to:
+  /// **'精选评论'**
+  String get feedFeaturedComments;
+
+  /// No description provided for @voteCreateTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'发起投票'**
+  String get voteCreateTitle;
+
+  /// No description provided for @voteEditTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'投票'**
+  String get voteEditTitle;
+
+  /// No description provided for @voteType.
+  ///
+  /// In zh, this message translates to:
+  /// **'投票类型'**
+  String get voteType;
+
+  /// No description provided for @voteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'投票标题'**
+  String get voteTitle;
+
+  /// No description provided for @voteTitleHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'请填写标题'**
+  String get voteTitleHint;
+
+  /// No description provided for @voteDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'投票说明'**
+  String get voteDescription;
+
+  /// No description provided for @voteOptionLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'选项{number}'**
+  String voteOptionLabel(Object number);
+
+  /// No description provided for @voteOptionHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'选项内容，最多 20 字'**
+  String get voteOptionHint;
+
+  /// No description provided for @voteAddOption.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加选项'**
+  String get voteAddOption;
+
+  /// No description provided for @voteChoiceMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'单选或多选'**
+  String get voteChoiceMode;
+
+  /// No description provided for @voteSingleChoice.
+  ///
+  /// In zh, this message translates to:
+  /// **'单选'**
+  String get voteSingleChoice;
+
+  /// No description provided for @voteMaxChoices.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多选 {count} 项'**
+  String voteMaxChoices(Object count);
+
+  /// No description provided for @voteEndTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'投票截止时间'**
+  String get voteEndTime;
+
+  /// No description provided for @voteAtLeastFiveMinutes.
+  ///
+  /// In zh, this message translates to:
+  /// **'至少选择 5 分钟之后'**
+  String get voteAtLeastFiveMinutes;
+
+  /// No description provided for @voteCreate.
+  ///
+  /// In zh, this message translates to:
+  /// **'发起投票'**
+  String get voteCreate;
+
+  /// No description provided for @voteTextType.
+  ///
+  /// In zh, this message translates to:
+  /// **'文字投票'**
+  String get voteTextType;
+
+  /// No description provided for @voteImageType.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片投票'**
+  String get voteImageType;
+
+  /// No description provided for @reserveAddLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加直播预约'**
+  String get reserveAddLive;
+
+  /// No description provided for @reserveType.
+  ///
+  /// In zh, this message translates to:
+  /// **'类型'**
+  String get reserveType;
+
+  /// No description provided for @reservePublicLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'公开直播'**
+  String get reservePublicLive;
+
+  /// No description provided for @reserveSupporterLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'大航海直播'**
+  String get reserveSupporterLive;
+
+  /// No description provided for @reserveTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'时间'**
+  String get reserveTime;
+
+  /// No description provided for @reserveTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'标题'**
+  String get reserveTitle;
+
+  /// No description provided for @reserveTitleHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'请填写标题，最多 14 字'**
+  String get reserveTitleHint;
+
+  /// No description provided for @reserveAdd.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加预约'**
+  String get reserveAdd;
+
+  /// No description provided for @mentionInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入你想 @ 的人'**
+  String get mentionInputHint;
+
+  /// No description provided for @topicSearchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索话题'**
+  String get topicSearchHint;
+
+  /// No description provided for @commonBlock.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽'**
+  String get commonBlock;
+
+  /// No description provided for @commonShow.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示'**
+  String get commonShow;
+
+  /// No description provided for @commonHide.
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏'**
+  String get commonHide;
+
+  /// No description provided for @playerEnterFullscreen.
+  ///
+  /// In zh, this message translates to:
+  /// **'进入全屏'**
+  String get playerEnterFullscreen;
+
+  /// No description provided for @playerExitFullscreen.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出全屏'**
+  String get playerExitFullscreen;
+
+  /// No description provided for @playerTurnOffBackgroundPlayback.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后台播放'**
+  String get playerTurnOffBackgroundPlayback;
+
+  /// No description provided for @liveSendDanmaku.
+  ///
+  /// In zh, this message translates to:
+  /// **'发弹幕'**
+  String get liveSendDanmaku;
+
+  /// No description provided for @liveSwitchRoute.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换路线'**
+  String get liveSwitchRoute;
+
+  /// No description provided for @liveShareRoom.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享直播间'**
+  String get liveShareRoom;
+
+  /// No description provided for @livePlayerVolume.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放器音量：{value}%'**
+  String livePlayerVolume(Object value);
+
+  /// No description provided for @liveBackToBottom.
+  ///
+  /// In zh, this message translates to:
+  /// **'回到底部'**
+  String get liveBackToBottom;
+
+  /// No description provided for @liveCopyDanmakuInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制弹幕信息'**
+  String get liveCopyDanmakuInfo;
+
+  /// No description provided for @liveGoToUserProfile.
+  ///
+  /// In zh, this message translates to:
+  /// **'去 TA 的个人空间'**
+  String get liveGoToUserProfile;
+
+  /// No description provided for @liveBlockSender.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽发送者'**
+  String get liveBlockSender;
+
+  /// No description provided for @liveBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽成功'**
+  String get liveBlocked;
+
+  /// No description provided for @liveLikeSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'点赞成功'**
+  String get liveLikeSucceeded;
+
+  /// No description provided for @liveDanmakuInputHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入弹幕内容'**
+  String get liveDanmakuInputHint;
+
+  /// No description provided for @audioNoOrder.
+  ///
+  /// In zh, this message translates to:
+  /// **'无序'**
+  String get audioNoOrder;
+
+  /// No description provided for @audioPlaybackSpeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放倍速（{speed}×）'**
+  String audioPlaybackSpeed(Object speed);
+
+  /// No description provided for @audioPlaybackMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放模式'**
+  String get audioPlaybackMode;
+
+  /// No description provided for @videoTripleSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'三连成功'**
+  String get videoTripleSucceeded;
+
+  /// No description provided for @danmakuBlockTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'弹幕屏蔽'**
+  String get danmakuBlockTitle;
+
+  /// No description provided for @danmakuBlockKeyword.
+  ///
+  /// In zh, this message translates to:
+  /// **'关键词'**
+  String get danmakuBlockKeyword;
+
+  /// No description provided for @danmakuBlockRegex.
+  ///
+  /// In zh, this message translates to:
+  /// **'正则'**
+  String get danmakuBlockRegex;
+
+  /// No description provided for @danmakuBlockUser.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户'**
+  String get danmakuBlockUser;
+
+  /// No description provided for @danmakuBlockTabCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{label}（{count}）'**
+  String danmakuBlockTabCount(Object count, Object label);
+
+  /// No description provided for @danmakuDeleteRuleConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除该规则？'**
+  String get danmakuDeleteRuleConfirm;
+
+  /// No description provided for @danmakuKeywordHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入过滤关键词；其他类别请切换标签页后添加。'**
+  String get danmakuKeywordHint;
+
+  /// No description provided for @danmakuRegexHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入 // 之间的正则表达式，无需包含首尾斜杠。'**
+  String get danmakuRegexHint;
+
+  /// No description provided for @danmakuUidHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入用户 UID'**
+  String get danmakuUidHint;
+
+  /// No description provided for @danmakuRuleDialogTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'{action}{type}规则'**
+  String danmakuRuleDialogTitle(Object action, Object type);
+
+  /// No description provided for @danmakuInputEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入内容不能为空'**
+  String get danmakuInputEmpty;
+
+  /// No description provided for @danmakuInputUnchanged.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入内容与上次相同'**
+  String get danmakuInputUnchanged;
+
+  /// No description provided for @danmakuSyncingRules.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在同步弹幕屏蔽规则…'**
+  String get danmakuSyncingRules;
+
+  /// No description provided for @danmakuDeletingRule.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在删除弹幕屏蔽规则…'**
+  String get danmakuDeletingRule;
+
+  /// No description provided for @danmakuAddingRule.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在添加弹幕屏蔽规则…'**
+  String get danmakuAddingRule;
+
+  /// No description provided for @liveDanmakuGlobalBlock.
+  ///
+  /// In zh, this message translates to:
+  /// **'全局屏蔽'**
+  String get liveDanmakuGlobalBlock;
+
+  /// No description provided for @liveDanmakuBlockEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽已开启'**
+  String get liveDanmakuBlockEnabled;
+
+  /// No description provided for @liveDanmakuBlockDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽未开启'**
+  String get liveDanmakuBlockDisabled;
+
+  /// No description provided for @liveDanmakuUserLevel.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户等级'**
+  String get liveDanmakuUserLevel;
+
+  /// No description provided for @liveDanmakuBelowLevel.
+  ///
+  /// In zh, this message translates to:
+  /// **'{level} 以下'**
+  String liveDanmakuBelowLevel(Object level);
+
+  /// No description provided for @liveDanmakuUnofficialUser.
+  ///
+  /// In zh, this message translates to:
+  /// **'非正式会员'**
+  String get liveDanmakuUnofficialUser;
+
+  /// No description provided for @liveDanmakuUnverifiedPhone.
+  ///
+  /// In zh, this message translates to:
+  /// **'未绑定手机用户'**
+  String get liveDanmakuUnverifiedPhone;
+
+  /// No description provided for @liveDanmakuKeywordBlock.
+  ///
+  /// In zh, this message translates to:
+  /// **'关键词屏蔽'**
+  String get liveDanmakuKeywordBlock;
+
+  /// No description provided for @commonInput.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入'**
+  String get commonInput;
+
+  /// No description provided for @favoriteFolderSortTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏夹排序'**
+  String get favoriteFolderSortTitle;
+
+  /// No description provided for @favoriteDefaultFolderSortUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认收藏夹不支持排序'**
+  String get favoriteDefaultFolderSortUnsupported;
+
+  /// No description provided for @favoriteSortFolderTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'排序：{folder}'**
+  String favoriteSortFolderTitle(String folder);
+
+  /// No description provided for @followSaveToDefaultGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存至默认分组'**
+  String get followSaveToDefaultGroup;
+
+  /// No description provided for @commonVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'视频'**
+  String get commonVideo;
+
+  /// No description provided for @commonLongImage.
+  ///
+  /// In zh, this message translates to:
+  /// **'长图'**
+  String get commonLongImage;
+
+  /// No description provided for @imagePositionSemantics.
+  ///
+  /// In zh, this message translates to:
+  /// **'图片，第 {position} 张，共 {total} 张'**
+  String imagePositionSemantics(int position, int total);
+
+  /// No description provided for @downloadVideoCachedNotification.
+  ///
+  /// In zh, this message translates to:
+  /// **'视频已缓存完成'**
+  String get downloadVideoCachedNotification;
+
+  /// No description provided for @topicJoin.
+  ///
+  /// In zh, this message translates to:
+  /// **'参与话题'**
+  String get topicJoin;
+
+  /// No description provided for @topicStarted.
+  ///
+  /// In zh, this message translates to:
+  /// **'发起'**
+  String get topicStarted;
+
+  /// No description provided for @topicStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'{views} 浏览 · {discussions} 讨论'**
+  String topicStats(String views, String discussions);
+
+  /// No description provided for @replyPinned.
+  ///
+  /// In zh, this message translates to:
+  /// **'评论置顶成功'**
+  String get replyPinned;
+
+  /// No description provided for @replyUnpinned.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消评论置顶'**
+  String get replyUnpinned;
+
+  /// No description provided for @webRefresh.
+  ///
+  /// In zh, this message translates to:
+  /// **'刷新'**
+  String get webRefresh;
+
+  /// No description provided for @webCopyLink.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制链接'**
+  String get webCopyLink;
+
+  /// No description provided for @webOpenInBrowser.
+  ///
+  /// In zh, this message translates to:
+  /// **'在浏览器中打开'**
+  String get webOpenInBrowser;
+
+  /// No description provided for @webClearCache.
+  ///
+  /// In zh, this message translates to:
+  /// **'清除缓存'**
+  String get webClearCache;
+
+  /// No description provided for @webResetCookie.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新设置 Cookie'**
+  String get webResetCookie;
+
+  /// No description provided for @webGoBack.
+  ///
+  /// In zh, this message translates to:
+  /// **'返回'**
+  String get webGoBack;
+
+  /// No description provided for @webCacheCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'已清理'**
+  String get webCacheCleared;
+
+  /// No description provided for @webCookieResetSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置成功，请刷新或重新打开网页'**
+  String get webCookieResetSucceeded;
+
+  /// No description provided for @webDownloadFileConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'下载文件：{filename}？'**
+  String webDownloadFileConfirm(String filename);
+
+  /// No description provided for @webConfirmWithFileSize.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定（{size}）'**
+  String webConfirmWithFileSize(String size);
+
+  /// No description provided for @webExternalLinkConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前网页将要打开外部链接，是否打开？'**
+  String get webExternalLinkConfirm;
+
+  /// No description provided for @webOpen.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开'**
+  String get webOpen;
+
+  /// No description provided for @commonUnliked.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消点赞'**
+  String get commonUnliked;
+
+  /// No description provided for @articleShareTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'哔哩哔哩专栏'**
+  String get articleShareTitle;
+
+  /// No description provided for @articleCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 篇专栏'**
+  String articleCount(String count);
+
+  /// No description provided for @articleWordCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 个字'**
+  String articleWordCount(String count);
+
+  /// No description provided for @articleReadCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 次阅读'**
+  String articleReadCount(String count);
+
+  /// No description provided for @articleUpdatedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'{date} 更新'**
+  String articleUpdatedAt(String date);
+
+  /// No description provided for @articleCollectionId.
+  ///
+  /// In zh, this message translates to:
+  /// **'文集号：{id}'**
+  String articleCollectionId(int id);
+
+  /// No description provided for @followUserFollowers.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name} 的粉丝'**
+  String followUserFollowers(String name);
+
+  /// No description provided for @followRemoveFollowerConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定移除 {name}？'**
+  String followRemoveFollowerConfirm(String name);
+
+  /// No description provided for @followFollowerRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除成功'**
+  String get followFollowerRemoved;
+
+  /// No description provided for @matchDetails.
+  ///
+  /// In zh, this message translates to:
+  /// **'比赛详情'**
+  String get matchDetails;
+
+  /// No description provided for @matchWatchLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'看直播'**
+  String get matchWatchLive;
+
+  /// No description provided for @matchEndedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'{date} · 已结束'**
+  String matchEndedAt(String date);
+
+  /// No description provided for @castNoDevices.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有找到投屏设备'**
+  String get castNoDevices;
+
+  /// No description provided for @liveSearchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索房间或主播'**
+  String get liveSearchHint;
+
+  /// No description provided for @liveContributionRankOnline.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线榜'**
+  String get liveContributionRankOnline;
+
+  /// No description provided for @liveContributionRankDaily.
+  ///
+  /// In zh, this message translates to:
+  /// **'日榜'**
+  String get liveContributionRankDaily;
+
+  /// No description provided for @liveContributionRankWeekly.
+  ///
+  /// In zh, this message translates to:
+  /// **'周榜'**
+  String get liveContributionRankWeekly;
+
+  /// No description provided for @liveContributionRankMonthly.
+  ///
+  /// In zh, this message translates to:
+  /// **'月榜'**
+  String get liveContributionRankMonthly;
+
+  /// No description provided for @liveSearchRooms.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在直播 {count}'**
+  String liveSearchRooms(String count);
+
+  /// No description provided for @liveSearchUploaders.
+  ///
+  /// In zh, this message translates to:
+  /// **'主播 {count}'**
+  String liveSearchUploaders(String count);
+
+  /// No description provided for @liveAllTags.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部标签'**
+  String get liveAllTags;
+
+  /// No description provided for @liveFavoriteTags.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的常用标签'**
+  String get liveFavoriteTags;
+
+  /// No description provided for @liveTapTagHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击进入标签'**
+  String get liveTapTagHint;
+
+  /// No description provided for @favoriteWantToWatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'想看'**
+  String get favoriteWantToWatch;
+
+  /// No description provided for @favoriteWatching.
+  ///
+  /// In zh, this message translates to:
+  /// **'在看'**
+  String get favoriteWatching;
+
+  /// No description provided for @favoriteWatched.
+  ///
+  /// In zh, this message translates to:
+  /// **'看过'**
+  String get favoriteWatched;
+
+  /// No description provided for @favoriteUnpublishedNotes.
+  ///
+  /// In zh, this message translates to:
+  /// **'未发布笔记'**
+  String get favoriteUnpublishedNotes;
+
+  /// No description provided for @favoritePublicNotes.
+  ///
+  /// In zh, this message translates to:
+  /// **'公开笔记'**
+  String get favoritePublicNotes;
+
+  /// No description provided for @memberOrderMostPlayed.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多播放'**
+  String get memberOrderMostPlayed;
+
+  /// No description provided for @memberOrderMostFavorited.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多收藏'**
+  String get memberOrderMostFavorited;
+
+  /// No description provided for @memberReverseOrder.
+  ///
+  /// In zh, this message translates to:
+  /// **'倒序'**
+  String get memberReverseOrder;
+
+  /// No description provided for @memberJumpToPage.
+  ///
+  /// In zh, this message translates to:
+  /// **'跳至'**
+  String get memberJumpToPage;
+
+  /// No description provided for @memberPageNumber.
+  ///
+  /// In zh, this message translates to:
+  /// **'页数'**
+  String get memberPageNumber;
+
+  /// No description provided for @memberLocateLastWatched.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位至上次观看'**
+  String get memberLocateLastWatched;
+
+  /// No description provided for @audioTrackCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count, plural, other{共 {count} 首}}'**
+  String audioTrackCount(int count);
+
+  /// No description provided for @memberMyRecentCoinedVideos.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的最近投币'**
+  String get memberMyRecentCoinedVideos;
+
+  /// No description provided for @memberUserRecentCoinedVideos.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name} 的最近投币'**
+  String memberUserRecentCoinedVideos(String name);
+
+  /// No description provided for @memberFanMedalWall.
+  ///
+  /// In zh, this message translates to:
+  /// **'粉丝勋章墙'**
+  String get memberFanMedalWall;
+
+  /// No description provided for @memberFanMedalCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count, plural, other{共拥有 {count} 枚粉丝勋章}}'**
+  String memberFanMedalCount(int count);
+
+  /// No description provided for @memberMedalWearing.
+  ///
+  /// In zh, this message translates to:
+  /// **'佩戴中'**
+  String get memberMedalWearing;
+
+  /// No description provided for @favoriteAddedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏于 {date}'**
+  String favoriteAddedAt(String date);
+
+  /// No description provided for @memberLastWatched.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次观看'**
+  String get memberLastWatched;
+
+  /// No description provided for @reviewLong.
+  ///
+  /// In zh, this message translates to:
+  /// **'长评'**
+  String get reviewLong;
+
+  /// No description provided for @reviewShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'短评'**
+  String get reviewShort;
+
+  /// No description provided for @reviewWriteLong.
+  ///
+  /// In zh, this message translates to:
+  /// **'写长评'**
+  String get reviewWriteLong;
+
+  /// No description provided for @reviewWriteShort.
+  ///
+  /// In zh, this message translates to:
+  /// **'写短评'**
+  String get reviewWriteShort;
+
+  /// No description provided for @reviewLatest.
+  ///
+  /// In zh, this message translates to:
+  /// **'最新'**
+  String get reviewLatest;
+
+  /// No description provided for @reviewRatingAwful.
+  ///
+  /// In zh, this message translates to:
+  /// **'很差'**
+  String get reviewRatingAwful;
+
+  /// No description provided for @reviewRatingPoor.
+  ///
+  /// In zh, this message translates to:
+  /// **'较差'**
+  String get reviewRatingPoor;
+
+  /// No description provided for @reviewRatingOkay.
+  ///
+  /// In zh, this message translates to:
+  /// **'还行'**
+  String get reviewRatingOkay;
+
+  /// No description provided for @reviewRatingGreat.
+  ///
+  /// In zh, this message translates to:
+  /// **'很好'**
+  String get reviewRatingGreat;
+
+  /// No description provided for @reviewRatingExcellent.
+  ///
+  /// In zh, this message translates to:
+  /// **'佳作'**
+  String get reviewRatingExcellent;
+
+  /// No description provided for @reviewTapToRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻触评分'**
+  String get reviewTapToRate;
+
+  /// No description provided for @reviewEdited.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑成功'**
+  String get reviewEdited;
+
+  /// No description provided for @reviewPublished.
+  ///
+  /// In zh, this message translates to:
+  /// **'点评成功'**
+  String get reviewPublished;
+
+  /// No description provided for @reviewDeleteConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除短评，同时删除评分？'**
+  String get reviewDeleteConfirm;
+
+  /// No description provided for @reviewCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 条点评'**
+  String reviewCount(String count);
+
+  /// No description provided for @searchFilter.
+  ///
+  /// In zh, this message translates to:
+  /// **'筛选'**
+  String get searchFilter;
+
+  /// No description provided for @searchFilteredBy.
+  ///
+  /// In zh, this message translates to:
+  /// **'“{filter}”的筛选结果'**
+  String searchFilteredBy(String filter);
+
+  /// No description provided for @searchSortValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'排序：{value}'**
+  String searchSortValue(String value);
+
+  /// No description provided for @searchZoneValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'分区：{value}'**
+  String searchZoneValue(String value);
+
+  /// No description provided for @searchUserTypeValue.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户类型：{value}'**
+  String searchUserTypeValue(String value);
+
+  /// No description provided for @searchZone.
+  ///
+  /// In zh, this message translates to:
+  /// **'分区'**
+  String get searchZone;
+
+  /// No description provided for @searchUserSort.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户粉丝数及等级排序顺序'**
+  String get searchUserSort;
+
+  /// No description provided for @searchUserType.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户分类'**
+  String get searchUserType;
+
+  /// No description provided for @searchPublishedTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'发布时间'**
+  String get searchPublishedTime;
+
+  /// No description provided for @searchDateTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'至'**
+  String get searchDateTo;
+
+  /// No description provided for @searchContentDuration.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容时长'**
+  String get searchContentDuration;
+
+  /// No description provided for @searchContentZone.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容分区'**
+  String get searchContentZone;
+
+  /// No description provided for @searchOrderRelevance.
+  ///
+  /// In zh, this message translates to:
+  /// **'综合排序'**
+  String get searchOrderRelevance;
+
+  /// No description provided for @searchOrderNewest.
+  ///
+  /// In zh, this message translates to:
+  /// **'最新发布'**
+  String get searchOrderNewest;
+
+  /// No description provided for @searchOrderMostClicked.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多点击'**
+  String get searchOrderMostClicked;
+
+  /// No description provided for @searchOrderMostLiked.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多喜欢'**
+  String get searchOrderMostLiked;
+
+  /// No description provided for @searchOrderMostCommented.
+  ///
+  /// In zh, this message translates to:
+  /// **'最多评论'**
+  String get searchOrderMostCommented;
+
+  /// No description provided for @searchOrderDefault.
+  ///
+  /// In zh, this message translates to:
+  /// **'默认排序'**
+  String get searchOrderDefault;
+
+  /// No description provided for @searchOrderMostPlayed.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放多'**
+  String get searchOrderMostPlayed;
+
+  /// No description provided for @searchOrderMostDanmaku.
+  ///
+  /// In zh, this message translates to:
+  /// **'弹幕多'**
+  String get searchOrderMostDanmaku;
+
+  /// No description provided for @searchOrderMostFavorited.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏多'**
+  String get searchOrderMostFavorited;
+
+  /// No description provided for @searchFollowersHighToLow.
+  ///
+  /// In zh, this message translates to:
+  /// **'粉丝数由高到低'**
+  String get searchFollowersHighToLow;
+
+  /// No description provided for @searchFollowersLowToHigh.
+  ///
+  /// In zh, this message translates to:
+  /// **'粉丝数由低到高'**
+  String get searchFollowersLowToHigh;
+
+  /// No description provided for @searchLevelHighToLow.
+  ///
+  /// In zh, this message translates to:
+  /// **'等级由高到低'**
+  String get searchLevelHighToLow;
+
+  /// No description provided for @searchLevelLowToHigh.
+  ///
+  /// In zh, this message translates to:
+  /// **'等级由低到高'**
+  String get searchLevelLowToHigh;
+
+  /// No description provided for @searchAllUsers.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部用户'**
+  String get searchAllUsers;
+
+  /// No description provided for @searchUploaders.
+  ///
+  /// In zh, this message translates to:
+  /// **'UP 主'**
+  String get searchUploaders;
+
+  /// No description provided for @searchRegularUsers.
+  ///
+  /// In zh, this message translates to:
+  /// **'普通用户'**
+  String get searchRegularUsers;
+
+  /// No description provided for @searchVerifiedUsers.
+  ///
+  /// In zh, this message translates to:
+  /// **'认证用户'**
+  String get searchVerifiedUsers;
+
+  /// No description provided for @searchAnyTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'不限'**
+  String get searchAnyTime;
+
+  /// No description provided for @searchLastDay.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近一天'**
+  String get searchLastDay;
+
+  /// No description provided for @searchLastWeek.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近一周'**
+  String get searchLastWeek;
+
+  /// No description provided for @searchLastSixMonths.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近半年'**
+  String get searchLastSixMonths;
+
+  /// No description provided for @searchAllDurations.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部时长'**
+  String get searchAllDurations;
+
+  /// No description provided for @searchDurationUnderTen.
+  ///
+  /// In zh, this message translates to:
+  /// **'0–10 分钟'**
+  String get searchDurationUnderTen;
+
+  /// No description provided for @searchDurationTenToThirty.
+  ///
+  /// In zh, this message translates to:
+  /// **'10–30 分钟'**
+  String get searchDurationTenToThirty;
+
+  /// No description provided for @searchDurationThirtyToSixty.
+  ///
+  /// In zh, this message translates to:
+  /// **'30–60 分钟'**
+  String get searchDurationThirtyToSixty;
+
+  /// No description provided for @searchDurationOverSixty.
+  ///
+  /// In zh, this message translates to:
+  /// **'60 分钟以上'**
+  String get searchDurationOverSixty;
+
+  /// No description provided for @searchAllZones.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部分区'**
+  String get searchAllZones;
+
+  /// No description provided for @searchZoneAnimation.
+  ///
+  /// In zh, this message translates to:
+  /// **'动画'**
+  String get searchZoneAnimation;
+
+  /// No description provided for @searchZoneAnime.
+  ///
+  /// In zh, this message translates to:
+  /// **'番剧'**
+  String get searchZoneAnime;
+
+  /// No description provided for @searchZoneChineseAnimation.
+  ///
+  /// In zh, this message translates to:
+  /// **'国创'**
+  String get searchZoneChineseAnimation;
+
+  /// No description provided for @searchZoneMusic.
+  ///
+  /// In zh, this message translates to:
+  /// **'音乐'**
+  String get searchZoneMusic;
+
+  /// No description provided for @searchZoneDance.
+  ///
+  /// In zh, this message translates to:
+  /// **'舞蹈'**
+  String get searchZoneDance;
+
+  /// No description provided for @searchZoneGames.
+  ///
+  /// In zh, this message translates to:
+  /// **'游戏'**
+  String get searchZoneGames;
+
+  /// No description provided for @searchZoneKnowledge.
+  ///
+  /// In zh, this message translates to:
+  /// **'知识'**
+  String get searchZoneKnowledge;
+
+  /// No description provided for @searchZoneTechnology.
+  ///
+  /// In zh, this message translates to:
+  /// **'科技'**
+  String get searchZoneTechnology;
+
+  /// No description provided for @searchZoneSports.
+  ///
+  /// In zh, this message translates to:
+  /// **'运动'**
+  String get searchZoneSports;
+
+  /// No description provided for @searchZoneCars.
+  ///
+  /// In zh, this message translates to:
+  /// **'汽车'**
+  String get searchZoneCars;
+
+  /// No description provided for @searchZoneLife.
+  ///
+  /// In zh, this message translates to:
+  /// **'生活'**
+  String get searchZoneLife;
+
+  /// No description provided for @searchZoneFood.
+  ///
+  /// In zh, this message translates to:
+  /// **'美食'**
+  String get searchZoneFood;
+
+  /// No description provided for @searchZoneAnimals.
+  ///
+  /// In zh, this message translates to:
+  /// **'动物'**
+  String get searchZoneAnimals;
+
+  /// No description provided for @searchZoneKichiku.
+  ///
+  /// In zh, this message translates to:
+  /// **'鬼畜'**
+  String get searchZoneKichiku;
+
+  /// No description provided for @searchZoneFashion.
+  ///
+  /// In zh, this message translates to:
+  /// **'时尚'**
+  String get searchZoneFashion;
+
+  /// No description provided for @searchZoneNews.
+  ///
+  /// In zh, this message translates to:
+  /// **'资讯'**
+  String get searchZoneNews;
+
+  /// No description provided for @searchZoneEntertainment.
+  ///
+  /// In zh, this message translates to:
+  /// **'娱乐'**
+  String get searchZoneEntertainment;
+
+  /// No description provided for @searchZoneFilmTv.
+  ///
+  /// In zh, this message translates to:
+  /// **'影视'**
+  String get searchZoneFilmTv;
+
+  /// No description provided for @searchZoneDocumentary.
+  ///
+  /// In zh, this message translates to:
+  /// **'纪录片'**
+  String get searchZoneDocumentary;
+
+  /// No description provided for @searchZoneMovies.
+  ///
+  /// In zh, this message translates to:
+  /// **'电影'**
+  String get searchZoneMovies;
+
+  /// No description provided for @searchZoneTv.
+  ///
+  /// In zh, this message translates to:
+  /// **'电视'**
+  String get searchZoneTv;
+
+  /// No description provided for @searchZoneInterests.
+  ///
+  /// In zh, this message translates to:
+  /// **'兴趣'**
+  String get searchZoneInterests;
+
+  /// No description provided for @searchZoneLightNovels.
+  ///
+  /// In zh, this message translates to:
+  /// **'轻小说'**
+  String get searchZoneLightNovels;
+
+  /// No description provided for @searchZoneNotes.
+  ///
+  /// In zh, this message translates to:
+  /// **'笔记'**
+  String get searchZoneNotes;
+
+  /// No description provided for @commonAlbum.
+  ///
+  /// In zh, this message translates to:
+  /// **'相簿'**
+  String get commonAlbum;
+
+  /// No description provided for @commonArticle.
+  ///
+  /// In zh, this message translates to:
+  /// **'专栏'**
+  String get commonArticle;
+
+  /// No description provided for @messagesAutoReply.
+  ///
+  /// In zh, this message translates to:
+  /// **'此条消息为自动回复'**
+  String get messagesAutoReply;
+
+  /// No description provided for @messagesLiveBy.
+  ///
+  /// In zh, this message translates to:
+  /// **'{author} · 直播'**
+  String messagesLiveBy(String author);
+
+  /// No description provided for @liveNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播中'**
+  String get liveNow;
+
+  /// No description provided for @memberFollowerCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 粉丝'**
+  String memberFollowerCount(String count);
+
+  /// No description provided for @commonViewMore.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看更多内容'**
+  String get commonViewMore;
+
+  /// No description provided for @commonExit.
+  ///
+  /// In zh, this message translates to:
+  /// **'退出'**
+  String get commonExit;
+
+  /// No description provided for @audioWatchMv.
+  ///
+  /// In zh, this message translates to:
+  /// **'看 MV'**
+  String get audioWatchMv;
+
+  /// No description provided for @liveHighEnergyAudience.
+  ///
+  /// In zh, this message translates to:
+  /// **'高能观众（{count}）'**
+  String liveHighEnergyAudience(String count);
+
+  /// No description provided for @liveJustStarted.
+  ///
+  /// In zh, this message translates to:
+  /// **'刚刚开播'**
+  String get liveJustStarted;
+
+  /// No description provided for @liveStartedFor.
+  ///
+  /// In zh, this message translates to:
+  /// **'开播 {duration}'**
+  String liveStartedFor(String duration);
+
+  /// No description provided for @livePlaybackUrlUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法获取播放地址'**
+  String get livePlaybackUrlUnavailable;
+
+  /// No description provided for @liveVisitUser.
+  ///
+  /// In zh, this message translates to:
+  /// **'访问：{name}'**
+  String liveVisitUser(String name);
+
+  /// No description provided for @liveCopySuperChatInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制 SC 信息'**
+  String get liveCopySuperChatInfo;
+
+  /// No description provided for @commonExpand.
+  ///
+  /// In zh, this message translates to:
+  /// **'展开'**
+  String get commonExpand;
+
+  /// No description provided for @commonCollapse.
+  ///
+  /// In zh, this message translates to:
+  /// **'收起'**
+  String get commonCollapse;
+
+  /// No description provided for @feedTopics.
+  ///
+  /// In zh, this message translates to:
+  /// **'话题'**
+  String get feedTopics;
+
+  /// No description provided for @commonTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'时间'**
+  String get commonTime;
+
+  /// No description provided for @commonReason.
+  ///
+  /// In zh, this message translates to:
+  /// **'原因'**
+  String get commonReason;
+
+  /// No description provided for @logChange.
+  ///
+  /// In zh, this message translates to:
+  /// **'变化'**
+  String get logChange;
+
+  /// No description provided for @logLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'地理位置'**
+  String get logLocation;
+
+  /// No description provided for @logExperienceHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'经验记录'**
+  String get logExperienceHistory;
+
+  /// No description provided for @logLoginHistory.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录记录'**
+  String get logLoginHistory;
+
+  /// No description provided for @saveWatch.
+  ///
+  /// In zh, this message translates to:
+  /// **'观看'**
+  String get saveWatch;
+
+  /// No description provided for @saveContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容'**
+  String get saveContent;
+
+  /// No description provided for @saveCollection.
+  ///
+  /// In zh, this message translates to:
+  /// **'合集'**
+  String get saveCollection;
+
+  /// No description provided for @saveScanQrToOpen.
+  ///
+  /// In zh, this message translates to:
+  /// **'识别二维码，{action}{item}'**
+  String saveScanQrToOpen(String action, String item);
+
+  /// No description provided for @musicReleaseDate.
+  ///
+  /// In zh, this message translates to:
+  /// **'发行日期：{date}'**
+  String musicReleaseDate(String date);
+
+  /// No description provided for @musicOriginalArtist.
+  ///
+  /// In zh, this message translates to:
+  /// **'原唱：{artist}'**
+  String musicOriginalArtist(String artist);
+
+  /// No description provided for @musicAlbum.
+  ///
+  /// In zh, this message translates to:
+  /// **'专辑：{album}'**
+  String musicAlbum(String album);
+
+  /// No description provided for @musicSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'出处：{source}'**
+  String musicSource(String source);
+
+  /// No description provided for @musicHotSongRanking.
+  ///
+  /// In zh, this message translates to:
+  /// **'热歌榜排名'**
+  String get musicHotSongRanking;
+
+  /// No description provided for @musicPopularity.
+  ///
+  /// In zh, this message translates to:
+  /// **'热度'**
+  String get musicPopularity;
+
+  /// No description provided for @musicTotalPlays.
+  ///
+  /// In zh, this message translates to:
+  /// **'总播放量'**
+  String get musicTotalPlays;
+
+  /// No description provided for @musicVideosUsingTrack.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用稿件量'**
+  String get musicVideosUsingTrack;
+
+  /// No description provided for @musicRecentPopularityTrend.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 {days} 日热度趋势'**
+  String musicRecentPopularityTrend(int days);
+
+  /// No description provided for @articleAuthorReads.
+  ///
+  /// In zh, this message translates to:
+  /// **'{author} · {count} 阅读'**
+  String articleAuthorReads(String author, int count);
+
+  /// No description provided for @articlePriceFrom.
+  ///
+  /// In zh, this message translates to:
+  /// **'{price} 起'**
+  String articlePriceFrom(String price);
+
+  /// No description provided for @articleFeedOrArticle.
+  ///
+  /// In zh, this message translates to:
+  /// **'动态 / 专栏'**
+  String get articleFeedOrArticle;
+
+  /// No description provided for @articleUnsupportedType.
+  ///
+  /// In zh, this message translates to:
+  /// **'不支持的类型（{type}）'**
+  String articleUnsupportedType(String type);
+
+  /// No description provided for @articleInvalidType.
+  ///
+  /// In zh, this message translates to:
+  /// **'错误的类型：{error}'**
+  String articleInvalidType(String error);
+
+  /// No description provided for @memberShopFrom.
+  ///
+  /// In zh, this message translates to:
+  /// **'来自 {source}'**
+  String memberShopFrom(String source);
+
+  /// No description provided for @loginMainAccountSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'主账号登录成功'**
+  String get loginMainAccountSucceeded;
+
+  /// No description provided for @loginCookieFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录失败，请检查 Cookie 是否正确。{error}'**
+  String loginCookieFailed(String error);
+
+  /// No description provided for @memberAllCollectionsAndLists.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部合集 / 列表'**
+  String get memberAllCollectionsAndLists;
+
+  /// No description provided for @memberAllPosts.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部图文'**
+  String get memberAllPosts;
+
+  /// No description provided for @memberPosts.
+  ///
+  /// In zh, this message translates to:
+  /// **'图文'**
+  String get memberPosts;
+
+  /// No description provided for @memberSupportRanking.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name} 的充电排行榜 {count}'**
+  String memberSupportRanking(String name, String count);
+
+  /// No description provided for @memberSupport.
+  ///
+  /// In zh, this message translates to:
+  /// **'充电'**
+  String get memberSupport;
+
+  /// No description provided for @memberSupportDaysSuffix.
+  ///
+  /// In zh, this message translates to:
+  /// **' 天'**
+  String get memberSupportDaysSuffix;
+
+  /// No description provided for @liveSearchUserStats.
+  ///
+  /// In zh, this message translates to:
+  /// **'分区：{area} · 关注数：{followers}'**
+  String liveSearchUserStats(String area, String followers);
+
+  /// No description provided for @bubbleSiteTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'{name} 小站'**
+  String bubbleSiteTitle(String name);
+
+  /// No description provided for @liveSwitchPreviewTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换至{target}'**
+  String liveSwitchPreviewTo(String target);
+
+  /// No description provided for @liveCover.
+  ///
+  /// In zh, this message translates to:
+  /// **'封面'**
+  String get liveCover;
+
+  /// No description provided for @liveFirstFrame.
+  ///
+  /// In zh, this message translates to:
+  /// **'首帧'**
+  String get liveFirstFrame;
+
+  /// No description provided for @liveShowMenu.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示菜单'**
+  String get liveShowMenu;
+
+  /// No description provided for @liveReportSelectedDanmaku.
+  ///
+  /// In zh, this message translates to:
+  /// **'举报选中弹幕'**
+  String get liveReportSelectedDanmaku;
+
+  /// No description provided for @mediaTvSeries.
+  ///
+  /// In zh, this message translates to:
+  /// **'电视剧'**
+  String get mediaTvSeries;
+
+  /// No description provided for @mediaComics.
+  ///
+  /// In zh, this message translates to:
+  /// **'漫画'**
+  String get mediaComics;
+
+  /// No description provided for @mediaVarietyShows.
+  ///
+  /// In zh, this message translates to:
+  /// **'综艺'**
+  String get mediaVarietyShows;
+
+  /// No description provided for @memberUserLevelSemantics.
+  ///
+  /// In zh, this message translates to:
+  /// **'{level} 级'**
+  String memberUserLevelSemantics(int level);
+
+  /// No description provided for @avatarVipBadge.
+  ///
+  /// In zh, this message translates to:
+  /// **'大会员'**
+  String get avatarVipBadge;
+
+  /// No description provided for @avatarVerifiedIndividual.
+  ///
+  /// In zh, this message translates to:
+  /// **'认证个人'**
+  String get avatarVerifiedIndividual;
+
+  /// No description provided for @avatarVerifiedOrganization.
+  ///
+  /// In zh, this message translates to:
+  /// **'认证机构'**
+  String get avatarVerifiedOrganization;
+
+  /// No description provided for @memberHardcoreUserLevelSemantics.
+  ///
+  /// In zh, this message translates to:
+  /// **'硬核 {level} 级'**
+  String memberHardcoreUserLevelSemantics(int level);
+
+  /// No description provided for @playerProgressBar.
+  ///
+  /// In zh, this message translates to:
+  /// **'进度条'**
+  String get playerProgressBar;
+
+  /// No description provided for @commonPlay.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放'**
+  String get commonPlay;
+
+  /// No description provided for @settingsSpeedTestTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'测速超时'**
+  String get settingsSpeedTestTimeout;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存'**
+  String get commonSave;
 }
 
 class _AppLocalizationsDelegate

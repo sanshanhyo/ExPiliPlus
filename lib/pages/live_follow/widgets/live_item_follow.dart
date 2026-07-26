@@ -2,6 +2,7 @@ import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/live/live_follow/item.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class LiveCardVFollow extends StatelessWidget {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        child: videoStat(),
+                        child: videoStat(context),
                       ),
                     ],
                   );
@@ -97,7 +98,7 @@ class LiveCardVFollow extends StatelessWidget {
     );
   }
 
-  Widget videoStat() {
+  Widget videoStat(BuildContext context) {
     return Container(
       height: 50,
       padding: const EdgeInsets.only(top: 26, left: 10, right: 10),
@@ -121,7 +122,7 @@ class LiveCardVFollow extends StatelessWidget {
           ),
           if (liveItem.textSmall case final textSmall?)
             Text(
-              '$textSmall围观',
+              context.l10n.playerWatchingNow(textSmall),
               style: const TextStyle(fontSize: 11, color: Colors.white),
             ),
         ],

@@ -7,9 +7,12 @@ import 'package:ex_piliplus/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:ex_piliplus/common/widgets/video_card/video_card_h.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
+import 'package:ex_piliplus/models/common/member/archive_order_type_web.dart';
+import 'package:ex_piliplus/models/common/member/archive_sort_type_app.dart';
 import 'package:ex_piliplus/models/horizontal_video_model.dart';
 import 'package:ex_piliplus/pages/member_video_web/base/controller.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,12 +51,17 @@ abstract class BaseVideoWebState<
             () {
               final order = controller.order.value;
               return PopupMenuButton<V>(
-                tooltip: '排序',
+                tooltip: context.l10n.commonSort,
                 icon: const Icon(Icons.sort),
                 initialValue: order,
                 onSelected: controller.queryBySort,
                 itemBuilder: (_) => values
-                    .map((e) => PopupMenuItem(value: e, child: Text(e.label)))
+                    .map(
+                      (e) => PopupMenuItem(
+                        value: e,
+                        child: Text(_localizedOrderLabel(e)),
+                      ),
+                    )
                     .toList(),
               );
             },
@@ -136,7 +144,7 @@ abstract class BaseVideoWebState<
     final count = controller.count;
     if (count == null) return null;
     return Text(
-      '共 $count 视频',
+      context.l10n.videoCount(count),
       style: const TextStyle(height: 1),
       strutStyle: const StrutStyle(leading: 0, height: 1),
     );
@@ -154,7 +162,7 @@ abstract class BaseVideoWebState<
     final backwardBtn = iconButton(
       size: size,
       iconSize: iconSize,
-      tooltip: canBackward ? '上一页' : null,
+      tooltip: canBackward ? context.l10n.commonPrevious : null,
       icon: const Icon(Icons.keyboard_arrow_left),
       onPressed: canBackward ? () => controller.jumpToPage(page - 1) : null,
     );
@@ -162,7 +170,7 @@ abstract class BaseVideoWebState<
     final forwardBtn = iconButton(
       size: size,
       iconSize: iconSize,
-      tooltip: canForward ? '下一页' : null,
+      tooltip: canForward ? context.l10n.commonNext : null,
       icon: const Icon(Icons.keyboard_arrow_right),
       onPressed: canForward ? () => controller.jumpToPage(page + 1) : null,
     );
@@ -201,14 +209,14 @@ abstract class BaseVideoWebState<
 
     showConfirmDialog(
       context: context,
-      title: const Text('跳至: '),
+      title: Text(context.l10n.memberJumpToPage),
       content: TextFormField(
         autofocus: true,
         initialValue: pageStr,
         onChanged: (value) => pageStr = value,
-        decoration: const InputDecoration(
-          labelText: '页数',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          labelText: context.l10n.memberPageNumber,
+          border: const OutlineInputBorder(),
         ),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         onFieldSubmitted: (_) {
@@ -219,4 +227,10 @@ abstract class BaseVideoWebState<
       onConfirm: onSubmit,
     );
   }
+
+  String _localizedOrderLabel(V value) => switch (value) {
+    ArchiveOrderTypeWeb e => e.localizedLabel(context.l10n),
+    ArchiveSortTypeApp e => e.localizedLabel(context.l10n),
+    _ => value.label,
+  };
 }

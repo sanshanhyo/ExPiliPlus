@@ -1,5 +1,7 @@
 import 'dart:math' show pow;
 
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 abstract final class DurationUtils {
   static String formatDuration(num? seconds) {
     if (seconds == null || seconds == 0) {
@@ -30,10 +32,19 @@ abstract final class DurationUtils {
     return duration;
   }
 
-  static String formatDurationBetween(int startMillis, int endMillis) =>
-      formatTimeDuration(Duration(milliseconds: endMillis - startMillis));
+  static String formatDurationBetween(
+    int startMillis,
+    int endMillis,
+    AppLocalizations l10n,
+  ) => formatTimeDuration(
+    Duration(milliseconds: endMillis - startMillis),
+    l10n,
+  );
 
-  static String formatTimeDuration(Duration duration) {
+  static String formatTimeDuration(
+    Duration duration,
+    AppLocalizations l10n,
+  ) {
     final inDays = duration.inDays;
     final daysLeft = inDays % 365;
     final years = inDays ~/ 365;
@@ -44,11 +55,11 @@ abstract final class DurationUtils {
 
     final format = StringBuffer();
 
-    if (years > 0) format.write('$years年');
-    if (months > 0) format.write('$months月');
-    if (days > 0) format.write('$days天');
-    if (hours > 0) format.write('$hours小时');
-    if (minutes > 0) format.write('$minutes分钟');
+    if (years > 0) format.write(l10n.durationYears(years));
+    if (months > 0) format.write(l10n.durationMonths(months));
+    if (days > 0) format.write(l10n.durationDays(days));
+    if (hours > 0) format.write(l10n.durationHours(hours));
+    if (minutes > 0) format.write(l10n.durationMinutes(minutes));
 
     return format.toString();
   }

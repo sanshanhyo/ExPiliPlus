@@ -4,6 +4,7 @@ import 'package:ex_piliplus/grpc/bilibili/app/im/v1.pb.dart'
 import 'package:ex_piliplus/pages/common/common_whisper_controller.dart';
 import 'package:ex_piliplus/pages/contact/view.dart';
 import 'package:ex_piliplus/pages/whisper_settings/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -38,6 +39,23 @@ extension ThreeDotItemTypeExt on ThreeDotItemType {
     _ => const Icon(MdiIcons.circleMedium, size: 20),
   };
 
+  String localizedTitle(BuildContext context, ThreeDotItem item) =>
+      switch (this) {
+        ThreeDotItemType.THREE_DOT_ITEM_TYPE_MSG_SETTING =>
+          context.l10n.messagesMenuSettings,
+        ThreeDotItemType.THREE_DOT_ITEM_TYPE_READ_ALL =>
+          context.l10n.messagesMarkAllRead,
+        ThreeDotItemType.THREE_DOT_ITEM_TYPE_CLEAR_LIST =>
+          context.l10n.messagesClearList,
+        ThreeDotItemType.THREE_DOT_ITEM_TYPE_UP_HELPER =>
+          context.l10n.messagesUploaderAssistant,
+        ThreeDotItemType.THREE_DOT_ITEM_TYPE_CONTACTS =>
+          context.l10n.messagesContacts,
+        ThreeDotItemType.THREE_DOT_ITEM_TYPE_FANS_GROUP_HELPER =>
+          context.l10n.messagesFanGroupAssistant,
+        _ => item.title,
+      };
+
   void action({
     required BuildContext context,
     required CommonWhisperController controller,
@@ -47,15 +65,15 @@ extension ThreeDotItemTypeExt on ThreeDotItemType {
       case ThreeDotItemType.THREE_DOT_ITEM_TYPE_READ_ALL:
         showConfirmDialog(
           context: context,
-          title: const Text('一键已读'),
-          content: const Text('是否清除全部新消息提醒？'),
+          title: Text(context.l10n.messagesMarkAllRead),
+          content: Text(context.l10n.messagesMarkAllReadConfirm),
           onConfirm: controller.onClearUnread,
         );
       case ThreeDotItemType.THREE_DOT_ITEM_TYPE_CLEAR_LIST:
         showConfirmDialog(
           context: context,
-          title: const Text('清空列表'),
-          content: const Text('清空后所有消息将被删除，无法恢复'),
+          title: Text(context.l10n.messagesClearList),
+          content: Text(context.l10n.messagesClearListConfirm),
           onConfirm: controller.onDeleteList,
         );
       case ThreeDotItemType.THREE_DOT_ITEM_TYPE_MSG_SETTING:

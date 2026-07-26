@@ -9,14 +9,14 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/accounts/api_type.dart';
 import 'package:ex_piliplus/utils/app_sign.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
-import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 final _setCookieReg = RegExp('(?<=)(,)(?=[^;]+?=)');
 
@@ -237,37 +237,31 @@ class AccountManager extends Interceptor {
         );
 
   static Future<String> dioError(DioException error) async {
+    final l10n = Get.context?.l10n;
     switch (error.type) {
       case .badCertificate:
-        return '证书有误！';
+        return l10n?.networkBadCertificate ?? 'Invalid certificate';
       case .badResponse:
-        return '服务器异常，请稍后重试！';
+        return l10n?.networkServerError ?? 'Server error. Try again later';
       case .cancel:
-        return '请求已被取消，请重新请求';
+        return l10n?.networkRequestCancelled ?? 'Request cancelled';
       case .connectionError:
-        return '连接错误，请检查网络设置';
+        return l10n?.networkConnectionError ??
+            'Connection error. Check your network settings';
       case .connectionTimeout:
-        return '网络连接超时，请检查网络设置';
+        return l10n?.networkConnectionTimeout ??
+            'Connection timed out. Check your network settings';
       case .receiveTimeout:
-        return '响应超时，请稍后重试！';
+        return l10n?.networkResponseTimeout ??
+            'Response timed out. Try again later';
       case .sendTimeout:
-        return '发送请求超时，请检查网络设置';
+        return l10n?.networkSendTimeout ??
+            'Request timed out. Check your network settings';
       case .transformTimeout:
-        return '转换响应数据超时！';
+        return l10n?.networkTransformTimeout ?? 'Response processing timed out';
       case .unknown:
-        String desc;
-        try {
-          desc = PlatformUtils.isMobile
-              ? (await Connectivity().checkConnectivity()).first.desc
-              : '';
-        } catch (_) {
-          desc = '';
-        }
-        return '$desc网络异常 ${error.error}';
+        return l10n?.networkUnknownError('${error.error}') ??
+            'Network error: ${error.error}';
     }
   }
-}
-
-extension _ConnectivityResultExt on ConnectivityResult {
-  String get desc => const ['蓝牙', 'Wi-Fi', '局域', '流量', '无', '代理', '其他'][index];
 }

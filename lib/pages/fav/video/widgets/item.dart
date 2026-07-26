@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/fav/fav_folder/list.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 class FavVideoItem extends StatelessWidget {
@@ -88,7 +89,7 @@ class FavVideoItem extends StatelessWidget {
               ),
             ),
           Text(
-            '${item.mediaCount}个内容',
+            context.l10n.favoriteContentCount(item.mediaCount),
             style: TextStyle(
               fontSize: fontSize,
               color: color,
@@ -96,7 +97,9 @@ class FavVideoItem extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            BiliUtils.isPublicFavText(item.attr),
+            BiliUtils.isPublicFav(item.attr)
+                ? context.l10n.favoritePublic
+                : context.l10n.favoritePrivate,
             style: TextStyle(
               fontSize: fontSize,
               color: color,

@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models_new/member/search_archive/data.dart';
 import 'package:ex_piliplus/models_new/member/search_archive/slist.dart';
 import 'package:ex_piliplus/models_new/member/search_archive/vlist.dart';
 import 'package:ex_piliplus/pages/member_video_web/base/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:get/get.dart';
 
 class MemberVideoWebCtr
@@ -44,7 +45,14 @@ class MemberVideoWebCtr
       final tags = data.list?.tags;
       if (tags?.isNotEmpty ?? false) {
         this.tags = tags!
-          ..insert(0, ListTag(tid: 0, name: '全部类型', count: _totalCount));
+          ..insert(
+            0,
+            ListTag(
+              tid: 0,
+              name: Get.context!.l10n.commonAllTypes,
+              count: _totalCount,
+            ),
+          );
       }
     }
     return false;

@@ -6,6 +6,7 @@ import 'package:ex_piliplus/models_new/fav/fav_article/item.dart';
 import 'package:ex_piliplus/pages/fav/article/controller.dart';
 import 'package:ex_piliplus/pages/fav/article/widget/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -64,7 +65,7 @@ class _FavArticlePageState extends State<FavArticlePage>
                     item: item,
                     onDelete: () => showConfirmDialog(
                       context: context,
-                      title: const Text('确定取消收藏？'),
+                      title: Text(context.l10n.favoriteRemoveConfirm),
                       onConfirm: () =>
                           _favArticleController.onRemove(index, item.opusId!),
                     ),

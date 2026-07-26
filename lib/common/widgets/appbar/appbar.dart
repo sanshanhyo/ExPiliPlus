@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/pages/common/multi_select/base.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,16 +26,18 @@ class MultiSelectAppBarWidget extends StatelessWidget
       return AppBar(
         bottom: child.bottom,
         leading: IconButton(
-          tooltip: '取消',
+          tooltip: context.l10n.commonCancel,
           onPressed: ctr.handleSelect,
           icon: const Icon(Icons.close_outlined),
         ),
-        title: Obx(() => Text('已选: ${ctr.checkedCount}')),
+        title: Obx(
+          () => Text(context.l10n.commonSelectedCount(ctr.checkedCount)),
+        ),
         actions: [
           TextButton(
             style: style,
             onPressed: () => ctr.handleSelect(checked: true),
-            child: const Text('全选'),
+            child: Text(context.l10n.commonSelectAll),
           ),
           ...?actions,
           TextButton(
@@ -46,7 +49,7 @@ class MultiSelectAppBarWidget extends StatelessWidget
               ctr.onRemove();
             },
             child: Text(
-              '移除',
+              context.l10n.commonRemove,
               style: TextStyle(color: colorScheme.error),
             ),
           ),

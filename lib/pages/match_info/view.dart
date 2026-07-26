@@ -14,6 +14,7 @@ import 'package:ex_piliplus/pages/match_info/controller.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -42,7 +43,7 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
   Widget build(BuildContext context) {
     final child = Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('比赛详情')),
+      appBar: AppBar(title: Text(context.l10n.matchDetails)),
       body: ViewSafeArea(
         child: refreshIndicator(
           onRefresh: controller.onRefresh,
@@ -145,11 +146,13 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
                             ),
                             onPressed: () =>
                                 PageUtils.toLiveRoom(response.liveRoom),
-                            child: const Text('看直播'),
+                            child: Text(context.l10n.matchWatchLive),
                           )
                         else if (response.contestStatus == 3)
                           Text(
-                            '${DateFormatUtils.dateFormat(response.stime)}${response.contestStatus == 3 ? ' 已结束' : ''}',
+                            context.l10n.matchEndedAt(
+                              DateFormatUtils.dateFormat(response.stime),
+                            ),
                             style: TextStyle(
                               color: theme.colorScheme.outline,
                             ),
@@ -195,7 +198,7 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
         Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text('评论详情'),
+            title: Text(context.l10n.replyDetails),
             shape: Border(
               bottom: BorderSide(
                 color: theme.colorScheme.outline.withValues(alpha: 0.1),

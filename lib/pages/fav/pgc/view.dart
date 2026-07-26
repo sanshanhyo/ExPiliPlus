@@ -1,5 +1,6 @@
 import 'package:ex_piliplus/pages/fav/pgc/child_view.dart';
 import 'package:ex_piliplus/pages/fav/pgc/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -71,10 +72,10 @@ class _FavPgcPageState extends State<FavPgcPage>
                     const TextStyle(fontSize: 14),
                 labelColor: theme.colorScheme.onSecondaryContainer,
                 unselectedLabelColor: theme.colorScheme.outline,
-                tabs: const [
-                  Tab(text: '想看'),
-                  Tab(text: '在看'),
-                  Tab(text: '看过'),
+                tabs: [
+                  Tab(text: context.l10n.favoriteWantToWatch),
+                  Tab(text: context.l10n.favoriteWatching),
+                  Tab(text: context.l10n.favoriteWatched),
                 ],
                 onTap: (index) {
                   try {

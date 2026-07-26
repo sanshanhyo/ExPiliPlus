@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum ArticleOrderType {
   totalrank('综合排序'),
   pubdate('最新发布'),
@@ -9,6 +11,14 @@ enum ArticleOrderType {
   String get order => name;
   final String label;
   const ArticleOrderType(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .totalrank => l10n.searchOrderRelevance,
+    .pubdate => l10n.searchOrderNewest,
+    .click => l10n.searchOrderMostClicked,
+    .attention => l10n.searchOrderMostLiked,
+    .scores => l10n.searchOrderMostCommented,
+  };
 }
 
 enum ArticleZoneType {
@@ -26,4 +36,16 @@ enum ArticleZoneType {
   final String label;
   final int categoryId;
   const ArticleZoneType(this.label, this.categoryId);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .all => l10n.searchAllZones,
+    .douga => l10n.searchZoneAnimation,
+    .game => l10n.searchZoneGames,
+    .cinephile => l10n.searchZoneFilmTv,
+    .life => l10n.searchZoneLife,
+    .interest => l10n.searchZoneInterests,
+    .novel => l10n.searchZoneLightNovels,
+    .tech => l10n.searchZoneTechnology,
+    .note => l10n.searchZoneNotes,
+  };
 }

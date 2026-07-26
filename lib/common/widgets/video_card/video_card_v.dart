@@ -13,6 +13,7 @@ import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/dimension_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -188,16 +189,16 @@ class VideoCardV extends StatelessWidget {
                     type: .secondary,
                   ),
                 if (videoItem.goto == 'picture')
-                  const PBadge(
-                    text: '动态',
+                  PBadge(
+                    text: context.l10n.navigationFeed,
                     isStack: false,
                     size: .small,
                     type: .line_primary,
                     fontSize: 9,
                   ),
                 if (videoItem.isFollowed)
-                  const PBadge(
-                    text: '已关注',
+                  PBadge(
+                    text: context.l10n.memberFollowing,
                     isStack: false,
                     size: .small,
                     type: .secondary,

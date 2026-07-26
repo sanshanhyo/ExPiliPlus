@@ -4,6 +4,7 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,12 @@ class SearchPgcItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Text('评分:${item.mediaScore?['score']}', style: style),
+                    Text(
+                      context.l10n.videoRating(
+                        item.mediaScore?['score']?.toString() ?? '-',
+                      ),
+                      style: style,
+                    ),
                     Row(
                       children: [
                         if (item.areas?.isNotEmpty == true)

@@ -4,6 +4,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/fav/fav_folder/list.dart';
 import 'package:ex_piliplus/pages/fav/video/controller.dart';
 import 'package:ex_piliplus/pages/fav/video/widgets/item.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -30,15 +31,16 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('收藏夹排序'),
+        title: Text(context.l10n.favoriteFolderSortTitle),
         actions: [
           TextButton(
             onPressed: () async {
+              final successMessage = context.l10n.followSortCompleted;
               final res = await FavHttp.sortFavFolder(
                 sort: sortList.map((item) => item.id).join(','),
               );
               if (res.isSuccess) {
-                SmartDialog.showToast('排序完成');
+                SmartDialog.showToast(successMessage);
                 _favController.loadingState.value = Success(sortList);
                 if (mounted) {
                   Get.back();
@@ -47,7 +49,7 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
                 res.toast();
               }
             },
-            child: const Text('完成'),
+            child: Text(context.l10n.commonDone),
           ),
           const SizedBox(width: 16),
         ],
@@ -58,7 +60,7 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
 
   void onReorderItem(int oldIndex, int newIndex) {
     if (oldIndex == 0 || newIndex == 0) {
-      SmartDialog.showToast('默认收藏夹不支持排序');
+      SmartDialog.showToast(context.l10n.favoriteDefaultFolderSortUnsupported);
       return;
     }
 
@@ -86,7 +88,9 @@ class _FavFolderSortPageState extends State<FavFolderSortPage>
             heroTag: key,
             item: item,
             onLongPress: index == 0
-                ? () => SmartDialog.showToast('默认收藏夹不支持排序')
+                ? () => SmartDialog.showToast(
+                    context.l10n.favoriteDefaultFolderSortUnsupported,
+                  )
                 : null,
           ),
         );

@@ -15,6 +15,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -70,8 +71,8 @@ class _SavePanelState extends State<SavePanel> {
 
   // item
   Object get _item => widget.item;
-  late String viewType = '查看';
-  late String itemType = '内容';
+  _ViewAction viewType = _ViewAction.view;
+  _ShareItemType itemType = _ShareItemType.content;
 
   //reply
   String? cover;
@@ -87,7 +88,7 @@ class _SavePanelState extends State<SavePanel> {
   void initState() {
     super.initState();
     if (_item case final ReplyInfo reply) {
-      itemType = '评论';
+      itemType = _ShareItemType.comment;
       final currentRoute = Get.currentRoute;
       late final hasRoot = reply.hasRoot();
 
@@ -227,42 +228,41 @@ class _SavePanelState extends State<SavePanel> {
     try {
       switch (item.type) {
         case 'DYNAMIC_TYPE_AV':
-          viewType = '观看';
-          itemType = '视频';
+          viewType = _ViewAction.watch;
+          itemType = _ShareItemType.video;
           uri = 'bilibili://video/${item.basic!.commentIdStr}';
           break;
 
         case 'DYNAMIC_TYPE_ARTICLE':
-          itemType = '专栏';
+          itemType = _ShareItemType.article;
           uri = 'bilibili://following/detail/${item.idStr}';
           break;
 
         case 'DYNAMIC_TYPE_LIVE_RCMD':
-          viewType = '观看';
-          itemType = '直播';
+          viewType = _ViewAction.watch;
+          itemType = _ShareItemType.live;
           final roomId = item.modules.moduleDynamic!.major!.liveRcmd!.roomId;
           uri = 'bilibili://live/$roomId';
           break;
 
         case 'DYNAMIC_TYPE_UGC_SEASON':
-          viewType = '观看';
-          itemType = '合集';
+          viewType = _ViewAction.watch;
+          itemType = _ShareItemType.collection;
           final aid = item.modules.moduleDynamic!.major!.ugcSeason!.aid;
           uri = 'bilibili://video/$aid';
           break;
 
         case 'DYNAMIC_TYPE_PGC':
         case 'DYNAMIC_TYPE_PGC_UNION':
-          viewType = '观看';
-          itemType =
-              item.modules.moduleDynamic?.major?.pgc?.badge?.text ?? '番剧';
+          viewType = _ViewAction.watch;
+          itemType = _ShareItemType.anime;
           final epid = item.modules.moduleDynamic!.major!.pgc!.epid;
           uri = 'bilibili://pgc/season/ep/$epid';
           break;
 
         // https://www.bilibili.com/medialist/detail/ml12345678
         case 'DYNAMIC_TYPE_MEDIALIST':
-          itemType = '收藏夹';
+          itemType = _ShareItemType.favoriteFolder;
           final mediaId = item.modules.moduleDynamic!.major!.medialist!.id;
           uri = 'bilibili://medialist/detail/$mediaId';
           break;
@@ -276,7 +276,7 @@ class _SavePanelState extends State<SavePanel> {
         // 图文动态查看
         // case 'DYNAMIC_TYPE_DRAW':
         default:
-          itemType = '动态';
+          itemType = _ShareItemType.feed;
           uri = 'bilibili://following/detail/${item.idStr}';
           break;
       }
@@ -463,7 +463,10 @@ class _SavePanelState extends State<SavePanel> {
                                                   ),
                                                 ),
                                               Text(
-                                                '识别二维码，$viewType$itemType',
+                                                context.l10n.saveScanQrToOpen(
+                                                  _localizedViewType,
+                                                  _localizedItemType,
+                                                ),
                                                 textAlign: .end,
                                                 style: TextStyle(
                                                   color: theme
@@ -553,7 +556,7 @@ class _SavePanelState extends State<SavePanel> {
                 children: [
                   iconButton(
                     size: 42,
-                    tooltip: '关闭',
+                    tooltip: context.l10n.commonClose,
                     icon: const Icon(Icons.clear),
                     onPressed: Get.back,
                     bgColor: theme.colorScheme.onInverseSurface,
@@ -561,7 +564,9 @@ class _SavePanelState extends State<SavePanel> {
                   ),
                   iconButton(
                     size: 42,
-                    tooltip: showBottom ? '隐藏' : '显示',
+                    tooltip: showBottom
+                        ? context.l10n.commonHide
+                        : context.l10n.commonShow,
                     context: context,
                     icon: showBottom
                         ? const Icon(Icons.visibility_off)
@@ -573,14 +578,14 @@ class _SavePanelState extends State<SavePanel> {
                   if (PlatformUtils.isMobile)
                     iconButton(
                       size: 42,
-                      tooltip: '分享',
+                      tooltip: context.l10n.commonShare,
                       context: context,
                       icon: const Icon(Icons.share),
                       onPressed: () => _onSaveOrSharePic(true),
                     ),
                   iconButton(
                     size: 42,
-                    tooltip: '保存',
+                    tooltip: context.l10n.commonSave,
                     context: context,
                     icon: const Icon(Icons.save_alt),
                     onPressed: _onSaveOrSharePic,
@@ -593,6 +598,37 @@ class _SavePanelState extends State<SavePanel> {
       ],
     );
   }
+
+  String get _localizedViewType => switch (viewType) {
+    .view => context.l10n.commonView,
+    .watch => context.l10n.saveWatch,
+  };
+
+  String get _localizedItemType => switch (itemType) {
+    .content => context.l10n.saveContent,
+    .comment => context.l10n.feedComment,
+    .video => context.l10n.commonVideo,
+    .article => context.l10n.commonArticle,
+    .live => context.l10n.liveTitle,
+    .collection => context.l10n.saveCollection,
+    .anime => context.l10n.searchZoneAnime,
+    .favoriteFolder => context.l10n.favoriteFolderBadge,
+    .feed => context.l10n.navigationFeed,
+  };
 }
 
 enum _CoverType { def16_9, square }
+
+enum _ViewAction { view, watch }
+
+enum _ShareItemType {
+  content,
+  comment,
+  video,
+  article,
+  live,
+  collection,
+  anime,
+  favoriteFolder,
+  feed,
+}

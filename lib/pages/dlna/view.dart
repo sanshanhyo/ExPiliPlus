@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/loading_widget/loading_widget.dart';
 import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:dlna_dart/dlna.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -73,10 +74,10 @@ class _DLNAPageState extends State<DLNAPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('投屏'),
+        title: Text(context.l10n.playerCast),
         actions: [
           IconButton(
-            tooltip: '搜索',
+            tooltip: context.l10n.commonSearch,
             onPressed: _onSearch,
             icon: const Icon(Icons.refresh),
           ),
@@ -95,7 +96,7 @@ class _DLNAPageState extends State<DLNAPage> {
   Widget _buildBody(ColorScheme colorScheme) {
     if (!_isSearching && _deviceList.isEmpty) {
       return HttpError(
-        errMsg: '没有设备',
+        errMsg: context.l10n.castNoDevices,
         onReload: _onSearch,
       );
     }

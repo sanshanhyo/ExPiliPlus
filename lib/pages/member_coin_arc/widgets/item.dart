@@ -10,6 +10,7 @@ import 'package:ex_piliplus/models/common/stat_type.dart';
 import 'package:ex_piliplus/models_new/member/coin_like_arc/item.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -75,14 +76,14 @@ class MemberCoinLikeItem extends StatelessWidget {
                         type: .emote,
                       ),
                       if (item.isCooperation == true)
-                        const PBadge(
-                          text: '合作',
+                        PBadge(
+                          text: context.l10n.videoCooperation,
                           top: 6,
                           right: 6,
                         )
                       else if (item.isSteins == true)
-                        const PBadge(
-                          text: '互动',
+                        PBadge(
+                          text: context.l10n.videoInteractive,
                           top: 6,
                           right: 6,
                         ),

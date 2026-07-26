@@ -12,6 +12,7 @@ import 'package:ex_piliplus/models_new/space/space_archive/item.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/utils/extension/dimension_ext.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:get/get.dart';
@@ -166,7 +167,7 @@ class MemberVideoCtr
               'mediaId': seasonId ?? seriesId ?? mid,
               'oid': oid,
               'favTitle':
-                  '$username: ${title ?? episodicButton.text ?? '播放全部'}',
+                  '$username: ${title ?? episodicButton.text ?? Get.context!.l10n.commonPlayAll}',
               if (seriesId == null) 'count': ?count,
               if (seasonId != null || seriesId != null)
                 'mediaType': params['page_type'],
@@ -208,7 +209,7 @@ class MemberVideoCtr
               'mediaId': seasonId ?? seriesId ?? mid,
               'oid': IdUtils.bv2av(element.bvid!),
               'favTitle':
-                  '$username: ${title ?? episodicButton.text ?? '播放全部'}',
+                  '$username: ${title ?? episodicButton.text ?? Get.context!.l10n.commonPlayAll}',
               if (seriesId == null) 'count': ?count,
               if (seasonId != null || seriesId != null)
                 'mediaType': Uri.parse(

@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/dynamic/dyn_topic_top/topic_item.dart';
 import 'package:ex_piliplus/pages/dynamics_select_topic/widgets/item.dart';
 import 'package:ex_piliplus/pages/dynamics_topic_rcmd/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +24,7 @@ class _DynTopicRcmdPageState extends State<DynTopicRcmdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('话题')),
+      appBar: AppBar(title: Text(context.l10n.feedTopics)),
       body: refreshIndicator(
         onRefresh: _controller.onRefresh,
         child: CustomScrollView(

@@ -14,13 +14,27 @@ import 'package:path/path.dart' as path;
 
 typedef AppFontDownloadProgress = ({int received, int total});
 
-final class AppFontDownloadException implements Exception {
-  const AppFontDownloadException(this.message);
+enum AppFontDownloadError {
+  incompleteFile,
+  loadFailed,
+  http,
+  licenseExtractionFailed,
+  downloadFailed,
+  sizeMismatch,
+  checksumMismatch,
+  timeout,
+  network,
+  saveFailed,
+}
 
-  final String message;
+final class AppFontDownloadException implements Exception {
+  const AppFontDownloadException(this.error, {this.statusCode});
+
+  final AppFontDownloadError error;
+  final int? statusCode;
 
   @override
-  String toString() => message;
+  String toString() => 'App font error: ${error.name}';
 }
 
 abstract final class AppFontManager {
@@ -117,7 +131,7 @@ abstract final class AppFontManager {
   static Future<void> load(AppFontFamily font) async {
     if (font.isSystem || _loadedFonts.contains(font)) return;
     if (!isDownloaded(font)) {
-      throw const AppFontDownloadException('字体文件不完整，请重新下载');
+      throw const AppFontDownloadException(.incompleteFile);
     }
 
     try {
@@ -129,7 +143,7 @@ abstract final class AppFontManager {
     } catch (error, stackTrace) {
       _deleteFile(_fontFile(font));
       Error.throwWithStackTrace(
-        const AppFontDownloadException('字体加载失败，请重新下载'),
+        const AppFontDownloadException(.loadFailed),
         stackTrace,
       );
     }
@@ -190,7 +204,8 @@ abstract final class AppFontManager {
           final statusCode = response.statusCode;
           if (statusCode == null || statusCode < 200 || statusCode >= 300) {
             throw AppFontDownloadException(
-              '字体下载失败（HTTP ${statusCode ?? '-'}）',
+              .http,
+              statusCode: statusCode,
             );
           }
 
@@ -218,7 +233,7 @@ abstract final class AppFontManager {
 
           if (licenseTarget != null && licenseTemporary != null) {
             if (!licenseTemporary.existsSync()) {
-              throw const AppFontDownloadException('字体许可文件提取失败，请重试');
+              throw const AppFontDownloadException(.licenseExtractionFailed);
             }
             _deleteFile(licenseTarget);
             await licenseTemporary.rename(licenseTarget.path);
@@ -238,7 +253,7 @@ abstract final class AppFontManager {
         }
       }
       Error.throwWithStackTrace(
-        lastError ?? const AppFontDownloadException('字体下载失败，请稍后重试'),
+        lastError ?? const AppFontDownloadException(.downloadFailed),
         lastStackTrace ?? StackTrace.current,
       );
     } catch (error, stackTrace) {
@@ -260,11 +275,11 @@ abstract final class AppFontManager {
     String expectedSha256,
   ) async {
     if (await file.length() != expectedSize) {
-      throw const AppFontDownloadException('字体文件大小校验失败，请重试');
+      throw const AppFontDownloadException(.sizeMismatch);
     }
     final digest = await sha256.bind(file.openRead()).first;
     if (digest.toString() != expectedSha256) {
-      throw const AppFontDownloadException('SHA-256 校验失败，请重试');
+      throw const AppFontDownloadException(.checksumMismatch);
     }
   }
 
@@ -273,20 +288,21 @@ abstract final class AppFontManager {
       final statusCode = error.response?.statusCode;
       if (statusCode != null) {
         return AppFontDownloadException(
-          '字体下载失败（HTTP $statusCode）',
+          .http,
+          statusCode: statusCode,
         );
       }
       if (error.type == DioExceptionType.connectionTimeout ||
           error.type == DioExceptionType.receiveTimeout ||
           error.type == DioExceptionType.sendTimeout) {
-        return const AppFontDownloadException('字体下载连接超时，请检查网络后重试');
+        return const AppFontDownloadException(.timeout);
       }
-      return const AppFontDownloadException('无法下载字体，请检查网络');
+      return const AppFontDownloadException(.network);
     }
     if (error is FileSystemException) {
-      return const AppFontDownloadException('字体文件保存失败，请检查存储空间');
+      return const AppFontDownloadException(.saveFailed);
     }
-    return const AppFontDownloadException('字体下载失败，请稍后重试');
+    return const AppFontDownloadException(.downloadFailed);
   }
 
   static void _deleteFile(File file) {

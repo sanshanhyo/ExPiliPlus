@@ -178,7 +178,7 @@ class _MemberPageState extends State<MemberPage> {
                     final isLoading = _userController.randomVideoLoading.value;
                     return FloatingActionButton.small(
                       heroTag: 'random-video-$_heroTag',
-                      tooltip: '随机播放',
+                      tooltip: context.l10n.memberRandomPlay,
                       onPressed: isLoading
                           ? null
                           : _userController.playRandomVideo,
@@ -204,7 +204,7 @@ class _MemberPageState extends State<MemberPage> {
 
   Widget _reserveBtn(List<ReservationCardItem> list, ColorScheme theme) {
     return IconButton(
-      tooltip: '预约',
+      tooltip: context.l10n.memberReservation,
       onPressed: () => _showReserveList(list),
       icon: ReserveButton(
         count: list.length,
@@ -280,7 +280,9 @@ class _MemberPageState extends State<MemberPage> {
                         ),
                       ),
                       child: Text(
-                        '${e.isFollow ? '已' : ''}预约',
+                        e.isFollow
+                            ? context.l10n.memberReserved
+                            : context.l10n.memberReservation,
                         style: const TextStyle(fontSize: 13),
                       ),
                     );
@@ -290,7 +292,7 @@ class _MemberPageState extends State<MemberPage> {
                         mainAxisSize: .min,
                         children: [
                           iconButton(
-                            tooltip: '预约动态',
+                            tooltip: context.l10n.memberReservationPost,
                             size: 32,
                             iconSize: 20,
                             iconColor: scheme.outline,
@@ -318,7 +320,9 @@ class _MemberPageState extends State<MemberPage> {
                               TextSpan(
                                 text:
                                     '${e.descText1 == null ? '' : '${e.descText1}  '}'
-                                    '${NumUtils.numFormat(e.total)}人预约',
+                                    '${context.l10n.memberReservationCount(
+                                      NumUtils.numFormat(e.total),
+                                    )}',
                               ),
                               if (e.lotteryPrizeInfo case final lottery?) ...[
                                 const TextSpan(text: '\n'),
@@ -469,12 +473,12 @@ class _MemberPageState extends State<MemberPage> {
         if (Get.isRegistered<MemberContributeCtr>(tag: _heroTag))
           PopupMenuItem(
             onTap: _toWebArchive,
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.extension_outlined, size: 19),
-                SizedBox(width: 10),
-                Text('网页投稿'),
+                const Icon(Icons.extension_outlined, size: 19),
+                const SizedBox(width: 10),
+                Text(context.l10n.memberWebUploads),
               ],
             ),
           ),
@@ -491,23 +495,23 @@ class _MemberPageState extends State<MemberPage> {
                 0)
               PopupMenuItem(
                 onTap: _userController.vipExpAdd,
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.upcoming_outlined, size: 19),
-                    SizedBox(width: 10),
-                    Text('大会员经验'),
+                    const Icon(Icons.upcoming_outlined, size: 19),
+                    const SizedBox(width: 10),
+                    Text(context.l10n.memberPremiumXp),
                   ],
                 ),
               ),
             PopupMenuItem(
               onTap: () => Get.to(const LoginDevicesPage()),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.devices, size: 18),
-                  SizedBox(width: 10),
-                  Text('登录设备'),
+                  const Icon(Icons.devices, size: 18),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.loginDevicesTitle),
                 ],
               ),
             ),
@@ -516,12 +520,12 @@ class _MemberPageState extends State<MemberPage> {
                 const LogPage(),
                 arguments: LoginLogController(),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.login, size: 18),
-                  SizedBox(width: 10),
-                  Text('登录记录'),
+                  const Icon(Icons.login, size: 18),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.memberSignInHistory),
                 ],
               ),
             ),
@@ -530,12 +534,12 @@ class _MemberPageState extends State<MemberPage> {
                 const LogPage(),
                 arguments: CoinLogController(),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(FontAwesomeIcons.b, size: 16),
-                  SizedBox(width: 10),
-                  Text('硬币记录'),
+                  const Icon(FontAwesomeIcons.b, size: 16),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.memberCoinHistory),
                 ],
               ),
             ),
@@ -544,23 +548,23 @@ class _MemberPageState extends State<MemberPage> {
                 const LogPage(),
                 arguments: ExpLogController(),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.linear_scale, size: 18),
-                  SizedBox(width: 10),
-                  Text('经验记录'),
+                  const Icon(Icons.linear_scale, size: 18),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.memberXpHistory),
                 ],
               ),
             ),
             PopupMenuItem(
               onTap: () => Get.toNamed('/spaceSetting'),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.settings_outlined, size: 19),
-                  SizedBox(width: 10),
-                  Text('空间设置'),
+                  const Icon(Icons.settings_outlined, size: 19),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.memberSpaceSettings),
                 ],
               ),
             ),
@@ -568,12 +572,12 @@ class _MemberPageState extends State<MemberPage> {
             if (_userController.isFollow)
               PopupMenuItem(
                 onTap: _showFollowTime,
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.more_time_outlined, size: 19),
-                    SizedBox(width: 10),
-                    Text('关注时间'),
+                    const Icon(Icons.more_time_outlined, size: 19),
+                    const SizedBox(width: 10),
+                    Text(context.l10n.memberFollowingTime),
                   ],
                 ),
               ),
@@ -594,7 +598,7 @@ class _MemberPageState extends State<MemberPage> {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    '举报',
+                    context.l10n.commonReport,
                     style: TextStyle(color: theme.error),
                   ),
                 ],
@@ -642,6 +646,7 @@ class _MemberPageState extends State<MemberPage> {
 
   String? _cacheFollowTime;
   Future<void> _showFollowTime() async {
+    final l10n = context.l10n;
     void onShow() {
       if (!mounted) return;
       showDialog(
@@ -653,7 +658,7 @@ class _MemberPageState extends State<MemberPage> {
             TextButton(
               onPressed: Get.back,
               child: Text(
-                '关闭',
+                context.l10n.commonClose,
                 style: TextStyle(color: ColorScheme.of(context).outline),
               ),
             ),
@@ -669,10 +674,11 @@ class _MemberPageState extends State<MemberPage> {
     final res = await UserHttp.userRelation(_mid);
     if (res case Success(:final response)) {
       if (response.mtime == null) return;
-      _cacheFollowTime =
-          '关注时间: ${DateFormatUtils.longFormatDs.format(
-            DateTime.fromMillisecondsSinceEpoch(response.mtime! * 1000),
-          )}';
+      _cacheFollowTime = l10n.memberFollowingSince(
+        DateFormatUtils.longFormatDs.format(
+          DateTime.fromMillisecondsSinceEpoch(response.mtime! * 1000),
+        ),
+      );
       onShow();
     } else {
       res.toast();

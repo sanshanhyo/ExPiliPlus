@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/http/pgc.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -118,12 +119,12 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
               final score = _score.value;
               return Text(
                 switch (score) {
-                  1 => '很差',
-                  2 => '较差',
-                  3 => '还行',
-                  4 => '很好',
-                  5 => '佳作',
-                  _ => '轻触评分',
+                  1 => context.l10n.reviewRatingAwful,
+                  2 => context.l10n.reviewRatingPoor,
+                  3 => context.l10n.reviewRatingOkay,
+                  4 => context.l10n.reviewRatingGreat,
+                  5 => context.l10n.reviewRatingExcellent,
+                  _ => context.l10n.reviewTapToRate,
                 },
                 style: TextStyle(
                   fontSize: 16,
@@ -172,7 +173,10 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
                             : Icons.check_box_outline_blank_outlined,
                         color: color,
                       ),
-                      Text(' 分享到动态', style: TextStyle(color: color)),
+                      Text(
+                        ' ${context.l10n.feedShareToFeed}',
+                        style: TextStyle(color: color),
+                      ),
                     ],
                   );
                 },
@@ -209,7 +213,9 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
                 ),
               ),
               onPressed: _enablePost.value ? _onPost : null,
-              child: _isMod ? const Text('编辑') : const Text('发布'),
+              child: Text(
+                _isMod ? context.l10n.commonEdit : context.l10n.feedPublishNow,
+              ),
             ),
           ),
         ),
@@ -219,6 +225,7 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
 
   Future<void> _onPost() async {
     if (_isMod) {
+      final successMessage = context.l10n.reviewEdited;
       final res = await PgcHttp.pgcReviewMod(
         mediaId: widget.mediaId,
         score: _score.value * 2,
@@ -227,14 +234,15 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
       );
       if (res.isSuccess) {
         Get.back();
-        SmartDialog.showToast('编辑成功');
+        SmartDialog.showToast(successMessage);
       } else {
         res.toast();
       }
       return;
     }
+    final successMessage = context.l10n.reviewPublished;
     if (!Accounts.main.isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(context.l10n.accountPleaseSignIn);
       return;
     }
     final res = await PgcHttp.pgcReviewPost(
@@ -245,7 +253,7 @@ class _PgcReviewPostPanelState extends State<PgcReviewPostPanel> {
     );
     if (res.isSuccess) {
       Get.back();
-      SmartDialog.showToast('点评成功');
+      SmartDialog.showToast(successMessage);
     } else {
       res.toast();
     }

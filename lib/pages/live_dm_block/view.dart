@@ -10,6 +10,7 @@ import 'package:ex_piliplus/models_new/live/live_dm_block/shield_user_list.dart'
 import 'package:ex_piliplus/pages/live_dm_block/controller.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
@@ -39,9 +40,9 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
     final theme = Theme.of(context);
     Widget tabBar = TabBar(
       controller: _controller.tabController,
-      tabs: const [
-        Tab(text: '关键词'),
-        Tab(text: '用户'),
+      tabs: [
+        Tab(text: context.l10n.danmakuBlockKeyword),
+        Tab(text: context.l10n.danmakuBlockUser),
       ],
     );
 
@@ -63,9 +64,9 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
         left: isPortrait ? 0 : 12,
         bottom: 12,
       ),
-      child: const Text(
-        '关键词屏蔽',
-        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+      child: Text(
+        context.l10n.liveDanmakuKeywordBlock,
+        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
       ),
     );
 
@@ -74,9 +75,9 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '全局屏蔽',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          Text(
+            context.l10n.liveDanmakuGlobalBlock,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
           ),
           ..._buildHeader(theme),
           if (isPortrait) title,
@@ -86,7 +87,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: const Text('弹幕屏蔽')),
+      appBar: AppBar(title: Text(context.l10n.danmakuBlockTitle)),
       body: Padding(
         padding: EdgeInsets.only(left: padding.left, right: padding.right),
         child: Stack(
@@ -147,7 +148,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
               right: kFloatingActionButtonMargin,
               bottom: kFloatingActionButtonMargin + padding.bottom,
               child: FloatingActionButton(
-                tooltip: '添加',
+                tooltip: context.l10n.commonAdd,
                 onPressed: _addShieldKeyword,
                 child: const Icon(Icons.add),
               ),
@@ -178,7 +179,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
               text: e is ShieldUserList ? e.uname! : e as String,
               onTap: (value) => showConfirmDialog(
                 context: context,
-                title: const Text('确定删除该规则？'),
+                title: Text(context.l10n.danmakuDeleteRuleConfirm),
                 onConfirm: () => _controller.onRemove(i, e),
               ),
             );
@@ -197,7 +198,11 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
           return Row(
             spacing: 10,
             children: [
-              Text('屏蔽${isEnable ? '已' : '未'}开启'),
+              Text(
+                isEnable
+                    ? context.l10n.liveDanmakuBlockEnabled
+                    : context.l10n.liveDanmakuBlockDisabled,
+              ),
               Transform.scale(
                 scale: .8,
                 child: Switch(
@@ -215,7 +220,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
           final level = _controller.level.value;
           return Row(
             children: [
-              const Text('用户等级'),
+              Text(context.l10n.liveDanmakuUserLevel),
               Slider(
                 min: 0,
                 max: 60,
@@ -238,7 +243,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
                   }
                 },
               ),
-              Text('$level 以下'),
+              Text(context.l10n.liveDanmakuBelowLevel(level)),
             ],
           );
         },
@@ -253,7 +258,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
               theme,
               isEnable,
               Icons.live_tv,
-              '非正式会员',
+              context.l10n.liveDanmakuUnofficialUser,
               () => _controller.setSilent(
                 LiveDmSilentType.rank,
                 isEnable ? 0 : 1,
@@ -266,7 +271,7 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
               theme,
               isEnable,
               Icons.smartphone,
-              '未绑定手机用户',
+              context.l10n.liveDanmakuUnverifiedPhone,
               () => _controller.setSilent(
                 LiveDmSilentType.verify,
                 isEnable ? 0 : 1,
@@ -350,7 +355,14 @@ class _LiveDmBlockPageState extends State<LiveDmBlockPage> {
     String value = '';
     showConfirmDialog(
       context: context,
-      title: Text('${isKeyword ? '关键词' : '用户'}屏蔽'),
+      title: Text(
+        isKeyword
+            ? context.l10n.liveDanmakuKeywordBlock
+            : context.l10n.danmakuRuleDialogTitle(
+                context.l10n.commonBlock,
+                context.l10n.danmakuBlockUser,
+              ),
+      ),
       content: TextFormField(
         autofocus: true,
         initialValue: value,

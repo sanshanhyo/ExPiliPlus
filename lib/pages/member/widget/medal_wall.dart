@@ -4,6 +4,7 @@ import 'package:ex_piliplus/common/widgets/pendant_avatar.dart';
 import 'package:ex_piliplus/models_new/live/live_medal_wall/data.dart';
 import 'package:ex_piliplus/pages/member/widget/medal_widget.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -19,7 +20,7 @@ class MedalWall extends StatelessWidget {
     final colorScheme = ColorScheme.of(context);
     return AlertDialog(
       clipBehavior: .hardEdge,
-      title: const Text('粉丝勋章墙'),
+      title: Text(context.l10n.memberFanMedalWall),
       contentPadding: const .symmetric(vertical: 16),
       constraints: const BoxConstraints.tightFor(width: 380),
       content: CustomScrollView(
@@ -48,17 +49,7 @@ class MedalWall extends StatelessWidget {
                 child: Text.rich(
                   style: TextStyle(fontSize: 12, color: colorScheme.outline),
                   TextSpan(
-                    children: [
-                      const TextSpan(text: '共拥有 '),
-                      TextSpan(
-                        text: response.count.toString(),
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: colorScheme.primary,
-                        ),
-                      ),
-                      const TextSpan(text: ' 枚粉丝勋章'),
-                    ],
+                    text: context.l10n.memberFanMedalCount(response.count ?? 0),
                   ),
                 ),
               ),
@@ -126,14 +117,14 @@ class MedalWall extends StatelessWidget {
                           borderRadius: const .all(.circular(3)),
                           color: colorScheme.btnColor,
                         ),
-                        child: const Text(
-                          '佩戴中',
-                          style: TextStyle(
+                        child: Text(
+                          context.l10n.memberMedalWearing,
+                          style: const TextStyle(
                             height: 1,
                             fontSize: 10,
                             color: Colors.white,
                           ),
-                          strutStyle: StrutStyle(
+                          strutStyle: const StrutStyle(
                             height: 1,
                             leading: 0,
                             fontSize: 10,

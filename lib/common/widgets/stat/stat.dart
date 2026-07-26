@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/models/common/stat_type.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,7 @@ class StatWidget extends StatelessWidget {
       children: [
         Icon(
           type.iconData,
-          semanticLabel: type.label,
+          semanticLabel: type.localizedLabel(context.l10n),
           size: iconSize,
           color: color,
         ),

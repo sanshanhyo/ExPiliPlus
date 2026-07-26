@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/space/space_cheese/item.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,9 @@ class MemberCheeseItem extends StatelessWidget {
         if (item.ctime != null) ...[
           const Spacer(),
           Text(
-            '收藏于${DateFormatUtils.dateFormat(int.parse(item.ctime!))}',
+            context.l10n.favoriteAddedAt(
+              DateFormatUtils.dateFormat(int.parse(item.ctime!)),
+            ),
             style: TextStyle(
               fontSize: 12,
               color: theme.colorScheme.outline,
@@ -62,7 +65,7 @@ class MemberCheeseItem extends StatelessWidget {
             right: 0,
             bottom: -8,
             child: iconButton(
-              tooltip: '移除',
+              tooltip: context.l10n.commonRemove,
               onPressed: onRemove,
               icon: const Icon(Icons.clear),
               iconColor: theme.colorScheme.outline,

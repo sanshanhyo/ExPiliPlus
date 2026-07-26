@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models_new/space/space_fav/data.dart';
 import 'package:ex_piliplus/pages/member_favorite/controller.dart';
 import 'package:ex_piliplus/pages/member_favorite/widget/item.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -210,7 +211,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
           height: 40,
           alignment: .center,
           child: Text(
-            '查看更多内容',
+            context.l10n.commonViewMore,
             textAlign: TextAlign.center,
             style: TextStyle(color: theme.colorScheme.primary),
           ),

@@ -4,6 +4,7 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/space/space_season_series/season.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -39,26 +40,32 @@ class SeasonSeriesCard extends StatelessWidget {
               AspectRatio(
                 aspectRatio: Style.aspectRatio,
                 child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints boxConstraints) {
-                    final double maxWidth = boxConstraints.maxWidth;
-                    final double maxHeight = boxConstraints.maxHeight;
-                    return Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        NetworkImgLayer(
-                          src: item.meta!.cover,
-                          width: maxWidth,
-                          height: maxHeight,
-                        ),
-                        PBadge(
-                          text:
-                              '${item.meta!.seasonId != null ? '合集' : '列表'}: ${item.meta!.total}',
-                          bottom: 6.0,
-                          right: 6.0,
-                        ),
-                      ],
-                    );
-                  },
+                  builder:
+                      (BuildContext context, BoxConstraints boxConstraints) {
+                        final double maxWidth = boxConstraints.maxWidth;
+                        final double maxHeight = boxConstraints.maxHeight;
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            NetworkImgLayer(
+                              src: item.meta!.cover,
+                              width: maxWidth,
+                              height: maxHeight,
+                            ),
+                            PBadge(
+                              text: item.meta!.seasonId != null
+                                  ? context.l10n.memberCollectionCount(
+                                      item.meta!.total ?? 0,
+                                    )
+                                  : context.l10n.memberListCount(
+                                      item.meta!.total ?? 0,
+                                    ),
+                              bottom: 6.0,
+                              right: 6.0,
+                            ),
+                          ],
+                        );
+                      },
                 ),
               ),
               const SizedBox(width: 10),
