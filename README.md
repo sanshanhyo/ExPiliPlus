@@ -37,10 +37,11 @@
 - [x] 自定义应用字体
 - [x] 随机播放
 - [x] 自动点赞
+- [x] i18n 界面支持
 
 ## To-Do
 
-- [ ] i18n 支持
+- [ ] i18n 完全支持（正在考虑方案😂）
 - [ ] 更多新功能
 
 欢迎前往 [Issues](https://github.com/sanshanhyo/ExPiliPlus/issues) 提交问题、建议，或分享你的新功能构想。
