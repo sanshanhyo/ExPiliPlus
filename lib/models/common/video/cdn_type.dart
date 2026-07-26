@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 //https://github.com/yujincheng08/BiliRoaming/blob/master/app/src/main/res/values/strings_raw.xml
 //https://github.com/yujincheng08/BiliRoaming/blob/master/app/src/main/res/values/arrays.xml
 
@@ -31,6 +33,27 @@ enum CDNService {
   final String? host;
 
   const CDNService(this.desc, [this.host]);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .baseUrl => l10n.playerCdnBaseUrl,
+    .backupUrl => l10n.playerCdnBackupUrl,
+    .ali || .alib || .alio1 => l10n.playerCdnAlibaba(name),
+    .cos || .coso1 => l10n.playerCdnTencent(name),
+    .cosb => l10n.playerCdnTencentVod(name),
+    .hw ||
+    .hwb ||
+    .hwo1 ||
+    .hw_08c ||
+    .hw_08h ||
+    .hw_08ct => l10n.playerCdnHuaweiFusion(name),
+    .tf_hw => l10n.playerCdnHuawei(name),
+    .tf_tx => l10n.playerCdnTencent(name),
+    .akamai => l10n.playerCdnAkamaiInternational(name),
+    .aliov => l10n.playerCdnAlibabaInternational(name),
+    .cosov => l10n.playerCdnTencentInternational(name),
+    .hwov => l10n.playerCdnHuaweiInternational(name),
+    .hk_bcache => l10n.playerCdnBilibiliInternational(name),
+  };
 }
 
 // from https://rec.danmuji.org/dev/cdn-info/

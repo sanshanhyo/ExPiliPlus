@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
 enum PlayRepeat implements EnumWithLabel {
@@ -11,4 +12,12 @@ enum PlayRepeat implements EnumWithLabel {
   @override
   final String label;
   const PlayRepeat(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .pause => l10n.playerRepeatPauseAtEnd,
+    .listOrder => l10n.playerRepeatListOrder,
+    .singleCycle => l10n.playerRepeatSingle,
+    .listCycle => l10n.playerRepeatList,
+    .autoPlayRelated => l10n.playerRepeatAutoplayRelated,
+  };
 }

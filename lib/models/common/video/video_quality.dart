@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum VideoQuality {
   hdrVivid(129, 'HDR Vivid', 'HDR Vivid'),
   super8k(127, '8K 超高清', '8K'),
@@ -20,7 +22,25 @@ enum VideoQuality {
 
   const VideoQuality(this.code, this.desc, this.shortDesc);
 
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .hdrVivid => 'HDR Vivid',
+    .super8k => l10n.playerQuality8k,
+    .dolbyVision => l10n.playerQualityDolbyVision,
+    .hdr => l10n.playerQualityHdr,
+    .super4K => l10n.playerQuality4k,
+    .high108060 => l10n.playerQuality1080p60,
+    .high1080plus => l10n.playerQuality1080pHighBitrate,
+    .high1080 => l10n.playerQuality1080p,
+    .high72060 => l10n.playerQuality720p60,
+    .high720 => l10n.playerQuality720p,
+    .clear480 => l10n.playerQuality480p,
+    .fluent360 => l10n.playerQuality360p,
+    .speed240 => l10n.playerQuality240p,
+  };
+
   static final _codeMap = {for (final i in values) i.code: i};
 
   static VideoQuality fromCode(int code) => _codeMap[code]!;
+
+  static VideoQuality? maybeFromCode(int? code) => _codeMap[code];
 }

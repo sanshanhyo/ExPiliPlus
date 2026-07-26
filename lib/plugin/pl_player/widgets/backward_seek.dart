@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 
 class BackwardSeekIndicator extends StatefulWidget {
@@ -77,7 +78,7 @@ class BackwardSeekIndicatorState extends State<BackwardSeekIndicator> {
               ),
               const SizedBox(height: 8.0),
               Text(
-                '快退${duration.inSeconds}秒',
+                context.l10n.playerRewindSeconds(duration.inSeconds),
                 style: const TextStyle(
                   fontSize: 12.0,
                   color: Colors.white,

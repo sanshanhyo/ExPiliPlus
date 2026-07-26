@@ -29,6 +29,12 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       onTap: _showAppLanguageDialog,
     ),
     NormalModel(
+      getTitle: () => l10n.settingsOpenOnboarding,
+      getSubtitle: () => l10n.settingsOpenOnboardingDescription,
+      leading: const Icon(Icons.auto_awesome_outlined),
+      onTap: (context, _) => Get.toNamed('/onboarding'),
+    ),
+    NormalModel(
       getTitle: () => l10n.settingsCustomThemeColor,
       getSubtitle: () {
         final color = Pref.customThemeColor;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ex_piliplus/pages/video/pay_coins/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ mixin TripleMixin on GetxController, TickerProvider {
 
   void actionCoinVideo() {
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
 
@@ -44,12 +45,12 @@ mixin TripleMixin on GetxController, TickerProvider {
     final copyright = this.copyright;
     final hasCopyright = isHasCopyright(copyright);
     if (reachCoinLimit(hasCopyright, coinNum)) {
-      SmartDialog.showToast('达到投币上限啦~');
+      SmartDialog.showToast(Get.context!.l10n.videoCoinLimitReached);
       return;
     }
 
     if (GlobalData().coins != null && GlobalData().coins! < 1) {
-      SmartDialog.showToast('硬币不足');
+      SmartDialog.showToast(Get.context!.l10n.videoNotEnoughCoins);
       // return;
     }
 
@@ -94,7 +95,7 @@ mixin TripleMixin on GetxController, TickerProvider {
     _timer ??= Timer(_duration, () {
       HapticFeedback.lightImpact();
       if (hasTriple) {
-        SmartDialog.showToast('已完成三连');
+        SmartDialog.showToast(Get.context!.l10n.videoGreatCoined);
       } else {
         tripleAnimCtr.forward().whenComplete(() {
           tripleAnimCtr.reset();

@@ -8,7 +8,8 @@ import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/common/widgets/dialog/dialog.dart';
 import 'package:ex_piliplus/common/widgets/dialog/report.dart';
 import 'package:ex_piliplus/common/widgets/emote_span.dart';
-import 'package:ex_piliplus/common/widgets/flutter/text/text.dart' as custom_text;
+import 'package:ex_piliplus/common/widgets/flutter/text/text.dart'
+    as custom_text;
 import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
@@ -36,6 +37,7 @@ import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
@@ -293,6 +295,7 @@ class ReplyItemGrpc extends StatelessWidget {
   }
 
   Widget _buildVoteOption(
+    BuildContext context,
     ColorScheme colorScheme,
     ReplyControl_VoteOption voteOption,
   ) {
@@ -301,15 +304,15 @@ class ReplyItemGrpc extends StatelessWidget {
         children: [
           switch (voteOption.labelKind) {
             .RED => TextSpan(
-              text: '红方  ',
+              text: '${context.l10n.replyVoteRedSide}  ',
               style: TextStyle(color: colorScheme.vipColor),
             ),
             .BLUE => TextSpan(
-              text: '蓝方  ',
+              text: '${context.l10n.replyVoteBlueSide}  ',
               style: TextStyle(color: colorScheme.blue),
             ),
             _ => TextSpan(
-              text: '投票  ',
+              text: '${context.l10n.commonVote}  ',
               style: TextStyle(color: colorScheme.outline),
             ),
           },
@@ -336,7 +339,11 @@ class ReplyItemGrpc extends StatelessWidget {
         if (replyControl.hasVoteOption())
           Padding(
             padding: padding,
-            child: _buildVoteOption(colorScheme, replyControl.voteOption),
+            child: _buildVoteOption(
+              context,
+              colorScheme,
+              replyControl.voteOption,
+            ),
           ),
         Padding(
           padding: padding,
@@ -447,10 +454,14 @@ class ReplyItemGrpc extends StatelessWidget {
                   (context as Element).markNeedsBuild();
                 }
               } else {
-                SmartDialog.showToast('翻译结果为空');
+                SmartDialog.showToast(context.l10n.replyTranslationEmpty);
               }
             } else if (res case Error(:final errMsg)) {
-              SmartDialog.showToast('翻译失败: $errMsg');
+              SmartDialog.showToast(
+                context.l10n.replyTranslationFailed(
+                  errMsg ?? context.l10n.commonUnknown,
+                ),
+              );
             }
             isProcessing = false;
           }
@@ -461,7 +472,9 @@ class ReplyItemGrpc extends StatelessWidget {
           children: [
             Icon(Icons.translate, size: 16, color: color),
             Text(
-              replyControl.showTranslation ? '原文' : '翻译',
+              replyControl.showTranslation
+                  ? context.l10n.commonOriginal
+                  : context.l10n.commonTranslate,
               style: textStyle.copyWith(color: color),
             ),
           ],
@@ -494,7 +507,7 @@ class ReplyItemGrpc extends StatelessWidget {
         child: TextButton(
           onPressed: showDialogue,
           style: buttonStyle,
-          child: Text('查看对话', style: textStyle),
+          child: Text(context.l10n.replyViewConversation, style: textStyle),
         ),
       );
     } else if (replyLevel == 3 && replyItem.parent != replyItem.root) {
@@ -503,7 +516,7 @@ class ReplyItemGrpc extends StatelessWidget {
         child: TextButton(
           onPressed: jumpToDialogue,
           style: buttonStyle,
-          child: Text('跳转回复', style: textStyle),
+          child: Text(context.l10n.replyJumpToReply, style: textStyle),
         ),
       );
     }
@@ -527,7 +540,7 @@ class ReplyItemGrpc extends StatelessWidget {
                   size: 18,
                   color: colorScheme.outline.withValues(alpha: 0.8),
                 ),
-                Text('回复', style: textStyle),
+                Text(context.l10n.commonReply, style: textStyle),
               ],
             ),
           ),
@@ -682,7 +695,7 @@ class ReplyItemGrpc extends StatelessWidget {
                       children: [
                         if (replyItem.replyControl.upReply)
                           TextSpan(
-                            text: 'UP主等人 ',
+                            text: '${context.l10n.replyUploaderAndOthers} ',
                             style: TextStyle(
                               color: colorScheme.onSurface.withValues(
                                 alpha: 0.85,
@@ -690,7 +703,9 @@ class ReplyItemGrpc extends StatelessWidget {
                             ),
                           ),
                         TextSpan(
-                          text: '共${replyItem.count}条回复',
+                          text: context.l10n.replyCount(
+                            replyItem.count.toInt(),
+                          ),
                           style: TextStyle(
                             color: colorScheme.primary,
                           ),
@@ -760,7 +775,7 @@ class ReplyItemGrpc extends StatelessWidget {
             ),
           ),
         TextSpan(
-          text: isCv ? '[笔记] ' : url.title,
+          text: isCv ? '[${context.l10n.commonNote}] ' : url.title,
           style: TextStyle(color: colorScheme.primary),
           recognizer: NoDeadlineTapGestureRecognizer()
             ..onTap = () {
@@ -849,7 +864,7 @@ class ReplyItemGrpc extends StatelessWidget {
         } else if (_voteRegExp.hasMatch(matchStr)) {
           spanChildren.add(
             TextSpan(
-              text: '投票: ${content.vote.title}',
+              text: context.l10n.replyVoteTitle(content.vote.title),
               style: TextStyle(color: colorScheme.primary),
               recognizer: NoDeadlineTapGestureRecognizer()
                 ..onTap = () =>
@@ -878,7 +893,9 @@ class ReplyItemGrpc extends StatelessWidget {
                       ..onTap = () {
                         // 跳转到指定位置
                         try {
-                          SmartDialog.showToast('跳转至：$matchStr');
+                          SmartDialog.showToast(
+                            context.l10n.replyJumpTo(matchStr),
+                          );
                           Get.find<VideoDetailController>(
                             tag: Get.arguments['heroTag'],
                           ).plPlayerController.seekTo(
@@ -888,7 +905,9 @@ class ReplyItemGrpc extends StatelessWidget {
                             isSeek: false,
                           );
                         } catch (e) {
-                          SmartDialog.showToast('跳转失败: $e');
+                          SmartDialog.showToast(
+                            context.l10n.replyJumpFailed(e.toString()),
+                          );
                         }
                       })
                   : null,
@@ -969,7 +988,7 @@ class ReplyItemGrpc extends StatelessWidget {
       spanChildren.insert(
         0,
         TextSpan(
-          text: '[笔记] ',
+          text: '[${context.l10n.commonNote}] ',
           style: TextStyle(color: color),
           recognizer: recognizer,
         ),
@@ -1074,11 +1093,14 @@ class ReplyItemGrpc extends StatelessWidget {
                   builder: (context) {
                     final colorScheme = ColorScheme.of(context);
                     return AlertDialog(
-                      title: const Text('删除评论'),
+                      title: Text(context.l10n.replyDeleteComment),
                       content: Text.rich(
                         TextSpan(
                           children: [
-                            const TextSpan(text: '确定删除这条评论吗？\n\n'),
+                            TextSpan(
+                              text:
+                                  '${context.l10n.replyConfirmDeleteComment}\n\n',
+                            ),
                             if (ownerMid != item.member.mid.toInt()) ...[
                               TextSpan(
                                 text: '@${item.member.name}',
@@ -1096,7 +1118,7 @@ class ReplyItemGrpc extends StatelessWidget {
                         TextButton(
                           onPressed: () => Get.back(result: false),
                           child: Text(
-                            '取消',
+                            context.l10n.commonCancel,
                             style: TextStyle(
                               color: colorScheme.outline,
                             ),
@@ -1104,7 +1126,7 @@ class ReplyItemGrpc extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () => Get.back(result: true),
-                          child: const Text('确定'),
+                          child: Text(context.l10n.commonConfirm),
                         ),
                       ],
                     );
@@ -1113,7 +1135,7 @@ class ReplyItemGrpc extends StatelessWidget {
                 if (isDelete == null || !isDelete) {
                   return;
                 }
-                SmartDialog.showLoading(msg: '删除中...');
+                SmartDialog.showLoading(msg: context.l10n.commonDeleting);
                 final res = await VideoHttp.replyDel(
                   type: item.type.toInt(),
                   oid: item.oid.toInt(),
@@ -1121,15 +1143,20 @@ class ReplyItemGrpc extends StatelessWidget {
                 );
                 SmartDialog.dismiss();
                 if (res.isSuccess) {
-                  SmartDialog.showToast('删除成功');
+                  SmartDialog.showToast(context.l10n.commonDeleteSucceeded);
                   onDelete();
                 } else {
-                  SmartDialog.showToast('删除失败, $res');
+                  SmartDialog.showToast(
+                    context.l10n.commonDeleteFailed(res.toString()),
+                  );
                 }
               },
               minLeadingWidth: 0,
               leading: Icon(Icons.delete_outlined, color: errorColor, size: 19),
-              title: Text('删除', style: style.copyWith(color: errorColor)),
+              title: Text(
+                context.l10n.commonDelete,
+                style: style.copyWith(color: errorColor),
+              ),
             ),
           if (ownerMid != Int64.ZERO)
             ListTile(
@@ -1155,7 +1182,10 @@ class ReplyItemGrpc extends StatelessWidget {
               },
               minLeadingWidth: 0,
               leading: Icon(Icons.error_outline, color: errorColor, size: 19),
-              title: Text('举报', style: style.copyWith(color: errorColor)),
+              title: Text(
+                context.l10n.commonReport,
+                style: style.copyWith(color: errorColor),
+              ),
             ),
           if (replyLevel == 1 && !isSubReply && ownerMid == upMid)
             ListTile(
@@ -1166,7 +1196,9 @@ class ReplyItemGrpc extends StatelessWidget {
               minLeadingWidth: 0,
               leading: const Icon(Icons.vertical_align_top, size: 19),
               title: Text(
-                '${replyItem.replyControl.isUpTop ? '取消' : ''}置顶',
+                replyItem.replyControl.isUpTop
+                    ? context.l10n.commonUnpin
+                    : context.l10n.commonPin,
                 style: style,
               ),
             ),
@@ -1177,7 +1209,7 @@ class ReplyItemGrpc extends StatelessWidget {
             },
             minLeadingWidth: 0,
             leading: const Icon(Icons.copy_all_outlined, size: 19),
-            title: Text('复制全部', style: style),
+            title: Text(context.l10n.replyCopyAll, style: style),
           ),
           ListTile(
             onTap: () {
@@ -1186,7 +1218,7 @@ class ReplyItemGrpc extends StatelessWidget {
             },
             minLeadingWidth: 0,
             leading: const Icon(Icons.copy_outlined, size: 19),
-            title: Text('自由复制', style: style),
+            title: Text(context.l10n.replyCopySelection, style: style),
           ),
           ListTile(
             onTap: () {
@@ -1195,7 +1227,7 @@ class ReplyItemGrpc extends StatelessWidget {
             },
             minLeadingWidth: 0,
             leading: const Icon(Icons.save_alt, size: 19),
-            title: Text('保存评论', style: style),
+            title: Text(context.l10n.replySaveComment, style: style),
           ),
           if (kDebugMode || item.mid == ownerMid)
             ListTile(
@@ -1205,7 +1237,7 @@ class ReplyItemGrpc extends StatelessWidget {
               },
               minLeadingWidth: 0,
               leading: const Icon(CustomIcons.shield_reply, size: 19),
-              title: Text('检查评论', style: style),
+              title: Text(context.l10n.replyCheckComment, style: style),
             ),
         ],
       ),

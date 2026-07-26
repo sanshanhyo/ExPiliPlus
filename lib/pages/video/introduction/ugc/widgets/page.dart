@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/assets.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/page.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:flutter/material.dart';
@@ -110,10 +111,12 @@ class _PagesPanelState extends State<PagesPanel> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('视频选集 '),
+                Text(context.l10n.videoEpisodes),
                 Expanded(
                   child: Text(
-                    ' 正在播放：${pages[pageIndex].part}',
+                    context.l10n.playerNowPlayingTitle(
+                      pages[pageIndex].part ?? '',
+                    ),
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12,
@@ -137,7 +140,7 @@ class _PagesPanelState extends State<PagesPanel> {
                       cid,
                     ),
                     child: Text(
-                      '共${pages.length}集',
+                      context.l10n.videoEpisodeCount(pages.length),
                       style: const TextStyle(fontSize: 13),
                     ),
                   ),
@@ -202,7 +205,7 @@ class _PagesPanelState extends State<PagesPanel> {
                               color: theme.colorScheme.primary,
                               height: 12,
                               cacheHeight: 12.cacheSize(context),
-                              semanticLabel: "正在播放：",
+                              semanticLabel: context.l10n.playerNowPlaying,
                             ),
                             const SizedBox(width: 6),
                           ],

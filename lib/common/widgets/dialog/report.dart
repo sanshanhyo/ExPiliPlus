@@ -1,5 +1,7 @@
 import 'package:ex_piliplus/common/widgets/radio_widget.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,7 @@ Future<void> autoWrapReportDialog(
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('举报'),
+      title: Text(context.l10n.commonReport),
       titlePadding: const .only(left: 22, top: 16, right: 22),
       contentPadding: const .symmetric(vertical: 5),
       actionsPadding: const .only(left: 16, right: 16, bottom: 10),
@@ -36,9 +38,13 @@ Future<void> autoWrapReportDialog(
                   builder: (context) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: .only(left: 22, right: 22, bottom: 5),
-                        child: Text('请选择举报的理由：'),
+                      Padding(
+                        padding: const .only(
+                          left: 22,
+                          right: 22,
+                          bottom: 5,
+                        ),
+                        child: Text(context.l10n.reportChooseReason),
                       ),
                       RadioGroup(
                         onChanged: (value) {
@@ -50,8 +56,17 @@ Future<void> autoWrapReportDialog(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: options.entries.map((entry) {
                             return WrapRadioOptionsGroup<int>(
-                              groupTitle: entry.key,
-                              options: entry.value,
+                              groupTitle: ReportOptions.localizedLabel(
+                                context.l10n,
+                                entry.key,
+                              ),
+                              options: {
+                                for (final option in entry.value.entries)
+                                  option.key: ReportOptions.localizedLabel(
+                                    context.l10n,
+                                    option.value,
+                                  ),
+                              },
                             );
                           }).toList(),
                         ),
@@ -65,16 +80,17 @@ Future<void> autoWrapReportDialog(
                             minLines: 2,
                             maxLines: 4,
                             initialValue: reasonDesc,
-                            decoration: const InputDecoration(
-                              labelText: '为帮助审核人员更快处理，请补充问题类型和出现位置等详细信息',
-                              border: OutlineInputBorder(),
-                              contentPadding: .all(10),
-                              labelStyle: TextStyle(fontSize: 14),
-                              floatingLabelStyle: TextStyle(fontSize: 14),
+                            decoration: InputDecoration(
+                              labelText: context.l10n.reportDetailsHint,
+                              border: const OutlineInputBorder(),
+                              contentPadding: const .all(10),
+                              labelStyle: const TextStyle(fontSize: 14),
+                              floatingLabelStyle: const TextStyle(fontSize: 14),
                             ),
                             onChanged: (value) => reasonDesc = value,
-                            validator: (value) =>
-                                value.isNullOrEmpty ? '理由不能为空' : null,
+                            validator: (value) => value.isNullOrEmpty
+                                ? context.l10n.reportReasonRequired
+                                : null,
                           ),
                         ),
                     ],
@@ -87,7 +103,7 @@ Future<void> autoWrapReportDialog(
             Padding(
               padding: const EdgeInsets.only(left: 14, top: 6),
               child: CheckBoxText(
-                text: '拉黑该用户',
+                text: context.l10n.reportBlockUser,
                 onChanged: (value) => banUid = value,
               ),
             ),
@@ -97,7 +113,7 @@ Future<void> autoWrapReportDialog(
         TextButton(
           onPressed: Get.back,
           child: Text(
-            '取消',
+            context.l10n.commonCancel,
             style: TextStyle(color: ColorScheme.of(context).outline),
           ),
         ),
@@ -113,17 +129,19 @@ Future<void> autoWrapReportDialog(
               SmartDialog.dismiss();
               if (res.isSuccess) {
                 Get.back();
-                SmartDialog.showToast('举报成功');
+                SmartDialog.showToast(context.l10n.reportSucceeded);
               } else {
                 res.toast();
               }
             } catch (e, s) {
               SmartDialog.dismiss();
-              SmartDialog.showToast('提交失败：$e');
+              SmartDialog.showToast(
+                context.l10n.commonSubmitFailed(e.toString()),
+              );
               Utils.reportError(e, s);
             }
           },
-          child: const Text('确定'),
+          child: Text(context.l10n.commonConfirm),
         ),
       ],
     ),
@@ -191,6 +209,40 @@ class _CheckBoxTextState extends State<CheckBoxText> {
 }
 
 abstract final class ReportOptions {
+  static String localizedLabel(AppLocalizations l10n, String label) =>
+      switch (label) {
+        '' => '',
+        '违反法律法规' => l10n.reportGroupIllegal,
+        '谣言类不实信息' => l10n.reportGroupMisinformation,
+        '侵犯个人权益' => l10n.reportGroupPersonalRights,
+        '有害社区环境' => l10n.reportGroupCommunity,
+        '违法违规' || '违法违禁' => l10n.reportIllegal,
+        '色情' => l10n.reportPornography,
+        '低俗' => l10n.reportVulgar,
+        '赌博诈骗' => l10n.reportGamblingOrScam,
+        '违法信息外链' => l10n.reportIllegalExternalLink,
+        '涉政谣言' => l10n.reportPoliticalRumor,
+        '虚假不实信息' => l10n.reportMisinformation,
+        '涉社会事件谣言' => l10n.reportSocialEventRumor,
+        '人身攻击' => l10n.reportPersonalAttack,
+        '侵犯隐私' => l10n.reportPrivacyViolation,
+        '垃圾广告' => l10n.reportSpam,
+        '引战' => l10n.reportProvocation,
+        '剧透' => l10n.reportSpoiler,
+        '刷屏' || '恶意刷屏' => l10n.reportFlooding,
+        '视频不相关' || '视频无关' => l10n.reportIrrelevant,
+        '违规抽奖' => l10n.reportIllegalLottery,
+        '青少年不良信息' => l10n.reportHarmfulToMinors,
+        '其他' || '其它' || '其他问题' => l10n.commonOther,
+        '违法信息' || '违法有害' => l10n.reportIllegalOrHarmful,
+        '色情低俗' || '低俗色情' => l10n.reportPornographicOrVulgar,
+        '辱骂引战' => l10n.reportAbuseOrProvocation,
+        '政治敏感' => l10n.reportPoliticallySensitive,
+        '广告骚扰' => l10n.reportAdHarassment,
+        '诈骗' => l10n.reportScam,
+        _ => label,
+      };
+
   // from https://s1.hdslb.com/bfs/seed/jinkela/comment-h5/static/js/605.chunks.js
   static Map<String, Map<int, String>> get commentReport => const {
     '违反法律法规': {9: '违法违规', 2: '色情', 10: '低俗', 12: '赌博诈骗', 23: '违法信息外链'},

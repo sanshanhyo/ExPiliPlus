@@ -5,6 +5,7 @@ import 'dart:math' show max;
 import 'package:ex_piliplus/common/assets.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
 import 'package:ex_piliplus/pages/common/publish/publish_route.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
@@ -412,7 +413,23 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                 const SizedBox(height: 10),
                 Center(
                   child: Text(
-                    '${_coins != null ? '硬币余额：${max(0.0, _coins.toDouble().toPrecision(1))}' : ''}${widget.hasCoin ? '${_coins != null ? '，' : ''}已投1枚硬币' : ''}',
+                    switch ((_coins, widget.hasCoin)) {
+                      (final coins?, true) =>
+                        context.l10n.videoCoinBalanceAndCoined(
+                          max(
+                            0.0,
+                            coins.toDouble().toPrecision(1),
+                          ).toString(),
+                        ),
+                      (final coins?, false) => context.l10n.videoCoinBalance(
+                        max(
+                          0.0,
+                          coins.toDouble().toPrecision(1),
+                        ).toString(),
+                      ),
+                      (null, true) => context.l10n.videoAlreadyCoinedOne,
+                      _ => '',
+                    },
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ),
@@ -442,9 +459,9 @@ class _PayCoinsPageState extends State<PayCoinsPage>
                             color: Colors.white,
                           ),
                         ),
-                        const Text(
-                          ' 同时点赞',
-                          style: TextStyle(color: Colors.white),
+                        Text(
+                          ' ${context.l10n.videoCoinAndLike}',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ],
                     ),

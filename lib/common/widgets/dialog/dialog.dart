@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ Future<bool> showConfirmDialog({
             TextButton(
               onPressed: Get.back,
               child: Text(
-                '取消',
+                context.l10n.commonCancel,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -28,7 +29,7 @@ Future<bool> showConfirmDialog({
                 Get.back(result: true);
                 onConfirm?.call();
               },
-              child: const Text('确认'),
+              child: Text(context.l10n.commonConfirm),
             ),
           ],
         ),
@@ -42,6 +43,7 @@ void showPgcFollowDialog({
   required int followStatus,
   required ValueChanged<int> onUpdateStatus,
 }) {
+  final l10n = context.l10n;
   Widget statusItem({
     required bool enabled,
     required String text,
@@ -53,7 +55,7 @@ void showPgcFollowDialog({
       title: Padding(
         padding: const EdgeInsets.only(left: 10),
         child: Text(
-          '标记为 $text',
+          l10n.videoMarkAs(text),
           style: const TextStyle(fontSize: 14),
         ),
       ),
@@ -68,10 +70,10 @@ void showPgcFollowDialog({
       clipBehavior: Clip.hardEdge,
       contentPadding: const EdgeInsets.symmetric(vertical: 12),
       children: [
-        ...const [
-          (followStatus: 3, title: '看过'),
-          (followStatus: 2, title: '在看'),
-          (followStatus: 1, title: '想看'),
+        ...[
+          (followStatus: 3, title: l10n.videoStatusWatched),
+          (followStatus: 2, title: l10n.videoStatusWatching),
+          (followStatus: 1, title: l10n.videoStatusWantToWatch),
         ].map(
           (item) => statusItem(
             enabled: followStatus != item.followStatus,
@@ -87,7 +89,7 @@ void showPgcFollowDialog({
           title: Padding(
             padding: const EdgeInsets.only(left: 10),
             child: Text(
-              '取消$type',
+              l10n.videoCancelFollowingType(type),
               style: const TextStyle(fontSize: 14),
             ),
           ),

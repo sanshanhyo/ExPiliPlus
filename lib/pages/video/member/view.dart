@@ -20,6 +20,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
 import 'package:ex_piliplus/pages/video/member/controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -141,7 +142,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
     final count = _controller.count;
     if (count != null) {
       return Text(
-        '共$count视频',
+        context.l10n.videoCount(count),
         style: const TextStyle(fontSize: 13),
       );
     }
@@ -160,7 +161,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
         color: theme.colorScheme.secondary,
       ),
       label: Text(
-        _controller.order.label,
+        _controller.order.localizedLabel(context.l10n),
         style: TextStyle(
           fontSize: 13,
           color: theme.colorScheme.secondary,
@@ -312,7 +313,7 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                   Get.toNamed('/editProfile');
                 } else {
                   if (!account.isLogin) {
-                    SmartDialog.showToast('账号未登录');
+                    SmartDialog.showToast(context.l10n.accountPleaseSignIn);
                     return;
                   }
                   RequestUtils.actionRelationMod(
@@ -329,10 +330,10 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
               },
               child: Text(
                 widget.mid == account.mid
-                    ? '编辑资料'
+                    ? context.l10n.memberEditProfile
                     : memberInfoModel.isFollowed == true
-                    ? '已关注'
-                    : '关注',
+                    ? context.l10n.memberFollowing
+                    : context.l10n.memberFollow,
                 maxLines: 1,
                 style: const TextStyle(fontSize: 14),
               ),
@@ -346,10 +347,10 @@ class _HorizontalMemberPageState extends State<HorizontalMemberPage> {
                 visualDensity: const VisualDensity(vertical: -2),
               ),
               onPressed: () => Get.toNamed('/member?mid=${widget.mid}'),
-              child: const Text(
-                '查看主页',
+              child: Text(
+                context.l10n.memberViewProfile,
                 maxLines: 1,
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
               ),
             ),
           ),

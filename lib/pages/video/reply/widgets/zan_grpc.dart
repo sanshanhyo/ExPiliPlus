@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:ex_piliplus/http/reply.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
@@ -40,7 +41,11 @@ class ZanButtonGrpc extends StatelessWidget {
     );
     // SmartDialog.dismiss();
     if (res.isSuccess) {
-      SmartDialog.showToast(isDislike ? '取消踩' : '点踩成功');
+      SmartDialog.showToast(
+        isDislike
+            ? context.l10n.replyRemoveDislikeSucceeded
+            : context.l10n.replyDislikeSucceeded,
+      );
       if (action == 2) {
         if (isLike) replyItem.like -= $fixnum.Int64.ONE;
         replyItem.replyControl.action = $fixnum.Int64.TWO;
@@ -80,7 +85,11 @@ class ZanButtonGrpc extends StatelessWidget {
       action: action,
     );
     if (res.isSuccess) {
-      SmartDialog.showToast(isLike ? '取消赞' : '点赞成功');
+      SmartDialog.showToast(
+        isLike
+            ? context.l10n.replyUnlikeSucceeded
+            : context.l10n.replyLikeSucceeded,
+      );
       if (action == 1) {
         replyItem
           ..like += $fixnum.Int64.ONE
@@ -138,7 +147,9 @@ class ZanButtonGrpc extends StatelessWidget {
                   : FontAwesomeIcons.thumbsDown,
               size: 16,
               color: isDislike ? primary : outline,
-              semanticLabel: isDislike ? '已踩' : '点踩',
+              semanticLabel: isDislike
+                  ? context.l10n.commonDisliked
+                  : context.l10n.commonDislike,
             ),
           ),
         ),
@@ -162,7 +173,9 @@ class ZanButtonGrpc extends StatelessWidget {
                       : FontAwesomeIcons.thumbsUp,
                   size: 16,
                   color: isLike ? primary : outline,
-                  semanticLabel: isLike ? '已赞' : '点赞',
+                  semanticLabel: isLike
+                      ? context.l10n.commonLiked
+                      : context.l10n.commonLike,
                 ),
                 Text(
                   NumUtils.numFormat(replyItem.like.toInt()),

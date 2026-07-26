@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/common/publish/common_text_pub_page.dart';
 import 'package:ex_piliplus/pages/danmaku/danmaku_model.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:canvas_danmaku/models/danmaku_content_item.dart';
 import 'package:flutter/material.dart';
@@ -185,34 +186,34 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
         Row(
           children: [
             Text(
-              '弹幕字号',
+              context.l10n.playerDanmakuFontSize,
               style: TextStyle(
                 fontSize: 15,
                 color: themeData.colorScheme.onSurface,
               ),
             ),
             const SizedBox(width: 16),
-            _buildFontSizeItem(18, '小'),
+            _buildFontSizeItem(18, context.l10n.commonSmall),
             const SizedBox(width: 5),
-            _buildFontSizeItem(25, '标准'),
+            _buildFontSizeItem(25, context.l10n.commonStandard),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
             Text(
-              '弹幕样式',
+              context.l10n.playerDanmakuStyle,
               style: TextStyle(
                 fontSize: 15,
                 color: themeData.colorScheme.onSurface,
               ),
             ),
             const SizedBox(width: 16),
-            _buildPositionItem(1, '滚动'),
+            _buildPositionItem(1, context.l10n.playerDanmakuScrolling),
             const SizedBox(width: 5),
-            _buildPositionItem(5, '顶部'),
+            _buildPositionItem(5, context.l10n.playerDanmakuTop),
             const SizedBox(width: 5),
-            _buildPositionItem(4, '底部'),
+            _buildPositionItem(4, context.l10n.playerDanmakuBottom),
           ],
         ),
         const SizedBox(height: 12),
@@ -220,7 +221,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '弹幕颜色',
+              context.l10n.playerDanmakuColor,
               style: TextStyle(
                 fontSize: 15,
                 color: themeData.colorScheme.onSurface,
@@ -349,7 +350,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
             () {
               final isEmoji = panelType.value == PanelType.emoji;
               return iconButton(
-                tooltip: '弹幕样式',
+                tooltip: context.l10n.playerDanmakuStyle,
                 onPressed: () {
                   updatePanelType(
                     isEmoji ? PanelType.keyboard : PanelType.emoji,
@@ -384,7 +385,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
                   onSubmitted: onSubmitted,
                   focusNode: focusNode,
                   decoration: InputDecoration(
-                    hintText: "输入弹幕内容",
+                    hintText: context.l10n.playerDanmakuInputHint,
                     border: InputBorder.none,
                     hintStyle: TextStyle(
                       fontSize: 15,
@@ -412,7 +413,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
           const SizedBox(width: 12),
           Obx(
             () => iconButton(
-              tooltip: '发送',
+              tooltip: context.l10n.commonSend,
               iconSize: 22,
               iconColor: enablePublish.value
                   ? themeData.colorScheme.primary
@@ -432,7 +433,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
       builder: (context) => AlertDialog(
         clipBehavior: Clip.hardEdge,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        title: const Text('Color Picker'),
+        title: Text(context.l10n.commonColorPicker),
         content: SlideColorPicker(
           color: _color.value,
           onChanged: (Color? color) {
@@ -447,7 +448,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
 
   @override
   Future<void> onCustomPublish({List? pictures}) async {
-    SmartDialog.showLoading(msg: '发送中...');
+    SmartDialog.showLoading(msg: context.l10n.commonSending);
     bool isColorful = _color.value == Colors.transparent;
     final res = await DanmakuHttp.shootDanmaku(
       oid: widget.cid,
@@ -463,7 +464,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
     if (res case Success(:final response)) {
       hasPub = true;
       Get.back();
-      SmartDialog.showToast('发送成功');
+      SmartDialog.showToast(context.l10n.commonSent);
       VideoDanmaku? extra;
       if (response.dmid case final dmid?) {
         extra = VideoDanmaku(

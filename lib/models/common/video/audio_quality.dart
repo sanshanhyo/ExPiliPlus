@@ -1,3 +1,5 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+
 enum AudioQuality {
   u_100010(100010, '100010'),
   u_100009(100009, '100009'),
@@ -15,7 +17,15 @@ enum AudioQuality {
 
   const AudioQuality(this.code, this.desc);
 
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .hiRes => 'Hi-Res Lossless',
+    .dolby_30250 || .dolby_30255 => 'Dolby Atmos',
+    _ => desc,
+  };
+
   static final _codeMap = {for (final i in values) i.code: i};
 
   static AudioQuality fromCode(int code) => _codeMap[code]!;
+
+  static AudioQuality? maybeFromCode(int? code) => _codeMap[code];
 }

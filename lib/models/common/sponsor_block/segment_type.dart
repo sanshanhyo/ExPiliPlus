@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/sponsor_block/action_type.dart';
 
 enum SegmentType {
@@ -121,6 +122,34 @@ enum SegmentType {
     this.color,
     this.toActionType,
   );
+
+  String localizedTitle(AppLocalizations l10n) => switch (this) {
+    .sponsor => l10n.sponsorBlockCategorySponsor,
+    .selfpromo => l10n.sponsorBlockCategorySelfPromotion,
+    .exclusive_access => l10n.sponsorBlockCategoryExclusiveAccess,
+    .interaction => l10n.sponsorBlockCategoryInteraction,
+    .poi_highlight => l10n.sponsorBlockCategoryHighlight,
+    .intro => l10n.sponsorBlockCategoryIntro,
+    .outro => l10n.sponsorBlockCategoryOutro,
+    .preview => l10n.sponsorBlockCategoryPreview,
+    .padding => l10n.sponsorBlockCategoryPadding,
+    .filler => l10n.sponsorBlockCategoryFiller,
+    .music_offtopic => l10n.sponsorBlockCategoryMusicOfftopic,
+  };
+
+  String localizedShortTitle(AppLocalizations l10n) => switch (this) {
+    .sponsor => l10n.sponsorBlockCategorySponsorShort,
+    .selfpromo => l10n.sponsorBlockCategorySelfPromotionShort,
+    .exclusive_access => l10n.sponsorBlockCategoryExclusiveAccessShort,
+    .interaction => l10n.sponsorBlockCategoryInteractionShort,
+    .poi_highlight => l10n.sponsorBlockCategoryHighlightShort,
+    .intro => l10n.sponsorBlockCategoryIntroShort,
+    .outro => l10n.sponsorBlockCategoryOutroShort,
+    .preview => l10n.sponsorBlockCategoryPreviewShort,
+    .padding => l10n.sponsorBlockCategoryPaddingShort,
+    .filler => l10n.sponsorBlockCategoryFillerShort,
+    .music_offtopic => l10n.sponsorBlockCategoryMusicOfftopicShort,
+  };
 }
 
 // List<SegmentType> _actionType2SegmentType(ActionType actionType) {

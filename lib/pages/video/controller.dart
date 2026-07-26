@@ -54,6 +54,7 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/connectivity_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/nested_scroll_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
@@ -486,7 +487,9 @@ class VideoDetailController extends GetxController
                   );
                   if (res.isSuccess) {
                     mediaList.removeAt(index);
-                    SmartDialog.showToast('取消收藏');
+                    SmartDialog.showToast(
+                      context.l10n.videoRemovedFromFavorites,
+                    );
                   } else {
                     res.toast();
                   }
@@ -545,6 +548,7 @@ class VideoDetailController extends GetxController
   @override
   Widget buildItem(Object item, Animation<double> animation) {
     final theme = ThemeUtils.theme;
+    final l10n = Get.context!.l10n;
     return Align(
       alignment: Alignment.centerLeft,
       child: SlideTransition(
@@ -570,8 +574,10 @@ class VideoDetailController extends GetxController
               padding: const .symmetric(horizontal: 8, vertical: 4),
               fontSize: 14,
               text: item is SegmentModel
-                  ? '跳过: ${item.segmentType.shortTitle}'
-                  : '上次看到第${(item as int) + 1}P，点击跳转',
+                  ? l10n.playerSkipSegment(
+                      item.segmentType.localizedShortTitle(l10n),
+                    )
+                  : l10n.videoResumeAtPart((item as int) + 1),
               onTap: (_) {
                 if (item is int) {
                   try {
@@ -580,10 +586,12 @@ class VideoDetailController extends GetxController
                     Part part =
                         ugcIntroController.videoDetail.value.pages![item];
                     ugcIntroController.onChangeEpisode(part);
-                    SmartDialog.showToast('已跳至第${item + 1}P');
+                    SmartDialog.showToast(
+                      l10n.videoJumpedToPart(item + 1),
+                    );
                   } catch (e) {
                     if (kDebugMode) debugPrint('$e');
-                    SmartDialog.showToast('跳转失败');
+                    SmartDialog.showToast(l10n.commonJumpFailed);
                   }
                   onRemoveItem(listData.indexOf(item), item);
                 } else if (item is SegmentModel) {
@@ -604,7 +612,9 @@ class VideoDetailController extends GetxController
   /// 发送弹幕
   Future<void> showShootDanmakuSheet() async {
     if (plPlayerController.dmState.contains(cid.value)) {
-      SmartDialog.showToast('UP主已关闭弹幕');
+      SmartDialog.showToast(
+        Get.context!.l10n.playerUploaderDisabledDanmaku,
+      );
       return;
     }
     final isPlaying =
@@ -780,7 +790,7 @@ class VideoDetailController extends GetxController
   void setLanguage(String language) {
     if (currLang.value == language) return;
     if (!isLoginVideo) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(Get.context!.l10n.accountPleaseSignIn);
       return;
     }
     currLang.value = language;
@@ -853,7 +863,7 @@ class VideoDetailController extends GetxController
 
       if (data.acceptDesc?.contains('试看') == true) {
         SmartDialog.showToast(
-          '该视频为专属视频，仅提供试看',
+          Get.context!.l10n.videoExclusiveTrial,
           displayTime: const Duration(seconds: 3),
         );
       }
@@ -889,7 +899,7 @@ class VideoDetailController extends GetxController
           isQuerying = false;
           return;
         } else {
-          SmartDialog.showToast('视频资源不存在');
+          SmartDialog.showToast(Get.context!.l10n.videoResourceUnavailable);
           _autoPlay.value = false;
           videoState.value = false;
           if (plPlayerController.isFullScreen.value) {
@@ -1509,7 +1519,7 @@ class VideoDetailController extends GetxController
       context: Get.context!,
       builder: (context) => AlertDialog(
         constraints: Style.dialogFixedConstraints,
-        title: const Text('播放地址'),
+        title: Text(context.l10n.playerPlaybackUrl),
         content: Column(
           spacing: 20,
           mainAxisSize: MainAxisSize.min,
@@ -1535,7 +1545,7 @@ class VideoDetailController extends GetxController
               this.audioUrl = audioUrl;
               playerInit();
             },
-            child: const Text('确定'),
+            child: Text(context.l10n.commonConfirm),
           ),
         ],
       ),
@@ -1555,7 +1565,7 @@ class VideoDetailController extends GetxController
     if (res case Success(:final response)) {
       final first = response.durl?.firstOrNull;
       if (first == null || first.playUrls.isEmpty) {
-        SmartDialog.showToast('不支持投屏');
+        SmartDialog.showToast(Get.context!.l10n.playerCastingNotSupported);
         return;
       }
       final url = VideoUtils.getCdnUrl(first.playUrls);

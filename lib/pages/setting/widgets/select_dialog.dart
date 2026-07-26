@@ -5,6 +5,7 @@ import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/http/video.dart';
 import 'package:ex_piliplus/models/common/video/cdn_type.dart';
 import 'package:ex_piliplus/models/common/video/video_type.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/models/video/play/url.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/video_utils.dart';
@@ -228,7 +229,7 @@ class _CdnSelectDialogState extends State<CdnSelectDialog> {
     if (error is DioException) {
       final statusCode = error.response?.statusCode;
       if (statusCode != null && 400 <= statusCode && statusCode < 500) {
-        message = '此视频可能无法替换为该CDN';
+        message = context.l10n.playerCdnMayNotWork;
       } else {
         message = error.toString();
       }
@@ -236,16 +237,19 @@ class _CdnSelectDialogState extends State<CdnSelectDialog> {
       message = error.toString();
     }
     if (message.isEmpty) {
-      message = '测速失败';
+      message = context.l10n.playerCdnSpeedTestFailed;
     }
     item.value = message;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return SelectDialog<CDNService>(
-      title: 'CDN 设置',
-      values: CDNService.values.map((i) => (i, i.desc)).toList(),
+      title: l10n.playerCdnSettings,
+      values: CDNService.values
+          .map((i) => (i, i.localizedLabel(l10n)))
+          .toList(),
       value: VideoUtils.cdnService,
       subtitleBuilder: _cdnSpeedTest
           ? (context, index) {

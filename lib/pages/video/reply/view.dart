@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/video/reply/controller.dart';
 import 'package:ex_piliplus/pages/video/reply/vote/reply_vote_item.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
@@ -139,7 +140,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                         replyType: _videoReplyController.videoType.replyType,
                       );
                     },
-                    tooltip: '发表评论',
+                    tooltip: context.l10n.replyPostComment,
                     child: const Icon(Icons.reply),
                   ),
                 ),
@@ -189,7 +190,9 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                   alignment: .center,
                   margin: .only(bottom: bottom),
                   child: Text(
-                    _videoReplyController.isEnd ? '没有更多了' : '加载中...',
+                    _videoReplyController.isEnd
+                        ? context.l10n.commonNoMore
+                        : context.l10n.commonLoading,
                     textAlign: .center,
                     style: TextStyle(fontSize: 12, color: colorScheme.outline),
                   ),
@@ -220,7 +223,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
         }
 
         final child = HttpError(
-          errMsg: '还没有评论',
+          errMsg: context.l10n.replyNoCommentsYet,
           onReload: _videoReplyController.onReload,
         );
         if (_videoReplyController.voteCard case final voteCard?) {

@@ -14,6 +14,7 @@ import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/pages/video/post_panel/popup_menu_text.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -67,12 +68,14 @@ class PostPanel extends CommonSlidePage {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '${isFirst ? '开始' : '结束'}: $value',
+              isFirst
+                  ? context.l10n.videoSegmentStart(value)
+                  : context.l10n.videoSegmentEnd(value),
             ),
             iconButton(
               context: context,
               size: 26,
-              tooltip: '设为当前',
+              tooltip: context.l10n.videoSegmentSetCurrent,
               icon: const Icon(Icons.my_location),
               onPressed: () {
                 updateSegment(
@@ -86,7 +89,9 @@ class PostPanel extends CommonSlidePage {
             iconButton(
               context: context,
               size: 26,
-              tooltip: isFirst ? '视频开头' : '视频结尾',
+              tooltip: isFirst
+                  ? context.l10n.videoSegmentVideoStart
+                  : context.l10n.videoSegmentVideoEnd,
               icon: isFirst
                   ? const Icon(Icons.first_page)
                   : const Icon(Icons.last_page),
@@ -102,7 +107,7 @@ class PostPanel extends CommonSlidePage {
             iconButton(
               context: context,
               size: 26,
-              tooltip: '编辑',
+              tooltip: context.l10n.commonEdit,
               icon: const Icon(Icons.edit),
               onPressed: () async {
                 String initV = value;
@@ -121,7 +126,7 @@ class PostPanel extends CommonSlidePage {
                       TextButton(
                         onPressed: Get.back,
                         child: Text(
-                          '取消',
+                          context.l10n.commonCancel,
                           style: TextStyle(
                             color: theme.colorScheme.outline,
                           ),
@@ -129,7 +134,7 @@ class PostPanel extends CommonSlidePage {
                       ),
                       TextButton(
                         onPressed: () => Get.back(result: initV),
-                        child: const Text('确定'),
+                        child: Text(context.l10n.commonConfirm),
                       ),
                     ],
                   ),
@@ -196,12 +201,12 @@ class _PostPanelState extends State<PostPanel>
         toolbarHeight: 45,
         automaticallyImplyLeading: false,
         titleSpacing: 16,
-        title: const Text('提交片段'),
+        title: Text(context.l10n.playerSubmitSegment),
         actions: [
           iconButton(
             size: 32,
             context: context,
-            tooltip: '添加片段',
+            tooltip: context.l10n.videoSegmentAdd,
             onPressed: () {
               setState(() {
                 list.insert(
@@ -223,7 +228,7 @@ class _PostPanelState extends State<PostPanel>
           iconButton(
             size: 32,
             context: context,
-            tooltip: '关闭',
+            tooltip: context.l10n.commonClose,
             onPressed: Get.back,
             icon: const Icon(Icons.close),
           ),
@@ -274,22 +279,22 @@ class _PostPanelState extends State<PostPanel>
           right: kFloatingActionButtonMargin,
           bottom: kFloatingActionButtonMargin + bottom,
           child: FloatingActionButton(
-            tooltip: '提交',
+            tooltip: context.l10n.commonSubmit,
             onPressed: () => showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('确定无误再提交'),
+                title: Text(context.l10n.videoSegmentConfirmBeforeSubmit),
                 actions: [
                   TextButton(
                     onPressed: Get.back,
                     child: Text(
-                      '取消',
+                      context.l10n.commonCancel,
                       style: TextStyle(color: theme.colorScheme.outline),
                     ),
                   ),
                   TextButton(
                     onPressed: _onPost,
-                    child: const Text('确定提交'),
+                    child: Text(context.l10n.videoSegmentConfirmSubmit),
                   ),
                 ],
               ),
@@ -312,14 +317,14 @@ class _PostPanelState extends State<PostPanel>
 
     if (res case Success(:final response)) {
       Get.back();
-      SmartDialog.showToast('提交成功');
+      SmartDialog.showToast(context.l10n.commonSubmitSucceeded);
       list.clear();
       videoDetailController.handleSBData(response);
       if (videoDetailController.blockListener == null) {
         videoDetailController.initSkip();
       }
     } else {
-      SmartDialog.showToast('提交失败: $res');
+      SmartDialog.showToast(context.l10n.commonSubmitFailed(res.toString()));
     }
   }
 
@@ -356,7 +361,7 @@ class _PostPanelState extends State<PostPanel>
                   spacing: 16,
                   children: [
                     PopupMenuText(
-                      title: '分类',
+                      title: context.l10n.videoSegmentCategory,
                       value: () => item.category,
                       onSelected: (e) {
                         bool flag = false;
@@ -394,14 +399,17 @@ class _PostPanelState extends State<PostPanel>
                       },
                       itemBuilder: (context) => SegmentType.values
                           .map(
-                            (e) =>
-                                PopupMenuItem(value: e, child: Text(e.title)),
+                            (e) => PopupMenuItem(
+                              value: e,
+                              child: Text(e.localizedTitle(context.l10n)),
+                            ),
                           )
                           .toList(),
-                      getSelectTitle: (category) => category.title,
+                      getSelectTitle: (category) =>
+                          category.localizedTitle(context.l10n),
                     ),
                     PopupMenuText(
-                      title: '行为类别',
+                      title: context.l10n.videoSegmentAction,
                       value: () => item.actionType,
                       onSelected: (e) {
                         bool flag = false;
@@ -427,11 +435,11 @@ class _PostPanelState extends State<PostPanel>
                             (e) => PopupMenuItem(
                               enabled: item.category.toActionType.contains(e),
                               value: e,
-                              child: Text(e.title),
+                              child: Text(e.localizedTitle(context.l10n)),
                             ),
                           )
                           .toList(),
-                      getSelectTitle: (i) => i.title,
+                      getSelectTitle: (i) => i.localizedTitle(context.l10n),
                     ),
                   ],
                 ),
@@ -445,7 +453,7 @@ class _PostPanelState extends State<PostPanel>
           child: iconButton(
             context: context,
             size: 26,
-            tooltip: '移除',
+            tooltip: context.l10n.commonRemove,
             icon: const Icon(Icons.clear),
             onPressed: () {
               setState(() {
@@ -460,7 +468,7 @@ class _PostPanelState extends State<PostPanel>
           child: iconButton(
             context: context,
             size: 26,
-            tooltip: '预览',
+            tooltip: context.l10n.commonPreview,
             icon: const Icon(Icons.preview_outlined),
             onPressed: () async {
               final player = plPlayerController.videoPlayerController;

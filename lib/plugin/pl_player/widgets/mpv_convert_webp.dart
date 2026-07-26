@@ -5,6 +5,7 @@ import 'dart:ffi';
 
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -158,4 +159,24 @@ enum WebpPreset {
   final String desc;
 
   const WebpPreset(this.flag, this.name, this.desc);
+
+  String localizedName(AppLocalizations l10n) => switch (this) {
+    .none => l10n.playerWebpPresetNone,
+    .def => l10n.commonDefault,
+    .picture => l10n.playerWebpPresetPicture,
+    .photo => l10n.playerWebpPresetPhoto,
+    .drawing => l10n.playerWebpPresetDrawing,
+    .icon => l10n.playerWebpPresetIcon,
+    .text => l10n.playerWebpPresetText,
+  };
+
+  String localizedDescription(AppLocalizations l10n) => switch (this) {
+    .none => l10n.playerWebpPresetNoneDescription,
+    .def => l10n.playerWebpPresetDefaultDescription,
+    .picture => l10n.playerWebpPresetPictureDescription,
+    .photo => l10n.playerWebpPresetPhotoDescription,
+    .drawing => l10n.playerWebpPresetDrawingDescription,
+    .icon => l10n.playerWebpPresetIconDescription,
+    .text => l10n.playerWebpPresetTextDescription,
+  };
 }

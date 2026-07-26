@@ -20,6 +20,7 @@ import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -111,7 +112,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
         spacing: 16,
         children: [
           Text(
-            '最高画质',
+            context.l10n.downloadHighestQuality,
             style: textStyle,
           ),
           Builder(
@@ -125,7 +126,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
                   .map(
                     (e) => PopupMenuItem(
                       value: e,
-                      child: Text(e.desc),
+                      child: Text(e.localizedLabel(context.l10n)),
                     ),
                   )
                   .toList(),
@@ -135,7 +136,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _quality.desc,
+                      _quality.localizedLabel(context.l10n),
                       style: const TextStyle(height: 1),
                       strutStyle: const StrutStyle(height: 1, leading: 0),
                     ),
@@ -156,9 +157,12 @@ class _DownloadPanelState extends State<DownloadPanel> {
               builder: (context, snapshot) {
                 if (snapshot.data case final data?) {
                   final network = data.contains(ConnectivityResult.wifi)
-                      ? 'WIFI'
-                      : '数据';
-                  return Text('当前网络：$network', style: textStyle);
+                      ? context.l10n.commonWifi
+                      : context.l10n.commonMobileData;
+                  return Text(
+                    context.l10n.downloadCurrentNetwork(network),
+                    style: textStyle,
+                  );
                 }
                 return const SizedBox.shrink();
               },
@@ -258,7 +262,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
     if (kReleaseMode && episode.badge == '会员' && Accounts.mainEqVideo) {
       if (vipStatus != 1) {
         if (!isDownloadAll) {
-          SmartDialog.showToast('需要大会员');
+          SmartDialog.showToast(context.l10n.accountPremiumRequired);
         }
         return false;
       }
@@ -424,8 +428,8 @@ class _DownloadPanelState extends State<DownloadPanel> {
                                 type: PBadgeType.gray,
                               ),
                             if (isCharging == true)
-                              const PBadge(
-                                text: '充电专属',
+                              PBadge(
+                                text: context.l10n.videoSupporterOnly,
                                 top: 6,
                                 right: 6,
                                 type: PBadgeType.error,
@@ -449,7 +453,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
                           color: primary,
                           height: 12,
                           cacheHeight: 12.cacheSize(context),
-                          semanticLabel: '正在播放：',
+                          semanticLabel: context.l10n.playerNowPlaying,
                         ),
                       Expanded(
                         child: Stack(
@@ -541,11 +545,11 @@ class _DownloadPanelState extends State<DownloadPanel> {
       child: Row(
         children: [
           _buildBottomBtn(
-            text: '缓存全部',
+            text: context.l10n.downloadCacheAll,
             onTap: () {
               showConfirmDialog(
                 context: context,
-                title: const Text('确定缓存全部？'),
+                title: Text(context.l10n.downloadConfirmCacheAll),
                 onConfirm: () {
                   for (int i = 0; i < widget.episodes.length; i++) {
                     _onDownload(
@@ -567,7 +571,7 @@ class _DownloadPanelState extends State<DownloadPanel> {
             ),
           ),
           _buildBottomBtn(
-            text: '查看缓存',
+            text: context.l10n.downloadViewCached,
             onTap: () => Navigator.of(context).push(
               GetPageRoute(page: () => const DownloadPage()),
             ),

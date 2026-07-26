@@ -6,6 +6,7 @@ import 'package:ex_piliplus/pages/common/slide/common_slide_page.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,12 +42,12 @@ class _ViewPointsPageState extends State<ViewPointsPage>
         primary: false,
         automaticallyImplyLeading: false,
         titleSpacing: 16,
-        title: const Text('分段信息'),
+        title: Text(context.l10n.playerSegmentInfo),
         toolbarHeight: 45,
         actions: [
-          const Text(
-            '分段进度条 ',
-            style: TextStyle(fontSize: 16),
+          Text(
+            context.l10n.videoSegmentProgressBar,
+            style: const TextStyle(fontSize: 16),
           ),
           Obx(
             () => Transform.scale(
@@ -62,7 +63,7 @@ class _ViewPointsPageState extends State<ViewPointsPage>
             context: context,
             size: 30,
             icon: const Icon(Icons.clear),
-            tooltip: '关闭',
+            tooltip: context.l10n.commonClose,
             onPressed: Get.back,
           ),
           const SizedBox(width: 16),

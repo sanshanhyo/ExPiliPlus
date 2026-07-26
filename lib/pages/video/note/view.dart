@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/video/note/controller.dart';
 import 'package:ex_piliplus/pages/webview/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,11 @@ class _NoteListPageState extends State<NoteListPage>
               backgroundColor: Colors.transparent,
               title: Obx(() {
                 final count = _controller.count.value;
-                return Text('笔记${count == -1 ? '' : '($count)'}');
+                return Text(
+                  count == -1
+                      ? context.l10n.commonNotes
+                      : context.l10n.videoNotesCount(count),
+                );
               }),
               shape: Border(
                 bottom: BorderSide(
@@ -79,7 +84,7 @@ class _NoteListPageState extends State<NoteListPage>
               ),
               actions: [
                 IconButton(
-                  tooltip: '关闭',
+                  tooltip: context.l10n.commonClose,
                   icon: const Icon(Icons.close, size: 20),
                   onPressed: Get.back,
                 ),
@@ -158,7 +163,7 @@ class _NoteListPageState extends State<NoteListPage>
               ),
               onPressed: () {
                 if (!Accounts.main.isLogin) {
-                  SmartDialog.showToast('账号未登录');
+                  SmartDialog.showToast(context.l10n.accountPleaseSignIn);
                   return;
                 }
                 Scaffold.of(context).showBottomSheet(
@@ -171,7 +176,7 @@ class _NoteListPageState extends State<NoteListPage>
                   ),
                 );
               },
-              child: const Text('开始记笔记'),
+              child: Text(context.l10n.videoStartTakingNotes),
             ),
           ),
         ),
@@ -289,7 +294,7 @@ class _NoteListPageState extends State<NoteListPage>
                         ),
                       ),
                       Text(
-                        '查看全部',
+                        context.l10n.commonViewAll,
                         style: TextStyle(
                           color: theme.colorScheme.primary,
                           height: 1.75,

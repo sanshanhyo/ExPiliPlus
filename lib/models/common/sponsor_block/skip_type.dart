@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
 enum SkipType implements EnumWithLabel {
@@ -11,4 +12,12 @@ enum SkipType implements EnumWithLabel {
   @override
   final String label;
   const SkipType(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .alwaysSkip => l10n.sponsorBlockAlwaysSkip,
+    .skipOnce => l10n.sponsorBlockSkipOnce,
+    .skipManually => l10n.sponsorBlockManualSkip,
+    .showOnly => l10n.sponsorBlockShowOnly,
+    .disable => l10n.commonDisabled,
+  };
 }

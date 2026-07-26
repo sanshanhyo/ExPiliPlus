@@ -38,6 +38,7 @@ import 'package:ex_piliplus/utils/asset_utils.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/box_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
@@ -1028,7 +1029,7 @@ class PlPlayerController with BlockConfigMixin {
                 // }
                 if (isBuffering.value && buffered.value == 0) {
                   SmartDialog.showToast(
-                    '视频链接打开失败，重试中',
+                    Get.context!.l10n.playerVideoOpenFailedRetrying,
                     displayTime: const Duration(milliseconds: 500),
                   );
                   refreshPlayer();
@@ -1037,7 +1038,9 @@ class PlPlayerController with BlockConfigMixin {
             },
           );
         } else if (event.startsWith('Could not open codec')) {
-          SmartDialog.showToast('无法加载解码器, $event，可能会切换至软解');
+          SmartDialog.showToast(
+            Get.context!.l10n.playerDecoderLoadFailed(event),
+          );
         } else if (!onlyPlayAudio.value) {
           if (event.startsWith("error running") ||
               event.startsWith("Failed to open .") ||
@@ -1665,13 +1668,13 @@ class PlPlayerController with BlockConfigMixin {
   }
 
   Future<void> takeScreenshot() async {
-    SmartDialog.showToast('截图中');
+    SmartDialog.showToast(Get.context!.l10n.playerTakingScreenshot);
     final time = DurationUtils.formatDuration(
       positionInMilliseconds / 1000,
     ).replaceAll(':', '-');
     final image = await videoPlayerController?.screenshot();
     if (image != null) {
-      SmartDialog.showToast('点击弹窗保存截图');
+      SmartDialog.showToast(Get.context!.l10n.playerTapPreviewToSaveScreenshot);
       showDialog(
         context: Get.context!,
         builder: (context) => GestureDetector(
@@ -1711,7 +1714,7 @@ class PlPlayerController with BlockConfigMixin {
         ),
       ).whenComplete(image.dispose);
     } else {
-      SmartDialog.showToast('截图失败');
+      SmartDialog.showToast(Get.context!.l10n.playerScreenshotFailed);
     }
   }
 

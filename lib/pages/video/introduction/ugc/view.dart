@@ -32,6 +32,7 @@ import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
@@ -166,7 +167,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                                   videoDetailCtr.queryVideoUrl();
                                 }
                               },
-                              label: const Text("点此重新加载"),
+                              label: Text(context.l10n.commonTapToReload),
                             ),
                           ),
                   ),
@@ -388,7 +389,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
           ],
           if (videoDetail.isUpowerExclusive == true) ...[
             _labelWidget(
-              '充电专属',
+              context.l10n.videoSupporterOnly,
               colorScheme.isDark
                   ? colorScheme.error
                   : colorScheme.errorContainer,
@@ -399,7 +400,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
             const TextSpan(text: ' '),
           ] else if (videoDetail.rights?.isSteinGate == 1) ...[
             _labelWidget(
-              '互动视频',
+              context.l10n.videoInteractive,
               colorScheme.secondaryContainer,
               colorScheme.onSecondaryContainer,
             ),
@@ -446,12 +447,12 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
           ),
           child: Text(
             switch (attr) {
-              1 => '悄悄关注',
-              2 => '已关注',
-              4 || 6 => '已互关',
-              128 => '已拉黑',
-              -10 => '特别关注',
-              _ => ' 关注 ',
+              1 => context.l10n.memberQuietlyFollowing,
+              2 => context.l10n.memberFollowing,
+              4 || 6 => context.l10n.memberMutualFollow,
+              128 => context.l10n.memberBlocked,
+              -10 => context.l10n.memberSpecialFollow,
+              _ => context.l10n.memberFollow,
             },
             style: const TextStyle(fontSize: 13),
           ),
@@ -477,7 +478,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               icon: const Icon(FontAwesomeIcons.thumbsUp),
               selectIcon: const Icon(FontAwesomeIcons.solidThumbsUp),
               selectStatus: introController.hasLike.value,
-              semanticsLabel: '点赞',
+              semanticsLabel: context.l10n.commonLike,
               text: !isLoading ? NumUtils.numFormat(stat!.like) : null,
               onStartTriple: introController.onStartTriple,
               onCancelTriple: introController.onCancelTriple,
@@ -491,8 +492,8 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                 introController.actionDislikeVideo,
               ),
               selectStatus: introController.hasDislike.value,
-              semanticsLabel: '点踩',
-              text: "点踩",
+              semanticsLabel: context.l10n.commonDislike,
+              text: context.l10n.commonDislike,
             ),
           ),
           Obx(
@@ -502,7 +503,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               selectIcon: const Icon(FontAwesomeIcons.b),
               onTap: introController.actionCoinVideo,
               selectStatus: introController.hasCoin,
-              semanticsLabel: '投币',
+              semanticsLabel: context.l10n.videoCoin,
               text: !isLoading ? NumUtils.numFormat(stat!.coin) : null,
             ),
           ),
@@ -517,7 +518,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                 isLongPress: true,
               ),
               selectStatus: introController.hasFav.value,
-              semanticsLabel: '收藏',
+              semanticsLabel: context.l10n.commonAddToFavorites,
               text: !isLoading ? NumUtils.numFormat(stat!.favorite) : null,
             ),
           ),
@@ -528,15 +529,15 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               onTap: () =>
                   introController.handleAction(introController.viewLater),
               selectStatus: introController.hasLater.value,
-              semanticsLabel: '再看',
-              text: '再看',
+              semanticsLabel: context.l10n.mineWatchLater,
+              text: context.l10n.mineWatchLater,
             ),
           ),
           ActionItem(
             icon: const Icon(FontAwesomeIcons.shareFromSquare),
             onTap: () => introController.actionShareVideo(context),
             selectStatus: false,
-            semanticsLabel: '分享',
+            semanticsLabel: context.l10n.commonShare,
             text: !isLoading ? NumUtils.numFormat(stat!.share!) : null,
           ),
         ],
@@ -602,9 +603,19 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                               if (!mounted) return;
                               final confirmed = await showConfirmDialog(
                                 context: context,
-                                title: const Text('空降助手：搬运视频同步'),
+                                title: Text(
+                                  context.l10n.videoSponsorBlockSourceSync,
+                                ),
                                 content: Text(
-                                  '${hasPortVideo ? "" : "是否将"}该视频${hasPortVideo ? "已" : ""}绑定到此YouTube视频($ytbId)',
+                                  hasPortVideo
+                                      ? context.l10n
+                                            .videoSponsorBlockAlreadyLinked(
+                                              ytbId,
+                                            )
+                                      : context.l10n
+                                            .videoSponsorBlockConfirmLink(
+                                              ytbId,
+                                            ),
                                 ),
                               );
                               if (!hasPortVideo && confirmed) {
@@ -615,7 +626,14 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                                   videoDuration: (duration / 1000).round(),
                                 );
                                 SmartDialog.showToast(
-                                  '提交搬运视频${res.isSuccess ? "成功" : "失败: $res"}',
+                                  res.isSuccess
+                                      ? context
+                                            .l10n
+                                            .videoSponsorBlockLinkSucceeded
+                                      : context.l10n
+                                            .videoSponsorBlockLinkFailed(
+                                              '$res',
+                                            ),
                                 );
                                 return;
                               }
@@ -926,7 +944,10 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                   ),
                 ),
                 Text(
-                  '${NumUtils.numFormat(userStat.follower)}粉丝    ${'${NumUtils.numFormat(userStat.archiveCount)}视频'}',
+                  context.l10n.memberFollowersAndVideos(
+                    NumUtils.numFormat(userStat.follower),
+                    NumUtils.numFormat(userStat.archiveCount),
+                  ),
                   style: TextStyle(fontSize: 12, color: colorScheme.outline),
                 ),
               ],
@@ -963,12 +984,12 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
             MdiIcons.incognito,
             size: 15,
             color: colorScheme.outline,
-            semanticLabel: '无痕',
+            semanticLabel: context.l10n.mineEnterIncognito,
           ),
         if (introController.isShowOnlineTotal)
           Obx(
             () => Text(
-              '${introController.total.value}人在看',
+              context.l10n.playerWatchingNow(introController.total.value),
               style: TextStyle(fontSize: 12, color: colorScheme.outline),
             ),
           ),
@@ -992,12 +1013,14 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
             if (summary?.isNotEmpty == true || outline?.isNotEmpty == true) {
               widget.showAiBottomSheet();
             } else {
-              SmartDialog.showToast("当前视频不支持AI视频总结");
+              SmartDialog.showToast(
+                context.l10n.videoAiSummaryNotSupported,
+              );
             }
           }
         },
         child: Image.asset(
-          semanticLabel: 'AI总结',
+          semanticLabel: context.l10n.videoAiSummary,
           Assets.ai,
           height: 18,
           width: 18,
@@ -1018,7 +1041,9 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               (item) => SearchText(
                 fontSize: 13,
                 text: switch (item.tagType) {
-                  'bgm' => item.tagName!.replaceFirst('发现', '♫ BGM：'),
+                  'bgm' => context.l10n.videoBgmPrefix(
+                    item.tagName!.replaceFirst('发现', ''),
+                  ),
                   'topic' => '#${item.tagName}',
                   _ => item.tagName!,
                 },

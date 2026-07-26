@@ -24,6 +24,7 @@ import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/pages/video/reply_search_item/view.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -161,7 +162,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
               onSubmitted: onSubmitted,
               focusNode: focusNode,
               decoration: InputDecoration(
-                hintText: widget.hint ?? "输入回复内容",
+                hintText: widget.hint ?? context.l10n.replyInputHint,
                 border: InputBorder.none,
                 hintStyle: const TextStyle(fontSize: 14),
               ),
@@ -183,14 +184,16 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             if (widget.root == 0) ...[
               const SizedBox(width: 8),
               ToolbarIconButton(
-                tooltip: '图片',
+                tooltip: context.l10n.commonImage,
                 selected: false,
                 icon: widget.canUploadPic
                     ? const Icon(Icons.image, size: 22)
                     : const Icon(Icons.image_not_supported, size: 22),
                 onPressed: widget.canUploadPic
                     ? onPickImage
-                    : () => SmartDialog.showToast('当前评论区不支持发送图片'),
+                    : () => SmartDialog.showToast(
+                        context.l10n.replyImagesNotSupported,
+                      ),
               ),
             ],
             const SizedBox(width: 8),
@@ -200,7 +203,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
             const SizedBox(width: 8),
             Obx(
               () => ToolbarIconButton(
-                tooltip: '转到动态',
+                tooltip: context.l10n.replyAlsoPostToFeed,
                 onPressed: _syncToDynamic.toggle,
                 icon: const Icon(
                   CustomIcons.repeat_rounded_rotate_90,
@@ -221,7 +224,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                   ),
                   visualDensity: VisualDensity.compact,
                 ),
-                child: const Text('发送'),
+                child: Text(context.l10n.commonSend),
               ),
             ),
           ],
@@ -304,7 +307,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
               }
             },
             icon: Icon(Icons.post_add, size: 28, color: color),
-            title: '插入内容',
+            title: context.l10n.replyInsertContent,
           ),
           if (heroTag != null) ...[
             // if (isRoot)
@@ -336,13 +339,15 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                 }
               },
               icon: Icon(Icons.my_location, size: 28, color: color),
-              title: '视频进度',
+              title: context.l10n.replyVideoProgress,
             ),
             if (isRoot && widget.canUploadPic)
               item(
                 onTap: () async {
                   if (imageList.length >= limit) {
-                    SmartDialog.showToast('最多选择$limit张图片');
+                    SmartDialog.showToast(
+                      context.l10n.replyMaxImages(limit),
+                    );
                     return;
                   }
                   try {
@@ -374,7 +379,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
                   size: 28,
                   color: color,
                 ),
-                title: '视频截图',
+                title: context.l10n.replyVideoScreenshot,
               ),
           ],
         ],
@@ -397,7 +402,10 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
       root: widget.root,
       parent: widget.parent,
       message: widget.replyItem != null && widget.replyItem!.root != 0
-          ? ' 回复 @${widget.replyItem!.member.name} : $message'
+          ? context.l10n.replyReplyPrefix(
+              widget.replyItem!.member.name,
+              message,
+            )
           : message,
       atNameToMid: atNameToMid,
       pictures: pictures,
@@ -405,7 +413,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
     );
     if (res case Success(:final response)) {
       hasPub = true;
-      SmartDialog.showToast('发送成功');
+      SmartDialog.showToast(context.l10n.commonSent);
       Get.back(result: response);
     } else {
       res.toast();

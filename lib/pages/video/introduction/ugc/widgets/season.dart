@@ -6,6 +6,7 @@ import 'package:ex_piliplus/models_new/video/video_detail/episode.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/section.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -120,7 +121,9 @@ class _SeasonPanelState extends State<SeasonPanel> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    '合集：${videoDetail.ugcSeason!.title!}',
+                    context.l10n.videoCollection(
+                      videoDetail.ugcSeason!.title!,
+                    ),
                     style: theme.textTheme.labelMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -131,22 +134,24 @@ class _SeasonPanelState extends State<SeasonPanel> {
                   color: theme.colorScheme.primary,
                   height: 12,
                   cacheHeight: 12.cacheSize(context),
-                  semanticLabel: "正在播放：",
+                  semanticLabel: context.l10n.playerNowPlaying,
                 ),
                 const SizedBox(width: 10),
                 Obx(
                   () => Text(
                     '${currentIndex.value + 1}/${episodes.length}',
                     style: theme.textTheme.labelMedium,
-                    semanticsLabel:
-                        '第${currentIndex.value + 1}集，共${episodes.length}集',
+                    semanticsLabel: context.l10n.videoEpisodePosition(
+                      currentIndex.value + 1,
+                      episodes.length,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios_outlined,
                   size: 13,
-                  semanticLabel: '查看',
+                  semanticLabel: context.l10n.commonView,
                 ),
               ],
             ),

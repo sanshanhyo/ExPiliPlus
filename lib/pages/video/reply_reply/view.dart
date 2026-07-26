@@ -12,6 +12,7 @@ import 'package:ex_piliplus/pages/common/slide/common_slide_page.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/controller.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -68,10 +69,10 @@ class VideoReplyReplyPanel extends CommonSlidePage {
       () => Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('评论详情'),
+          title: Text(Get.context!.l10n.replyDetails),
           actions: [
             IconButton(
-              tooltip: '前往',
+              tooltip: Get.context!.l10n.commonGoTo,
               onPressed: uri == null
                   ? null
                   : () => PiliScheme.routePush(uri, businessId: type),
@@ -159,9 +160,13 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(isDialogue ? '对话列表' : '评论详情'),
+                      Text(
+                        isDialogue
+                            ? context.l10n.replyConversation
+                            : context.l10n.replyDetails,
+                      ),
                       IconButton(
-                        tooltip: '关闭',
+                        tooltip: context.l10n.commonClose,
                         icon: const Icon(Icons.close, size: 20),
                         onPressed: Get.back,
                       ),
@@ -255,7 +260,9 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
                 final count = _controller.count.value;
                 return count != -1
                     ? Text(
-                        '相关回复共${NumUtils.numFormat(count)}条',
+                        context.l10n.replyRelatedCount(
+                          NumUtils.numFormat(count),
+                        ),
                         style: const TextStyle(fontSize: 13),
                       )
                     : const SizedBox.shrink();
@@ -299,7 +306,9 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
               alignment: Alignment.center,
               margin: .only(bottom: MediaQuery.viewPaddingOf(context).bottom),
               child: Text(
-                _controller.isEnd ? '没有更多了' : '加载中...',
+                _controller.isEnd
+                    ? context.l10n.commonNoMore
+                    : context.l10n.commonLoading,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
@@ -353,7 +362,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
       ),
       jumpToDialogue: () {
         if (!_controller.setIndexById(replyItem.parent)) {
-          SmartDialog.showToast('评论可能已被删除');
+          SmartDialog.showToast(context.l10n.replyMayHaveBeenDeleted);
         }
       },
       onCheckReply: (item) => _controller.onCheckReply(item, isManual: true),

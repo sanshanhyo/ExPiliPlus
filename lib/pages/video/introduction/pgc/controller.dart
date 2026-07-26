@@ -8,6 +8,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/pgc.dart';
 import 'package:ex_piliplus/http/search.dart';
 import 'package:ex_piliplus/http/video.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/video/source_type.dart';
 import 'package:ex_piliplus/models/common/video/video_type.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_info_model/episode.dart';
@@ -21,6 +22,7 @@ import 'package:ex_piliplus/pages/video/reply/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -37,9 +39,10 @@ class PgcIntroController extends CommonIntroController {
   int? seasonId;
   int? epId;
 
-  late final String pgcType = pgcItem.type == 1 || pgcItem.type == 4
-      ? '追番'
-      : '追剧';
+  String localizedPgcType(AppLocalizations l10n) =>
+      pgcItem.type == 1 || pgcItem.type == 4
+      ? l10n.videoFollowAnime
+      : l10n.videoFollowSeries;
 
   late final bool isPgc;
   late final PgcInfoModel pgcItem;
@@ -105,14 +108,15 @@ class PgcIntroController extends CommonIntroController {
   // （取消）点赞
   @override
   Future<void> actionLikeVideo() async {
+    final l10n = Get.context!.l10n;
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(l10n.accountPleaseSignIn);
       return;
     }
     final newVal = !hasLike.value;
     final result = await VideoHttp.likeVideo(bvid: bvid, type: newVal);
     if (result case Success(:final response)) {
-      SmartDialog.showToast(newVal ? response : '取消赞');
+      SmartDialog.showToast(newVal ? response : l10n.videoUnlikeSucceeded);
       pgcItem.stat?.like += newVal ? 1 : -1;
       hasLike.value = newVal;
     } else {
@@ -126,6 +130,7 @@ class PgcIntroController extends CommonIntroController {
   // 分享视频
   @override
   void actionShareVideo(BuildContext context) {
+    final l10n = context.l10n;
     String videoUrl =
         '${HttpString.baseUrl}/bangumi/play/ep$epId${videoDetailCtr.playedTimePos}';
     showDialog(
@@ -135,14 +140,20 @@ class PgcIntroController extends CommonIntroController {
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
         children: [
           DialogOption(
-            child: const Text('复制链接', style: TextStyle(fontSize: 14)),
+            child: Text(
+              l10n.commonCopyLink,
+              style: const TextStyle(fontSize: 14),
+            ),
             onPressed: () {
               Get.back();
               Utils.copyText(videoUrl);
             },
           ),
           DialogOption(
-            child: const Text('其它app打开', style: TextStyle(fontSize: 14)),
+            child: Text(
+              l10n.commonOpenInAnotherApp,
+              style: const TextStyle(fontSize: 14),
+            ),
             onPressed: () {
               Get.back();
               PageUtils.launchURL(videoUrl);
@@ -150,7 +161,10 @@ class PgcIntroController extends CommonIntroController {
           ),
           if (PlatformUtils.isMobile)
             DialogOption(
-              child: const Text('分享视频', style: TextStyle(fontSize: 14)),
+              child: Text(
+                l10n.videoShareVideo,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 final item = pgcItem.episodes?.firstWhereOrNull(
                   (item) => item.epId == epId,
@@ -164,7 +178,10 @@ class PgcIntroController extends CommonIntroController {
             ),
           if (isLogin)
             DialogOption(
-              child: const Text('分享至动态', style: TextStyle(fontSize: 14)),
+              child: Text(
+                l10n.videoShareToFeed,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 Get.back();
                 final item = pgcItem.episodes?.firstWhereOrNull(
@@ -203,9 +220,9 @@ class PgcIntroController extends CommonIntroController {
             ),
           if (isLogin)
             DialogOption(
-              child: const Text(
-                '分享至消息',
-                style: TextStyle(fontSize: 14),
+              child: Text(
+                l10n.videoShareToMessages,
+                style: const TextStyle(fontSize: 14),
               ),
               onPressed: () {
                 Get.back();
@@ -390,14 +407,15 @@ class PgcIntroController extends CommonIntroController {
   // 一键三连
   @override
   Future<void> actionTriple() async {
+    final l10n = Get.context!.l10n;
     feedBack();
     if (!isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(l10n.accountPleaseSignIn);
       return;
     }
     if (hasLike.value && hasCoin && hasFav.value) {
       // 已点赞、投币、收藏
-      SmartDialog.showToast('已三连');
+      SmartDialog.showToast(l10n.videoGreatCoined);
       return;
     }
     final result = await VideoHttp.pgcTriple(epId: epId!, seasonId: seasonId);
@@ -417,9 +435,9 @@ class PgcIntroController extends CommonIntroController {
         hasFav.value = true;
       }
       if (!hasCoin) {
-        SmartDialog.showToast('投币失败');
+        SmartDialog.showToast(l10n.videoCoinFailed);
       } else {
-        SmartDialog.showToast('三连成功');
+        SmartDialog.showToast(l10n.videoGreatCoinedSucceeded);
       }
     } else {
       result.toast();
@@ -479,7 +497,11 @@ class PgcIntroController extends CommonIntroController {
         : await FavHttp.addFavPugv(seasonId!);
     if (res.isSuccess) {
       this.isFav.toggle();
-      SmartDialog.showToast('${isFav ? '取消' : ''}收藏成功');
+      SmartDialog.showToast(
+        isFav
+            ? Get.context!.l10n.videoRemovedFromFavorites
+            : Get.context!.l10n.videoAddedToFavorites,
+      );
     } else {
       res.toast();
     }
