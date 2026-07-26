@@ -42,6 +42,8 @@
 ## To-Do
 
 - [ ] i18n 完全支持（正在考虑方案😂）
+- [ ] 回顾功能
+- [ ] 重做“我的”界面
 - [ ] 更多新功能
 
 欢迎前往 [Issues](https://github.com/sanshanhyo/ExPiliPlus/issues) 提交问题、建议，或分享你的新功能构想。
