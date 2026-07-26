@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -9,6 +10,12 @@ enum ThemeType {
 
   final String desc;
   const ThemeType(this.desc);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .light => l10n.themeLight,
+    .dark => l10n.themeDark,
+    .system => l10n.themeSystem,
+  };
 
   ThemeMode get toThemeMode => switch (this) {
     ThemeType.light => ThemeMode.light,

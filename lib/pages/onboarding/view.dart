@@ -3,6 +3,7 @@ import 'dart:convert' show jsonDecode;
 import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/scale_app.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/theme/theme_type.dart';
 import 'package:ex_piliplus/pages/login/controller.dart';
@@ -14,6 +15,7 @@ import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
 import 'package:ex_piliplus/utils/settings_backup.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -36,7 +38,6 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   static const _onboardingVersion = 1;
-  static const _steps = ['欢迎', '导入', '外观', '账户', '完成'];
   static const _webDavAppNames = [
     Constants.appName,
     'ExPiliPlus',
@@ -54,6 +55,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
   late double _fontWeightValue;
   late double _textScale;
   late bool _optTabletNav;
+
+  List<String> get _steps {
+    final l10n = context.l10n;
+    return [
+      l10n.onboardingStepWelcome,
+      l10n.onboardingStepImport,
+      l10n.onboardingStepAppearance,
+      l10n.onboardingStepAccount,
+      l10n.onboardingStepFinish,
+    ];
+  }
 
   @override
   void initState() {
@@ -164,41 +176,52 @@ class _OnboardingPageState extends State<OnboardingPage> {
   };
 
   Widget _buildWelcomeStep(BuildContext context) {
-    return const _StepSection(
+    final l10n = context.l10n;
+    return _StepSection(
       icon: Icons.auto_awesome_outlined,
-      title: '欢迎使用 ExPiliPlus',
-      subtitle: '基于 PiliPlus 二次开发，探索更多个性化与实验性功能(｡･∀･)ﾉﾞ',
+      title: l10n.onboardingWelcomeTitle,
+      subtitle: l10n.onboardingWelcomeSubtitle,
       children: [
-        _InfoLine(icon: Icons.folder_copy_outlined, text: '迁移既有设置'),
-        _InfoLine(icon: Icons.palette_outlined, text: '整理外观偏好'),
-        _InfoLine(icon: Icons.account_circle_outlined, text: '登录或导入本地账号备份'),
+        _InfoLine(
+          icon: Icons.folder_copy_outlined,
+          text: l10n.onboardingWelcomeMigrateSettings,
+        ),
+        _InfoLine(
+          icon: Icons.palette_outlined,
+          text: l10n.onboardingWelcomeAppearance,
+        ),
+        _InfoLine(
+          icon: Icons.account_circle_outlined,
+          text: l10n.onboardingWelcomeAccount,
+        ),
       ],
     );
   }
 
   Widget _buildImportStep(BuildContext context) {
+    final l10n = context.l10n;
     return _StepSection(
       icon: Icons.import_export_outlined,
-      title: '导入',
-      subtitle: '从 PiliPlus / ExPiliPlus 的本地文件或 WebDAV 备份迁移设置，也可以全新开始。',
+      title: l10n.onboardingImportTitle,
+      subtitle: l10n.onboardingImportSubtitle,
       children: [
         if (_settingsStatus != null) _StatusLine(text: _settingsStatus!),
         _ActionTile(
           icon: Icons.description_outlined,
-          title: '从本地文件导入',
-          subtitle: '选择导出的设置 JSON 文件',
+          title: l10n.onboardingImportLocal,
+          subtitle: l10n.onboardingImportLocalDescription,
           onTap: _busy ? null : _importSettingsFromLocal,
         ),
         _ActionTile(
           icon: Icons.cloud_download_outlined,
-          title: '从 WebDAV 导入',
-          subtitle: '使用 WebDAV 备份中的设置文件',
+          title: l10n.onboardingImportWebDav,
+          subtitle: l10n.onboardingImportWebDavDescription,
           onTap: _busy ? null : _importSettingsFromWebDav,
         ),
         _ActionTile(
           icon: Icons.arrow_forward_outlined,
-          title: '全新开始',
-          subtitle: '保留默认设置继续',
+          title: l10n.onboardingStartFresh,
+          subtitle: l10n.onboardingStartFreshDescription,
           onTap: _busy ? null : _skipSettingsImport,
         ),
       ],
@@ -208,12 +231,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget _buildAppearanceStep(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
     return _StepSection(
       icon: Icons.palette_outlined,
-      title: '外观',
+      title: l10n.onboardingAppearanceTitle,
       subtitle: _settingsStatus == null
-          ? '先选一个舒服的阅读环境，之后也可以在设置里继续调整。'
-          : '已应用导入的设置，可以在这里顺手微调。',
+          ? l10n.onboardingAppearanceDescription
+          : l10n.onboardingAppearanceImportedDescription,
       children: [
         SegmentedButton<ThemeType>(
           showSelectedIcon: false,
@@ -222,7 +246,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 (item) => ButtonSegment<ThemeType>(
                   value: item,
                   icon: item.icon,
-                  label: Text(item.desc),
+                  label: Text(item.localizedLabel(l10n)),
                 ),
               )
               .toList(growable: false),
@@ -231,36 +255,43 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
         _ActionTile(
           icon: Icons.font_download_outlined,
-          title: 'App 字体',
-          subtitle: _appFontFamily.label,
+          title: l10n.settingsAppFont,
+          subtitle: _appFontFamily.isSystem
+              ? l10n.settingsSystemDefaultFont
+              : _appFontFamily.label,
           onTap: _busy ? null : _selectAppFontFamily,
         ),
         _SliderPanel(
-          title: '字体大小',
-          valueLabel: _textScale == 1.0 ? '默认' : _textScale.toStringAsFixed(1),
+          title: l10n.onboardingFontSize,
+          valueLabel: _textScale == 1.0
+              ? l10n.commonDefault
+              : _textScale.toStringAsFixed(1),
           value: _textScale,
           min: 0.8,
           max: 1.4,
           divisions: 6,
-          onChanged: (value) => _setTextScale(value),
+          onChanged: _setTextScale,
         ),
         _SliderPanel(
-          title: '字体字重',
-          valueLabel: _fontWeightLabel,
+          title: l10n.settingsAppFontWeight,
+          valueLabel: _fontWeightLabel(l10n),
           value: _fontWeightValue,
           min: 0,
           max: FontWeight.values.length.toDouble(),
           divisions: FontWeight.values.length,
-          onChanged: (value) => _setFontWeight(value),
+          onChanged: _setFontWeight,
         ),
         Material(
           color: colorScheme.surfaceContainer,
           borderRadius: Style.mdRadius,
           clipBehavior: Clip.hardEdge,
           child: SwitchListTile(
-            title: Text('大屏优化', style: theme.textTheme.titleMedium),
+            title: Text(
+              l10n.onboardingLargeScreenOptimization,
+              style: theme.textTheme.titleMedium,
+            ),
             subtitle: Text(
-              '平板和横屏设备优先使用更适合大屏的导航布局',
+              l10n.onboardingLargeScreenOptimizationDescription,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.outline,
               ),
@@ -275,28 +306,29 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildAccountStep(BuildContext context) {
+    final l10n = context.l10n;
     return _StepSection(
       icon: Icons.account_circle_outlined,
-      title: '账户',
-      subtitle: '登录后可以同步收藏、历史和关注；也可以从本地账号备份导入登录信息。',
+      title: l10n.onboardingAccountTitle,
+      subtitle: l10n.onboardingAccountDescription,
       children: [
         if (_accountStatus != null) _StatusLine(text: _accountStatus!),
         _ActionTile(
           icon: Icons.login_outlined,
-          title: '登录',
-          subtitle: '使用现有登录方式进入账号',
+          title: l10n.onboardingSignIn,
+          subtitle: l10n.onboardingSignInDescription,
           onTap: _busy ? null : _loginNow,
         ),
         _ActionTile(
           icon: Icons.key_outlined,
-          title: '从本地备份导入账户',
-          subtitle: '选择导出的登录信息 JSON 文件',
+          title: l10n.onboardingImportAccount,
+          subtitle: l10n.onboardingImportAccountDescription,
           onTap: _busy ? null : _importAccountFromLocal,
         ),
         _ActionTile(
           icon: Icons.arrow_forward_outlined,
-          title: '暂不登录',
-          subtitle: '先进入应用，之后随时可以登录',
+          title: l10n.onboardingSkipSignIn,
+          subtitle: l10n.onboardingSkipSignInDescription,
           onTap: _busy ? null : _skipAccount,
         ),
       ],
@@ -304,18 +336,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildFinishStep(BuildContext context) {
+    final l10n = context.l10n;
     return _StepSection(
       icon: Icons.check_circle_outline,
-      title: '准备好了',
-      subtitle: '欢迎来到 ExPiliPlus。',
+      title: l10n.onboardingReadyTitle,
+      subtitle: l10n.onboardingReadyDescription,
       children: [
         _InfoLine(
           icon: Icons.settings_outlined,
-          text: _settingsStatus ?? '使用默认设置',
+          text: _settingsStatus ?? l10n.onboardingUsingDefaultSettings,
         ),
         _InfoLine(
           icon: Icons.account_circle_outlined,
-          text: _accountStatus ?? '暂未登录',
+          text: _accountStatus ?? l10n.onboardingNotSignedIn,
         ),
       ],
     );
@@ -323,6 +356,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   Widget _buildFooter(BuildContext context, EdgeInsets padding) {
     final colorScheme = ColorScheme.of(context);
+    final l10n = context.l10n;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colorScheme.surface,
@@ -344,7 +378,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   TextButton.icon(
                     onPressed: _busy ? null : _previous,
                     icon: const Icon(Icons.arrow_back),
-                    label: const Text('上一步'),
+                    label: Text(l10n.commonPrevious),
                   )
                 else
                   const Spacer(),
@@ -361,7 +395,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               ? Icons.rocket_launch_outlined
                               : Icons.arrow_forward,
                         ),
-                  label: Text(_primaryLabel),
+                  label: Text(_primaryLabel(l10n)),
                 ),
               ],
             ),
@@ -371,17 +405,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  String get _primaryLabel => switch (_step) {
-    0 => '开始',
-    1 => _settingsStatus == null ? '全新开始' : '下一步',
-    3 => _accountStatus == null ? '暂不登录' : '下一步',
-    4 => '开始使用',
-    _ => '下一步',
+  String _primaryLabel(AppLocalizations l10n) => switch (_step) {
+    0 => l10n.onboardingGetStarted,
+    1 => _settingsStatus == null ? l10n.onboardingStartFresh : l10n.commonNext,
+    3 => _accountStatus == null ? l10n.onboardingSkipSignIn : l10n.commonNext,
+    4 => l10n.onboardingStartUsing,
+    _ => l10n.commonNext,
   };
 
-  String get _fontWeightLabel {
+  String _fontWeightLabel(AppLocalizations l10n) {
     final index = _fontWeightValue.round() - 1;
-    if (index < 0) return '默认';
+    if (index < 0) return l10n.commonDefault;
     return FontWeight.values[index].value.toString();
   }
 
@@ -412,34 +446,42 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _skipSettingsImport() {
-    _settingsStatus ??= '使用默认设置';
+    _settingsStatus ??= context.l10n.onboardingUsingDefaultSettings;
     _next();
   }
 
   void _skipAccount() {
-    _accountStatus ??= '暂未登录';
+    _accountStatus ??= context.l10n.onboardingNotSignedIn;
     _next();
   }
 
   Future<void> _importSettingsFromLocal() async {
+    final l10n = context.l10n;
     final data = await _pickJsonText();
     if (data == null) return;
-    await _prepareSettingsImport(data, source: '本地文件');
+    await _prepareSettingsImport(
+      data,
+      source: l10n.onboardingSourceLocalFile,
+    );
   }
 
   Future<void> _importSettingsFromWebDav() async {
+    final l10n = context.l10n;
     if (!await _ensureWebDavConfig()) return;
     setState(() => _busy = true);
     String? data;
     try {
       data = await WebDav().readSettingsBackup(appNames: _webDavAppNames);
     } catch (e) {
-      SmartDialog.showToast('读取 WebDAV 失败：$e');
+      SmartDialog.showToast(l10n.onboardingWebDavReadFailed('$e'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
     if (data != null) {
-      await _prepareSettingsImport(data, source: 'WebDAV 备份');
+      await _prepareSettingsImport(
+        data,
+        source: l10n.onboardingSourceWebDavBackup,
+      );
     }
   }
 
@@ -449,9 +491,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }) async {
     final _SettingsImportDraft draft;
     try {
-      draft = _SettingsImportDraft.fromJson(_decodeJsonMap(data));
+      draft = _SettingsImportDraft.fromJson(
+        _decodeJsonMap(data),
+        context.l10n,
+      );
     } catch (e) {
-      SmartDialog.showToast('解析设置失败：$e');
+      SmartDialog.showToast(context.l10n.onboardingSettingsParseFailed('$e'));
       return;
     }
     if (!mounted) return;
@@ -461,9 +506,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
       await _applySettingsDraft(draft);
       if (!mounted) return;
       setState(() {
-        _settingsStatus = '已导入 ${draft.totalCount} 项设置（${draft.categoryLabel}）';
+        _settingsStatus = context.l10n.onboardingSettingsImported(
+          draft.totalCount,
+          draft.categoryLabel(context.l10n),
+        );
       });
-      SmartDialog.showToast('设置导入成功');
+      SmartDialog.showToast(context.l10n.onboardingSettingsImportSucceeded);
       _next();
     });
   }
@@ -490,18 +538,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
     ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
     Get.changeThemeMode(ThemeUtils.themeMode = Pref.themeMode);
+    // ignore: cascade_invocations
     Get.updateMyAppTheme();
     AppLocaleController.syncFromStorage();
   }
 
   Future<void> _importAccountFromLocal() async {
+    final l10n = context.l10n;
     final data = await _pickJsonText();
     if (data == null) return;
     final _AccountImportDraft draft;
     try {
-      draft = _AccountImportDraft.fromJson(_decodeJsonMap(data));
+      draft = _AccountImportDraft.fromJson(
+        _decodeJsonMap(data),
+        l10n,
+      );
     } catch (e) {
-      SmartDialog.showToast('解析登录信息失败：$e');
+      SmartDialog.showToast(l10n.onboardingAccountParseFailed('$e'));
       return;
     }
     if (!mounted) return;
@@ -512,10 +565,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
       if (!mounted) return;
       setState(() {
         _accountStatus = Accounts.main.isLogin
-            ? '已登录 mid ${Accounts.main.mid}'
-            : '已导入 ${draft.accounts.length} 个账号';
+            ? l10n.onboardingSignedInMid(Accounts.main.mid)
+            : l10n.onboardingAccountsImported(draft.accounts.length);
       });
-      SmartDialog.showToast('登录信息导入成功');
+      SmartDialog.showToast(l10n.onboardingAccountImportSucceeded);
       _next();
     });
   }
@@ -536,7 +589,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
     await Get.toNamed('/loginPage');
     if (!mounted) return;
     if (Accounts.main.isLogin) {
-      setState(() => _accountStatus = '已登录 mid ${Accounts.main.mid}');
+      setState(
+        () => _accountStatus = context.l10n.onboardingSignedInMid(
+          Accounts.main.mid,
+        ),
+      );
       _next();
     }
   }
@@ -624,7 +681,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Map<String, dynamic> _decodeJsonMap(String data) {
     final decoded = jsonDecode(data);
     if (decoded is! Map) {
-      throw const FormatException('JSON 顶层必须是对象');
+      throw FormatException(context.l10n.onboardingErrorJsonTopLevelObject);
     }
     return decoded.map((key, value) => MapEntry(key.toString(), value));
   }
@@ -643,30 +700,40 @@ class _OnboardingPageState extends State<OnboardingPage> {
     _SettingsImportDraft draft,
     String source,
   ) {
+    final l10n = context.l10n;
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('导入 $source 设置？'),
+        title: Text(l10n.onboardingConfirmSettingsImport(source)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SummaryRow(label: '设置字段', value: '${draft.setting.length} 个'),
-            _SummaryRow(label: '播放字段', value: '${draft.video.length} 个'),
-            _SummaryRow(label: '分类', value: draft.categoryLabel),
             _SummaryRow(
-              label: '额外顶层字段',
-              value: '${draft.extraTopLevelCount} 个',
+              label: l10n.onboardingSettingsFields,
+              value: l10n.commonItemCount(draft.setting.length),
+            ),
+            _SummaryRow(
+              label: l10n.onboardingPlaybackFields,
+              value: l10n.commonItemCount(draft.video.length),
+            ),
+            _SummaryRow(
+              label: l10n.onboardingCategory,
+              value: draft.categoryLabel(l10n),
+            ),
+            _SummaryRow(
+              label: l10n.onboardingExtraTopLevelFields,
+              value: l10n.commonItemCount(draft.extraTopLevelCount),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: Text(l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('导入'),
+            child: Text(l10n.commonImport),
           ),
         ],
       ),
@@ -677,32 +744,45 @@ class _OnboardingPageState extends State<OnboardingPage> {
     BuildContext context,
     _AccountImportDraft draft,
   ) {
+    final l10n = context.l10n;
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('导入本地账号备份？'),
+        title: Text(l10n.onboardingConfirmAccountImport),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SummaryRow(label: '账号数量', value: '${draft.accounts.length} 个'),
-            _SummaryRow(label: 'mid', value: draft.midLabel),
-            _SummaryRow(label: '包含 Cookie', value: '${draft.cookieCount} 个'),
             _SummaryRow(
-              label: '包含 accessKey',
-              value: '${draft.accessKeyCount} 个',
+              label: l10n.onboardingAccountCount,
+              value: l10n.commonItemCount(draft.accounts.length),
             ),
-            _SummaryRow(label: '包含 refresh', value: '${draft.refreshCount} 个'),
-            _SummaryRow(label: '将覆盖', value: '${draft.overwriteCount} 个'),
+            _SummaryRow(label: 'mid', value: draft.midLabel(l10n)),
+            _SummaryRow(
+              label: l10n.onboardingContainsCookie,
+              value: l10n.commonItemCount(draft.cookieCount),
+            ),
+            _SummaryRow(
+              label: l10n.onboardingContainsAccessKey,
+              value: l10n.commonItemCount(draft.accessKeyCount),
+            ),
+            _SummaryRow(
+              label: l10n.onboardingContainsRefresh,
+              value: l10n.commonItemCount(draft.refreshCount),
+            ),
+            _SummaryRow(
+              label: l10n.onboardingWillOverwrite,
+              value: l10n.commonItemCount(draft.overwriteCount),
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: Text(l10n.commonCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('导入'),
+            child: Text(l10n.commonImport),
           ),
         ],
       ),
@@ -736,8 +816,9 @@ class _WebDavConfigDialogState extends State<_WebDavConfigDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return AlertDialog(
-      title: const Text('WebDAV 设置'),
+      title: Text(l10n.settingsWebDavTitle),
       constraints: Style.dialogFixedConstraints,
       content: Form(
         key: _formKey,
@@ -747,19 +828,20 @@ class _WebDavConfigDialogState extends State<_WebDavConfigDialog> {
             children: [
               TextFormField(
                 controller: _uriCtr,
-                decoration: const InputDecoration(
-                  labelText: '地址',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingWebDavAddress,
+                  border: const OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                    value?.isNotEmpty == true ? null : '请输入 WebDAV 地址',
+                validator: (value) => value?.isNotEmpty == true
+                    ? null
+                    : l10n.onboardingWebDavAddressRequired,
               ),
               const SizedBox(height: 14),
               TextFormField(
                 controller: _usernameCtr,
-                decoration: const InputDecoration(
-                  labelText: '用户',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingWebDavUser,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 14),
@@ -767,7 +849,7 @@ class _WebDavConfigDialogState extends State<_WebDavConfigDialog> {
                 controller: _passwordCtr,
                 autofillHints: const [AutofillHints.password],
                 decoration: InputDecoration(
-                  labelText: '密码',
+                  labelText: l10n.onboardingWebDavPassword,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     onPressed: () =>
@@ -784,9 +866,9 @@ class _WebDavConfigDialogState extends State<_WebDavConfigDialog> {
               const SizedBox(height: 14),
               TextFormField(
                 controller: _directoryCtr,
-                decoration: const InputDecoration(
-                  labelText: '路径',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.onboardingWebDavPath,
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ],
@@ -796,7 +878,7 @@ class _WebDavConfigDialogState extends State<_WebDavConfigDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('取消'),
+          child: Text(l10n.commonCancel),
         ),
         FilledButton(
           onPressed: () async {
@@ -811,7 +893,7 @@ class _WebDavConfigDialogState extends State<_WebDavConfigDialog> {
             });
             if (context.mounted) Navigator.of(context).pop(true);
           },
-          child: const Text('继续'),
+          child: Text(l10n.commonContinue),
         ),
       ],
     );
@@ -1065,7 +1147,7 @@ final class _SettingsImportDraft {
 
   int get totalCount => setting.length + video.length;
 
-  String get categoryLabel {
+  String categoryLabel(AppLocalizations l10n) {
     final categories = <String>[
       if (_containsAny(setting, const {
         SettingBoxKey.themeMode,
@@ -1076,39 +1158,44 @@ final class _SettingsImportDraft {
         SettingBoxKey.customColor,
         SettingBoxKey.customThemeColor,
       }))
-        '外观',
+        l10n.onboardingCategoryAppearance,
       if (_containsAny(setting, const {
             SettingBoxKey.defaultVideoQa,
             SettingBoxKey.defaultAudioQa,
             SettingBoxKey.fullScreenMode,
           }) ||
           video.isNotEmpty)
-        '播放',
+        l10n.onboardingCategoryPlayback,
       if (_containsAny(setting, const {
         SettingBoxKey.webdavUri,
         SettingBoxKey.webdavUsername,
         SettingBoxKey.webdavPassword,
         SettingBoxKey.webdavDirectory,
       }))
-        'WebDAV',
+        l10n.onboardingCategoryWebDav,
       if (_containsAny(setting, const {
         SettingBoxKey.useSideBar,
         SettingBoxKey.optTabletNav,
         SettingBoxKey.navBarSort,
         SettingBoxKey.tabBarSort,
       }))
-        '布局',
+        l10n.onboardingCategoryLayout,
     ];
-    return categories.isEmpty ? '通用' : categories.join('、');
+    return categories.isEmpty
+        ? l10n.onboardingCategoryGeneral
+        : categories.join(l10n.commonListSeparator);
   }
 
-  factory _SettingsImportDraft.fromJson(Map<String, dynamic> json) {
+  factory _SettingsImportDraft.fromJson(
+    Map<String, dynamic> json,
+    AppLocalizations l10n,
+  ) {
     final setting = SettingsBackup.prepareForImport(
-      _asStringMap(json[GStorage.setting.name], 'setting'),
+      _asStringMap(json[GStorage.setting.name], 'setting', l10n),
     );
-    final video = _asStringMap(json[GStorage.video.name], 'video');
+    final video = _asStringMap(json[GStorage.video.name], 'video', l10n);
     if (setting.isEmpty && video.isEmpty) {
-      throw const FormatException('未找到 setting 或 video 数据');
+      throw FormatException(l10n.onboardingErrorNoSettingsData);
     }
     return _SettingsImportDraft(
       setting: setting,
@@ -1125,10 +1212,14 @@ final class _SettingsImportDraft {
     return keys.any(map.containsKey);
   }
 
-  static Map<String, dynamic> _asStringMap(Object? value, String name) {
+  static Map<String, dynamic> _asStringMap(
+    Object? value,
+    String name,
+    AppLocalizations l10n,
+  ) {
     if (value == null) return {};
     if (value is! Map) {
-      throw FormatException('$name 必须是对象');
+      throw FormatException(l10n.onboardingErrorValueMustBeObject(name));
     }
     return value.map((key, value) => MapEntry(key.toString(), value));
   }
@@ -1155,18 +1246,26 @@ final class _AccountImportDraft {
   int get overwriteCount =>
       mids.where((mid) => Accounts.account.containsKey(mid.toString())).length;
 
-  String get midLabel {
-    if (mids.length <= 3) return mids.join('、');
-    return '${mids.take(3).join('、')} 等 ${mids.length} 个';
+  String midLabel(AppLocalizations l10n) {
+    if (mids.length <= 3) return mids.join(l10n.commonListSeparator);
+    return l10n.onboardingMidListSummary(
+      mids.take(3).join(l10n.commonListSeparator),
+      mids.length,
+    );
   }
 
-  factory _AccountImportDraft.fromJson(Map<String, dynamic> json) {
+  factory _AccountImportDraft.fromJson(
+    Map<String, dynamic> json,
+    AppLocalizations l10n,
+  ) {
     final accounts = <String, LoginAccount>{};
     final mids = <int>[];
     for (final entry in json.entries) {
       final value = entry.value;
       if (value is! Map) {
-        throw FormatException('账号 ${entry.key} 必须是对象');
+        throw FormatException(
+          l10n.onboardingErrorAccountMustBeObject(entry.key),
+        );
       }
       final account = LoginAccount.fromJson(value);
       final mid = account.mid;
@@ -1174,7 +1273,7 @@ final class _AccountImportDraft {
       mids.add(mid);
     }
     if (accounts.isEmpty) {
-      throw const FormatException('未找到账号数据');
+      throw FormatException(l10n.onboardingErrorNoAccountData);
     }
     return _AccountImportDraft(accounts: accounts, mids: mids);
   }

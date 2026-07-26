@@ -55,6 +55,7 @@
     }
   },
   "settingsAppFont": "应用字体",
+  "settingsSystemDefaultFont": "系统默认",
   "settingsAppFontWeight": "应用字体字重",
   "settingsTapToConfigure": "点击设置",
   "settingsUploaderProfileShuffle": "UP 主页显示随机播放按钮",
@@ -69,5 +70,240 @@
       }
     }
   },
-  "settingsLoadingFont": "正在加载字体"
+  "settingsLoadingFont": "正在加载字体",
+  "commonSearch": "搜索",
+  "commonImport": "导入",
+  "commonContinue": "继续",
+  "commonPrevious": "上一步",
+  "commonNext": "下一步",
+  "commonDefault": "默认",
+  "commonRefresh": "刷新",
+  "commonSeeMore": "查看更多",
+  "commonListSeparator": "、",
+  "commonItemCount": "{count, plural, =0{0 个} =1{1 个} other{{count} 个}}",
+  "@commonItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "navigationHome": "首页",
+  "navigationFeed": "动态",
+  "navigationMe": "我的",
+  "navigationLive": "直播",
+  "navigationRecommended": "推荐",
+  "navigationTrending": "热门",
+  "navigationCategories": "分区",
+  "navigationAnime": "番剧",
+  "navigationMoviesAndTv": "影视",
+  "navigationMessages": "消息",
+  "desktopShowWindow": "显示窗口",
+  "desktopExitApp": "退出 {appName}",
+  "@desktopExitApp": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "themeLight": "浅色",
+  "themeDark": "深色",
+  "themeSystem": "跟随系统",
+  "accountTapToSignIn": "点击登录",
+  "accountPleaseSignIn": "请先登录",
+  "accessibilityPremium": "大会员",
+  "accessibilityDefaultAvatar": "默认头像",
+  "mineDownloads": "离线缓存",
+  "mineWatchHistory": "观看记录",
+  "mineSubscriptions": "我的订阅",
+  "mineWatchLater": "稍后再看",
+  "mineCommentHistory": "评论记录",
+  "mineEnterIncognito": "进入无痕模式",
+  "mineExitIncognito": "退出无痕模式",
+  "mineSwitchTheme": "切换至{theme}主题",
+  "@mineSwitchTheme": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "mineIncognitoEntered": "已进入无痕模式",
+  "mineIncognitoDescription": "搜索不携带身份信息\n不产生查询或播放记录\n点赞等其它操作不受影响\n播放进度信息跟随视频取流\n（前往隐私设置了解详情）",
+  "mineIncognitoPermanentSet": "已设为永久无痕模式",
+  "mineIncognitoSavePermanently": "保存为永久",
+  "mineIncognitoTemporarySet": "已设为临时无痕模式",
+  "mineIncognitoThisSession": "仅本次（默认）",
+  "mineIncognitoExited": "已退出无痕模式",
+  "mineCoins": "硬币",
+  "mineXp": "经验",
+  "minePosts": "动态",
+  "mineFollowing": "关注",
+  "mineFollowers": "粉丝",
+  "mineFavorites": "我的收藏",
+  "favoritePublic": "公开",
+  "favoritePrivate": "私密",
+  "favoriteFolderSummary": "{count, plural, =0{共 0 条视频 · {visibility}} =1{共 1 条视频 · {visibility}} other{共 {count} 条视频 · {visibility}}}",
+  "@favoriteFolderSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "visibility": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingStepWelcome": "欢迎",
+  "onboardingStepImport": "导入",
+  "onboardingStepAppearance": "外观",
+  "onboardingStepAccount": "账户",
+  "onboardingStepFinish": "完成",
+  "onboardingWelcomeTitle": "欢迎使用 ExPiliPlus",
+  "onboardingWelcomeSubtitle": "基于 PiliPlus 二次开发，探索更多个性化与实验性功能(｡･∀･)ﾉﾞ",
+  "onboardingWelcomeMigrateSettings": "迁移既有设置",
+  "onboardingWelcomeAppearance": "整理外观偏好",
+  "onboardingWelcomeAccount": "登录或导入本地账号备份",
+  "onboardingImportTitle": "导入",
+  "onboardingImportSubtitle": "从 PiliPlus / ExPiliPlus 的本地文件或 WebDAV 备份迁移设置，也可以全新开始。",
+  "onboardingImportLocal": "从本地文件导入",
+  "onboardingImportLocalDescription": "选择导出的设置 JSON 文件",
+  "onboardingImportWebDav": "从 WebDAV 导入",
+  "onboardingImportWebDavDescription": "使用 WebDAV 备份中的设置文件",
+  "onboardingStartFresh": "全新开始",
+  "onboardingStartFreshDescription": "保留默认设置继续",
+  "onboardingAppearanceTitle": "外观",
+  "onboardingAppearanceDescription": "先选一个舒服的阅读环境，之后也可以在设置里继续调整。",
+  "onboardingAppearanceImportedDescription": "已应用导入的设置，可以在这里顺手微调。",
+  "onboardingFontSize": "字体大小",
+  "onboardingLargeScreenOptimization": "大屏优化",
+  "onboardingLargeScreenOptimizationDescription": "平板和横屏设备优先使用更适合大屏的导航布局",
+  "onboardingAccountTitle": "账户",
+  "onboardingAccountDescription": "登录后可以同步收藏、历史和关注；也可以从本地账号备份导入登录信息。",
+  "onboardingSignIn": "登录",
+  "onboardingSignInDescription": "使用现有登录方式进入账号",
+  "onboardingImportAccount": "从本地备份导入账户",
+  "onboardingImportAccountDescription": "选择导出的登录信息 JSON 文件",
+  "onboardingSkipSignIn": "暂不登录",
+  "onboardingSkipSignInDescription": "先进入应用，之后随时可以登录",
+  "onboardingReadyTitle": "准备好了",
+  "onboardingReadyDescription": "欢迎来到 ExPiliPlus。",
+  "onboardingUsingDefaultSettings": "使用默认设置",
+  "onboardingNotSignedIn": "暂未登录",
+  "onboardingGetStarted": "开始",
+  "onboardingStartUsing": "开始使用",
+  "onboardingSourceLocalFile": "本地文件",
+  "onboardingSourceWebDavBackup": "WebDAV 备份",
+  "onboardingWebDavReadFailed": "读取 WebDAV 失败：{error}",
+  "@onboardingWebDavReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingSettingsParseFailed": "解析设置失败：{error}",
+  "@onboardingSettingsParseFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingSettingsImported": "{count, plural, =0{已导入 0 项设置（{categories}）} =1{已导入 1 项设置（{categories}）} other{已导入 {count} 项设置（{categories}）}}",
+  "@onboardingSettingsImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "categories": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingSettingsImportSucceeded": "设置导入成功",
+  "onboardingAccountParseFailed": "解析登录信息失败：{error}",
+  "@onboardingAccountParseFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingSignedInMid": "已登录 mid {mid}",
+  "@onboardingSignedInMid": {
+    "placeholders": {
+      "mid": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingAccountsImported": "{count, plural, =0{已导入 0 个账号} =1{已导入 1 个账号} other{已导入 {count} 个账号}}",
+  "@onboardingAccountsImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingAccountImportSucceeded": "登录信息导入成功",
+  "onboardingErrorJsonTopLevelObject": "JSON 顶层必须是对象",
+  "onboardingConfirmSettingsImport": "导入 {source} 设置？",
+  "@onboardingConfirmSettingsImport": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingSettingsFields": "设置字段",
+  "onboardingPlaybackFields": "播放字段",
+  "onboardingCategory": "分类",
+  "onboardingExtraTopLevelFields": "额外顶层字段",
+  "onboardingConfirmAccountImport": "导入本地账号备份？",
+  "onboardingAccountCount": "账号数量",
+  "onboardingContainsCookie": "包含 Cookie",
+  "onboardingContainsAccessKey": "包含 accessKey",
+  "onboardingContainsRefresh": "包含 refresh",
+  "onboardingWillOverwrite": "将覆盖",
+  "onboardingWebDavAddress": "地址",
+  "onboardingWebDavAddressRequired": "请输入 WebDAV 地址",
+  "onboardingWebDavUser": "用户",
+  "onboardingWebDavPassword": "密码",
+  "onboardingWebDavPath": "路径",
+  "onboardingCategoryAppearance": "外观",
+  "onboardingCategoryPlayback": "播放",
+  "onboardingCategoryWebDav": "WebDAV",
+  "onboardingCategoryLayout": "布局",
+  "onboardingCategoryGeneral": "通用",
+  "onboardingErrorNoSettingsData": "未找到 setting 或 video 数据",
+  "onboardingErrorValueMustBeObject": "{name} 必须是对象",
+  "@onboardingErrorValueMustBeObject": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingMidListSummary": "{count, plural, =0{{mids} 等 0 个} =1{{mids} 等 1 个} other{{mids} 等 {count} 个}}",
+  "@onboardingMidListSummary": {
+    "placeholders": {
+      "mids": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingErrorAccountMustBeObject": "账号 {account} 必须是对象",
+  "@onboardingErrorAccountMustBeObject": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingErrorNoAccountData": "未找到账号数据"
 }

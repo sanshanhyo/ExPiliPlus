@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/common/common_controller.dart';
 import 'package:ex_piliplus/pages/hot/controller.dart';
 import 'package:ex_piliplus/pages/hot/view.dart';
@@ -25,6 +26,15 @@ enum HomeTabType implements EnumWithLabel {
   @override
   final String label;
   const HomeTabType(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .live => l10n.navigationLive,
+    .rcmd => l10n.navigationRecommended,
+    .hot => l10n.navigationTrending,
+    .rank => l10n.navigationCategories,
+    .bangumi => l10n.navigationAnime,
+    .cinema => l10n.navigationMoviesAndTv,
+  };
 
   ScrollOrRefreshMixin Function() get ctr => switch (this) {
     HomeTabType.live => Get.find<LiveController>,

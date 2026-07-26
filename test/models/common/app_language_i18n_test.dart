@@ -63,6 +63,15 @@ void main() {
       expect(traditional.settingsTitle, '設定');
       expect(english.settingsTitle, 'Settings');
       expect(english.settingsCurrentLanguage('English'), 'Current: English');
+      expect(simplified.navigationTrending, '热门');
+      expect(traditional.navigationTrending, '熱門');
+      expect(english.navigationTrending, 'Trending');
+      expect(english.mineDownloads, 'Downloads');
+      expect(english.favoriteFolderSummary(1, 'Private'), '1 video · Private');
+      expect(
+        english.favoriteFolderSummary(2, 'Public'),
+        '2 videos · Public',
+      );
     });
   });
 }

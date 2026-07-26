@@ -16,6 +16,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/play_status.dart';
 import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/mobile_observer.dart';
@@ -62,7 +63,6 @@ class _MainAppState extends PopScopeState<MainApp>
         ..setPreventClose(true);
       if (_mainController.showTrayIcon) {
         trayManager.addListener(this);
-        _handleTray();
       }
     } else {
       // FlutterSmartDialog throws
@@ -79,6 +79,9 @@ class _MainAppState extends PopScopeState<MainApp>
     NetworkImgLayer.reduce =
         NetworkImgLayer.reduceLuxColor != null && brightness.isDark;
     if (PlatformUtils.isDesktop) {
+      if (_mainController.showTrayIcon) {
+        _handleTray();
+      }
       if (_brightness != brightness) {
         _brightness = brightness;
         windowManager.setBrightness(brightness);
@@ -239,6 +242,7 @@ class _MainAppState extends PopScopeState<MainApp>
   }
 
   Future<void> _handleTray() async {
+    final l10n = context.l10n;
     if (Platform.isWindows) {
       await trayManager.setIcon(Assets.logoIco);
     } else {
@@ -250,9 +254,12 @@ class _MainAppState extends PopScopeState<MainApp>
 
     Menu trayMenu = Menu(
       items: [
-        MenuItem(key: 'show', label: '显示窗口'),
+        MenuItem(key: 'show', label: l10n.desktopShowWindow),
         MenuItem.separator(),
-        MenuItem(key: 'exit', label: '退出 ${Constants.appName}'),
+        MenuItem(
+          key: 'exit',
+          label: l10n.desktopExitApp(Constants.appName),
+        ),
       ],
     );
     await trayManager.setContextMenu(trayMenu);
@@ -293,7 +300,7 @@ class _MainAppState extends PopScopeState<MainApp>
             destinations: _mainController.navigationBars
                 .map(
                   (e) => FloatingNavigationDestination(
-                    label: e.label,
+                    label: e.localizedLabel(context.l10n),
                     icon: _buildIcon(type: e),
                     selectedIcon: _buildIcon(type: e, selected: true),
                   ),
@@ -310,7 +317,7 @@ class _MainAppState extends PopScopeState<MainApp>
             destinations: _mainController.navigationBars
                 .map(
                   (e) => NavigationDestination(
-                    label: e.label,
+                    label: e.localizedLabel(context.l10n),
                     icon: _buildIcon(type: e),
                     selectedIcon: _buildIcon(type: e, selected: true),
                   ),
@@ -330,7 +337,7 @@ class _MainAppState extends PopScopeState<MainApp>
             items: _mainController.navigationBars
                 .map(
                   (e) => BottomNavigationBarItem(
-                    label: e.label,
+                    label: e.localizedLabel(context.l10n),
                     icon: _buildIcon(type: e),
                     activeIcon: _buildIcon(type: e, selected: true),
                   ),
@@ -395,7 +402,9 @@ class _MainAppState extends PopScopeState<MainApp>
                             children: _mainController.navigationBars
                                 .map(
                                   (e) => NavigationDrawerDestination(
-                                    label: Text(e.label),
+                                    label: Text(
+                                      e.localizedLabel(context.l10n),
+                                    ),
                                     icon: _buildIcon(type: e),
                                     selectedIcon: _buildIcon(
                                       type: e,
@@ -420,7 +429,7 @@ class _MainAppState extends PopScopeState<MainApp>
                     destinations: _mainController.navigationBars
                         .map(
                           (e) => NavigationRailDestination(
-                            label: Text(e.label),
+                            label: Text(e.localizedLabel(context.l10n)),
                             icon: _buildIcon(type: e),
                             selectedIcon: _buildIcon(type: e, selected: true),
                           ),
@@ -518,16 +527,21 @@ class _MainAppState extends PopScopeState<MainApp>
   }
 
   Widget userAndSearchVertical(ThemeData theme) {
+    final l10n = context.l10n;
     return Column(
       children: [
-        userAvatar(theme: theme, mainController: _mainController),
+        userAvatar(
+          theme: theme,
+          mainController: _mainController,
+          l10n: l10n,
+        ),
         const SizedBox(height: 8),
-        msgBadge(_mainController),
+        msgBadge(_mainController, l10n),
         IconButton(
-          tooltip: '搜索',
-          icon: const Icon(
+          tooltip: l10n.commonSearch,
+          icon: Icon(
             Icons.search_outlined,
-            semanticLabel: '搜索',
+            semanticLabel: l10n.commonSearch,
           ),
           onPressed: () => Get.toNamed('/search'),
         ),

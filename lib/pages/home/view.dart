@@ -2,11 +2,13 @@ import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/custom_height_widget.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/common/common_page.dart';
 import 'package:ex_piliplus/pages/home/controller.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:ex_piliplus/pages/mine/controller.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,9 @@ class _HomePageState extends CommonPageState<HomePage>
           width: double.infinity,
           child: TabBar(
             controller: _homeController.tabController,
-            tabs: _homeController.tabs.map((e) => Tab(text: e.label)).toList(),
+            tabs: _homeController.tabs
+                .map((e) => Tab(text: e.localizedLabel(context.l10n)))
+                .toList(),
             isScrollable: true,
             dividerColor: Colors.transparent,
             dividerHeight: 0,
@@ -93,9 +97,13 @@ class _HomePageState extends CommonPageState<HomePage>
       children: [
         searchBar(theme),
         const SizedBox(width: 4),
-        msgBadge(_mainController),
+        msgBadge(_mainController, context.l10n),
         const SizedBox(width: 8),
-        userAvatar(theme: theme, mainController: _mainController),
+        userAvatar(
+          theme: theme,
+          mainController: _mainController,
+          l10n: context.l10n,
+        ),
       ],
     );
     if (_homeController.hideTopBar) {
@@ -163,7 +171,7 @@ class _HomePageState extends CommonPageState<HomePage>
                 Icon(
                   Icons.search_outlined,
                   color: theme.colorScheme.onSecondaryContainer,
-                  semanticLabel: '搜索',
+                  semanticLabel: context.l10n.commonSearch,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -189,9 +197,10 @@ class _HomePageState extends CommonPageState<HomePage>
 Widget userAvatar({
   required ThemeData theme,
   required MainController mainController,
+  required AppLocalizations l10n,
 }) {
   return Semantics(
-    label: "我的",
+    label: l10n.navigationMe,
     child: Obx(
       () {
         if (mainController.accountService.isLogin.value) {
@@ -245,7 +254,7 @@ Widget userAvatar({
           width: 38,
           height: 38,
           child: IconButton(
-            tooltip: '点击登录',
+            tooltip: l10n.accountTapToSignIn,
             style: IconButton.styleFrom(
               padding: .zero,
               backgroundColor: theme.colorScheme.onInverseSurface,
@@ -263,14 +272,14 @@ Widget userAvatar({
   );
 }
 
-Widget msgBadge(MainController mainController) {
+Widget msgBadge(MainController mainController, AppLocalizations l10n) {
   return Obx(
     () {
       if (mainController.accountService.isLogin.value) {
         final count = mainController.msgUnReadCount.value;
         final isNumBadge = mainController.msgBadgeMode == .number;
         return IconButton(
-          tooltip: '消息',
+          tooltip: l10n.navigationMessages,
           onPressed: () {
             mainController
               ..msgUnReadCount.value = ''

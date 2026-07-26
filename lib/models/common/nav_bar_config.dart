@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/common/widgets/custom_icon.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 import 'package:ex_piliplus/pages/dynamics/view.dart';
 import 'package:ex_piliplus/pages/home/view.dart';
@@ -33,4 +34,10 @@ enum NavigationBarType implements EnumWithLabel {
   final Widget page;
 
   const NavigationBarType(this.label, this.icon, this.selectIcon, this.page);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .home => l10n.navigationHome,
+    .dynamics => l10n.navigationFeed,
+    .mine => l10n.navigationMe,
+  };
 }

@@ -16,6 +16,7 @@ import 'package:ex_piliplus/pages/mine/controller.dart';
 import 'package:ex_piliplus/pages/mine/widgets/item.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -104,7 +105,8 @@ class _MediaPageState extends CommonPageState<MinePage>
   Widget _buildActions(Color primary) {
     return Row(
       mainAxisAlignment: .spaceEvenly,
-      children: controller.list
+      children: controller
+          .actions(context.l10n)
           .map(
             (e) => Flexible(
               child: InkWell(
@@ -136,6 +138,7 @@ class _MediaPageState extends CommonPageState<MinePage>
   }
 
   Widget get _buildHeaderActions {
+    final l10n = context.l10n;
     const iconSize = 22.0;
     const padding = EdgeInsets.all(8);
     const style = ButtonStyle(tapTargetSize: .shrinkWrap);
@@ -158,18 +161,18 @@ class _MediaPageState extends CommonPageState<MinePage>
             iconSize: iconSize,
             padding: padding,
             style: style,
-            tooltip: '搜索',
+            tooltip: l10n.commonSearch,
             onPressed: () => Get.toNamed('/search'),
             icon: const Icon(Icons.search),
           ),
-          msgBadge(_mainController),
+          msgBadge(_mainController, l10n),
         ],
         if (GStorage.reply != null)
           IconButton(
             iconSize: iconSize,
             padding: padding,
             style: style,
-            tooltip: '评论记录',
+            tooltip: l10n.mineCommentHistory,
             onPressed: () => Get.toNamed('/myReply'),
             icon: const Icon(Icons.message_outlined),
           ),
@@ -180,8 +183,10 @@ class _MediaPageState extends CommonPageState<MinePage>
               iconSize: iconSize,
               padding: padding,
               style: style,
-              tooltip: "${anonymity ? '退出' : '进入'}无痕模式",
-              onPressed: MineController.onChangeAnonymity,
+              tooltip: anonymity
+                  ? l10n.mineExitIncognito
+                  : l10n.mineEnterIncognito,
+              onPressed: () => MineController.onChangeAnonymity(context),
               icon: anonymity
                   ? const Icon(MdiIcons.incognito)
                   : const Icon(MdiIcons.incognitoOff),
@@ -192,7 +197,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           iconSize: iconSize,
           padding: padding,
           style: style,
-          tooltip: '切换账号',
+          tooltip: l10n.settingsSwitchAccount,
           onPressed: () => LoginPageController.switchAccountDialog(context),
           icon: const Icon(Icons.switch_account_outlined),
         ),
@@ -202,7 +207,9 @@ class _MediaPageState extends CommonPageState<MinePage>
               iconSize: iconSize,
               padding: padding,
               style: style,
-              tooltip: '切换至${controller.nextThemeType.desc}主题',
+              tooltip: l10n.mineSwitchTheme(
+                controller.nextThemeType.localizedLabel(l10n),
+              ),
               onPressed: controller.onChangeTheme,
               icon: controller.themeType.value.icon,
             );
@@ -212,7 +219,7 @@ class _MediaPageState extends CommonPageState<MinePage>
           iconSize: iconSize,
           padding: padding,
           style: style,
-          tooltip: '设置',
+          tooltip: l10n.settingsTitle,
           onPressed: () => Get.toNamed('/setting', preventDuplicates: false),
           icon: const Icon(Icons.settings_outlined),
         ),
@@ -222,6 +229,7 @@ class _MediaPageState extends CommonPageState<MinePage>
   }
 
   Widget _buildUserInfo(ThemeData theme, Color secondary) {
+    final l10n = context.l10n;
     final style = TextStyle(
       fontSize: theme.textTheme.titleMedium!.fontSize,
       fontWeight: FontWeight.bold,
@@ -278,7 +286,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                               child: SvgPicture.asset(
                                 Assets.vipIcon,
                                 height: 19,
-                                semanticsLabel: "大会员",
+                                semanticsLabel: l10n.accessibilityPremium,
                               ),
                             ),
                         ],
@@ -289,7 +297,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                           height: 55,
                           cacheHeight: 55.cacheSize(context),
                           Assets.avatarPlaceHolder,
-                          semanticLabel: "默认头像",
+                          semanticLabel: l10n.accessibilityDefaultAvatar,
                         ),
                       ),
                 const SizedBox(width: 16),
@@ -304,7 +312,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                         children: [
                           Flexible(
                             child: Text(
-                              userInfo.uname ?? '点击登录',
+                              userInfo.uname ?? l10n.accountTapToSignIn,
                               style: theme.textTheme.titleMedium!.copyWith(
                                 height: 1,
                                 color: isVip && userInfo.vipType == 2
@@ -327,7 +335,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: '硬币 ',
+                              text: '${l10n.mineCoins} ',
                               style: coinLabelStyle,
                             ),
                             TextSpan(
@@ -335,7 +343,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                               style: coinValStyle,
                             ),
                             TextSpan(
-                              text: "      经验 ",
+                              text: '      ${l10n.mineXp} ',
                               style: coinLabelStyle,
                             ),
                             TextSpan(
@@ -378,21 +386,21 @@ class _MediaPageState extends CommonPageState<MinePage>
               _btn(
                 count: userStat.dynamicCount,
                 countStyle: style,
-                name: '动态',
+                name: l10n.minePosts,
                 labelStyle: labelStyle,
                 onTap: () => controller.push('memberDynamics'),
               ),
               _btn(
                 count: userStat.following,
                 countStyle: style,
-                name: '关注',
+                name: l10n.mineFollowing,
                 labelStyle: labelStyle,
                 onTap: () => controller.push('follow'),
               ),
               _btn(
                 count: userStat.follower,
                 countStyle: style,
-                name: '粉丝',
+                name: l10n.mineFollowers,
                 labelStyle: labelStyle,
                 onTap: () => controller.push('fan'),
               ),
@@ -445,6 +453,7 @@ class _MediaPageState extends CommonPageState<MinePage>
   );
 
   Widget _buildFav(ThemeData theme, Color secondary) {
+    final l10n = context.l10n;
     return Column(
       children: [
         Divider(
@@ -460,7 +469,7 @@ class _MediaPageState extends CommonPageState<MinePage>
               TextSpan(
                 children: [
                   TextSpan(
-                    text: '我的收藏  ',
+                    text: '${l10n.mineFavorites}  ',
                     style: TextStyle(
                       fontSize: theme.textTheme.titleMedium!.fontSize,
                       fontWeight: .bold,
@@ -486,7 +495,7 @@ class _MediaPageState extends CommonPageState<MinePage>
             ),
           ),
           trailing: IconButton(
-            tooltip: '刷新',
+            tooltip: l10n.commonRefresh,
             onPressed: controller.onRefresh,
             icon: const Icon(Icons.refresh, size: 20),
           ),
@@ -522,7 +531,7 @@ class _MediaPageState extends CommonPageState<MinePage>
                     padding: const .only(bottom: 35),
                     child: Center(
                       child: IconButton(
-                        tooltip: '查看更多',
+                        tooltip: context.l10n.commonSeeMore,
                         style: ButtonStyle(
                           padding: const WidgetStatePropertyAll(.zero),
                           backgroundColor: WidgetStatePropertyAll(
