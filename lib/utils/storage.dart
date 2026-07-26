@@ -10,6 +10,7 @@ import 'package:ex_piliplus/utils/accounts/account_type_adapter.dart';
 import 'package:ex_piliplus/utils/accounts/cookie_jar_adapter.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:ex_piliplus/utils/set_int_adapter.dart';
+import 'package:ex_piliplus/utils/settings_backup.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:hive_ce/hive.dart';
@@ -79,7 +80,7 @@ abstract final class GStorage {
 
   static String exportAllSettings() {
     return Utils.jsonEncoder.convert({
-      setting.name: setting.toMap(),
+      setting.name: SettingsBackup.prepareForExport(setting.toMap()),
       video.name: video.toMap(),
     });
   }
@@ -90,8 +91,11 @@ abstract final class GStorage {
   static Future<List<void>> importAllJsonSettings(
     Map<String, dynamic> map,
   ) {
+    final importedSetting = SettingsBackup.prepareForImport(
+      map[setting.name] as Map<dynamic, dynamic>,
+    );
     return Future.wait([
-      setting.clear().then((_) => setting.putAll(map[setting.name])),
+      setting.clear().then((_) => setting.putAll(importedSetting)),
       video.clear().then((_) => video.putAll(map[video.name])),
     ]);
   }

@@ -14,6 +14,7 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
+import 'package:ex_piliplus/utils/settings_backup.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -1099,7 +1100,9 @@ final class _SettingsImportDraft {
   }
 
   factory _SettingsImportDraft.fromJson(Map<String, dynamic> json) {
-    final setting = _asStringMap(json[GStorage.setting.name], 'setting');
+    final setting = SettingsBackup.prepareForImport(
+      _asStringMap(json[GStorage.setting.name], 'setting'),
+    );
     final video = _asStringMap(json[GStorage.video.name], 'video');
     if (setting.isEmpty && video.isEmpty) {
       throw const FormatException('未找到 setting 或 video 数据');
