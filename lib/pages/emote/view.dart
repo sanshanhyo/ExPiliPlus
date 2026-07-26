@@ -9,6 +9,7 @@ import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models_new/emote/emote.dart';
 import 'package:ex_piliplus/models_new/emote/package.dart';
 import 'package:ex_piliplus/pages/emote/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
@@ -225,7 +226,7 @@ class _EmotePanelState extends State<EmotePanel>
     child: TextButton.icon(
       onPressed: _emotePanelController.onReload,
       icon: const Icon(Icons.refresh),
-      label: Text(errMsg ?? '没有数据'),
+      label: Text(errMsg ?? context.l10n.commonNoData),
     ),
   );
 }

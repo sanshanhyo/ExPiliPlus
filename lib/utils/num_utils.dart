@@ -2,7 +2,10 @@ import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 
 abstract final class NumUtils {
-  static final _numRegExp = RegExp(r'([\d\.]+)([千万亿])?');
+  static final _numRegExp = RegExp(
+    r'([\d.]+)([千万亿KMBT])?',
+    caseSensitive: false,
+  );
 
   static int _getUnit(String? unit) {
     switch (unit) {
@@ -12,6 +15,14 @@ abstract final class NumUtils {
         return 10000;
       case '亿':
         return 100000000;
+      case 'K' || 'k':
+        return 1000;
+      case 'M' || 'm':
+        return 1000000;
+      case 'B' || 'b':
+        return 1000000000;
+      case 'T' || 't':
+        return 1000000000000;
       default:
         return 1;
     }
@@ -51,10 +62,14 @@ abstract final class NumUtils {
       }
     }
 
-    if (number >= 100000000) {
-      return format(100000000, '亿');
-    } else if (number >= 10000) {
-      return format(10000, '万');
+    if (number >= 1000000000000) {
+      return format(1000000000000, 'T');
+    } else if (number >= 1000000000) {
+      return format(1000000000, 'B');
+    } else if (number >= 1000000) {
+      return format(1000000, 'M');
+    } else if (number >= 1000) {
+      return format(1000, 'K');
     } else {
       return number.toString();
     }

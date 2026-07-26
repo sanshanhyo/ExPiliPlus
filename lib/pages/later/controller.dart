@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/common/multi_select/base.dart';
 import 'package:ex_piliplus/pages/common/multi_select/multi_select_controller.dart';
 import 'package:ex_piliplus/pages/later/base_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +27,14 @@ mixin BaseLaterController
 
   @override
   void onRemove() {
+    final l10n = Get.context!.l10n;
     showConfirmDialog(
       context: Get.context!,
-      title: const Text('提示'),
-      content: const Text('确认删除所选稍后再看吗？'),
+      title: Text(l10n.commonNotice),
+      content: Text(l10n.laterDeleteSelectedConfirm),
       onConfirm: () async {
         final removeList = allChecked.toSet();
-        SmartDialog.showLoading(msg: '请求中');
+        SmartDialog.showLoading(msg: l10n.commonLoading);
         final res = await UserHttp.toViewDel(
           aids: removeList.map((item) => item.aid).join(','),
         );
@@ -54,13 +56,13 @@ mixin BaseLaterController
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('提示'),
-        content: const Text('即将移除该视频，确定是否移除'),
+        title: Text(context.l10n.commonNotice),
+        content: Text(context.l10n.laterRemoveVideoConfirm),
         actions: [
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '取消',
+              context.l10n.commonCancel,
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
           ),
@@ -75,7 +77,7 @@ mixin BaseLaterController
                 updateCount?.call(1);
               }
             },
-            child: const Text('确认移除'),
+            child: Text(context.l10n.laterRemoveConfirmed),
           ),
         ],
       ),
@@ -128,14 +130,15 @@ class LaterController extends MultiSelectController<LaterData, LaterItemModel>
 
   // 一键清空
   void toViewClear(BuildContext context, [int? cleanType]) {
+    final l10n = context.l10n;
     String content = switch (cleanType) {
-      1 => '确定清空已失效视频吗？',
-      2 => '确定清空已看完视频吗？',
-      _ => '确定清空稍后再看列表吗？',
+      1 => l10n.laterClearInvalidConfirm,
+      2 => l10n.laterClearWatchedConfirm,
+      _ => l10n.laterClearAllConfirm,
     };
     showConfirmDialog(
       context: context,
-      title: const Text('确认'),
+      title: Text(l10n.commonConfirm),
       content: Text(content),
       onConfirm: () async {
         final res = await UserHttp.toViewClear(cleanType);
@@ -148,7 +151,7 @@ class LaterController extends MultiSelectController<LaterData, LaterItemModel>
               Get.find<LaterController>(tag: item.type.toString()).onReload();
             } catch (_) {}
           }
-          SmartDialog.showToast('已清空');
+          SmartDialog.showToast(l10n.laterCleared);
         } else {
           res.toast();
         }
@@ -174,7 +177,7 @@ class LaterController extends MultiSelectController<LaterData, LaterItemModel>
             extraArguments: {
               'sourceType': SourceType.watchLater,
               'count': baseCtr.counts[LaterViewType.all.index],
-              'favTitle': '稍后再看',
+              'favTitle': Get.context!.l10n.mineWatchLater,
               'mediaId': mid,
               'desc': asc.value,
             },

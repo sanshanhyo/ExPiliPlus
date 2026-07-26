@@ -23,6 +23,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -481,7 +482,9 @@ class PgcIntroController extends CommonIntroController {
   void queryVideoIntro([EpisodeItem? episode]) {
     episode ??= pgcItem.episodes!.firstWhere((e) => e.cid == cid.value);
     videoDetail
-      ..value.title = episode.showTitle
+      ..value.title = Get.context!.l10n.localizedEpisodeTitle(
+        episode.showTitle ?? episode.title ?? '',
+      )
       ..refresh();
     videoPlayerServiceHandler?.onVideoDetailChange(
       episode,

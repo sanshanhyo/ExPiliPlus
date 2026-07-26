@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ex_piliplus/http/api.dart';
 import 'package:ex_piliplus/http/init.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/search/search_type.dart';
 import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/models/search/suggest.dart';
@@ -17,6 +18,7 @@ import 'package:ex_piliplus/utils/wbi_sign.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 abstract final class SearchHttp {
   // 获取搜索建议
@@ -95,7 +97,9 @@ abstract final class SearchHttp {
         final vVoucher = dataData['v_voucher'];
         if (vVoucher != null) {
           RequestUtils.validate(vVoucher, onSuccess);
-          return const Error('触发风控');
+          return Error(
+            AppLocalizations.of(Get.context!).searchSecurityCheckTriggered,
+          );
         }
         dynamic data;
         try {
@@ -126,7 +130,7 @@ abstract final class SearchHttp {
         return Error(resData['message'], code: resData['code']);
       }
     } else {
-      return const Error('服务器错误');
+      return Error(AppLocalizations.of(Get.context!).commonServerError);
     }
   }
 
@@ -160,7 +164,7 @@ abstract final class SearchHttp {
       queryParameters: params,
     );
     if (res.data is! Map) {
-      return const Error('没有相关数据');
+      return Error(AppLocalizations.of(Get.context!).commonNoData);
     }
     if (res.data['code'] == 0) {
       try {
@@ -169,7 +173,9 @@ abstract final class SearchHttp {
         return Error('$e\n\n$s');
       }
     } else {
-      return Error(res.data['message'] ?? '没有相关数据');
+      return Error(
+        res.data['message'] ?? AppLocalizations.of(Get.context!).commonNoData,
+      );
     }
   }
 

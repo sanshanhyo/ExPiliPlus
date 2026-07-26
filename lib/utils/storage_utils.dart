@@ -2,8 +2,10 @@ import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
 
 import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 abstract final class StorageUtils {
   static Future<void> saveBytes2File({
@@ -12,6 +14,7 @@ abstract final class StorageUtils {
     required List<String> allowedExtensions,
     FileType type = FileType.custom,
   }) async {
+    final l10n = AppLocalizations.of(Get.context!);
     try {
       final path = await FilePicker.saveFile(
         allowedExtensions: allowedExtensions,
@@ -20,15 +23,15 @@ abstract final class StorageUtils {
         bytes: PlatformUtils.isDesktop ? Uint8List(0) : bytes,
       );
       if (path == null) {
-        SmartDialog.showToast("取消保存");
+        SmartDialog.showToast(l10n.commonSaveCanceled);
         return;
       }
       if (PlatformUtils.isDesktop) {
         await File(path).writeAsBytes(bytes);
       }
-      SmartDialog.showToast("已保存");
+      SmartDialog.showToast(l10n.commonSaved);
     } catch (e) {
-      SmartDialog.showToast("保存失败: $e");
+      SmartDialog.showToast(l10n.commonSaveFailedWithError('$e'));
     }
   }
 }

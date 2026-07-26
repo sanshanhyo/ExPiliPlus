@@ -24,6 +24,7 @@ import 'package:ex_piliplus/pages/dynamics_create/view.dart';
 import 'package:ex_piliplus/pages/dynamics_detail/controller.dart';
 import 'package:ex_piliplus/pages/dynamics_repost/view.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -331,7 +332,7 @@ class _DynamicDetailPageState
             child: Obx(() {
               final count = controller.count.value;
               return Text(
-                '${DynType.reply.label}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
+                '${DynType.reply.localizedLabel(context.l10n)}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
               );
             }),
           ),
@@ -339,7 +340,7 @@ class _DynamicDetailPageState
             child: Obx(() {
               final count = _reactController.count.value;
               return Text(
-                '${DynType.reaction.label}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
+                '${DynType.reaction.localizedLabel(context.l10n)}${count < 0 ? '' : ' ${NumUtils.numFormat(count)}'}',
               );
             }),
           ),
@@ -581,7 +582,7 @@ class _DynamicDetailPageState
                       final forward = moduleStat?.forward;
                       return textIconButton(
                         icon: FontAwesomeIcons.shareFromSquare,
-                        text: '转发',
+                        text: context.l10n.commonRepost,
                         stat: forward,
                         onPressed: (_) => showModalBottomSheet(
                           context: context,
@@ -607,7 +608,7 @@ class _DynamicDetailPageState
                 Expanded(
                   child: textIconButton(
                     icon: CustomIcons.share_node,
-                    text: '分享',
+                    text: context.l10n.commonShare,
                     stat: null,
                     onPressed: (_) => ShareUtils.shareText(
                       '${HttpString.dynamicShareBaseUrl}/${controller.dynItem.idStr}',
@@ -617,7 +618,7 @@ class _DynamicDetailPageState
                 Expanded(
                   child: textIconButton(
                     icon: FontAwesomeIcons.comment,
-                    text: '评论',
+                    text: context.l10n.feedComment,
                     stat: moduleStat?.comment,
                     onPressed: _jumpToComment,
                   ),
@@ -628,7 +629,7 @@ class _DynamicDetailPageState
                       return textIconButton(
                         icon: FontAwesomeIcons.thumbsUp,
                         activatedIcon: FontAwesomeIcons.solidThumbsUp,
-                        text: '点赞',
+                        text: context.l10n.commonLike,
                         stat: moduleStat?.like,
                         onPressed: (iconColor) => RequestUtils.onLikeDynamic(
                           controller.dynItem,
@@ -662,13 +663,13 @@ class _DynamicDetailPageState
           return Row(
             mainAxisAlignment: .spaceBetween,
             children: [
-              Text(sortType.title),
+              Text(sortType.localizedTitle(context.l10n)),
               TextButton.icon(
                 style: Style.buttonStyle,
                 onPressed: controller.queryBySort,
                 icon: Icon(Icons.sort, size: 16, color: secondary),
                 label: Text(
-                  sortType.label,
+                  sortType.localizedTitle(context.l10n),
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),

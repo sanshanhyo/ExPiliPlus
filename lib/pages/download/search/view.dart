@@ -5,6 +5,7 @@ import 'package:ex_piliplus/pages/common/search/common_search_page.dart';
 import 'package:ex_piliplus/pages/download/detail/widgets/item.dart';
 import 'package:ex_piliplus/pages/download/search/controller.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
@@ -38,7 +39,7 @@ class _DownloadSearchPageState
   @override
   List<Widget>? get extraActions => [
     IconButton(
-      tooltip: '多选',
+      tooltip: context.l10n.commonMultiSelect,
       onPressed: () {
         if (controller.loadingState.value is! Success) {
           return;
@@ -54,32 +55,35 @@ class _DownloadSearchPageState
   ];
 
   @override
-  List<Widget>? get multiSelectActions => [
-    TextButton(
-      style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
-      onPressed: () async {
-        final future = controller.allChecked
-            .map(
-              (e) => _downloadService.downloadDanmaku(
-                entry: e,
-                isUpdate: true,
-              ),
-            )
-            .toList();
-        controller.handleSelect();
-        final res = await Future.wait(future);
-        if (res.every((e) => e)) {
-          SmartDialog.showToast('更新成功');
-        } else {
-          SmartDialog.showToast('更新失败');
-        }
-      },
-      child: Text(
-        '更新',
-        style: TextStyle(color: ColorScheme.of(context).onSurface),
+  List<Widget>? get multiSelectActions {
+    final l10n = context.l10n;
+    return [
+      TextButton(
+        style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+        onPressed: () async {
+          final future = controller.allChecked
+              .map(
+                (e) => _downloadService.downloadDanmaku(
+                  entry: e,
+                  isUpdate: true,
+                ),
+              )
+              .toList();
+          controller.handleSelect();
+          final res = await Future.wait(future);
+          if (res.every((e) => e)) {
+            SmartDialog.showToast(l10n.commonUpdateSucceeded);
+          } else {
+            SmartDialog.showToast(l10n.commonUpdateFailed);
+          }
+        },
+        child: Text(
+          l10n.commonUpdate,
+          style: TextStyle(color: ColorScheme.of(context).onSurface),
+        ),
       ),
-    ),
-  ];
+    ];
+  }
 
   @override
   Widget buildList(List<BiliDownloadEntryInfo> list) {

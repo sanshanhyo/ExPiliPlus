@@ -28,6 +28,7 @@ import 'package:ex_piliplus/pages/group_panel/view.dart';
 import 'package:ex_piliplus/pages/login/geetest/geetest_webview_dialog.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
@@ -106,10 +107,11 @@ abstract final class RequestUtils {
     BuildContext context,
     ValueChanged<({int tagid, String tagName})> onSuccess,
   ) async {
+    final l10n = context.l10n;
     String tagName = '';
     final onCreate = await showConfirmDialog(
       context: context,
-      title: const Text('新建分组'),
+      title: Text(l10n.followCreateGroup),
       content: TextFormField(
         autofocus: true,
         initialValue: tagName,
@@ -124,7 +126,7 @@ abstract final class RequestUtils {
       final res = await MemberHttp.createFollowTag(tagName);
       if (res case Success(:final response)) {
         onSuccess((tagid: response, tagName: tagName));
-        SmartDialog.showToast('创建成功');
+        SmartDialog.showToast(l10n.followGroupCreated);
       } else {
         res.toast();
       }
@@ -142,6 +144,7 @@ abstract final class RequestUtils {
       return;
     }
     feedBack();
+    final l10n = context.l10n;
     if (!isFollow) {
       final res = await VideoHttp.relationMod(
         mid: mid,
@@ -149,7 +152,7 @@ abstract final class RequestUtils {
         reSrc: 11,
       );
       if (res.isSuccess) {
-        SmartDialog.showToast('关注成功');
+        SmartDialog.showToast(l10n.followSucceeded);
         afterMod?.call(2);
       } else {
         res.toast();
@@ -167,7 +170,9 @@ abstract final class RequestUtils {
 
       if (context.mounted) {
         bool isSpecialFollowed = followStatus!.special == 1;
-        String text = isSpecialFollowed ? '移除特别关注' : '加入特别关注';
+        String text = isSpecialFollowed
+            ? l10n.followRemovePriority
+            : l10n.followAddPriority;
         showDialog(
           context: context,
           builder: (context) => SimpleDialog(
@@ -182,7 +187,11 @@ abstract final class RequestUtils {
                     isAdd: !isSpecialFollowed,
                   );
                   if (res.isSuccess) {
-                    SmartDialog.showToast('$text成功');
+                    SmartDialog.showToast(
+                      isSpecialFollowed
+                          ? l10n.followPriorityRemoved
+                          : l10n.followPriorityAdded,
+                    );
                     afterMod?.call(isSpecialFollowed ? 2 : -10);
                   } else {
                     res.toast();
@@ -228,7 +237,10 @@ abstract final class RequestUtils {
                     afterMod?.call(result.contains(-10) ? -10 : 2);
                   }
                 },
-                child: const Text('设置分组', style: TextStyle(fontSize: 14)),
+                child: Text(
+                  l10n.followSetGroup,
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
               DialogOption(
                 onPressed: () async {
@@ -239,13 +251,16 @@ abstract final class RequestUtils {
                     reSrc: 11,
                   );
                   if (res.isSuccess) {
-                    SmartDialog.showToast('取消关注成功');
+                    SmartDialog.showToast(l10n.followUnfollowSucceeded);
                     afterMod?.call(0);
                   } else {
                     res.toast();
                   }
                 },
-                child: const Text('取消关注', style: TextStyle(fontSize: 14)),
+                child: Text(
+                  l10n.followUnfollow,
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
             ],
           ),
@@ -331,6 +346,7 @@ abstract final class RequestUtils {
           );
           final isSuccess = res.isSuccess;
           final theme = ThemeUtils.theme;
+          final l10n = Get.context!.l10n;
           final actions = [
             if (!isSuccess)
               TextButton(
@@ -345,13 +361,13 @@ abstract final class RequestUtils {
                     },
                   );
                 },
-                child: const Text('申诉'),
+                child: Text(l10n.feedAppeal),
               ),
             if (!isManual)
               TextButton(
                 onPressed: Get.back,
                 child: Text(
-                  '关闭',
+                  l10n.commonClose,
                   style: TextStyle(color: theme.colorScheme.outline),
                 ),
               ),
@@ -360,9 +376,10 @@ abstract final class RequestUtils {
             context: Get.context!,
             barrierDismissible: isManual,
             builder: (context) => AlertDialog(
-              title: const Text('动态检查结果'),
+              title: Text(l10n.feedCheckResult),
               content: SelectionText(
-                '${isSuccess ? '无账号状态下找到了你的动态，动态正常！' : '你的动态被shadow ban（仅自己可见）！'}${dynText != null ? ' \n\n动态内容: $dynText' : ''}',
+                '${isSuccess ? l10n.feedCheckPassed : l10n.feedCheckShadowBanned}'
+                '${dynText != null ? ' \n\n${l10n.feedPostContent(dynText)}' : ''}',
               ),
               actions: actions.isEmpty ? null : actions,
             ),
@@ -386,7 +403,10 @@ abstract final class RequestUtils {
     final status = like?.status ?? false;
 
     if (status ^ uiStatus) {
-      SmartDialog.showToast(status ? '点赞成功' : '取消赞');
+      final l10n = Get.context!.l10n;
+      SmartDialog.showToast(
+        status ? l10n.replyLikeSucceeded : l10n.replyUnlikeSucceeded,
+      );
       onSuccess();
       return;
     }
@@ -396,7 +416,10 @@ abstract final class RequestUtils {
       up: status ? 2 : 1, // 1 已点赞 2 不喜欢 0 未操作
     );
     if (res.isSuccess) {
-      SmartDialog.showToast(status ? '取消赞' : '点赞成功');
+      final l10n = Get.context!.l10n;
+      SmartDialog.showToast(
+        status ? l10n.replyUnlikeSucceeded : l10n.replyLikeSucceeded,
+      );
       like
         ?..count = (like.count ?? 0) + (status ? -1 : 1)
         ..status = !status;
@@ -422,8 +445,9 @@ abstract final class RequestUtils {
         showDialog(
           context: context,
           builder: (context) {
+            final l10n = context.l10n;
             return AlertDialog(
-              title: Text('${isCopy ? '复制' : '移动'}到'),
+              title: Text(isCopy ? l10n.commonCopyTo : l10n.commonMoveTo),
               contentPadding: const EdgeInsets.only(top: 5),
               content: SingleChildScrollView(
                 child: RadioGroup(
@@ -447,7 +471,7 @@ abstract final class RequestUtils {
                 TextButton(
                   onPressed: Get.back,
                   child: Text(
-                    '取消',
+                    l10n.commonCancel,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -482,7 +506,9 @@ abstract final class RequestUtils {
                               ..refresh();
                           }
                           SmartDialog.dismiss();
-                          SmartDialog.showToast('${isCopy ? '复制' : '移动'}成功');
+                          SmartDialog.showToast(
+                            isCopy ? l10n.commonCopied : l10n.commonMoved,
+                          );
                           Get.back();
                         } else {
                           SmartDialog.dismiss();
@@ -491,7 +517,7 @@ abstract final class RequestUtils {
                       });
                     }
                   },
-                  child: const Text('确认'),
+                  child: Text(l10n.commonConfirm),
                 ),
               ],
             );
@@ -533,7 +559,7 @@ abstract final class RequestUtils {
     }
 
     if (!isGeeArgumentValid()) {
-      SmartDialog.showToast("参数为空");
+      SmartDialog.showToast(Get.context!.l10n.commonMissingParameters);
       return;
     }
 
@@ -585,7 +611,7 @@ abstract final class RequestUtils {
           actions: [
             TextButton(
               onPressed: Get.back,
-              child: const Text('关闭'),
+              child: Text(context.l10n.commonClose),
             ),
           ],
         ),

@@ -10,6 +10,7 @@ import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models_new/live/live_emote/datum.dart';
 import 'package:ex_piliplus/models_new/live/live_emote/emoticon.dart';
 import 'package:ex_piliplus/pages/live_emote/controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -207,7 +208,7 @@ class _LiveEmotePanelState extends State<LiveEmotePanel>
     child: TextButton.icon(
       onPressed: _emotePanelController.onReload,
       icon: const Icon(Icons.refresh),
-      label: Text(errMsg ?? '没有数据'),
+      label: Text(errMsg ?? context.l10n.commonNoData),
     ),
   );
 }

@@ -4667,6 +4667,551 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get messagesWebLink => '网页链接';
+
+  @override
+  String get accountSwitchAnonymousHint => 'mid 为 0 时使用匿名模式';
+
+  @override
+  String get accountSwitchDetailed => '详细';
+
+  @override
+  String get accountSwitchQuick => '快速';
+
+  @override
+  String get accountSignInFirst => '请先登录';
+
+  @override
+  String replyIpLocation(Object region) {
+    return 'IP 属地：$region';
+  }
+
+  @override
+  String get videoPersonalOpinionDisclaimer => '个人观点，仅供参考';
+
+  @override
+  String videoAllEpisodes(Object count) {
+    return '全 $count 话';
+  }
+
+  @override
+  String get feedPostedVideo => '投稿了视频';
+
+  @override
+  String get feedCoCreated => '与他人共同创作';
+
+  @override
+  String get feedLikesAndReposts => '赞与转发';
+
+  @override
+  String get feedSaySomething => '说点什么吧…';
+
+  @override
+  String get feedShareToFeed => '分享至动态';
+
+  @override
+  String get feedRepostFeed => '转发动态';
+
+  @override
+  String get feedPublishNow => '立即发布';
+
+  @override
+  String get feedRepostNow => '立即转发';
+
+  @override
+  String get feedPublish => '发布';
+
+  @override
+  String get feedRepostSucceeded => '转发成功';
+
+  @override
+  String get commonCopied => '已复制';
+
+  @override
+  String get commonExport => '导出';
+
+  @override
+  String get commonNoData => '没有数据';
+
+  @override
+  String get commonTapToRetry => '点击重试';
+
+  @override
+  String get watchLaterAdded => '已添加至稍后再看';
+
+  @override
+  String get watchLaterRemoved => '已从稍后再看移除';
+
+  @override
+  String get myCommentsTitle => '我的评论';
+
+  @override
+  String get subscriptionFolder => '收藏夹';
+
+  @override
+  String get subscriptionCollection => '合集';
+
+  @override
+  String subscriptionOtherType(Object type) {
+    return '其它（$type）';
+  }
+
+  @override
+  String subscriptionUnavailable(Object type) {
+    return '该$type已失效';
+  }
+
+  @override
+  String subscriptionUploader(Object name) {
+    return 'UP 主：$name';
+  }
+
+  @override
+  String subscriptionVideoCount(Object count) {
+    return '$count 个视频';
+  }
+
+  @override
+  String subscriptionTotalVideos(Object count) {
+    return '共 $count 个视频';
+  }
+
+  @override
+  String subscriptionPlayCount(Object count) {
+    return '$count 次播放';
+  }
+
+  @override
+  String get subscriptionCancelConfirm => '确定取消订阅吗？';
+
+  @override
+  String get subscriptionCanceled => '取消订阅成功';
+
+  @override
+  String get commonSaving => '正在保存…';
+
+  @override
+  String get commonSaved => '已保存';
+
+  @override
+  String get commonSaveFailed => '保存失败';
+
+  @override
+  String commonSaveFailedWithError(Object error) {
+    return '保存失败：$error';
+  }
+
+  @override
+  String get commonSaveCanceled => '取消保存';
+
+  @override
+  String get commonDownloadCanceled => '已取消下载';
+
+  @override
+  String get commonDownloading => '正在下载…';
+
+  @override
+  String get commonDownloadingOriginal => '正在下载原图…';
+
+  @override
+  String get commonFileNotFound => '文件不存在';
+
+  @override
+  String get permissionStorageRequired => '存储权限未授权';
+
+  @override
+  String get permissionOpenSettings => '去授权';
+
+  @override
+  String get laterDeleteSelectedConfirm => '确认删除所选稍后再看吗？';
+
+  @override
+  String get laterRemoveVideoConfirm => '即将移除该视频，确定是否移除？';
+
+  @override
+  String get laterRemoveConfirmed => '确认移除';
+
+  @override
+  String get laterClearInvalidConfirm => '确定清空已失效视频吗？';
+
+  @override
+  String get laterClearWatchedConfirm => '确定清空已看完视频吗？';
+
+  @override
+  String get laterClearAllConfirm => '确定清空稍后再看列表吗？';
+
+  @override
+  String get laterCleared => '已清空稍后再看';
+
+  @override
+  String get videoPremiumRequired => '需要大会员';
+
+  @override
+  String videoSwitchingTo(Object title) {
+    return '切换到：$title';
+  }
+
+  @override
+  String get shareTo => '分享给';
+
+  @override
+  String get shareChooseRecipients => '请选择分享的用户';
+
+  @override
+  String get shareSucceeded => '分享成功';
+
+  @override
+  String get shareFailed => '分享失败';
+
+  @override
+  String get sharePartiallyFailed => '部分分享失败';
+
+  @override
+  String get followCreateGroup => '新建分组';
+
+  @override
+  String get followGroupCreated => '创建成功';
+
+  @override
+  String get followSucceeded => '关注成功';
+
+  @override
+  String get followAddPriority => '加入特别关注';
+
+  @override
+  String get followRemovePriority => '移除特别关注';
+
+  @override
+  String get followPriorityAdded => '加入特别关注成功';
+
+  @override
+  String get followPriorityRemoved => '移除特别关注成功';
+
+  @override
+  String get followSetGroup => '设置分组';
+
+  @override
+  String get followUnfollow => '取消关注';
+
+  @override
+  String get followUnfollowSucceeded => '取消关注成功';
+
+  @override
+  String get commonCopyTo => '复制到';
+
+  @override
+  String get commonMoveTo => '移动到';
+
+  @override
+  String get commonMoved => '移动成功';
+
+  @override
+  String get feedAppeal => '申诉';
+
+  @override
+  String get feedCheckResult => '动态检查结果';
+
+  @override
+  String get feedCheckPassed => '无账号状态下找到了你的动态，动态正常！';
+
+  @override
+  String get feedCheckShadowBanned => '你的动态可能仅自己可见！';
+
+  @override
+  String feedPostContent(Object content) {
+    return '动态内容：$content';
+  }
+
+  @override
+  String get commonMissingParameters => '参数为空';
+
+  @override
+  String get videoCoinSucceeded => '投币成功';
+
+  @override
+  String get historyNoWatchedItems => '无已看记录';
+
+  @override
+  String get historyDeleteSelectedConfirm => '确认删除所选历史记录吗？';
+
+  @override
+  String get historyClearConfirm => '确定清空观看历史吗？';
+
+  @override
+  String get historyCleared => '已清空观看历史';
+
+  @override
+  String get historyConfirmClear => '确认清空';
+
+  @override
+  String get historyPauseConfirm => '确定暂停观看历史吗？';
+
+  @override
+  String get historyResumeConfirm => '确定恢复观看历史吗？';
+
+  @override
+  String get historyPaused => '已暂停观看历史';
+
+  @override
+  String get historyResumed => '已恢复观看历史';
+
+  @override
+  String get historyConfirmPause => '确认暂停';
+
+  @override
+  String get historyConfirmResume => '确认恢复';
+
+  @override
+  String get commonActionsMenu => '功能菜单';
+
+  @override
+  String get commonFavorited => '已收藏';
+
+  @override
+  String get liveNotStarted => '直播未开播';
+
+  @override
+  String get historyDeleteRecord => '删除记录';
+
+  @override
+  String get loginTitle => '登录';
+
+  @override
+  String get loginWithQr => '使用 bilibili 官方 App 扫码登录';
+
+  @override
+  String loginQrExpiresIn(Object seconds) {
+    return '剩余有效时间：$seconds 秒';
+  }
+
+  @override
+  String get loginRefreshQr => '刷新二维码';
+
+  @override
+  String get loginGeneratingScreenshot => '正在生成截图';
+
+  @override
+  String get loginSaveToGallery => '保存至相册';
+
+  @override
+  String get loginOpenInAnotherApp => '其他应用打开';
+
+  @override
+  String get loginQrCopiedHint => '已复制到剪贴板，可粘贴至已登录的 App 私信处发送，然后点击已发送的链接打开。';
+
+  @override
+  String loginTrustedSourceNotice(Object appName) {
+    return '请务必在 $appName 开源仓库等可信渠道下载安装。';
+  }
+
+  @override
+  String get loginWithCookie => '使用 Cookie 登录';
+
+  @override
+  String get loginCookieLimit => '使用 App 端 API 实现的功能将不可用';
+
+  @override
+  String get loginWithPassword => '使用账号密码登录';
+
+  @override
+  String get loginAccount => '账号';
+
+  @override
+  String get loginEmailOrPhone => '邮箱/手机号';
+
+  @override
+  String get loginPassword => '密码';
+
+  @override
+  String get loginShowPassword => '显示密码';
+
+  @override
+  String get loginForgotPasswordQuestion => '忘记密码？';
+
+  @override
+  String get loginForgotPasswordHint => '试试扫码、手机号登录，或选择找回密码页面。';
+
+  @override
+  String get loginRecoverPasswordMobile => '找回密码（手机版）';
+
+  @override
+  String get loginRecoverPasswordDesktop => '找回密码（电脑版）';
+
+  @override
+  String loginPasswordSecurityNotice(Object appName) {
+    return '根据 bilibili 官方登录接口规范，密码将在本地加盐、加密后传输。盐与公钥均由官方提供；以 RSA/ECB/PKCS1Padding 方式加密。账号密码仅用于该登录接口，不予保存；本地仅存储登录凭证。\n请务必在 $appName 开源仓库等可信渠道下载安装。';
+  }
+
+  @override
+  String get loginWithSms => '使用手机短信验证码登录';
+
+  @override
+  String loginCountryCodeTooltip(Object code, Object name) {
+    return '选择国际冠码，当前为 $name（+$code）';
+  }
+
+  @override
+  String get loginPhoneNumber => '手机号';
+
+  @override
+  String get loginVerificationCode => '验证码';
+
+  @override
+  String loginWaitSeconds(Object seconds) {
+    return '等待 $seconds 秒';
+  }
+
+  @override
+  String get loginGetVerificationCode => '获取验证码';
+
+  @override
+  String loginSmsPrivacyNotice(Object appName) {
+    return '手机号仅用于 bilibili 官方发送验证码与登录接口，不予保存；本地仅存储登录凭证。\n请务必在 $appName 开源仓库等可信渠道下载安装。';
+  }
+
+  @override
+  String get loginPasswordTab => '密码';
+
+  @override
+  String get loginSmsTab => '短信';
+
+  @override
+  String get loginQrTab => '扫码';
+
+  @override
+  String get loginQrExpired => '二维码已过期，请刷新';
+
+  @override
+  String get loginQrSucceeded => '扫码成功';
+
+  @override
+  String get loginVerificationSucceeded => '验证成功';
+
+  @override
+  String get loginCookieRequired => 'Cookie 不能为空';
+
+  @override
+  String get loginSucceeded => '登录成功';
+
+  @override
+  String loginFailedWithError(Object error) {
+    return '登录失败：$error';
+  }
+
+  @override
+  String get loginSessionExpired => 'bilibili 登录已失效，请重新登录';
+
+  @override
+  String get loginUserInfoFailed => '获取 bilibili 用户信息失败，可前往账号管理重试';
+
+  @override
+  String get loginCredentialsRequired => '用户名或密码不能为空';
+
+  @override
+  String loginNoDataReturned(Object message) {
+    return '登录异常，接口未返回数据：$message';
+  }
+
+  @override
+  String loginTryAnotherMethod(Object details) {
+    return '请尝试其他登录方式。\n$details';
+  }
+
+  @override
+  String get loginPhoneVerificationUnavailable => '当前账号不支持手机号验证，请尝试其他登录方式';
+
+  @override
+  String get loginPhoneVerificationRequired => '本次登录需要验证您的手机号';
+
+  @override
+  String get loginPhoneUnavailable => '未能获取手机号';
+
+  @override
+  String get loginEnterVerificationCode => '请输入短信验证码';
+
+  @override
+  String get loginSendVerificationCode => '发送验证码';
+
+  @override
+  String get loginVerificationCodeSent => '短信验证码已发送，请查收';
+
+  @override
+  String get loginVerifyingAndSigningIn => '验证成功，正在登录';
+
+  @override
+  String loginMissingIdentity(Object details) {
+    return '登录异常，接口未返回身份信息，可能是因为账号风控，请尝试其他登录方式。\n$details';
+  }
+
+  @override
+  String get loginSavingIdentity => '正在保存身份信息';
+
+  @override
+  String get loginPhoneRequired => '手机号不能为空';
+
+  @override
+  String get loginRequestCodeFirst => '请先点击获取验证码';
+
+  @override
+  String get loginVerificationCodeRequired => '验证码不能为空';
+
+  @override
+  String get loginVerificationCodeExpired => '验证码已过期，请重新获取';
+
+  @override
+  String get loginSucceededSetAccountMode => '登录成功，请先设置账号模式';
+
+  @override
+  String get commonServerError => '服务器错误';
+
+  @override
+  String get searchSecurityCheckTriggered => '触发风控校验';
+
+  @override
+  String get loginVerificationTitle => '验证码';
+
+  @override
+  String get loginCompleteVerificationWindow => '请在弹出的新窗口中完成验证';
+
+  @override
+  String get memberBlockConfirm => '确定拉黑 UP 主吗？';
+
+  @override
+  String get memberUnblockConfirm => '从黑名单移除该 UP 主吗？';
+
+  @override
+  String get memberNoPlayableVideos => '该 UP 主暂无可播放视频';
+
+  @override
+  String get memberVideoPlayInfoUnavailable => '无法获取视频播放信息';
+
+  @override
+  String memberRandomVideoFailed(Object error) {
+    return '随机视频获取失败：$error';
+  }
+
+  @override
+  String get memberFollowerRemoved => '移除粉丝成功';
+
+  @override
+  String get memberPremiumRewardClaimed => '领取成功';
+
+  @override
+  String get memberAddToBlocked => '加入黑名单';
+
+  @override
+  String get memberRemoveFromBlocked => '移除黑名单';
+
+  @override
+  String get memberRemoveFollower => '移除粉丝';
+
+  @override
+  String get memberShareUploader => '分享 UP 主';
+
+  @override
+  String get memberShareMyProfile => '分享我的主页';
+
+  @override
+  String get memberAddToHomeScreen => '添加至桌面';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -9333,4 +9878,549 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get messagesWebLink => '網頁連結';
+
+  @override
+  String get accountSwitchAnonymousHint => 'mid 為 0 時使用匿名模式';
+
+  @override
+  String get accountSwitchDetailed => '詳細';
+
+  @override
+  String get accountSwitchQuick => '快速';
+
+  @override
+  String get accountSignInFirst => '請先登入';
+
+  @override
+  String replyIpLocation(Object region) {
+    return 'IP 所在地：$region';
+  }
+
+  @override
+  String get videoPersonalOpinionDisclaimer => '個人觀點，僅供參考';
+
+  @override
+  String videoAllEpisodes(Object count) {
+    return '全 $count 話';
+  }
+
+  @override
+  String get feedPostedVideo => '投稿了影片';
+
+  @override
+  String get feedCoCreated => '與他人共同創作';
+
+  @override
+  String get feedLikesAndReposts => '讚與轉發';
+
+  @override
+  String get feedSaySomething => '說點什麼吧…';
+
+  @override
+  String get feedShareToFeed => '分享至動態';
+
+  @override
+  String get feedRepostFeed => '轉發動態';
+
+  @override
+  String get feedPublishNow => '立即發佈';
+
+  @override
+  String get feedRepostNow => '立即轉發';
+
+  @override
+  String get feedPublish => '發佈';
+
+  @override
+  String get feedRepostSucceeded => '轉發成功';
+
+  @override
+  String get commonCopied => '已複製';
+
+  @override
+  String get commonExport => '匯出';
+
+  @override
+  String get commonNoData => '沒有資料';
+
+  @override
+  String get commonTapToRetry => '點擊重試';
+
+  @override
+  String get watchLaterAdded => '已加入稍後觀看';
+
+  @override
+  String get watchLaterRemoved => '已從稍後觀看移除';
+
+  @override
+  String get myCommentsTitle => '我的評論';
+
+  @override
+  String get subscriptionFolder => '收藏夾';
+
+  @override
+  String get subscriptionCollection => '合集';
+
+  @override
+  String subscriptionOtherType(Object type) {
+    return '其他（$type）';
+  }
+
+  @override
+  String subscriptionUnavailable(Object type) {
+    return '此$type已失效';
+  }
+
+  @override
+  String subscriptionUploader(Object name) {
+    return 'UP 主：$name';
+  }
+
+  @override
+  String subscriptionVideoCount(Object count) {
+    return '$count 個影片';
+  }
+
+  @override
+  String subscriptionTotalVideos(Object count) {
+    return '共 $count 個影片';
+  }
+
+  @override
+  String subscriptionPlayCount(Object count) {
+    return '$count 次播放';
+  }
+
+  @override
+  String get subscriptionCancelConfirm => '確定取消訂閱嗎？';
+
+  @override
+  String get subscriptionCanceled => '取消訂閱成功';
+
+  @override
+  String get commonSaving => '正在儲存…';
+
+  @override
+  String get commonSaved => '已儲存';
+
+  @override
+  String get commonSaveFailed => '儲存失敗';
+
+  @override
+  String commonSaveFailedWithError(Object error) {
+    return '儲存失敗：$error';
+  }
+
+  @override
+  String get commonSaveCanceled => '取消儲存';
+
+  @override
+  String get commonDownloadCanceled => '已取消下載';
+
+  @override
+  String get commonDownloading => '正在下載…';
+
+  @override
+  String get commonDownloadingOriginal => '正在下載原圖…';
+
+  @override
+  String get commonFileNotFound => '檔案不存在';
+
+  @override
+  String get permissionStorageRequired => '未授權儲存權限';
+
+  @override
+  String get permissionOpenSettings => '前往授權';
+
+  @override
+  String get laterDeleteSelectedConfirm => '確定刪除所選稍後觀看項目嗎？';
+
+  @override
+  String get laterRemoveVideoConfirm => '即將移除這部影片，確定要移除嗎？';
+
+  @override
+  String get laterRemoveConfirmed => '確認移除';
+
+  @override
+  String get laterClearInvalidConfirm => '確定清空已失效影片嗎？';
+
+  @override
+  String get laterClearWatchedConfirm => '確定清空已看完影片嗎？';
+
+  @override
+  String get laterClearAllConfirm => '確定清空稍後觀看清單嗎？';
+
+  @override
+  String get laterCleared => '已清空稍後觀看';
+
+  @override
+  String get videoPremiumRequired => '需要大會員';
+
+  @override
+  String videoSwitchingTo(Object title) {
+    return '切換到：$title';
+  }
+
+  @override
+  String get shareTo => '分享給';
+
+  @override
+  String get shareChooseRecipients => '請選擇分享對象';
+
+  @override
+  String get shareSucceeded => '分享成功';
+
+  @override
+  String get shareFailed => '分享失敗';
+
+  @override
+  String get sharePartiallyFailed => '部分分享失敗';
+
+  @override
+  String get followCreateGroup => '新增分組';
+
+  @override
+  String get followGroupCreated => '建立成功';
+
+  @override
+  String get followSucceeded => '關注成功';
+
+  @override
+  String get followAddPriority => '加入特別關注';
+
+  @override
+  String get followRemovePriority => '移除特別關注';
+
+  @override
+  String get followPriorityAdded => '已加入特別關注';
+
+  @override
+  String get followPriorityRemoved => '已移除特別關注';
+
+  @override
+  String get followSetGroup => '設定分組';
+
+  @override
+  String get followUnfollow => '取消關注';
+
+  @override
+  String get followUnfollowSucceeded => '已取消關注';
+
+  @override
+  String get commonCopyTo => '複製到';
+
+  @override
+  String get commonMoveTo => '移動到';
+
+  @override
+  String get commonMoved => '移動成功';
+
+  @override
+  String get feedAppeal => '申訴';
+
+  @override
+  String get feedCheckResult => '動態檢查結果';
+
+  @override
+  String get feedCheckPassed => '未登入狀態下找到了你的動態，動態正常！';
+
+  @override
+  String get feedCheckShadowBanned => '你的動態可能僅自己可見！';
+
+  @override
+  String feedPostContent(Object content) {
+    return '動態內容：$content';
+  }
+
+  @override
+  String get commonMissingParameters => '缺少必要參數';
+
+  @override
+  String get videoCoinSucceeded => '投幣成功';
+
+  @override
+  String get historyNoWatchedItems => '沒有已看記錄';
+
+  @override
+  String get historyDeleteSelectedConfirm => '確定刪除所選歷史記錄嗎？';
+
+  @override
+  String get historyClearConfirm => '確定清空觀看歷史嗎？';
+
+  @override
+  String get historyCleared => '已清空觀看歷史';
+
+  @override
+  String get historyConfirmClear => '確認清空';
+
+  @override
+  String get historyPauseConfirm => '確定暫停觀看歷史嗎？';
+
+  @override
+  String get historyResumeConfirm => '確定恢復觀看歷史嗎？';
+
+  @override
+  String get historyPaused => '已暫停觀看歷史';
+
+  @override
+  String get historyResumed => '已恢復觀看歷史';
+
+  @override
+  String get historyConfirmPause => '確認暫停';
+
+  @override
+  String get historyConfirmResume => '確認恢復';
+
+  @override
+  String get commonActionsMenu => '功能選單';
+
+  @override
+  String get commonFavorited => '已收藏';
+
+  @override
+  String get liveNotStarted => '直播尚未開播';
+
+  @override
+  String get historyDeleteRecord => '刪除記錄';
+
+  @override
+  String get loginTitle => '登入';
+
+  @override
+  String get loginWithQr => '使用 bilibili 官方 App 掃碼登入';
+
+  @override
+  String loginQrExpiresIn(Object seconds) {
+    return '剩餘有效時間：$seconds 秒';
+  }
+
+  @override
+  String get loginRefreshQr => '重新整理 QR Code';
+
+  @override
+  String get loginGeneratingScreenshot => '正在產生圖片';
+
+  @override
+  String get loginSaveToGallery => '儲存至相簿';
+
+  @override
+  String get loginOpenInAnotherApp => '使用其他應用程式開啟';
+
+  @override
+  String get loginQrCopiedHint => '已複製到剪貼簿，可貼到已登入的 App 私訊中傳送，再開啟已傳送的連結。';
+
+  @override
+  String loginTrustedSourceNotice(Object appName) {
+    return '請務必從 $appName 開源儲存庫等可信管道下載安裝。';
+  }
+
+  @override
+  String get loginWithCookie => '使用 Cookie 登入';
+
+  @override
+  String get loginCookieLimit => '使用 App 端 API 的功能將無法使用';
+
+  @override
+  String get loginWithPassword => '使用帳號密碼登入';
+
+  @override
+  String get loginAccount => '帳號';
+
+  @override
+  String get loginEmailOrPhone => '電子郵件／手機號碼';
+
+  @override
+  String get loginPassword => '密碼';
+
+  @override
+  String get loginShowPassword => '顯示密碼';
+
+  @override
+  String get loginForgotPasswordQuestion => '忘記密碼？';
+
+  @override
+  String get loginForgotPasswordHint => '試試掃碼、手機號碼登入，或選擇密碼找回頁面。';
+
+  @override
+  String get loginRecoverPasswordMobile => '找回密碼（手機版）';
+
+  @override
+  String get loginRecoverPasswordDesktop => '找回密碼（電腦版）';
+
+  @override
+  String loginPasswordSecurityNotice(Object appName) {
+    return '依照 bilibili 官方登入介面規範，密碼會在本機加鹽、加密後傳輸。鹽與公開金鑰均由官方提供，並使用 RSA/ECB/PKCS1Padding 加密。帳號密碼只用於登入且不會儲存；本機只儲存登入憑證。\n請務必從 $appName 開源儲存庫等可信管道下載安裝。';
+  }
+
+  @override
+  String get loginWithSms => '使用手機簡訊驗證碼登入';
+
+  @override
+  String loginCountryCodeTooltip(Object code, Object name) {
+    return '選擇國際冠碼，目前為 $name（+$code）';
+  }
+
+  @override
+  String get loginPhoneNumber => '手機號碼';
+
+  @override
+  String get loginVerificationCode => '驗證碼';
+
+  @override
+  String loginWaitSeconds(Object seconds) {
+    return '等待 $seconds 秒';
+  }
+
+  @override
+  String get loginGetVerificationCode => '取得驗證碼';
+
+  @override
+  String loginSmsPrivacyNotice(Object appName) {
+    return '手機號碼只用於 bilibili 官方傳送驗證碼與登入介面且不會儲存；本機只儲存登入憑證。\n請務必從 $appName 開源儲存庫等可信管道下載安裝。';
+  }
+
+  @override
+  String get loginPasswordTab => '密碼';
+
+  @override
+  String get loginSmsTab => '簡訊';
+
+  @override
+  String get loginQrTab => '掃碼';
+
+  @override
+  String get loginQrExpired => 'QR Code 已過期，請重新整理';
+
+  @override
+  String get loginQrSucceeded => '掃碼成功';
+
+  @override
+  String get loginVerificationSucceeded => '驗證成功';
+
+  @override
+  String get loginCookieRequired => 'Cookie 不可為空';
+
+  @override
+  String get loginSucceeded => '登入成功';
+
+  @override
+  String loginFailedWithError(Object error) {
+    return '登入失敗：$error';
+  }
+
+  @override
+  String get loginSessionExpired => 'bilibili 登入已失效，請重新登入';
+
+  @override
+  String get loginUserInfoFailed => '無法取得 bilibili 使用者資訊，可前往帳號管理重試';
+
+  @override
+  String get loginCredentialsRequired => '使用者名稱或密碼不可為空';
+
+  @override
+  String loginNoDataReturned(Object message) {
+    return '登入異常，介面未回傳資料：$message';
+  }
+
+  @override
+  String loginTryAnotherMethod(Object details) {
+    return '請嘗試其他登入方式。\n$details';
+  }
+
+  @override
+  String get loginPhoneVerificationUnavailable => '目前帳號不支援手機號碼驗證，請嘗試其他登入方式';
+
+  @override
+  String get loginPhoneVerificationRequired => '本次登入需要驗證您的手機號碼';
+
+  @override
+  String get loginPhoneUnavailable => '無法取得手機號碼';
+
+  @override
+  String get loginEnterVerificationCode => '請輸入簡訊驗證碼';
+
+  @override
+  String get loginSendVerificationCode => '傳送驗證碼';
+
+  @override
+  String get loginVerificationCodeSent => '簡訊驗證碼已傳送';
+
+  @override
+  String get loginVerifyingAndSigningIn => '驗證成功，正在登入';
+
+  @override
+  String loginMissingIdentity(Object details) {
+    return '登入異常，介面未回傳身分資訊，可能是帳號安全限制所致，請嘗試其他登入方式。\n$details';
+  }
+
+  @override
+  String get loginSavingIdentity => '正在儲存登入資訊';
+
+  @override
+  String get loginPhoneRequired => '手機號碼不可為空';
+
+  @override
+  String get loginRequestCodeFirst => '請先取得驗證碼';
+
+  @override
+  String get loginVerificationCodeRequired => '驗證碼不可為空';
+
+  @override
+  String get loginVerificationCodeExpired => '驗證碼已過期，請重新取得';
+
+  @override
+  String get loginSucceededSetAccountMode => '登入成功，請先設定帳號模式';
+
+  @override
+  String get commonServerError => '伺服器錯誤';
+
+  @override
+  String get searchSecurityCheckTriggered => '需要進行安全驗證';
+
+  @override
+  String get loginVerificationTitle => '驗證';
+
+  @override
+  String get loginCompleteVerificationWindow => '請在彈出的新視窗中完成驗證';
+
+  @override
+  String get memberBlockConfirm => '確定封鎖這位 UP 主嗎？';
+
+  @override
+  String get memberUnblockConfirm => '將這位 UP 主從封鎖名單移除嗎？';
+
+  @override
+  String get memberNoPlayableVideos => '這位 UP 主沒有可播放的影片';
+
+  @override
+  String get memberVideoPlayInfoUnavailable => '無法取得影片播放資訊';
+
+  @override
+  String memberRandomVideoFailed(Object error) {
+    return '隨機影片取得失敗：$error';
+  }
+
+  @override
+  String get memberFollowerRemoved => '已移除粉絲';
+
+  @override
+  String get memberPremiumRewardClaimed => '領取成功';
+
+  @override
+  String get memberAddToBlocked => '加入封鎖名單';
+
+  @override
+  String get memberRemoveFromBlocked => '移出封鎖名單';
+
+  @override
+  String get memberRemoveFollower => '移除粉絲';
+
+  @override
+  String get memberShareUploader => '分享 UP 主';
+
+  @override
+  String get memberShareMyProfile => '分享我的主頁';
+
+  @override
+  String get memberAddToHomeScreen => '加入主畫面';
 }

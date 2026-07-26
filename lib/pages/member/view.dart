@@ -38,6 +38,7 @@ import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -367,7 +368,7 @@ class _MemberPageState extends State<MemberPage> {
     if (_userController.reserves?.isNotEmpty ?? false)
       _reserveBtn(_userController.reserves!, theme),
     IconButton(
-      tooltip: '搜索',
+      tooltip: context.l10n.commonSearch,
       onPressed: () => Get.toNamed(
         '/memberSearch?mid=$_mid&uname=${_userController.username}',
       ),
@@ -386,7 +387,9 @@ class _MemberPageState extends State<MemberPage> {
                 const Icon(Icons.block, size: 19),
                 const SizedBox(width: 10),
                 Text(
-                  _userController.relation.value != 128 ? '加入黑名单' : '移除黑名单',
+                  _userController.relation.value != 128
+                      ? context.l10n.memberAddToBlocked
+                      : context.l10n.memberRemoveFromBlocked,
                 ),
               ],
             ),
@@ -394,12 +397,12 @@ class _MemberPageState extends State<MemberPage> {
           if (_userController.isFollowed == 1)
             PopupMenuItem(
               onTap: _userController.onRemoveFan,
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.remove_circle_outline_outlined, size: 19),
-                  SizedBox(width: 10),
-                  Text('移除粉丝'),
+                  const Icon(Icons.remove_circle_outline_outlined, size: 19),
+                  const SizedBox(width: 10),
+                  Text(context.l10n.memberRemoveFollower),
                 ],
               ),
             ),
@@ -412,7 +415,9 @@ class _MemberPageState extends State<MemberPage> {
               const Icon(Icons.share_outlined, size: 19),
               const SizedBox(width: 10),
               Text(
-                _userController.account.mid != _mid ? '分享UP主' : '分享我的主页',
+                _userController.account.mid != _mid
+                    ? context.l10n.memberShareUploader
+                    : context.l10n.memberShareMyProfile,
               ),
             ],
           ),
@@ -420,12 +425,12 @@ class _MemberPageState extends State<MemberPage> {
         if (PlatformUtils.isMobile)
           PopupMenuItem(
             onTap: _createShortcut,
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.add_box_outlined, size: 19),
-                SizedBox(width: 10),
-                Text('添加至桌面'),
+                const Icon(Icons.add_box_outlined, size: 19),
+                const SizedBox(width: 10),
+                Text(context.l10n.memberAddToHomeScreen),
               ],
             ),
           ),

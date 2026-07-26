@@ -27,9 +27,11 @@ import 'package:ex_piliplus/models_new/dynamic/dyn_topic_top/top_details.dart';
 import 'package:ex_piliplus/models_new/dynamic/dyn_topic_top/topic_item.dart';
 import 'package:ex_piliplus/models_new/followee_votes/vote.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/wbi_sign.dart';
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 
 abstract final class DynamicsHttp {
   @pragma('vm:notify-debugger-on-exception')
@@ -66,7 +68,9 @@ abstract final class DynamicsHttp {
         return Error('$e\n\n$s');
       }
     } else {
-      return Error(code == 4101132 ? '没有数据' : res.data['message']);
+      return Error(
+        code == 4101132 ? Get.context!.l10n.commonNoData : res.data['message'],
+      );
     }
   }
 

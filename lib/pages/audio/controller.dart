@@ -34,6 +34,7 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/connectivity_utils.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -532,6 +533,7 @@ class AudioController extends GetxController
   }
 
   void actionShareVideo(BuildContext context) {
+    final l10n = context.l10n;
     final audioUrl = isUgc
         ? '${HttpString.baseUrl}/video/${IdUtils.av2bv(oid.toInt())}'
         : '${HttpString.baseUrl}/audio/au$oid';
@@ -542,14 +544,20 @@ class AudioController extends GetxController
         contentPadding: const EdgeInsets.symmetric(vertical: 12),
         children: [
           DialogOption(
-            child: const Text('复制链接', style: TextStyle(fontSize: 14)),
+            child: Text(
+              l10n.commonCopyLink,
+              style: const TextStyle(fontSize: 14),
+            ),
             onPressed: () {
               Get.back();
               Utils.copyText(audioUrl);
             },
           ),
           DialogOption(
-            child: const Text('其它app打开', style: TextStyle(fontSize: 14)),
+            child: Text(
+              l10n.commonOpenInAnotherApp,
+              style: const TextStyle(fontSize: 14),
+            ),
             onPressed: () {
               Get.back();
               PageUtils.launchURL(audioUrl);
@@ -557,7 +565,10 @@ class AudioController extends GetxController
           ),
           if (PlatformUtils.isMobile)
             DialogOption(
-              child: const Text('分享视频', style: TextStyle(fontSize: 14)),
+              child: Text(
+                l10n.videoShareVideo,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 Get.back();
                 if (audioItem.value case DetailItem(
@@ -565,16 +576,21 @@ class AudioController extends GetxController
                   :final owner,
                 )) {
                   ShareUtils.shareText(
-                    '${arc.title} '
-                    'UP主: ${owner.name}'
-                    ' - $audioUrl',
+                    l10n.videoShareText(
+                      arc.title,
+                      owner.name,
+                      audioUrl,
+                    ),
                   );
                 }
               },
             ),
           if (isLogin)
             DialogOption(
-              child: const Text('分享至动态', style: TextStyle(fontSize: 14)),
+              child: Text(
+                l10n.videoShareToFeed,
+                style: const TextStyle(fontSize: 14),
+              ),
               onPressed: () {
                 Get.back();
                 if (audioItem.value case DetailItem(

@@ -1,5 +1,6 @@
 import 'package:ex_piliplus/common/assets.dart';
 import 'package:ex_piliplus/common/widgets/selection_text.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -33,7 +34,7 @@ class HttpError extends StatelessWidget {
         Padding(
           padding: const .symmetric(horizontal: 16, vertical: 5),
           child: SelectionText(
-            errMsg ?? '没有数据',
+            errMsg ?? context.l10n.commonNoData,
             textAlign: .center,
             style: theme.textTheme.titleSmall,
           ),
@@ -47,7 +48,7 @@ class HttpError extends StatelessWidget {
               shadowColor: Colors.transparent,
             ),
             child: Text(
-              btnText ?? '点击重试',
+              btnText ?? context.l10n.commonTapToRetry,
               style: TextStyle(color: theme.colorScheme.primary),
             ),
           ),

@@ -1,9 +1,11 @@
-import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show ReloadMixin;
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
+    show ReloadMixin;
 import 'package:ex_piliplus/http/dynamics.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/reply.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/common/dyn/common_dyn_controller.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -52,8 +54,11 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
       action: isPrivate ? 'public_pub' : 'private_pub',
     );
     if (res.isSuccess) {
-      dynItem.modules.moduleAuthor?.badgeText = isPrivate ? null : '仅自己可见';
-      SmartDialog.showToast('设置成功');
+      final l10n = Get.context!.l10n;
+      dynItem.modules.moduleAuthor?.badgeText = isPrivate
+          ? null
+          : l10n.feedVisibleOnlyToMe;
+      SmartDialog.showToast(l10n.settingsSucceeded);
     } else {
       res.toast();
     }

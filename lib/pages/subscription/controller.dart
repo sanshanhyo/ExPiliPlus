@@ -5,6 +5,7 @@ import 'package:ex_piliplus/models_new/sub/sub/data.dart';
 import 'package:ex_piliplus/models_new/sub/sub/list.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -21,7 +22,7 @@ class SubController extends CommonListController<SubData, SubItemModel> {
   @override
   Future<void> queryData([bool isRefresh = true]) {
     if (!account.isLogin) {
-      loadingState.value = const Error('账号未登录');
+      loadingState.value = Error(Get.context!.l10n.accountPleaseSignIn);
       return Future.syncValue(null);
     }
     return super.queryData(isRefresh);
@@ -29,16 +30,17 @@ class SubController extends CommonListController<SubData, SubItemModel> {
 
   // 取消订阅
   void cancelSub(SubItemModel subFolderItem) {
+    final l10n = Get.context!.l10n;
     showDialog(
       context: Get.context!,
       builder: (context) => AlertDialog(
-        title: const Text('提示'),
-        content: const Text('确定取消订阅吗？'),
+        title: Text(l10n.commonNotice),
+        content: Text(l10n.subscriptionCancelConfirm),
         actions: [
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '取消',
+              l10n.commonCancel,
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
           ),
@@ -52,13 +54,13 @@ class SubController extends CommonListController<SubData, SubItemModel> {
                 loadingState
                   ..value.data!.remove(subFolderItem)
                   ..refresh();
-                SmartDialog.showToast('取消订阅成功');
+                SmartDialog.showToast(l10n.subscriptionCanceled);
               } else {
                 res.toast();
               }
               Get.back();
             },
-            child: const Text('确定'),
+            child: Text(l10n.commonConfirm),
           ),
         ],
       ),

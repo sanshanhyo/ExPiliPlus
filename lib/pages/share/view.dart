@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/self_sized_horizontal_list.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/pages/contact/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:flutter/material.dart';
@@ -89,11 +90,11 @@ class _SharePanelState extends State<SharePanel> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('分享给'),
+              Text(context.l10n.shareTo),
               iconButton(
                 size: 32,
                 iconSize: 18,
-                tooltip: '关闭',
+                tooltip: context.l10n.commonClose,
                 icon: const Icon(Icons.clear),
                 onPressed: Get.back,
               ),
@@ -211,7 +212,10 @@ class _SharePanelState extends State<SharePanel> {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      const Text('更多', style: TextStyle(fontSize: 12)),
+                      Text(
+                        context.l10n.feedMoreActions,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ],
                   ),
                 ),
@@ -229,7 +233,7 @@ class _SharePanelState extends State<SharePanel> {
                   maxLines: 2,
                   textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
-                    hintText: '说说你的想法吧...',
+                    hintText: context.l10n.feedSaySomething,
                     visualDensity: .standard,
                     hintStyle: const TextStyle(fontSize: 14),
                     border: const OutlineInputBorder(
@@ -257,7 +261,7 @@ class _SharePanelState extends State<SharePanel> {
                     vertical: -1,
                   ),
                 ),
-                child: const Text('发送'),
+                child: Text(context.l10n.commonSend),
               ),
             ],
           ),
@@ -267,9 +271,10 @@ class _SharePanelState extends State<SharePanel> {
   }
 
   Future<void> _onSend() async {
+    final l10n = context.l10n;
     final list = _userList.where((user) => user.selected);
     if (list.isEmpty) {
-      SmartDialog.showToast('请选择分享的用户');
+      SmartDialog.showToast(l10n.shareChooseRecipients);
       return;
     }
     SmartDialog.showLoading();
@@ -285,11 +290,11 @@ class _SharePanelState extends State<SharePanel> {
     SmartDialog.dismiss();
     if (res.every((e) => e)) {
       Get.back();
-      SmartDialog.showToast('分享成功');
+      SmartDialog.showToast(l10n.shareSucceeded);
     } else if (res.every((e) => !e)) {
-      SmartDialog.showToast('分享失败');
+      SmartDialog.showToast(l10n.shareFailed);
     } else {
-      SmartDialog.showToast('部分分享失败');
+      SmartDialog.showToast(l10n.sharePartiallyFailed);
     }
   }
 }

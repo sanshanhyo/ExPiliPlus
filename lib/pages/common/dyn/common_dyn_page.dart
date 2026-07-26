@@ -7,6 +7,7 @@ import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
 import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 import 'package:ex_piliplus/pages/common/dyn/common_dyn_controller.dart';
 import 'package:ex_piliplus/pages/common/fab_mixin.dart';
@@ -14,9 +15,9 @@ import 'package:ex_piliplus/pages/video/reply/vote/reply_vote_item.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
-import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:easy_debounce/easy_throttle.dart';
@@ -24,12 +25,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 enum DynType implements EnumWithLabel {
-  reply('评论'),
-  reaction('赞与转发');
+  reply('Reply'),
+  reaction('Reaction');
 
   @override
   final String label;
   const DynType(this.label);
+
+  String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .reply => l10n.feedComment,
+    .reaction => l10n.feedLikesAndReposts,
+  };
 }
 
 abstract class CommonDynPageState<T extends StatefulWidget> extends State<T>
@@ -107,7 +113,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
               () {
                 final count = controller.count.value;
                 return Text(
-                  '${count == -1 ? 0 : NumUtils.numFormat(count)}条回复',
+                  context.l10n.replyCount(count == -1 ? 0 : count),
                 );
               },
             ),
@@ -117,7 +123,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
               icon: Icon(Icons.sort, size: 16, color: secondary),
               label: Obx(
                 () => Text(
-                  controller.sortType.value.label,
+                  controller.sortType.value.localizedTitle(context.l10n),
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),

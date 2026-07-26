@@ -12,6 +12,7 @@ import 'package:ex_piliplus/pages/dynamics_mention/controller.dart';
 import 'package:ex_piliplus/pages/emote/controller.dart';
 import 'package:ex_piliplus/pages/emote/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:flutter/material.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -220,7 +221,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     child: SizedBox(
       width: double.infinity,
       child: Text(
-        '说点什么吧',
+        context.l10n.feedSaySomething,
         style: TextStyle(
           height: 1.75,
           fontSize: 15,
@@ -246,7 +247,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
         onSubmitted: onSubmitted,
         readOnly: readOnly.value,
         decoration: InputDecoration(
-          hintText: '说点什么吧',
+          hintText: context.l10n.feedSaySomething,
           hintStyle: TextStyle(color: theme.colorScheme.outline),
           border: const OutlineInputBorder(
             borderSide: BorderSide.none,
@@ -264,7 +265,9 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
           children: [
             const SizedBox(width: 16),
             Text(
-              widget.rid != null ? '分享至动态' : '转发动态',
+              widget.rid != null
+                  ? context.l10n.feedShareToFeed
+                  : context.l10n.feedRepostFeed,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
@@ -277,7 +280,11 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                 ),
                 visualDensity: VisualDensity.compact,
               ),
-              child: Text(widget.rid != null ? '立即发布' : '立即转发'),
+              child: Text(
+                widget.rid != null
+                    ? context.l10n.feedPublishNow
+                    : context.l10n.feedRepostNow,
+              ),
             ),
             const SizedBox(width: 16),
           ],
@@ -294,7 +301,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                   width: 34,
                   height: 34,
                   child: IconButton(
-                    tooltip: '返回',
+                    tooltip: context.l10n.commonBack,
                     style: ButtonStyle(
                       padding: const WidgetStatePropertyAll(EdgeInsets.zero),
                       backgroundColor: WidgetStatePropertyAll(
@@ -312,7 +319,9 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
               ),
               Center(
                 child: Text(
-                  widget.rid != null ? '分享至动态' : '转发动态',
+                  widget.rid != null
+                      ? context.l10n.feedShareToFeed
+                      : context.l10n.feedRepostFeed,
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -331,7 +340,11 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                     ),
                     visualDensity: VisualDensity.compact,
                   ),
-                  child: Text(widget.rid != null ? '发布' : '转发'),
+                  child: Text(
+                    widget.rid != null
+                        ? context.l10n.feedPublish
+                        : context.l10n.commonRepost,
+                  ),
                 ),
               ),
             ],
@@ -360,7 +373,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
       onTap: Get.back,
       title: Center(
         child: Text(
-          '取消',
+          context.l10n.commonCancel,
           style: TextStyle(color: theme.colorScheme.outline),
         ),
       ),
@@ -412,6 +425,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
 
   @override
   Future<void> onCustomPublish({List? pictures}) async {
+    final l10n = context.l10n;
     SmartDialog.showLoading();
     List<Map<String, dynamic>>? richContent = getRichContent();
     final hasRichText = richContent != null;
@@ -433,7 +447,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     if (res case Success(:final response)) {
       hasPub = true;
       Get.back();
-      SmartDialog.showToast('转发成功');
+      SmartDialog.showToast(l10n.feedRepostSucceeded);
       widget.onSuccess?.call();
       final id = response?['dyn_id'];
       RequestUtils.insertCreatedDyn(id);

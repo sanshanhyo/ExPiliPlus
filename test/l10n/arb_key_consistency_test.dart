@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:ex_piliplus/l10n/generated/app_localizations_en.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
+import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -31,6 +34,28 @@ void main() {
         reason: '$path is missing message keys',
       );
     }
+  });
+
+  test('compact numbers use western K/M/B magnitudes', () {
+    expect(NumUtils.numFormat(999), '999');
+    expect(NumUtils.numFormat(1000), '1K');
+    expect(NumUtils.numFormat(10000), '10K');
+    expect(NumUtils.numFormat(1500000), '1.5M');
+    expect(NumUtils.numFormat(2000000000), '2B');
+    expect(NumUtils.parseNum('1.5K'), 1500);
+  });
+
+  test('known server labels are localized before display', () {
+    final l10n = AppLocalizationsEn();
+
+    expect(l10n.localizedDynamicAction('投稿了视频'), 'posted a video');
+    expect(l10n.localizedDynamicAction('与他人共同创作'), 'co-created with others');
+    expect(l10n.localizedReplyLocation('IP属地：广东'), 'IP location: 广东');
+    expect(
+      l10n.localizedVideoNotice('个人观点，仅供参考'),
+      'Personal opinion; for reference only',
+    );
+    expect(l10n.localizedEpisodeTitle('全12话'), 'All 12 episodes');
   });
 
   test('video surfaces do not add hard-coded Chinese UI strings', () {
@@ -113,6 +138,16 @@ void main() {
       'lib/pages/sponsor_block',
       'lib/pages/whisper',
       'lib/pages/msg_feed_top',
+      'lib/pages/login',
+      'lib/pages/later',
+      'lib/pages/later_search',
+      'lib/pages/history',
+      'lib/pages/history_search',
+      'lib/pages/subscription',
+      'lib/pages/subscription_detail',
+      'lib/pages/my_reply',
+      'lib/pages/dynamics_detail',
+      'lib/pages/dynamics_repost',
     ];
     const filePaths = [
       'lib/common/widgets/dialog/export_import.dart',
@@ -126,6 +161,11 @@ void main() {
       'lib/pages/login_devices/view.dart',
       'lib/pages/member_dynamics/view.dart',
       'lib/pages/space_setting/view.dart',
+      'lib/pages/share/view.dart',
+      'lib/pages/emote/view.dart',
+      'lib/pages/live_emote/view.dart',
+      'lib/common/widgets/image/image_save.dart',
+      'lib/common/widgets/loading_widget/http_error.dart',
     ];
     final files = <File>[
       for (final path in directoryPaths)
@@ -142,6 +182,8 @@ void main() {
       "'网页链接'",
       "'无法获取视频流'",
       "'测速超时'",
+      "'番剧'",
+      "'动画'",
     };
     final violations = <String>[];
 

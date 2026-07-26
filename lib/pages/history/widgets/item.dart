@@ -11,6 +11,8 @@ import 'package:ex_piliplus/models_new/video/video_detail/dimension.dart';
 import 'package:ex_piliplus/pages/common/multi_select/base.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -66,7 +68,7 @@ class HistoryItem extends StatelessWidget {
                   if (item.liveStatus == 1) {
                     PageUtils.toLiveRoom(item.history.oid);
                   } else {
-                    SmartDialog.showToast('直播未开播');
+                    SmartDialog.showToast(context.l10n.liveNotStarted);
                   }
                 } else if (business == 'pgc') {
                   PageUtils.viewPgc(
@@ -142,15 +144,15 @@ class HistoryItem extends StatelessWidget {
                             if (hasDuration)
                               PBadge(
                                 text: item.progress == -1
-                                    ? '已看完'
+                                    ? context.l10n.videoStatusWatched
                                     : '${DurationUtils.formatDuration(item.progress)}/${DurationUtils.formatDuration(item.duration)}',
                                 right: 6.0,
                                 bottom: 8.0,
                                 type: PBadgeType.gray,
                               ),
                             if (item.isFav == 1)
-                              const PBadge(
-                                text: '已收藏',
+                              PBadge(
+                                text: context.l10n.commonFavorited,
                                 top: 6.0,
                                 right: 6.0,
                                 type: PBadgeType.gray,
@@ -192,7 +194,7 @@ class HistoryItem extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  content(theme),
+                  content(context, theme),
                 ],
               ),
             ),
@@ -203,7 +205,7 @@ class HistoryItem extends StatelessWidget {
               height: 29,
               child: PopupMenuButton(
                 padding: EdgeInsets.zero,
-                tooltip: '功能菜单',
+                tooltip: context.l10n.commonActionsMenu,
                 icon: Icon(
                   Icons.more_vert_outlined,
                   color: theme.colorScheme.outline,
@@ -224,7 +226,7 @@ class HistoryItem extends StatelessWidget {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            '访问：${item.authorName}',
+                            context.l10n.videoVisitUploader(item.authorName!),
                             style: const TextStyle(fontSize: 13),
                           ),
                         ],
@@ -239,22 +241,28 @@ class HistoryItem extends StatelessWidget {
                       onTap: () =>
                           UserHttp.toViewLater(bvid: item.history.bvid),
                       height: 38,
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.watch_later_outlined, size: 16),
-                          SizedBox(width: 6),
-                          Text('稍后再看', style: TextStyle(fontSize: 13)),
+                          const Icon(Icons.watch_later_outlined, size: 16),
+                          const SizedBox(width: 6),
+                          Text(
+                            context.l10n.mineWatchLater,
+                            style: const TextStyle(fontSize: 13),
+                          ),
                         ],
                       ),
                     ),
                   PopupMenuItem(
                     onTap: () => onDelete(item.kid!, business!),
                     height: 38,
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.close_outlined, size: 16),
-                        SizedBox(width: 6),
-                        Text('删除记录', style: TextStyle(fontSize: 13)),
+                        const Icon(Icons.close_outlined, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          context.l10n.historyDeleteRecord,
+                          style: const TextStyle(fontSize: 13),
+                        ),
                       ],
                     ),
                   ),
@@ -267,7 +275,7 @@ class HistoryItem extends StatelessWidget {
     );
   }
 
-  Widget content(ThemeData theme) {
+  Widget content(BuildContext context, ThemeData theme) {
     return Expanded(
       child: Column(
         spacing: 2,
@@ -286,7 +294,7 @@ class HistoryItem extends StatelessWidget {
           if (item.history.business == 'pgc' &&
               item.showTitle?.isNotEmpty == true)
             Text(
-              item.showTitle!,
+              context.l10n.localizedEpisodeTitle(item.showTitle!),
               style: TextStyle(
                 fontSize: 13,
                 color: theme.colorScheme.outline,

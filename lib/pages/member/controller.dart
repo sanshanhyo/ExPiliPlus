@@ -15,6 +15,7 @@ import 'package:ex_piliplus/models_new/space/space/setting.dart';
 import 'package:ex_piliplus/models_new/space/space/tab2.dart';
 import 'package:ex_piliplus/pages/common/common_data_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/nested_scroll_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
@@ -137,7 +138,16 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
             return item.param == data.defaultTab;
           });
         }
-        tabs = tab2!.map((item) => Tab(text: item.title ?? '')).toList();
+        final l10n = Get.context!.l10n;
+        tabs = tab2!
+            .map(
+              (item) => Tab(
+                text: MemberTabType.values
+                    .firstWhere((type) => type.name == item.param)
+                    .localizedTitle(l10n),
+              ),
+            )
+            .toList();
         tabController?.dispose();
         tabController = TabController(
           vsync: this,
@@ -155,15 +165,16 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
 
   @override
   bool handleError(String? errMsg) {
-    tab2 = const [
-      SpaceTab2(title: '动态', param: 'dynamic'),
+    final l10n = Get.context!.l10n;
+    tab2 = [
+      SpaceTab2(title: l10n.memberTabFeed, param: 'dynamic'),
       SpaceTab2(
-        title: '投稿',
+        title: l10n.memberTabUploads,
         param: 'contribute',
-        items: [SpaceTab2Item(title: '视频', param: 'video')],
+        items: [SpaceTab2Item(title: l10n.commonVideos, param: 'video')],
       ),
-      SpaceTab2(title: '收藏', param: 'favorite'),
-      SpaceTab2(title: '追番', param: 'bangumi'),
+      SpaceTab2(title: l10n.memberTabFavorites, param: 'favorite'),
+      SpaceTab2(title: l10n.memberTabAnime, param: 'bangumi'),
     ];
     tabs = tab2!.map((item) => Tab(text: item.title)).toList();
     tabController?.dispose();
@@ -184,19 +195,23 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
 
   void blockUser(BuildContext context) {
     if (!account.isLogin) {
-      SmartDialog.showToast('账号未登录');
+      SmartDialog.showToast(context.l10n.accountPleaseSignIn);
       return;
     }
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('提示'),
-        content: Text(relation.value != 128 ? '确定拉黑UP主?' : '从黑名单移除UP主'),
+        title: Text(context.l10n.commonNotice),
+        content: Text(
+          relation.value != 128
+              ? context.l10n.memberBlockConfirm
+              : context.l10n.memberUnblockConfirm,
+        ),
         actions: [
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '点错了',
+              context.l10n.commonCancel,
               style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
           ),
@@ -205,7 +220,7 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
               Get.back();
               _onBlock();
             },
-            child: const Text('确认'),
+            child: Text(context.l10n.commonConfirm),
           ),
         ],
       ),
@@ -235,7 +250,7 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
       _onBlock();
     } else {
       if (!account.isLogin) {
-        SmartDialog.showToast('账号未登录');
+        SmartDialog.showToast(context.l10n.accountPleaseSignIn);
         return;
       }
       RequestUtils.actionRelationMod(
@@ -260,7 +275,7 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
       if (relation.value == 4) {
         relation.value = 2;
       }
-      SmartDialog.showToast('移除成功');
+      SmartDialog.showToast(Get.context!.l10n.memberFollowerRemoved);
     } else {
       res.toast();
     }
@@ -275,7 +290,7 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
   Future<void> vipExpAdd() async {
     final res = await UserHttp.vipExpAdd();
     if (res.isSuccess) {
-      SmartDialog.showToast('领取成功');
+      SmartDialog.showToast(Get.context!.l10n.memberPremiumRewardClaimed);
     } else {
       res.toast();
     }
@@ -299,7 +314,9 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
 
       final count = response.page?.count ?? 0;
       if (count == 0) {
-        await SmartDialog.showToast('该UP主暂无可播放视频');
+        await SmartDialog.showToast(
+          Get.context!.l10n.memberNoPlayableVideos,
+        );
         return;
       }
 
@@ -319,7 +336,9 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
 
       final videos = result.data.list?.vlist;
       if (videos == null || videos.isEmpty) {
-        await SmartDialog.showToast('该UP主暂无可播放视频');
+        await SmartDialog.showToast(
+          Get.context!.l10n.memberNoPlayableVideos,
+        );
         return;
       }
       final video = videos[min(randomIndex % pageSize, videos.length - 1)];
@@ -347,10 +366,14 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
           dimension: playInfo?.dimension,
         );
       } else {
-        await SmartDialog.showToast('无法获取视频播放信息');
+        await SmartDialog.showToast(
+          Get.context!.l10n.memberVideoPlayInfoUnavailable,
+        );
       }
     } catch (e) {
-      await SmartDialog.showToast('随机视频获取失败: $e');
+      await SmartDialog.showToast(
+        Get.context!.l10n.memberRandomVideoFailed(e.toString()),
+      );
     } finally {
       randomVideoLoading.value = false;
     }

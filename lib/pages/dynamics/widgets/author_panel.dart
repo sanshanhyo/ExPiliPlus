@@ -19,6 +19,7 @@ import 'package:ex_piliplus/utils/color_utils.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
@@ -72,7 +73,7 @@ class AuthorPanel extends StatelessWidget {
     Widget? pubTs;
     if (pubTime != null) {
       pubTs = Text(
-        '$pubTime${moduleAuthor.pubAction != null ? ' ${moduleAuthor.pubAction}' : ''}',
+        '$pubTime${moduleAuthor.pubAction != null ? ' ${context.l10n.localizedDynamicAction(moduleAuthor.pubAction!)}' : ''}',
         style: TextStyle(
           color: theme.colorScheme.outline,
           fontSize: theme.textTheme.labelSmall!.fontSize,
@@ -85,7 +86,7 @@ class AuthorPanel extends StatelessWidget {
           children: [
             pubTs,
             Text(
-              badgeText,
+              context.l10n.localizedDynamicAction(badgeText),
               style: TextStyle(
                 color: theme.colorScheme.secondary,
                 fontSize: theme.textTheme.labelSmall!.fontSize,
@@ -166,7 +167,7 @@ class AuthorPanel extends StatelessWidget {
               border: .all(width: 1.25, color: theme.colorScheme.primary),
             ),
             child: Text(
-              moduleTagText,
+              context.l10n.localizedDynamicAction(moduleTagText),
               style: TextStyle(
                 height: 1,
                 fontSize: 12,

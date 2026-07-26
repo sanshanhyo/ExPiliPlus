@@ -7,6 +7,7 @@ import 'package:ex_piliplus/models_new/sub/sub_detail/media.dart';
 import 'package:ex_piliplus/pages/subscription_detail/controller.dart';
 import 'package:ex_piliplus/pages/subscription_detail/widget/sub_video_card.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +147,9 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
             style: theme.textTheme.titleMedium,
           ),
           Text(
-            '共${info.mediaCount}条视频',
+            context.l10n.subscriptionTotalVideos(
+              NumUtils.numFormat(info.mediaCount),
+            ),
             style: theme.textTheme.labelMedium,
           ),
         ],
@@ -195,10 +198,19 @@ class _SubDetailPageState extends State<SubDetailPage> with GridMixin {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text('共${info.mediaCount}条视频', style: style),
+                    Text(
+                      context.l10n.subscriptionTotalVideos(
+                        NumUtils.numFormat(info.mediaCount),
+                      ),
+                      style: style,
+                    ),
                     const SizedBox(height: 4),
                     Text(
-                      '${NumUtils.numFormat(info.viewCount ?? info.cntInfo?.play)}次播放',
+                      context.l10n.subscriptionPlayCount(
+                        NumUtils.numFormat(
+                          info.viewCount ?? info.cntInfo?.play,
+                        ),
+                      ),
                       style: style,
                     ),
                   ],

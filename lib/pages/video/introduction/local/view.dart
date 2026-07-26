@@ -9,6 +9,8 @@ import 'package:ex_piliplus/models_new/download/bili_download_entry_info.dart';
 import 'package:ex_piliplus/pages/video/introduction/local/controller.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -160,7 +162,7 @@ class _LocalIntroPanelState extends State<LocalIntroPanel>
                                 ),
                             if (entry.ep?.showTitle case final showTitle?)
                               Text(
-                                showTitle,
+                                context.l10n.localizedEpisodeTitle(showTitle),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

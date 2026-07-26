@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/button/icon_button.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/selection_text.dart';
 import 'package:ex_piliplus/http/user.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ void imageSaveDialog({
                   width: 30,
                   height: 30,
                   child: IconButton(
-                    tooltip: '关闭',
+                    tooltip: context.l10n.commonClose,
                     style: IconButton.styleFrom(
                       padding: .zero,
                       backgroundColor: Colors.black.withValues(alpha: 0.3),
@@ -81,7 +82,7 @@ void imageSaveDialog({
                   if (aid != null || bvid != null)
                     iconButton(
                       iconSize: iconSize,
-                      tooltip: '稍后再看',
+                      tooltip: context.l10n.mineWatchLater,
                       onPressed: () => {
                         SmartDialog.dismiss(),
                         UserHttp.toViewLater(aid: aid, bvid: bvid),
@@ -92,7 +93,7 @@ void imageSaveDialog({
                     if (PlatformUtils.isMobile)
                       iconButton(
                         iconSize: iconSize,
-                        tooltip: '分享',
+                        tooltip: context.l10n.commonShare,
                         onPressed: () {
                           SmartDialog.dismiss();
                           ImageUtils.onShareImg(cover);
@@ -101,7 +102,7 @@ void imageSaveDialog({
                       ),
                     iconButton(
                       iconSize: iconSize,
-                      tooltip: '保存封面图',
+                      tooltip: context.l10n.videoSaveCover,
                       onPressed: () async {
                         bool saveStatus = await ImageUtils.downloadImg([cover]);
                         if (saveStatus) {

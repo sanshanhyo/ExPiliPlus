@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/init.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/main.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -108,10 +109,10 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
     final response = (config as Success<String>).response;
 
     _linuxWebview = await WebviewWindow.create(
-      configuration: const CreateConfiguration(
+      configuration: CreateConfiguration(
         windowWidth: 300,
         windowHeight: 400,
-        title: "验证码",
+        title: Get.context!.l10n.loginVerificationTitle,
       ),
     );
 
@@ -180,21 +181,21 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
   Widget build(BuildContext context) {
     if (Platform.isLinux) {
       return AlertDialog(
-        title: const Text('验证码'),
+        title: Text(context.l10n.loginVerificationTitle),
         content: SizedBox(
           width: 300,
           height: 400,
           child: Center(
             child: _linuxWebviewLoading
                 ? const CircularProgressIndicator()
-                : const Text('请在弹出的新窗口中完成验证'),
+                : Text(context.l10n.loginCompleteVerificationWindow),
           ),
         ),
         actions: [
           TextButton(
             onPressed: Get.back,
             child: Text(
-              '取消',
+              context.l10n.commonCancel,
               style: TextStyle(color: ColorScheme.of(context).outline),
             ),
           ),
@@ -284,7 +285,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
           child: IconButton(
             icon: const Icon(Icons.close),
             onPressed: Get.back,
-            tooltip: '关闭',
+            tooltip: context.l10n.commonClose,
           ),
         ),
       ],

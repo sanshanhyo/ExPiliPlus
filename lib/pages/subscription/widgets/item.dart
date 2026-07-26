@@ -4,6 +4,8 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/sub/sub/list.dart';
 import 'package:ex_piliplus/pages/subscription_detail/view.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +25,9 @@ class SubItem extends StatelessWidget {
   Widget build(BuildContext context) {
     String heroTag = Utils.makeHeroTag(item.id);
     final type = switch (item.type) {
-      11 => '收藏夹',
-      21 => '合集',
-      _ => '其它(${item.type})',
+      11 => context.l10n.subscriptionFolder,
+      21 => context.l10n.subscriptionCollection,
+      _ => context.l10n.subscriptionOtherType('${item.type}'),
     };
     void onLongPress() => imageSaveDialog(
       title: item.title,
@@ -36,7 +38,7 @@ class SubItem extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (item.state == 1) {
-            SmartDialog.showToast('该$type已失效');
+            SmartDialog.showToast(context.l10n.subscriptionUnavailable(type));
             return;
           }
           if (item.type == 11) {
@@ -123,7 +125,7 @@ class SubItem extends StatelessWidget {
                 ),
               ),
               Text(
-                'UP主: ${item.upper!.name!}',
+                context.l10n.subscriptionUploader(item.upper!.name!),
                 textAlign: TextAlign.start,
                 style: style,
                 maxLines: 1,
@@ -131,7 +133,9 @@ class SubItem extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${item.mediaCount}个视频',
+                context.l10n.subscriptionVideoCount(
+                  NumUtils.numFormat(item.mediaCount),
+                ),
                 textAlign: TextAlign.start,
                 style: style,
               ),

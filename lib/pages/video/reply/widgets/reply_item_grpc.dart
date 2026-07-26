@@ -38,6 +38,7 @@ import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
@@ -235,7 +236,7 @@ class ReplyItemGrpc extends StatelessWidget {
                     ),
                     if (replyItem.replyControl.hasLocation())
                       Text(
-                        ' • ${replyItem.replyControl.location}',
+                        ' • ${context.l10n.localizedReplyLocation(replyItem.replyControl.location)}',
                         style: TextStyle(
                           fontSize: 11,
                           color: colorScheme.outline,
@@ -419,6 +420,7 @@ class ReplyItemGrpc extends StatelessWidget {
     ButtonStyle buttonStyle,
   ) {
     late bool isProcessing = false;
+    final l10n = context.l10n;
     final color = replyControl.showTranslation
         ? colorScheme.primary
         : colorScheme.outline.withValues(alpha: 0.8);
@@ -454,12 +456,12 @@ class ReplyItemGrpc extends StatelessWidget {
                   (context as Element).markNeedsBuild();
                 }
               } else {
-                SmartDialog.showToast(context.l10n.replyTranslationEmpty);
+                SmartDialog.showToast(l10n.replyTranslationEmpty);
               }
             } else if (res case Error(:final errMsg)) {
               SmartDialog.showToast(
-                context.l10n.replyTranslationFailed(
-                  errMsg ?? context.l10n.commonUnknown,
+                l10n.replyTranslationFailed(
+                  errMsg ?? l10n.commonUnknown,
                 ),
               );
             }
@@ -1087,19 +1089,19 @@ class ReplyItemGrpc extends StatelessWidget {
           if (ownerMid == upMid || ownerMid == item.member.mid)
             ListTile(
               onTap: () async {
+                final l10n = context.l10n;
                 Get.back();
                 bool? isDelete = await showDialog<bool>(
                   context: context,
                   builder: (context) {
                     final colorScheme = ColorScheme.of(context);
                     return AlertDialog(
-                      title: Text(context.l10n.replyDeleteComment),
+                      title: Text(l10n.replyDeleteComment),
                       content: Text.rich(
                         TextSpan(
                           children: [
                             TextSpan(
-                              text:
-                                  '${context.l10n.replyConfirmDeleteComment}\n\n',
+                              text: '${l10n.replyConfirmDeleteComment}\n\n',
                             ),
                             if (ownerMid != item.member.mid.toInt()) ...[
                               TextSpan(
@@ -1118,7 +1120,7 @@ class ReplyItemGrpc extends StatelessWidget {
                         TextButton(
                           onPressed: () => Get.back(result: false),
                           child: Text(
-                            context.l10n.commonCancel,
+                            l10n.commonCancel,
                             style: TextStyle(
                               color: colorScheme.outline,
                             ),
@@ -1126,7 +1128,7 @@ class ReplyItemGrpc extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () => Get.back(result: true),
-                          child: Text(context.l10n.commonConfirm),
+                          child: Text(l10n.commonConfirm),
                         ),
                       ],
                     );
@@ -1135,7 +1137,7 @@ class ReplyItemGrpc extends StatelessWidget {
                 if (isDelete == null || !isDelete) {
                   return;
                 }
-                SmartDialog.showLoading(msg: context.l10n.commonDeleting);
+                SmartDialog.showLoading(msg: l10n.commonDeleting);
                 final res = await VideoHttp.replyDel(
                   type: item.type.toInt(),
                   oid: item.oid.toInt(),
@@ -1143,11 +1145,11 @@ class ReplyItemGrpc extends StatelessWidget {
                 );
                 SmartDialog.dismiss();
                 if (res.isSuccess) {
-                  SmartDialog.showToast(context.l10n.commonDeleteSucceeded);
+                  SmartDialog.showToast(l10n.commonDeleteSucceeded);
                   onDelete();
                 } else {
                   SmartDialog.showToast(
-                    context.l10n.commonDeleteFailed(res.toString()),
+                    l10n.commonDeleteFailed(res.toString()),
                   );
                 }
               },

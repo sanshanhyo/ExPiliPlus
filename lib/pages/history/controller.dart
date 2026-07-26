@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/common/multi_select/multi_select_controller.da
 import 'package:ex_piliplus/pages/history/base_controller.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -100,12 +101,13 @@ class HistoryController
     if (viewedList != null && viewedList.isNotEmpty) {
       _onDelete(viewedList);
     } else {
-      SmartDialog.showToast('无已看记录');
+      SmartDialog.showToast(Get.context!.l10n.historyNoWatchedItems);
     }
   }
 
   Future<void> _onDelete(Set<HistoryItemModel> removeList) async {
-    SmartDialog.showLoading(msg: '请求中');
+    final l10n = Get.context!.l10n;
+    SmartDialog.showLoading(msg: l10n.commonLoading);
     final res = await UserHttp.delHistory(
       removeList
           .map((item) => '${item.history.business}_${item.kid}')
@@ -115,7 +117,7 @@ class HistoryController
     SmartDialog.dismiss();
     if (res.isSuccess) {
       afterDelete(removeList);
-      SmartDialog.showToast('已删除');
+      SmartDialog.showToast(l10n.commonDeleteSucceeded);
     } else {
       res.toast();
     }
@@ -124,10 +126,11 @@ class HistoryController
   // 删除选中的记录
   @override
   void onRemove() {
+    final l10n = Get.context!.l10n;
     showConfirmDialog(
       context: Get.context!,
-      title: const Text('提示'),
-      content: const Text('确认删除所选历史记录吗？'),
+      title: Text(l10n.commonNotice),
+      content: Text(l10n.historyDeleteSelectedConfirm),
       onConfirm: () => _onDelete(allChecked.toSet()),
     );
   }

@@ -33,6 +33,7 @@ import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
@@ -236,7 +237,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               ),
             ),
           ),
-          TextSpan(text: argueMsg),
+          TextSpan(text: context.l10n.localizedVideoNotice(argueMsg)),
         ],
       ),
       style: TextStyle(fontSize: 12, color: colorScheme.outline),
@@ -575,6 +576,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                     style: TextStyle(color: colorScheme.primary),
                     recognizer: NoDeadlineTapGestureRecognizer()
                       ..onTap = () async {
+                        final l10n = context.l10n;
                         if (videoDetailCtr
                             .plPlayerController
                             .enableSponsorBlock) {
@@ -604,18 +606,16 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                               final confirmed = await showConfirmDialog(
                                 context: context,
                                 title: Text(
-                                  context.l10n.videoSponsorBlockSourceSync,
+                                  l10n.videoSponsorBlockSourceSync,
                                 ),
                                 content: Text(
                                   hasPortVideo
-                                      ? context.l10n
-                                            .videoSponsorBlockAlreadyLinked(
-                                              ytbId,
-                                            )
-                                      : context.l10n
-                                            .videoSponsorBlockConfirmLink(
-                                              ytbId,
-                                            ),
+                                      ? l10n.videoSponsorBlockAlreadyLinked(
+                                          ytbId,
+                                        )
+                                      : l10n.videoSponsorBlockConfirmLink(
+                                          ytbId,
+                                        ),
                                 ),
                               );
                               if (!hasPortVideo && confirmed) {
@@ -627,13 +627,10 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                                 );
                                 SmartDialog.showToast(
                                   res.isSuccess
-                                      ? context
-                                            .l10n
-                                            .videoSponsorBlockLinkSucceeded
-                                      : context.l10n
-                                            .videoSponsorBlockLinkFailed(
-                                              '$res',
-                                            ),
+                                      ? l10n.videoSponsorBlockLinkSucceeded
+                                      : l10n.videoSponsorBlockLinkFailed(
+                                          '$res',
+                                        ),
                                 );
                                 return;
                               }
@@ -1003,6 +1000,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
       child: GestureDetector(
         behavior: .opaque,
         onTap: () async {
+          final l10n = context.l10n;
           if (introController.aiConclusionResult == null) {
             await introController.aiConclusion();
           }
@@ -1014,7 +1012,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
               widget.showAiBottomSheet();
             } else {
               SmartDialog.showToast(
-                context.l10n.videoAiSummaryNotSupported,
+                l10n.videoAiSummaryNotSupported,
               );
             }
           }

@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/common/multi_select/base.dart'
 import 'package:ex_piliplus/pages/download/controller.dart';
 import 'package:ex_piliplus/pages/download/detail/widgets/item.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:collection/collection.dart';
@@ -103,6 +104,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                   visualDensity: VisualDensity.compact,
                 ),
                 onPressed: () async {
+                  final l10n = context.l10n;
                   final futures = allChecked
                       .map(
                         (e) => _downloadService.downloadDanmaku(
@@ -114,13 +116,13 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                   handleSelect();
                   final res = await Future.wait(futures);
                   if (res.every((e) => e)) {
-                    SmartDialog.showToast('更新成功');
+                    SmartDialog.showToast(l10n.commonUpdateSucceeded);
                   } else {
-                    SmartDialog.showToast('更新失败');
+                    SmartDialog.showToast(l10n.commonUpdateFailed);
                   }
                 },
                 child: Text(
-                  '更新',
+                  context.l10n.commonUpdate,
                   style: TextStyle(color: colorScheme.onSurface),
                 ),
               ),
@@ -129,7 +131,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
               title: Text(widget.title),
               actions: [
                 IconButton(
-                  tooltip: '多选',
+                  tooltip: context.l10n.commonMultiSelect,
                   onPressed: () {
                     if (enableMultiSelect) {
                       handleSelect();

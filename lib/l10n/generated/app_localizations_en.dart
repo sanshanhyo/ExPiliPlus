@@ -255,10 +255,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mineDownloads => 'Downloads';
 
   @override
-  String get mineWatchHistory => 'Watch history';
+  String get mineWatchHistory => 'History';
 
   @override
-  String get mineSubscriptions => 'Subscriptions';
+  String get mineSubscriptions => 'Subscription';
 
   @override
   String get mineWatchLater => 'Watch later';
@@ -4830,4 +4830,562 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get messagesWebLink => 'Web link';
+
+  @override
+  String get accountSwitchAnonymousHint => 'Use anonymous mode when mid is 0';
+
+  @override
+  String get accountSwitchDetailed => 'Detailed';
+
+  @override
+  String get accountSwitchQuick => 'Quick';
+
+  @override
+  String get accountSignInFirst => 'Sign in first';
+
+  @override
+  String replyIpLocation(Object region) {
+    return 'IP location: $region';
+  }
+
+  @override
+  String get videoPersonalOpinionDisclaimer =>
+      'Personal opinion; for reference only';
+
+  @override
+  String videoAllEpisodes(Object count) {
+    return 'All $count episodes';
+  }
+
+  @override
+  String get feedPostedVideo => 'posted a video';
+
+  @override
+  String get feedCoCreated => 'co-created with others';
+
+  @override
+  String get feedLikesAndReposts => 'Likes & reposts';
+
+  @override
+  String get feedSaySomething => 'Say something…';
+
+  @override
+  String get feedShareToFeed => 'Share to Feed';
+
+  @override
+  String get feedRepostFeed => 'Repost';
+
+  @override
+  String get feedPublishNow => 'Post now';
+
+  @override
+  String get feedRepostNow => 'Repost now';
+
+  @override
+  String get feedPublish => 'Post';
+
+  @override
+  String get feedRepostSucceeded => 'Reposted';
+
+  @override
+  String get commonCopied => 'Copied';
+
+  @override
+  String get commonExport => 'Export';
+
+  @override
+  String get commonNoData => 'No data';
+
+  @override
+  String get commonTapToRetry => 'Tap to retry';
+
+  @override
+  String get watchLaterAdded => 'Added to Watch later';
+
+  @override
+  String get watchLaterRemoved => 'Removed from Watch later';
+
+  @override
+  String get myCommentsTitle => 'My comments';
+
+  @override
+  String get subscriptionFolder => 'Favorites folder';
+
+  @override
+  String get subscriptionCollection => 'Collection';
+
+  @override
+  String subscriptionOtherType(Object type) {
+    return 'Other ($type)';
+  }
+
+  @override
+  String subscriptionUnavailable(Object type) {
+    return 'This $type is unavailable';
+  }
+
+  @override
+  String subscriptionUploader(Object name) {
+    return 'Uploader: $name';
+  }
+
+  @override
+  String subscriptionVideoCount(Object count) {
+    return '$count videos';
+  }
+
+  @override
+  String subscriptionTotalVideos(Object count) {
+    return '$count videos';
+  }
+
+  @override
+  String subscriptionPlayCount(Object count) {
+    return '$count views';
+  }
+
+  @override
+  String get subscriptionCancelConfirm => 'Cancel this subscription?';
+
+  @override
+  String get subscriptionCanceled => 'Subscription canceled';
+
+  @override
+  String get commonSaving => 'Saving…';
+
+  @override
+  String get commonSaved => 'Saved';
+
+  @override
+  String get commonSaveFailed => 'Couldn\'t save';
+
+  @override
+  String commonSaveFailedWithError(Object error) {
+    return 'Couldn\'t save: $error';
+  }
+
+  @override
+  String get commonSaveCanceled => 'Save canceled';
+
+  @override
+  String get commonDownloadCanceled => 'Download canceled';
+
+  @override
+  String get commonDownloading => 'Downloading…';
+
+  @override
+  String get commonDownloadingOriginal => 'Downloading original image…';
+
+  @override
+  String get commonFileNotFound => 'File not found';
+
+  @override
+  String get permissionStorageRequired => 'Storage permission is required';
+
+  @override
+  String get permissionOpenSettings => 'Open settings';
+
+  @override
+  String get laterDeleteSelectedConfirm =>
+      'Remove the selected Watch later items?';
+
+  @override
+  String get laterRemoveVideoConfirm => 'Remove this video from Watch later?';
+
+  @override
+  String get laterRemoveConfirmed => 'Remove';
+
+  @override
+  String get laterClearInvalidConfirm => 'Clear unavailable videos?';
+
+  @override
+  String get laterClearWatchedConfirm => 'Clear watched videos?';
+
+  @override
+  String get laterClearAllConfirm => 'Clear the Watch later list?';
+
+  @override
+  String get laterCleared => 'Watch later cleared';
+
+  @override
+  String get videoPremiumRequired => 'Premium is required';
+
+  @override
+  String videoSwitchingTo(Object title) {
+    return 'Switching to: $title';
+  }
+
+  @override
+  String get shareTo => 'Share with';
+
+  @override
+  String get shareChooseRecipients => 'Choose at least one recipient';
+
+  @override
+  String get shareSucceeded => 'Shared';
+
+  @override
+  String get shareFailed => 'Couldn\'t share';
+
+  @override
+  String get sharePartiallyFailed => 'Some items couldn\'t be shared';
+
+  @override
+  String get followCreateGroup => 'New group';
+
+  @override
+  String get followGroupCreated => 'Group created';
+
+  @override
+  String get followSucceeded => 'Following';
+
+  @override
+  String get followAddPriority => 'Add to priority following';
+
+  @override
+  String get followRemovePriority => 'Remove from priority following';
+
+  @override
+  String get followPriorityAdded => 'Added to priority following';
+
+  @override
+  String get followPriorityRemoved => 'Removed from priority following';
+
+  @override
+  String get followSetGroup => 'Set group';
+
+  @override
+  String get followUnfollow => 'Unfollow';
+
+  @override
+  String get followUnfollowSucceeded => 'Unfollowed';
+
+  @override
+  String get commonCopyTo => 'Copy to';
+
+  @override
+  String get commonMoveTo => 'Move to';
+
+  @override
+  String get commonMoved => 'Moved';
+
+  @override
+  String get feedAppeal => 'Appeal';
+
+  @override
+  String get feedCheckResult => 'Post check result';
+
+  @override
+  String get feedCheckPassed => 'Your post is publicly visible.';
+
+  @override
+  String get feedCheckShadowBanned => 'Your post may only be visible to you.';
+
+  @override
+  String feedPostContent(Object content) {
+    return 'Post: $content';
+  }
+
+  @override
+  String get commonMissingParameters => 'Required parameters are missing';
+
+  @override
+  String get videoCoinSucceeded => 'Coined';
+
+  @override
+  String get historyNoWatchedItems => 'No watched items';
+
+  @override
+  String get historyDeleteSelectedConfirm =>
+      'Delete the selected history items?';
+
+  @override
+  String get historyClearConfirm => 'Clear all watch history?';
+
+  @override
+  String get historyCleared => 'Watch history cleared';
+
+  @override
+  String get historyConfirmClear => 'Clear history';
+
+  @override
+  String get historyPauseConfirm => 'Pause watch history?';
+
+  @override
+  String get historyResumeConfirm => 'Resume watch history?';
+
+  @override
+  String get historyPaused => 'Watch history paused';
+
+  @override
+  String get historyResumed => 'Watch history resumed';
+
+  @override
+  String get historyConfirmPause => 'Pause';
+
+  @override
+  String get historyConfirmResume => 'Resume';
+
+  @override
+  String get commonActionsMenu => 'Actions';
+
+  @override
+  String get commonFavorited => 'Favorited';
+
+  @override
+  String get liveNotStarted => 'The live stream hasn\'t started';
+
+  @override
+  String get historyDeleteRecord => 'Delete from history';
+
+  @override
+  String get loginTitle => 'Sign in';
+
+  @override
+  String get loginWithQr => 'Scan with the official bilibili app';
+
+  @override
+  String loginQrExpiresIn(Object seconds) {
+    return 'Expires in ${seconds}s';
+  }
+
+  @override
+  String get loginRefreshQr => 'Refresh QR code';
+
+  @override
+  String get loginGeneratingScreenshot => 'Creating image…';
+
+  @override
+  String get loginSaveToGallery => 'Save to Photos';
+
+  @override
+  String get loginOpenInAnotherApp => 'Open in another app';
+
+  @override
+  String get loginQrCopiedHint =>
+      'Copied. Send it in a bilibili message from a signed-in app, then open the sent link.';
+
+  @override
+  String loginTrustedSourceNotice(Object appName) {
+    return 'Only install $appName from its open-source repository or another trusted source.';
+  }
+
+  @override
+  String get loginWithCookie => 'Sign in with Cookie';
+
+  @override
+  String get loginCookieLimit =>
+      'Features that require app APIs won\'t be available';
+
+  @override
+  String get loginWithPassword => 'Sign in with password';
+
+  @override
+  String get loginAccount => 'Account';
+
+  @override
+  String get loginEmailOrPhone => 'Email or phone';
+
+  @override
+  String get loginPassword => 'Password';
+
+  @override
+  String get loginShowPassword => 'Show password';
+
+  @override
+  String get loginForgotPasswordQuestion => 'Forgot password?';
+
+  @override
+  String get loginForgotPasswordHint =>
+      'Try QR code or SMS sign-in, or choose a recovery page.';
+
+  @override
+  String get loginRecoverPasswordMobile => 'Recover password (mobile)';
+
+  @override
+  String get loginRecoverPasswordDesktop => 'Recover password (desktop)';
+
+  @override
+  String loginPasswordSecurityNotice(Object appName) {
+    return 'Following bilibili\'s official sign-in protocol, your password is salted and encrypted locally before transmission. The salt and public key are provided by bilibili and RSA/ECB/PKCS1Padding is used. Your credentials are only used for sign-in and aren\'t stored; only the resulting sign-in token is stored locally.\nOnly install $appName from its open-source repository or another trusted source.';
+  }
+
+  @override
+  String get loginWithSms => 'Sign in with SMS code';
+
+  @override
+  String loginCountryCodeTooltip(Object code, Object name) {
+    return 'Choose a country calling code. Current: $name (+$code)';
+  }
+
+  @override
+  String get loginPhoneNumber => 'Phone number';
+
+  @override
+  String get loginVerificationCode => 'Verification code';
+
+  @override
+  String loginWaitSeconds(Object seconds) {
+    return 'Wait ${seconds}s';
+  }
+
+  @override
+  String get loginGetVerificationCode => 'Get code';
+
+  @override
+  String loginSmsPrivacyNotice(Object appName) {
+    return 'Your phone number is only sent to bilibili\'s official SMS and sign-in APIs and isn\'t stored. Only the resulting sign-in token is stored locally.\nOnly install $appName from its open-source repository or another trusted source.';
+  }
+
+  @override
+  String get loginPasswordTab => 'Password';
+
+  @override
+  String get loginSmsTab => 'SMS';
+
+  @override
+  String get loginQrTab => 'QR code';
+
+  @override
+  String get loginQrExpired => 'QR code expired. Refresh it.';
+
+  @override
+  String get loginQrSucceeded => 'QR code scanned';
+
+  @override
+  String get loginVerificationSucceeded => 'Verified';
+
+  @override
+  String get loginCookieRequired => 'Enter a Cookie';
+
+  @override
+  String get loginSucceeded => 'Signed in';
+
+  @override
+  String loginFailedWithError(Object error) {
+    return 'Sign-in failed: $error';
+  }
+
+  @override
+  String get loginSessionExpired =>
+      'Your bilibili sign-in has expired. Sign in again.';
+
+  @override
+  String get loginUserInfoFailed =>
+      'Couldn\'t get bilibili account information. Try again from account management.';
+
+  @override
+  String get loginCredentialsRequired => 'Enter your account and password';
+
+  @override
+  String loginNoDataReturned(Object message) {
+    return 'Sign-in returned no data: $message';
+  }
+
+  @override
+  String loginTryAnotherMethod(Object details) {
+    return 'Try another sign-in method.\n$details';
+  }
+
+  @override
+  String get loginPhoneVerificationUnavailable =>
+      'This account can\'t use phone verification. Try another sign-in method.';
+
+  @override
+  String get loginPhoneVerificationRequired => 'Phone verification is required';
+
+  @override
+  String get loginPhoneUnavailable => 'Couldn\'t get the phone number';
+
+  @override
+  String get loginEnterVerificationCode => 'Enter the SMS code';
+
+  @override
+  String get loginSendVerificationCode => 'Send code';
+
+  @override
+  String get loginVerificationCodeSent => 'Verification code sent';
+
+  @override
+  String get loginVerifyingAndSigningIn => 'Verified. Signing in…';
+
+  @override
+  String loginMissingIdentity(Object details) {
+    return 'Sign-in returned no identity information, possibly due to account security controls. Try another method.\n$details';
+  }
+
+  @override
+  String get loginSavingIdentity => 'Saving sign-in information…';
+
+  @override
+  String get loginPhoneRequired => 'Enter a phone number';
+
+  @override
+  String get loginRequestCodeFirst => 'Get a verification code first';
+
+  @override
+  String get loginVerificationCodeRequired => 'Enter the verification code';
+
+  @override
+  String get loginVerificationCodeExpired =>
+      'Verification code expired. Get a new one.';
+
+  @override
+  String get loginSucceededSetAccountMode =>
+      'Signed in. Choose an account mode.';
+
+  @override
+  String get commonServerError => 'Server error';
+
+  @override
+  String get searchSecurityCheckTriggered => 'A security check is required';
+
+  @override
+  String get loginVerificationTitle => 'Verification';
+
+  @override
+  String get loginCompleteVerificationWindow =>
+      'Complete verification in the new window';
+
+  @override
+  String get memberBlockConfirm => 'Block this Uploader?';
+
+  @override
+  String get memberUnblockConfirm => 'Remove this Uploader from blocked users?';
+
+  @override
+  String get memberNoPlayableVideos => 'This Uploader has no playable videos';
+
+  @override
+  String get memberVideoPlayInfoUnavailable =>
+      'Couldn\'t get playback information';
+
+  @override
+  String memberRandomVideoFailed(Object error) {
+    return 'Couldn\'t choose a random video: $error';
+  }
+
+  @override
+  String get memberFollowerRemoved => 'Follower removed';
+
+  @override
+  String get memberPremiumRewardClaimed => 'Reward claimed';
+
+  @override
+  String get memberAddToBlocked => 'Block';
+
+  @override
+  String get memberRemoveFromBlocked => 'Unblock';
+
+  @override
+  String get memberRemoveFollower => 'Remove follower';
+
+  @override
+  String get memberShareUploader => 'Share Uploader';
+
+  @override
+  String get memberShareMyProfile => 'Share my profile';
+
+  @override
+  String get memberAddToHomeScreen => 'Add to Home Screen';
 }

@@ -12,6 +12,7 @@ import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/em.dart';
 import 'package:ex_piliplus/utils/extension/dimension_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -140,11 +141,14 @@ class SearchArchiveGrpc extends StatelessWidget {
                 PopupMenuItem(
                   height: 45,
                   onTap: () => UserHttp.toViewLater(bvid: bvid),
-                  child: const Row(
+                  child: Row(
                     spacing: 6,
                     children: [
-                      Icon(MdiIcons.clockTimeEightOutline, size: 16),
-                      Text('稍后再看', style: TextStyle(fontSize: 13)),
+                      const Icon(MdiIcons.clockTimeEightOutline, size: 16),
+                      Text(
+                        context.l10n.mineWatchLater,
+                        style: const TextStyle(fontSize: 13),
+                      ),
                     ],
                   ),
                 ),

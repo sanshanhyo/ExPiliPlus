@@ -6,6 +6,7 @@ import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/reply_utils.dart';
@@ -45,7 +46,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('我的评论'),
+        title: Text(context.l10n.myCommentsTitle),
         actions: [
           if (kDebugMode)
             IconButton(
@@ -62,12 +63,12 @@ class _MyReplyState extends State<MyReply> with DynMixin {
               icon: const Icon(Icons.clear_all),
             ),
           IconButton(
-            tooltip: '导出',
+            tooltip: context.l10n.commonExport,
             onPressed: _showExportDialog,
             icon: const Icon(Icons.file_upload_outlined),
           ),
           IconButton(
-            tooltip: '导入',
+            tooltip: context.l10n.commonImport,
             onPressed: _showImportDialog,
             icon: const Icon(Icons.file_download_outlined),
           ),
@@ -157,7 +158,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
         children: [
           ListTile(
             dense: true,
-            title: const Text('导出至剪贴板', style: style),
+            title: Text(context.l10n.exportToClipboard, style: style),
             onTap: () {
               Get.back();
               exportToClipBoard(onExport: _onExport);
@@ -165,7 +166,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
           ),
           ListTile(
             dense: true,
-            title: const Text('导出文件至本地', style: style),
+            title: Text(context.l10n.exportToLocalFile, style: style),
             onTap: () {
               Get.back();
               exportToLocalFile(
@@ -201,12 +202,12 @@ class _MyReplyState extends State<MyReply> with DynMixin {
         children: [
           ListTile(
             dense: true,
-            title: const Text('从剪贴板导入', style: style),
+            title: Text(context.l10n.importFromClipboard, style: style),
             onTap: () {
               Get.back();
               importFromClipBoard<List<dynamic>>(
                 context,
-                title: '评论',
+                title: context.l10n.feedComment,
                 onExport: _onExport,
                 onImport: _onImport,
                 showConfirmDialog: false,
@@ -215,7 +216,7 @@ class _MyReplyState extends State<MyReply> with DynMixin {
           ),
           ListTile(
             dense: true,
-            title: const Text('从本地文件导入', style: style),
+            title: Text(context.l10n.importFromLocalFile, style: style),
             onTap: () {
               Get.back();
               importFromLocalFile<List<dynamic>>(context, onImport: _onImport);

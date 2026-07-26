@@ -5,6 +5,7 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/http/init.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
 import 'package:ex_piliplus/utils/extension/file_ext.dart';
@@ -20,11 +21,14 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:live_photo_maker/live_photo_maker.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 
 abstract final class ImageUtils {
+  static AppLocalizations get _l10n => AppLocalizations.of(Get.context!);
+
   static bool silentDownImg = Pref.silentDownImg;
   static final _albumPath = Platform.isAndroid
       ? 'Pictures/${Constants.appName}'
@@ -58,15 +62,15 @@ abstract final class ImageUtils {
         status == PermissionStatus.permanentlyDenied) {
       SmartDialog.show(
         builder: (context) => AlertDialog(
-          title: const Text('提示'),
-          content: const Text('存储权限未授权'),
+          title: Text(_l10n.commonNotice),
+          content: Text(_l10n.permissionStorageRequired),
           actions: [
             TextButton(
               onPressed: () {
                 SmartDialog.dismiss();
                 openAppSettings();
               },
-              child: const Text('去授权'),
+              child: Text(_l10n.permissionOpenSettings),
             ),
           ],
         ),
@@ -98,7 +102,7 @@ abstract final class ImageUtils {
       if (PlatformUtils.isMobile && !await checkPermissionDependOnSdkInt()) {
         return false;
       }
-      if (!silentDownImg) SmartDialog.showLoading(msg: '正在下载');
+      if (!silentDownImg) SmartDialog.showLoading(msg: _l10n.commonDownloading);
 
       String videoName = "video_${Utils.getFileName(liveUrl)}";
       String videoPath = '$tmpDirPath/$videoName';
@@ -110,7 +114,7 @@ abstract final class ImageUtils {
         final imageFile = await CacheManager.manager.getSingleFile(
           url.http2https,
         );
-        if (!silentDownImg) SmartDialog.showLoading(msg: '正在保存');
+        if (!silentDownImg) SmartDialog.showLoading(msg: _l10n.commonSaving);
         bool success = await LivePhotoMaker.create(
           coverImage: imageFile.path,
           imagePath: null,
@@ -119,13 +123,13 @@ abstract final class ImageUtils {
           height: height,
         ).whenComplete(File(videoPath).tryDel);
         if (success) {
-          SmartDialog.showToast(' 已保存 ');
+          SmartDialog.showToast(_l10n.commonSaved);
         } else {
-          SmartDialog.showToast('保存失败');
+          SmartDialog.showToast(_l10n.commonSaveFailed);
           return false;
         }
       } else {
-        if (!silentDownImg) SmartDialog.showLoading(msg: '正在保存');
+        if (!silentDownImg) SmartDialog.showLoading(msg: _l10n.commonSaving);
         await saveFileImg(
           filePath: videoPath,
           fileName: videoName,
@@ -150,7 +154,7 @@ abstract final class ImageUtils {
     if (!silentDownImg) {
       cancelToken = CancelToken();
       SmartDialog.showLoading(
-        msg: '正在下载原图',
+        msg: _l10n.commonDownloadingOriginal,
         clickMaskDismiss: true,
         onDismiss: cancelToken.cancel,
       );
@@ -192,15 +196,17 @@ abstract final class ImageUtils {
         }
       }
       if (cancelToken?.isCancelled == true) {
-        SmartDialog.showToast('已取消下载');
+        SmartDialog.showToast(_l10n.commonDownloadCanceled);
         return false;
       } else {
-        SmartDialog.showToast(success ? ' 已保存 ' : '保存失败');
+        SmartDialog.showToast(
+          success ? _l10n.commonSaved : _l10n.commonSaveFailed,
+        );
       }
       return success;
     } catch (e) {
       if (cancelToken?.isCancelled == true) {
-        SmartDialog.showToast('已取消下载');
+        SmartDialog.showToast(_l10n.commonDownloadCanceled);
       } else {
         SmartDialog.showToast(e.toString());
       }
@@ -255,7 +261,7 @@ abstract final class ImageUtils {
     SaveResult? res;
     fileName += '.$ext';
     if (PlatformUtils.isMobile) {
-      SmartDialog.showLoading(msg: '正在保存');
+      SmartDialog.showLoading(msg: _l10n.commonSaving);
       res = await SaverGallery.saveImage(
         bytes,
         fileName: fileName,
@@ -264,9 +270,11 @@ abstract final class ImageUtils {
       );
       SmartDialog.dismiss();
       if (res.isSuccess) {
-        SmartDialog.showToast(' 已保存 ');
+        SmartDialog.showToast(_l10n.commonSaved);
       } else {
-        SmartDialog.showToast('保存失败，${res.errorMessage}');
+        SmartDialog.showToast(
+          _l10n.commonSaveFailedWithError('${res.errorMessage}'),
+        );
       }
     } else {
       SmartDialog.dismiss();
@@ -276,11 +284,11 @@ abstract final class ImageUtils {
         bytes: Uint8List(0),
       );
       if (savePath == null) {
-        SmartDialog.showToast("取消保存");
+        SmartDialog.showToast(_l10n.commonSaveCanceled);
         return null;
       }
       await File(savePath).writeAsBytes(bytes);
-      SmartDialog.showToast(' 已保存 ');
+      SmartDialog.showToast(_l10n.commonSaved);
       res = SaveResult(true, null);
     }
     return res;
@@ -294,7 +302,7 @@ abstract final class ImageUtils {
   }) async {
     final file = File(filePath);
     if (!file.existsSync()) {
-      SmartDialog.showToast("文件不存在");
+      SmartDialog.showToast(_l10n.commonFileNotFound);
       return;
     }
     SaveResult? res;
@@ -312,7 +320,7 @@ abstract final class ImageUtils {
         bytes: Uint8List(0),
       );
       if (savePath == null) {
-        SmartDialog.showToast("取消保存");
+        SmartDialog.showToast(_l10n.commonSaveCanceled);
         return;
       }
       await file.copy(savePath);
@@ -320,9 +328,11 @@ abstract final class ImageUtils {
     }
     if (needToast) {
       if (res.isSuccess) {
-        SmartDialog.showToast(' 已保存 ');
+        SmartDialog.showToast(_l10n.commonSaved);
       } else {
-        SmartDialog.showToast('保存失败，${res.errorMessage}');
+        SmartDialog.showToast(
+          _l10n.commonSaveFailedWithError('${res.errorMessage}'),
+        );
       }
     }
   }

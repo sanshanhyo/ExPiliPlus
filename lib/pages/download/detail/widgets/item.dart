@@ -16,6 +16,8 @@ import 'package:ex_piliplus/pages/download/downloading/view.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
@@ -55,6 +57,7 @@ class DetailItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final outline = theme.colorScheme.outline;
     final cid = entry.source?.cid ?? entry.pageData?.cid;
     final canDel = onDelete != null;
@@ -71,11 +74,14 @@ class DetailItem extends StatelessWidget {
                     Get.back();
                     showConfirmDialog(
                       context: context,
-                      title: const Text('确定删除该视频？'),
+                      title: Text(context.l10n.downloadConfirmDelete),
                       onConfirm: onDelete,
                     );
                   },
-                  child: const Text('删除', style: TextStyle(fontSize: 14)),
+                  child: Text(
+                    context.l10n.commonDelete,
+                    style: const TextStyle(fontSize: 14),
+                  ),
                 ),
                 DialogOption(
                   onPressed: () async {
@@ -85,12 +91,15 @@ class DetailItem extends StatelessWidget {
                       isUpdate: true,
                     );
                     if (res) {
-                      SmartDialog.showToast('更新成功');
+                      SmartDialog.showToast(l10n.commonUpdateSucceeded);
                     } else {
-                      SmartDialog.showToast('更新失败');
+                      SmartDialog.showToast(l10n.commonUpdateFailed);
                     }
                   },
-                  child: const Text('更新弹幕', style: TextStyle(fontSize: 14)),
+                  child: Text(
+                    context.l10n.downloadUpdateDanmaku,
+                    style: const TextStyle(fontSize: 14),
+                  ),
                 ),
               ],
             ),
@@ -114,7 +123,7 @@ class DetailItem extends StatelessWidget {
               aid: entry.avid,
               cid: cid!,
               cover: entry.cover,
-              title: entry.showTitle,
+              title: context.l10n.localizedEpisodeTitle(entry.showTitle),
               isVertical: entry.pageData?.isVertical ?? false,
               extraArguments: {
                 'sourceType': SourceType.file,
@@ -280,7 +289,11 @@ class DetailItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          showTitle ? entry.title : entry.showTitle,
+                          showTitle
+                              ? entry.title
+                              : context.l10n.localizedEpisodeTitle(
+                                  entry.showTitle,
+                                ),
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             fontSize: theme.textTheme.bodyMedium!.fontSize,
@@ -308,7 +321,7 @@ class DetailItem extends StatelessWidget {
                               ),
                           if (entry.ep?.showTitle case final showTitle?)
                             Text(
-                              showTitle,
+                              context.l10n.localizedEpisodeTitle(showTitle),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(

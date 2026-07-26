@@ -8454,6 +8454,1008 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'网页链接'**
   String get messagesWebLink;
+
+  /// No description provided for @accountSwitchAnonymousHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'mid 为 0 时使用匿名模式'**
+  String get accountSwitchAnonymousHint;
+
+  /// No description provided for @accountSwitchDetailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'详细'**
+  String get accountSwitchDetailed;
+
+  /// No description provided for @accountSwitchQuick.
+  ///
+  /// In zh, this message translates to:
+  /// **'快速'**
+  String get accountSwitchQuick;
+
+  /// No description provided for @accountSignInFirst.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先登录'**
+  String get accountSignInFirst;
+
+  /// No description provided for @replyIpLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'IP 属地：{region}'**
+  String replyIpLocation(Object region);
+
+  /// No description provided for @videoPersonalOpinionDisclaimer.
+  ///
+  /// In zh, this message translates to:
+  /// **'个人观点，仅供参考'**
+  String get videoPersonalOpinionDisclaimer;
+
+  /// No description provided for @videoAllEpisodes.
+  ///
+  /// In zh, this message translates to:
+  /// **'全 {count} 话'**
+  String videoAllEpisodes(Object count);
+
+  /// No description provided for @feedPostedVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'投稿了视频'**
+  String get feedPostedVideo;
+
+  /// No description provided for @feedCoCreated.
+  ///
+  /// In zh, this message translates to:
+  /// **'与他人共同创作'**
+  String get feedCoCreated;
+
+  /// No description provided for @feedLikesAndReposts.
+  ///
+  /// In zh, this message translates to:
+  /// **'赞与转发'**
+  String get feedLikesAndReposts;
+
+  /// No description provided for @feedSaySomething.
+  ///
+  /// In zh, this message translates to:
+  /// **'说点什么吧…'**
+  String get feedSaySomething;
+
+  /// No description provided for @feedShareToFeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享至动态'**
+  String get feedShareToFeed;
+
+  /// No description provided for @feedRepostFeed.
+  ///
+  /// In zh, this message translates to:
+  /// **'转发动态'**
+  String get feedRepostFeed;
+
+  /// No description provided for @feedPublishNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即发布'**
+  String get feedPublishNow;
+
+  /// No description provided for @feedRepostNow.
+  ///
+  /// In zh, this message translates to:
+  /// **'立即转发'**
+  String get feedRepostNow;
+
+  /// No description provided for @feedPublish.
+  ///
+  /// In zh, this message translates to:
+  /// **'发布'**
+  String get feedPublish;
+
+  /// No description provided for @feedRepostSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'转发成功'**
+  String get feedRepostSucceeded;
+
+  /// No description provided for @commonCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制'**
+  String get commonCopied;
+
+  /// No description provided for @commonExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出'**
+  String get commonExport;
+
+  /// No description provided for @commonNoData.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有数据'**
+  String get commonNoData;
+
+  /// No description provided for @commonTapToRetry.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击重试'**
+  String get commonTapToRetry;
+
+  /// No description provided for @watchLaterAdded.
+  ///
+  /// In zh, this message translates to:
+  /// **'已添加至稍后再看'**
+  String get watchLaterAdded;
+
+  /// No description provided for @watchLaterRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已从稍后再看移除'**
+  String get watchLaterRemoved;
+
+  /// No description provided for @myCommentsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的评论'**
+  String get myCommentsTitle;
+
+  /// No description provided for @subscriptionFolder.
+  ///
+  /// In zh, this message translates to:
+  /// **'收藏夹'**
+  String get subscriptionFolder;
+
+  /// No description provided for @subscriptionCollection.
+  ///
+  /// In zh, this message translates to:
+  /// **'合集'**
+  String get subscriptionCollection;
+
+  /// No description provided for @subscriptionOtherType.
+  ///
+  /// In zh, this message translates to:
+  /// **'其它（{type}）'**
+  String subscriptionOtherType(Object type);
+
+  /// No description provided for @subscriptionUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'该{type}已失效'**
+  String subscriptionUnavailable(Object type);
+
+  /// No description provided for @subscriptionUploader.
+  ///
+  /// In zh, this message translates to:
+  /// **'UP 主：{name}'**
+  String subscriptionUploader(Object name);
+
+  /// No description provided for @subscriptionVideoCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 个视频'**
+  String subscriptionVideoCount(Object count);
+
+  /// No description provided for @subscriptionTotalVideos.
+  ///
+  /// In zh, this message translates to:
+  /// **'共 {count} 个视频'**
+  String subscriptionTotalVideos(Object count);
+
+  /// No description provided for @subscriptionPlayCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 次播放'**
+  String subscriptionPlayCount(Object count);
+
+  /// No description provided for @subscriptionCancelConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定取消订阅吗？'**
+  String get subscriptionCancelConfirm;
+
+  /// No description provided for @subscriptionCanceled.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消订阅成功'**
+  String get subscriptionCanceled;
+
+  /// No description provided for @commonSaving.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在保存…'**
+  String get commonSaving;
+
+  /// No description provided for @commonSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已保存'**
+  String get commonSaved;
+
+  /// No description provided for @commonSaveFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存失败'**
+  String get commonSaveFailed;
+
+  /// No description provided for @commonSaveFailedWithError.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存失败：{error}'**
+  String commonSaveFailedWithError(Object error);
+
+  /// No description provided for @commonSaveCanceled.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消保存'**
+  String get commonSaveCanceled;
+
+  /// No description provided for @commonDownloadCanceled.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消下载'**
+  String get commonDownloadCanceled;
+
+  /// No description provided for @commonDownloading.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在下载…'**
+  String get commonDownloading;
+
+  /// No description provided for @commonDownloadingOriginal.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在下载原图…'**
+  String get commonDownloadingOriginal;
+
+  /// No description provided for @commonFileNotFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'文件不存在'**
+  String get commonFileNotFound;
+
+  /// No description provided for @permissionStorageRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'存储权限未授权'**
+  String get permissionStorageRequired;
+
+  /// No description provided for @permissionOpenSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'去授权'**
+  String get permissionOpenSettings;
+
+  /// No description provided for @laterDeleteSelectedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认删除所选稍后再看吗？'**
+  String get laterDeleteSelectedConfirm;
+
+  /// No description provided for @laterRemoveVideoConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'即将移除该视频，确定是否移除？'**
+  String get laterRemoveVideoConfirm;
+
+  /// No description provided for @laterRemoveConfirmed.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认移除'**
+  String get laterRemoveConfirmed;
+
+  /// No description provided for @laterClearInvalidConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空已失效视频吗？'**
+  String get laterClearInvalidConfirm;
+
+  /// No description provided for @laterClearWatchedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空已看完视频吗？'**
+  String get laterClearWatchedConfirm;
+
+  /// No description provided for @laterClearAllConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空稍后再看列表吗？'**
+  String get laterClearAllConfirm;
+
+  /// No description provided for @laterCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'已清空稍后再看'**
+  String get laterCleared;
+
+  /// No description provided for @videoPremiumRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'需要大会员'**
+  String get videoPremiumRequired;
+
+  /// No description provided for @videoSwitchingTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'切换到：{title}'**
+  String videoSwitchingTo(Object title);
+
+  /// No description provided for @shareTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享给'**
+  String get shareTo;
+
+  /// No description provided for @shareChooseRecipients.
+  ///
+  /// In zh, this message translates to:
+  /// **'请选择分享的用户'**
+  String get shareChooseRecipients;
+
+  /// No description provided for @shareSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享成功'**
+  String get shareSucceeded;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享失败'**
+  String get shareFailed;
+
+  /// No description provided for @sharePartiallyFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'部分分享失败'**
+  String get sharePartiallyFailed;
+
+  /// No description provided for @followCreateGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'新建分组'**
+  String get followCreateGroup;
+
+  /// No description provided for @followGroupCreated.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建成功'**
+  String get followGroupCreated;
+
+  /// No description provided for @followSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'关注成功'**
+  String get followSucceeded;
+
+  /// No description provided for @followAddPriority.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入特别关注'**
+  String get followAddPriority;
+
+  /// No description provided for @followRemovePriority.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除特别关注'**
+  String get followRemovePriority;
+
+  /// No description provided for @followPriorityAdded.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入特别关注成功'**
+  String get followPriorityAdded;
+
+  /// No description provided for @followPriorityRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除特别关注成功'**
+  String get followPriorityRemoved;
+
+  /// No description provided for @followSetGroup.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置分组'**
+  String get followSetGroup;
+
+  /// No description provided for @followUnfollow.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消关注'**
+  String get followUnfollow;
+
+  /// No description provided for @followUnfollowSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消关注成功'**
+  String get followUnfollowSucceeded;
+
+  /// No description provided for @commonCopyTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制到'**
+  String get commonCopyTo;
+
+  /// No description provided for @commonMoveTo.
+  ///
+  /// In zh, this message translates to:
+  /// **'移动到'**
+  String get commonMoveTo;
+
+  /// No description provided for @commonMoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'移动成功'**
+  String get commonMoved;
+
+  /// No description provided for @feedAppeal.
+  ///
+  /// In zh, this message translates to:
+  /// **'申诉'**
+  String get feedAppeal;
+
+  /// No description provided for @feedCheckResult.
+  ///
+  /// In zh, this message translates to:
+  /// **'动态检查结果'**
+  String get feedCheckResult;
+
+  /// No description provided for @feedCheckPassed.
+  ///
+  /// In zh, this message translates to:
+  /// **'无账号状态下找到了你的动态，动态正常！'**
+  String get feedCheckPassed;
+
+  /// No description provided for @feedCheckShadowBanned.
+  ///
+  /// In zh, this message translates to:
+  /// **'你的动态可能仅自己可见！'**
+  String get feedCheckShadowBanned;
+
+  /// No description provided for @feedPostContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'动态内容：{content}'**
+  String feedPostContent(Object content);
+
+  /// No description provided for @commonMissingParameters.
+  ///
+  /// In zh, this message translates to:
+  /// **'参数为空'**
+  String get commonMissingParameters;
+
+  /// No description provided for @videoCoinSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'投币成功'**
+  String get videoCoinSucceeded;
+
+  /// No description provided for @historyNoWatchedItems.
+  ///
+  /// In zh, this message translates to:
+  /// **'无已看记录'**
+  String get historyNoWatchedItems;
+
+  /// No description provided for @historyDeleteSelectedConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认删除所选历史记录吗？'**
+  String get historyDeleteSelectedConfirm;
+
+  /// No description provided for @historyClearConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定清空观看历史吗？'**
+  String get historyClearConfirm;
+
+  /// No description provided for @historyCleared.
+  ///
+  /// In zh, this message translates to:
+  /// **'已清空观看历史'**
+  String get historyCleared;
+
+  /// No description provided for @historyConfirmClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认清空'**
+  String get historyConfirmClear;
+
+  /// No description provided for @historyPauseConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定暂停观看历史吗？'**
+  String get historyPauseConfirm;
+
+  /// No description provided for @historyResumeConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定恢复观看历史吗？'**
+  String get historyResumeConfirm;
+
+  /// No description provided for @historyPaused.
+  ///
+  /// In zh, this message translates to:
+  /// **'已暂停观看历史'**
+  String get historyPaused;
+
+  /// No description provided for @historyResumed.
+  ///
+  /// In zh, this message translates to:
+  /// **'已恢复观看历史'**
+  String get historyResumed;
+
+  /// No description provided for @historyConfirmPause.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认暂停'**
+  String get historyConfirmPause;
+
+  /// No description provided for @historyConfirmResume.
+  ///
+  /// In zh, this message translates to:
+  /// **'确认恢复'**
+  String get historyConfirmResume;
+
+  /// No description provided for @commonActionsMenu.
+  ///
+  /// In zh, this message translates to:
+  /// **'功能菜单'**
+  String get commonActionsMenu;
+
+  /// No description provided for @commonFavorited.
+  ///
+  /// In zh, this message translates to:
+  /// **'已收藏'**
+  String get commonFavorited;
+
+  /// No description provided for @liveNotStarted.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播未开播'**
+  String get liveNotStarted;
+
+  /// No description provided for @historyDeleteRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'删除记录'**
+  String get historyDeleteRecord;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录'**
+  String get loginTitle;
+
+  /// No description provided for @loginWithQr.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用 bilibili 官方 App 扫码登录'**
+  String get loginWithQr;
+
+  /// No description provided for @loginQrExpiresIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'剩余有效时间：{seconds} 秒'**
+  String loginQrExpiresIn(Object seconds);
+
+  /// No description provided for @loginRefreshQr.
+  ///
+  /// In zh, this message translates to:
+  /// **'刷新二维码'**
+  String get loginRefreshQr;
+
+  /// No description provided for @loginGeneratingScreenshot.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在生成截图'**
+  String get loginGeneratingScreenshot;
+
+  /// No description provided for @loginSaveToGallery.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存至相册'**
+  String get loginSaveToGallery;
+
+  /// No description provided for @loginOpenInAnotherApp.
+  ///
+  /// In zh, this message translates to:
+  /// **'其他应用打开'**
+  String get loginOpenInAnotherApp;
+
+  /// No description provided for @loginQrCopiedHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制到剪贴板，可粘贴至已登录的 App 私信处发送，然后点击已发送的链接打开。'**
+  String get loginQrCopiedHint;
+
+  /// No description provided for @loginTrustedSourceNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'请务必在 {appName} 开源仓库等可信渠道下载安装。'**
+  String loginTrustedSourceNotice(Object appName);
+
+  /// No description provided for @loginWithCookie.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用 Cookie 登录'**
+  String get loginWithCookie;
+
+  /// No description provided for @loginCookieLimit.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用 App 端 API 实现的功能将不可用'**
+  String get loginCookieLimit;
+
+  /// No description provided for @loginWithPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用账号密码登录'**
+  String get loginWithPassword;
+
+  /// No description provided for @loginAccount.
+  ///
+  /// In zh, this message translates to:
+  /// **'账号'**
+  String get loginAccount;
+
+  /// No description provided for @loginEmailOrPhone.
+  ///
+  /// In zh, this message translates to:
+  /// **'邮箱/手机号'**
+  String get loginEmailOrPhone;
+
+  /// No description provided for @loginPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码'**
+  String get loginPassword;
+
+  /// No description provided for @loginShowPassword.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示密码'**
+  String get loginShowPassword;
+
+  /// No description provided for @loginForgotPasswordQuestion.
+  ///
+  /// In zh, this message translates to:
+  /// **'忘记密码？'**
+  String get loginForgotPasswordQuestion;
+
+  /// No description provided for @loginForgotPasswordHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'试试扫码、手机号登录，或选择找回密码页面。'**
+  String get loginForgotPasswordHint;
+
+  /// No description provided for @loginRecoverPasswordMobile.
+  ///
+  /// In zh, this message translates to:
+  /// **'找回密码（手机版）'**
+  String get loginRecoverPasswordMobile;
+
+  /// No description provided for @loginRecoverPasswordDesktop.
+  ///
+  /// In zh, this message translates to:
+  /// **'找回密码（电脑版）'**
+  String get loginRecoverPasswordDesktop;
+
+  /// No description provided for @loginPasswordSecurityNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'根据 bilibili 官方登录接口规范，密码将在本地加盐、加密后传输。盐与公钥均由官方提供；以 RSA/ECB/PKCS1Padding 方式加密。账号密码仅用于该登录接口，不予保存；本地仅存储登录凭证。\n请务必在 {appName} 开源仓库等可信渠道下载安装。'**
+  String loginPasswordSecurityNotice(Object appName);
+
+  /// No description provided for @loginWithSms.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用手机短信验证码登录'**
+  String get loginWithSms;
+
+  /// No description provided for @loginCountryCodeTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择国际冠码，当前为 {name}（+{code}）'**
+  String loginCountryCodeTooltip(Object code, Object name);
+
+  /// No description provided for @loginPhoneNumber.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机号'**
+  String get loginPhoneNumber;
+
+  /// No description provided for @loginVerificationCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码'**
+  String get loginVerificationCode;
+
+  /// No description provided for @loginWaitSeconds.
+  ///
+  /// In zh, this message translates to:
+  /// **'等待 {seconds} 秒'**
+  String loginWaitSeconds(Object seconds);
+
+  /// No description provided for @loginGetVerificationCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取验证码'**
+  String get loginGetVerificationCode;
+
+  /// No description provided for @loginSmsPrivacyNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机号仅用于 bilibili 官方发送验证码与登录接口，不予保存；本地仅存储登录凭证。\n请务必在 {appName} 开源仓库等可信渠道下载安装。'**
+  String loginSmsPrivacyNotice(Object appName);
+
+  /// No description provided for @loginPasswordTab.
+  ///
+  /// In zh, this message translates to:
+  /// **'密码'**
+  String get loginPasswordTab;
+
+  /// No description provided for @loginSmsTab.
+  ///
+  /// In zh, this message translates to:
+  /// **'短信'**
+  String get loginSmsTab;
+
+  /// No description provided for @loginQrTab.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫码'**
+  String get loginQrTab;
+
+  /// No description provided for @loginQrExpired.
+  ///
+  /// In zh, this message translates to:
+  /// **'二维码已过期，请刷新'**
+  String get loginQrExpired;
+
+  /// No description provided for @loginQrSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'扫码成功'**
+  String get loginQrSucceeded;
+
+  /// No description provided for @loginVerificationSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证成功'**
+  String get loginVerificationSucceeded;
+
+  /// No description provided for @loginCookieRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'Cookie 不能为空'**
+  String get loginCookieRequired;
+
+  /// No description provided for @loginSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录成功'**
+  String get loginSucceeded;
+
+  /// No description provided for @loginFailedWithError.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录失败：{error}'**
+  String loginFailedWithError(Object error);
+
+  /// No description provided for @loginSessionExpired.
+  ///
+  /// In zh, this message translates to:
+  /// **'bilibili 登录已失效，请重新登录'**
+  String get loginSessionExpired;
+
+  /// No description provided for @loginUserInfoFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'获取 bilibili 用户信息失败，可前往账号管理重试'**
+  String get loginUserInfoFailed;
+
+  /// No description provided for @loginCredentialsRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'用户名或密码不能为空'**
+  String get loginCredentialsRequired;
+
+  /// No description provided for @loginNoDataReturned.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录异常，接口未返回数据：{message}'**
+  String loginNoDataReturned(Object message);
+
+  /// No description provided for @loginTryAnotherMethod.
+  ///
+  /// In zh, this message translates to:
+  /// **'请尝试其他登录方式。\n{details}'**
+  String loginTryAnotherMethod(Object details);
+
+  /// No description provided for @loginPhoneVerificationUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前账号不支持手机号验证，请尝试其他登录方式'**
+  String get loginPhoneVerificationUnavailable;
+
+  /// No description provided for @loginPhoneVerificationRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'本次登录需要验证您的手机号'**
+  String get loginPhoneVerificationRequired;
+
+  /// No description provided for @loginPhoneUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'未能获取手机号'**
+  String get loginPhoneUnavailable;
+
+  /// No description provided for @loginEnterVerificationCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入短信验证码'**
+  String get loginEnterVerificationCode;
+
+  /// No description provided for @loginSendVerificationCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'发送验证码'**
+  String get loginSendVerificationCode;
+
+  /// No description provided for @loginVerificationCodeSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'短信验证码已发送，请查收'**
+  String get loginVerificationCodeSent;
+
+  /// No description provided for @loginVerifyingAndSigningIn.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证成功，正在登录'**
+  String get loginVerifyingAndSigningIn;
+
+  /// No description provided for @loginMissingIdentity.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录异常，接口未返回身份信息，可能是因为账号风控，请尝试其他登录方式。\n{details}'**
+  String loginMissingIdentity(Object details);
+
+  /// No description provided for @loginSavingIdentity.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在保存身份信息'**
+  String get loginSavingIdentity;
+
+  /// No description provided for @loginPhoneRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'手机号不能为空'**
+  String get loginPhoneRequired;
+
+  /// No description provided for @loginRequestCodeFirst.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先点击获取验证码'**
+  String get loginRequestCodeFirst;
+
+  /// No description provided for @loginVerificationCodeRequired.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码不能为空'**
+  String get loginVerificationCodeRequired;
+
+  /// No description provided for @loginVerificationCodeExpired.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码已过期，请重新获取'**
+  String get loginVerificationCodeExpired;
+
+  /// No description provided for @loginSucceededSetAccountMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'登录成功，请先设置账号模式'**
+  String get loginSucceededSetAccountMode;
+
+  /// No description provided for @commonServerError.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器错误'**
+  String get commonServerError;
+
+  /// No description provided for @searchSecurityCheckTriggered.
+  ///
+  /// In zh, this message translates to:
+  /// **'触发风控校验'**
+  String get searchSecurityCheckTriggered;
+
+  /// No description provided for @loginVerificationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码'**
+  String get loginVerificationTitle;
+
+  /// No description provided for @loginCompleteVerificationWindow.
+  ///
+  /// In zh, this message translates to:
+  /// **'请在弹出的新窗口中完成验证'**
+  String get loginCompleteVerificationWindow;
+
+  /// No description provided for @memberBlockConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定拉黑 UP 主吗？'**
+  String get memberBlockConfirm;
+
+  /// No description provided for @memberUnblockConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'从黑名单移除该 UP 主吗？'**
+  String get memberUnblockConfirm;
+
+  /// No description provided for @memberNoPlayableVideos.
+  ///
+  /// In zh, this message translates to:
+  /// **'该 UP 主暂无可播放视频'**
+  String get memberNoPlayableVideos;
+
+  /// No description provided for @memberVideoPlayInfoUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法获取视频播放信息'**
+  String get memberVideoPlayInfoUnavailable;
+
+  /// No description provided for @memberRandomVideoFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'随机视频获取失败：{error}'**
+  String memberRandomVideoFailed(Object error);
+
+  /// No description provided for @memberFollowerRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除粉丝成功'**
+  String get memberFollowerRemoved;
+
+  /// No description provided for @memberPremiumRewardClaimed.
+  ///
+  /// In zh, this message translates to:
+  /// **'领取成功'**
+  String get memberPremiumRewardClaimed;
+
+  /// No description provided for @memberAddToBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入黑名单'**
+  String get memberAddToBlocked;
+
+  /// No description provided for @memberRemoveFromBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除黑名单'**
+  String get memberRemoveFromBlocked;
+
+  /// No description provided for @memberRemoveFollower.
+  ///
+  /// In zh, this message translates to:
+  /// **'移除粉丝'**
+  String get memberRemoveFollower;
+
+  /// No description provided for @memberShareUploader.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享 UP 主'**
+  String get memberShareUploader;
+
+  /// No description provided for @memberShareMyProfile.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享我的主页'**
+  String get memberShareMyProfile;
+
+  /// No description provided for @memberAddToHomeScreen.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加至桌面'**
+  String get memberAddToHomeScreen;
 }
 
 class _AppLocalizationsDelegate

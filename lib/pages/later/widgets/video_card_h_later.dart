@@ -11,6 +11,7 @@ import 'package:ex_piliplus/models/common/stat_type.dart';
 import 'package:ex_piliplus/models_new/later/list.dart';
 import 'package:ex_piliplus/pages/later/controller.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
@@ -100,15 +101,15 @@ class VideoCardHLater extends StatelessWidget {
                           cacheWidth: videoItem.dimension?.cacheWidth,
                         ),
                         if (videoItem.isCharging == true)
-                          const PBadge(
-                            text: '充电专属',
+                          PBadge(
+                            text: context.l10n.videoSupporterOnly,
                             top: 6.0,
                             right: 6.0,
                             type: PBadgeType.error,
                           )
                         else if (videoItem.rights?.isCooperation == 1)
-                          const PBadge(
-                            text: '合作',
+                          PBadge(
+                            text: context.l10n.videoCooperation,
                             top: 6.0,
                             right: 6.0,
                           )
@@ -119,15 +120,15 @@ class VideoCardHLater extends StatelessWidget {
                             right: 6.0,
                           )
                         else if (videoItem.isPugv ?? false)
-                          const PBadge(
-                            text: '课堂',
+                          PBadge(
+                            text: context.l10n.favoriteTabCourses,
                             top: 6.0,
                             right: 6.0,
                           ),
                         if (progress != null && progress != 0) ...[
                           PBadge(
                             text: progress == -1
-                                ? '已看完'
+                                ? context.l10n.videoStatusWatched
                                 : '${DurationUtils.formatDuration(progress)}/${DurationUtils.formatDuration(videoItem.duration)}',
                             right: 6,
                             bottom: 8,
@@ -253,7 +254,7 @@ class VideoCardHLater extends StatelessWidget {
             right: 0,
             bottom: -8,
             child: iconButton(
-              tooltip: '移除',
+              tooltip: context.l10n.commonRemove,
               onPressed: () => ctr.toViewDel(context, index, videoItem.aid),
               icon: const Icon(Icons.clear),
               iconColor: theme.colorScheme.outline,

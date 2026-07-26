@@ -27,6 +27,8 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -405,7 +407,9 @@ class _EpisodePanelState extends State<EpisodePanel>
         break;
       case pgc.EpisodeItem item:
         bvid = item.bvid;
-        title = item.showTitle ?? item.title!;
+        title = context.l10n.localizedEpisodeTitle(
+          item.showTitle ?? item.title!,
+        );
         cover = item.cover;
         if (item.from == 'pugv') {
           duration = item.duration;
@@ -436,10 +440,12 @@ class _EpisodePanelState extends State<EpisodePanel>
               if (episode.badge == "会员" &&
                   Accounts.mainEqVideo &&
                   vipStatus != 1) {
-                SmartDialog.showToast('需要大会员');
+                SmartDialog.showToast(context.l10n.videoPremiumRequired);
                 // return;
               }
-              SmartDialog.showToast('切换到：$title');
+              SmartDialog.showToast(
+                context.l10n.videoSwitchingTo(title),
+              );
               widget.onClose?.call();
 
               widget.onChangeEpisode(episode).then((res) {

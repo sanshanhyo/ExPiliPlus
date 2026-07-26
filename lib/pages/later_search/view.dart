@@ -5,6 +5,7 @@ import 'package:ex_piliplus/pages/common/search/common_search_page.dart';
 import 'package:ex_piliplus/pages/later/widgets/video_card_h_later.dart';
 import 'package:ex_piliplus/pages/later_search/controller.dart';
 import 'package:ex_piliplus/utils/grid.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
@@ -43,7 +44,7 @@ class _LaterSearchPageState
           mediaId: null,
           mid: controller.mid,
         ),
-        child: Text('复制', style: textStyle),
+        child: Text(context.l10n.commonCopy, style: textStyle),
       ),
       TextButton(
         style: btnStyle,
@@ -54,7 +55,7 @@ class _LaterSearchPageState
           mediaId: null,
           mid: controller.mid,
         ),
-        child: Text('移动', style: textStyle),
+        child: Text(context.l10n.commonMove, style: textStyle),
       ),
     ];
   }
@@ -83,7 +84,7 @@ class _LaterSearchPageState
                 'oid': item.aid,
                 'sourceType': SourceType.watchLater,
                 'count': controller.count,
-                'favTitle': '稍后再看',
+                'favTitle': context.l10n.mineWatchLater,
                 'mediaId': controller.mid,
                 'desc': false,
                 'isContinuePlaying': index != 0,

@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/http/api.dart';
 import 'package:ex_piliplus/http/init.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/user/info.dart';
 import 'package:ex_piliplus/models/user/stat.dart';
 import 'package:ex_piliplus/models_new/coin_log/data.dart';
@@ -21,6 +22,7 @@ import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/wbi_sign.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 
 abstract final class UserHttp {
   // static Future<dynamic> userStat({required int mid}) async {
@@ -181,7 +183,9 @@ abstract final class UserHttp {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     if (res.data['code'] == 0) {
-      SmartDialog.showToast('yeah！稍后再看');
+      SmartDialog.showToast(
+        AppLocalizations.of(Get.context!).watchLaterAdded,
+      );
       return const Success(null);
     } else {
       SmartDialog.showToast(res.data['message'].toString());
@@ -201,7 +205,9 @@ abstract final class UserHttp {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     if (res.data['code'] == 0) {
-      SmartDialog.showToast('yeah！成功移除');
+      SmartDialog.showToast(
+        AppLocalizations.of(Get.context!).watchLaterRemoved,
+      );
       return const Success(null);
     } else {
       SmartDialog.showToast(res.data['message'].toString());

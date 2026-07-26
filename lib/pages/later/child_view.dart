@@ -8,6 +8,7 @@ import 'package:ex_piliplus/pages/later/base_controller.dart';
 import 'package:ex_piliplus/pages/later/controller.dart';
 import 'package:ex_piliplus/pages/later/widgets/video_card_h_later.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,7 @@ class _LaterViewChildPageState extends State<LaterViewChildPage>
                                 'count': _laterController
                                     .baseCtr
                                     .counts[LaterViewType.all.index],
-                                'favTitle': '稍后再看',
+                                'favTitle': context.l10n.mineWatchLater,
                                 'mediaId': _laterController.mid,
                                 'desc': _laterController.asc.value,
                                 'isContinuePlaying': index != 0,
