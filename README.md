@@ -35,6 +35,7 @@
 
 - [x] 继承 [PiliPlus](https://github.com/bggRGjQaUbCoE/PiliPlus#feat) 的主要功能
 - [x] 自定义应用字体
+- [x] 自定义应用主题色
 - [x] 随机播放
 - [x] 自动点赞
 - [x] i18n 界面支持
