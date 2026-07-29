@@ -1,6 +1,7 @@
 import 'dart:async' show FutureOr;
 import 'dart:convert' show utf8, jsonDecode;
 
+import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
@@ -32,7 +33,7 @@ void exportToLocalFile({
   final res = utf8.encode(onExport());
   StorageUtils.saveBytes2File(
     name:
-        'piliplus_${localFileName()}_'
+        '${Constants.appName}_${localFileName()}_'
         '${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}.json',
     bytes: res,
     allowedExtensions: const ['json'],

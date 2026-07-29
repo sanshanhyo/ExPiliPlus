@@ -1995,7 +1995,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String videoShareText(String title, String uploader, String url) {
-    return '$title\nUploader：$uploader\n$url';
+    return '$title\nUP 主：$uploader\n$url';
   }
 
   @override
@@ -2224,7 +2224,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String videoConfirmBlockUploader(String name, String id) {
-    return '确定拉黑 $name（$id）？\n\n被拉黑的 Uploader 可在隐私设置的黑名单管理中解除。';
+    return '确定拉黑 $name（$id）？\n\n被拉黑的 UP 主可在隐私设置的黑名单管理中解除。';
   }
 
   @override
@@ -3256,22 +3256,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsDarkVideoPage => '视频播放页使用深色主题';
 
   @override
-  String get settingsFeedWaterfall => 'Feed 启用瀑布流';
+  String get settingsFeedWaterfall => '动态页启用瀑布流';
 
   @override
   String get settingsFeedWaterfallDescription => '关闭后显示为单列';
 
   @override
-  String get settingsFeedUploaderPosition => 'Feed Uploader 显示位置';
+  String get settingsFeedUploaderPosition => '动态页 UP 主列表显示位置';
 
   @override
-  String get settingsShowAllFollowedUploaders => 'Feed 显示所有已关注 Uploader';
+  String get settingsShowAllFollowedUploaders => '动态页显示所有已关注 UP 主';
 
   @override
-  String get settingsExpandLiveUploaders => 'Feed 展开正在直播的 Uploader 列表';
+  String get settingsExpandLiveUploaders => '动态页展开正在直播的 UP 主列表';
 
   @override
-  String get settingsFeedUnreadBadge => 'Feed 未读标记';
+  String get settingsFeedUnreadBadge => '动态未读标记';
 
   @override
   String get settingsMessageUnreadBadge => '消息未读标记';
@@ -3492,7 +3492,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAnimeIntroOutroSkip => '番剧片头／片尾跳过类型';
 
   @override
-  String get settingsCheckUnreadFeed => '检查未读 Feed';
+  String get settingsCheckUnreadFeed => '检查未读动态';
 
   @override
   String get settingsCheckUnreadFeedDescription => '点击设置检查周期（分钟）';
@@ -3519,7 +3519,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsLandscapeEpisodeTabs => '横屏分 P／合集列表显示在 Tab 栏';
 
   @override
-  String get settingsLandscapeUploaderSidebar => '横屏播放页在侧栏打开 Uploader 主页';
+  String get settingsLandscapeUploaderSidebar => '横屏播放页在侧栏打开 UP 主主页';
 
   @override
   String get settingsLandscapeImagePreview => '横屏在侧栏打开图片预览';
@@ -3547,7 +3547,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsVideoWarnings => '显示视频警告／争议信息';
 
   @override
-  String get settingsFeedWarnings => '显示 Feed 警告／争议信息';
+  String get settingsFeedWarnings => '显示动态警告／争议信息';
 
   @override
   String get settingsReverseEpisodesFromFirst => '分 P／合集：倒序播放从首集开始';
@@ -3569,7 +3569,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsCommentKeywordFilter => '评论关键词过滤';
 
   @override
-  String get settingsFeedKeywordFilter => 'Feed 关键词过滤';
+  String get settingsFeedKeywordFilter => '动态关键词过滤';
 
   @override
   String get settingsExternalBrowser => '使用外部浏览器打开链接';
@@ -3659,7 +3659,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSearchHistory => '记录搜索历史';
 
   @override
-  String get settingsShowDecorations => '展示头像、评论和 Feed 装饰';
+  String get settingsShowDecorations => '展示头像、评论和动态装饰';
 
   @override
   String get settingsFanMedals => '显示粉丝勋章';
@@ -3693,13 +3693,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsUseBilibiliCommentCheck => '使用“哔哩发评反诈”检查评论';
 
   @override
-  String get settingsFeedPostAntifraud => '发布／转发 Feed 反诈';
+  String get settingsFeedPostAntifraud => '发布／转发动态反诈';
 
   @override
-  String get settingsFeedPostAntifraudDescription => '发布／转发后检查 Feed 内容是否可见';
+  String get settingsFeedPostAntifraudDescription => '发布／转发后检查动态内容是否可见';
 
   @override
-  String get settingsBlockShoppingPosts => '屏蔽带货 Feed';
+  String get settingsBlockShoppingPosts => '屏蔽带货动态';
 
   @override
   String get settingsBlockShoppingComments => '屏蔽带货评论';
@@ -3711,7 +3711,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsPinchToShrinkVideo => '启用双指缩小视频';
 
   @override
-  String get settingsSecondaryPageActionBar => 'Feed／专栏详情页展示底部操作栏';
+  String get settingsSecondaryPageActionBar => '动态／专栏详情页展示底部操作栏';
 
   @override
   String get settingsDragSubtitles => '启用拖拽字幕调整底部边距';
@@ -3808,20 +3808,20 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get settingsFeedDisplay => 'Feed 展示';
+  String get settingsFeedDisplay => '动态展示';
 
   @override
-  String get settingsFeedInteractions => '显示 Feed 互动内容';
+  String get settingsFeedInteractions => '显示动态互动内容';
 
   @override
   String get settingsFeedInteractionsDescription =>
-      '在 Feed 卡片底部显示互动内容，例如关注的人点赞、热评等';
+      '在动态卡片底部显示互动内容，例如关注的人点赞、热评等';
 
   @override
   String get settingsMemberDefaultTab => '用户页默认展示 Tab';
 
   @override
-  String get settingsUploaderShopTab => '显示 Uploader 主页小店 Tab';
+  String get settingsUploaderShopTab => '显示 UP 主主页小店 Tab';
 
   @override
   String get settingsProxy => '设置代理';
@@ -4656,7 +4656,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyTapToEnable => '点击开启';
 
   @override
-  String get statisticsTitle => '数据统计';
+  String get statisticsTitle => '数据统计（Beta）';
 
   @override
   String get statisticsLoading => '正在整理观看记录…';
@@ -9234,7 +9234,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String videoShareText(String title, String uploader, String url) {
-    return '$title\nUploader：$uploader\n$url';
+    return '$title\nUP 主：$uploader\n$url';
   }
 
   @override
@@ -9463,7 +9463,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String videoConfirmBlockUploader(String name, String id) {
-    return '確定封鎖 $name（$id）？\n\n可在隱私設定的封鎖名單管理中解除封鎖此 Uploader。';
+    return '確定封鎖 $name（$id）？\n\n可在隱私設定的封鎖名單管理中解除封鎖此 UP 主。';
   }
 
   @override
@@ -10496,22 +10496,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsDarkVideoPage => '影片播放頁使用深色主題';
 
   @override
-  String get settingsFeedWaterfall => 'Feed 啟用瀑布流';
+  String get settingsFeedWaterfall => '動態頁啟用瀑布流';
 
   @override
   String get settingsFeedWaterfallDescription => '關閉後顯示為單欄';
 
   @override
-  String get settingsFeedUploaderPosition => 'Feed Uploader 顯示位置';
+  String get settingsFeedUploaderPosition => '動態頁 UP 主清單顯示位置';
 
   @override
-  String get settingsShowAllFollowedUploaders => 'Feed 顯示所有已關注 Uploader';
+  String get settingsShowAllFollowedUploaders => '動態頁顯示所有已關注 UP 主';
 
   @override
-  String get settingsExpandLiveUploaders => 'Feed 展開正在直播的 Uploader 清單';
+  String get settingsExpandLiveUploaders => '動態頁展開正在直播的 UP 主清單';
 
   @override
-  String get settingsFeedUnreadBadge => 'Feed 未讀標記';
+  String get settingsFeedUnreadBadge => '動態未讀標記';
 
   @override
   String get settingsMessageUnreadBadge => '訊息未讀標記';
@@ -10732,7 +10732,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsAnimeIntroOutroSkip => '番劇片頭／片尾跳過類型';
 
   @override
-  String get settingsCheckUnreadFeed => '檢查未讀 Feed';
+  String get settingsCheckUnreadFeed => '檢查未讀動態';
 
   @override
   String get settingsCheckUnreadFeedDescription => '點擊設定檢查週期（分鐘）';
@@ -10759,7 +10759,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsLandscapeEpisodeTabs => '橫向分 P／合集清單顯示在 Tab 欄';
 
   @override
-  String get settingsLandscapeUploaderSidebar => '橫向播放頁在側欄開啟 Uploader 首頁';
+  String get settingsLandscapeUploaderSidebar => '橫向播放頁在側欄開啟 UP 主首頁';
 
   @override
   String get settingsLandscapeImagePreview => '橫向在側欄開啟圖片預覽';
@@ -10787,7 +10787,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsVideoWarnings => '顯示影片警告／爭議資訊';
 
   @override
-  String get settingsFeedWarnings => '顯示 Feed 警告／爭議資訊';
+  String get settingsFeedWarnings => '顯示動態警告／爭議資訊';
 
   @override
   String get settingsReverseEpisodesFromFirst => '分 P／合集：倒序播放從首集開始';
@@ -10809,7 +10809,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsCommentKeywordFilter => '評論關鍵字過濾';
 
   @override
-  String get settingsFeedKeywordFilter => 'Feed 關鍵字過濾';
+  String get settingsFeedKeywordFilter => '動態關鍵字過濾';
 
   @override
   String get settingsExternalBrowser => '使用外部瀏覽器開啟連結';
@@ -10899,7 +10899,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsSearchHistory => '記錄搜尋歷史';
 
   @override
-  String get settingsShowDecorations => '顯示頭像、評論和 Feed 裝飾';
+  String get settingsShowDecorations => '顯示頭像、評論和動態裝飾';
 
   @override
   String get settingsFanMedals => '顯示粉絲勳章';
@@ -10933,13 +10933,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsUseBilibiliCommentCheck => '使用「嗶哩發評反詐」檢查評論';
 
   @override
-  String get settingsFeedPostAntifraud => '發佈／轉發 Feed 反詐';
+  String get settingsFeedPostAntifraud => '發佈／轉發動態反詐';
 
   @override
-  String get settingsFeedPostAntifraudDescription => '發佈／轉發後檢查 Feed 內容是否可見';
+  String get settingsFeedPostAntifraudDescription => '發佈／轉發後檢查動態內容是否可見';
 
   @override
-  String get settingsBlockShoppingPosts => '封鎖帶貨 Feed';
+  String get settingsBlockShoppingPosts => '封鎖帶貨動態';
 
   @override
   String get settingsBlockShoppingComments => '封鎖帶貨評論';
@@ -10951,7 +10951,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsPinchToShrinkVideo => '啟用雙指縮小影片';
 
   @override
-  String get settingsSecondaryPageActionBar => 'Feed／專欄詳情頁顯示底部操作欄';
+  String get settingsSecondaryPageActionBar => '動態／專欄詳情頁顯示底部操作欄';
 
   @override
   String get settingsDragSubtitles => '啟用拖曳字幕調整底部邊距';
@@ -11048,20 +11048,20 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get settingsFeedDisplay => 'Feed 顯示';
+  String get settingsFeedDisplay => '動態顯示';
 
   @override
-  String get settingsFeedInteractions => '顯示 Feed 互動內容';
+  String get settingsFeedInteractions => '顯示動態互動內容';
 
   @override
   String get settingsFeedInteractionsDescription =>
-      '在 Feed 卡片底部顯示互動內容，例如關注的人按讚、熱門評論等';
+      '在動態卡片底部顯示互動內容，例如關注的人按讚、熱門評論等';
 
   @override
   String get settingsMemberDefaultTab => '使用者頁預設顯示 Tab';
 
   @override
-  String get settingsUploaderShopTab => '顯示 Uploader 首頁小店 Tab';
+  String get settingsUploaderShopTab => '顯示 UP 主首頁小店 Tab';
 
   @override
   String get settingsProxy => '設定代理';
@@ -11896,7 +11896,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get historyTapToEnable => '點擊開啟';
 
   @override
-  String get statisticsTitle => '數據統計';
+  String get statisticsTitle => '數據統計（Beta）';
 
   @override
   String get statisticsLoading => '正在整理觀看記錄…';

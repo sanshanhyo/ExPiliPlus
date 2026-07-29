@@ -123,6 +123,52 @@ void main() {
     expect(english['memberTabFeed'], 'Feed');
   });
 
+  test('Chinese resources do not expose Feed or Uploader terminology', () {
+    for (final path in [
+      'lib/l10n/app_zh.arb',
+      'lib/l10n/app_zh_Hant.arb',
+    ]) {
+      final messages =
+          jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
+      final violations = <String>[
+        for (final entry in messages.entries)
+          if (!entry.key.startsWith('@') &&
+              entry.value is String &&
+              RegExp(
+                r'\b(?:Feed|Uploader)\b',
+                caseSensitive: false,
+              ).hasMatch(
+                (entry.value as String).replaceAll(
+                  RegExp(r'\{[^}]+\}'),
+                  '',
+                ),
+              ))
+            entry.key,
+      ];
+      expect(
+        violations,
+        isEmpty,
+        reason: '$path contains untranslated terminology: $violations',
+      );
+    }
+  });
+
+  test('viewing statistics is marked as Beta in every locale', () {
+    for (final path in [
+      'lib/l10n/app_zh.arb',
+      'lib/l10n/app_zh_Hant.arb',
+      'lib/l10n/app_en.arb',
+    ]) {
+      final messages =
+          jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
+      expect(
+        messages['statisticsTitle'],
+        contains('Beta'),
+        reason: '$path must mark viewing statistics as Beta',
+      );
+    }
+  });
+
   test('known server labels are localized before display', () {
     final l10n = AppLocalizationsEn();
 

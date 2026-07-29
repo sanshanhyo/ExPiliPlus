@@ -1,3 +1,4 @@
+import 'dart:convert' show jsonEncode;
 import 'dart:io';
 
 import 'package:ex_piliplus/utils/settings_backup.dart';
@@ -11,6 +12,82 @@ import 'package:hive_ce/hive.dart';
 
 void main() {
   group('SettingsBackup', () {
+    test('exports all ExPiliplus settings and dynamic block data', () {
+      final result = SettingsBackup.prepareExPiliPlusForExport(
+        {
+          SettingBoxKey.appLanguage:
+              AppLanguage.traditionalChinese.storageValue,
+          SettingBoxKey.enablePermanentDynamicBlock: true,
+          SettingBoxKey.customThemeColor: 0xFF123456,
+          SettingBoxKey.showRandomVideoButton: true,
+          SettingBoxKey.autoLikeOpenedVideo: true,
+        },
+        {
+          LocalCacheKey.dynamicBannedMids: <int>{1002, 1001},
+          LocalCacheKey.dynamicBannedUpList: [
+            {
+              'mid': 1001,
+              'name': 'First uploader',
+              'face': 'https://example.com/first.jpg',
+            },
+            {'mid': 1002, 'name': 'Second uploader', 'face': null},
+          ],
+        },
+      );
+
+      expect(
+        result[SettingBoxKey.appLanguage],
+        AppLanguage.traditionalChinese.storageValue,
+      );
+      expect(result[SettingBoxKey.enablePermanentDynamicBlock], isTrue);
+      expect(result[SettingBoxKey.customThemeColor], 0xFF123456);
+      expect(result[SettingBoxKey.showRandomVideoButton], isTrue);
+      expect(result[SettingBoxKey.autoLikeOpenedVideo], isTrue);
+      expect(result[LocalCacheKey.dynamicBannedMids], [1001, 1002]);
+      expect(
+        result[LocalCacheKey.dynamicBannedUpList],
+        hasLength(2),
+      );
+      expect(() => jsonEncode(result), returnsNormally);
+    });
+
+    test('imports ExPiliplus settings and dynamic block data', () {
+      final exPiliPlus = {
+        SettingBoxKey.appLanguage: AppLanguage.english.storageValue,
+        SettingBoxKey.enablePermanentDynamicBlock: true,
+        SettingBoxKey.customThemeColor: 0xFFABCDEF,
+        SettingBoxKey.showRandomVideoButton: true,
+        SettingBoxKey.autoLikeOpenedVideo: true,
+        LocalCacheKey.dynamicBannedMids: [1001],
+        LocalCacheKey.dynamicBannedUpList: [
+          {'mid': 1001, 'name': 'Uploader', 'face': null},
+        ],
+      };
+      final setting = SettingsBackup.prepareForImport(
+        const {},
+        exPiliPlus: exPiliPlus,
+      );
+      final localCache = SettingsBackup.prepareExPiliPlusLocalCacheForImport(
+        exPiliPlus,
+      );
+
+      expect(
+        setting[SettingBoxKey.appLanguage],
+        AppLanguage.english.storageValue,
+      );
+      expect(setting[SettingBoxKey.enablePermanentDynamicBlock], isTrue);
+      expect(setting[SettingBoxKey.customThemeColor], 0xFFABCDEF);
+      expect(setting[SettingBoxKey.showRandomVideoButton], isTrue);
+      expect(setting[SettingBoxKey.autoLikeOpenedVideo], isTrue);
+      expect(localCache[LocalCacheKey.dynamicBannedMids], <int>{1001});
+      expect(
+        localCache[LocalCacheKey.dynamicBannedUpList],
+        [
+          {'mid': 1001, 'name': 'Uploader', 'face': null},
+        ],
+      );
+    });
+
     test('always exports the custom theme color field', () {
       final result = SettingsBackup.prepareForExport({
         SettingBoxKey.customColor: 12,
@@ -23,6 +100,9 @@ void main() {
         result[SettingBoxKey.appLanguage],
         AppLanguage.simplifiedChinese.storageValue,
       );
+      expect(result[SettingBoxKey.enablePermanentDynamicBlock], isFalse);
+      expect(result[SettingBoxKey.showRandomVideoButton], isFalse);
+      expect(result[SettingBoxKey.autoLikeOpenedVideo], isFalse);
     });
 
     test('preserves an enabled custom theme color', () {

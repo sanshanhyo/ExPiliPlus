@@ -56,8 +56,11 @@ class WebDav {
   }
 
   String _getFileName() {
-    return 'piliplus_settings_${DeviceUtils.platformName}.json';
+    return '${Constants.appName}_settings_${DeviceUtils.platformName}.json';
   }
+
+  String _getLegacyFileName() =>
+      'piliplus_settings_${DeviceUtils.platformName}.json';
 
   String _getAppDirectory(String appName) => '$_webdavBaseDirectory$appName';
 
@@ -110,11 +113,13 @@ class WebDav {
     Object? lastError;
     final names = appNames.toSet();
     for (final appName in names) {
-      final path = '${_getAppDirectory(appName)}/$_fileName';
-      try {
-        return utf8.decode(await _client!.read(path));
-      } catch (e) {
-        lastError = e;
+      for (final fileName in {_fileName!, _getLegacyFileName()}) {
+        final path = '${_getAppDirectory(appName)}/$fileName';
+        try {
+          return utf8.decode(await _client!.read(path));
+        } catch (e) {
+          lastError = e;
+        }
       }
     }
     throw lastError ?? _l10n.webDavBackupNotFound;

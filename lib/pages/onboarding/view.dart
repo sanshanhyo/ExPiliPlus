@@ -47,6 +47,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   int _step = 0;
   bool _busy = false;
+  bool _finishing = false;
   String? _settingsStatus;
   String? _accountStatus;
 
@@ -87,7 +88,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     final padding = MediaQuery.viewPaddingOf(context);
     return PopScope(
-      canPop: _step == 0,
+      canPop: _step == 0 || _finishing,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop && _step > 0) _previous();
       },
@@ -522,6 +523,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
         (_) => GStorage.setting.putAll(draft.setting),
       ),
       GStorage.video.clear().then((_) => GStorage.video.putAll(draft.video)),
+      if (draft.localCache.isNotEmpty)
+        GStorage.localCache.putAll(draft.localCache),
     ]);
     await _refreshRuntimeSettings();
     _syncAppearanceFromPref();
@@ -649,12 +652,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _finish() async {
+    final previousRoute = Get.previousRoute;
     await GStorage.localCache.put(
       LocalCacheKey.onboardingVersion,
       _onboardingVersion,
     );
+    if (!mounted) return;
     if (widget.onFinished != null) {
       widget.onFinished!();
+    } else if (previousRoute.isNotEmpty) {
+      setState(() => _finishing = true);
+      await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) return;
+      Navigator.of(context).pop();
     } else {
       Get.offAllNamed('/');
     }
@@ -1138,14 +1148,16 @@ final class _SettingsImportDraft {
   _SettingsImportDraft({
     required this.setting,
     required this.video,
+    required this.localCache,
     required this.extraTopLevelCount,
   });
 
   final Map<String, dynamic> setting;
   final Map<String, dynamic> video;
+  final Map<String, dynamic> localCache;
   final int extraTopLevelCount;
 
-  int get totalCount => setting.length + video.length;
+  int get totalCount => setting.length + video.length + localCache.length;
 
   String categoryLabel(AppLocalizations l10n) {
     final categories = <String>[
@@ -1190,19 +1202,35 @@ final class _SettingsImportDraft {
     Map<String, dynamic> json,
     AppLocalizations l10n,
   ) {
+    final exPiliPlus = json[SettingsBackup.exPiliPlusSection];
+    final exPiliPlusMap = exPiliPlus == null
+        ? null
+        : _asStringMap(
+            exPiliPlus,
+            SettingsBackup.exPiliPlusSection,
+            l10n,
+          );
     final setting = SettingsBackup.prepareForImport(
       _asStringMap(json[GStorage.setting.name], 'setting', l10n),
+      exPiliPlus: exPiliPlusMap,
     );
     final video = _asStringMap(json[GStorage.video.name], 'video', l10n);
+    final localCache = exPiliPlusMap == null
+        ? <String, dynamic>{}
+        : SettingsBackup.prepareExPiliPlusLocalCacheForImport(exPiliPlusMap);
     if (setting.isEmpty && video.isEmpty) {
       throw FormatException(l10n.onboardingErrorNoSettingsData);
     }
     return _SettingsImportDraft(
       setting: setting,
       video: video,
+      localCache: localCache,
       extraTopLevelCount: json.keys
           .where(
-            (key) => key != GStorage.setting.name && key != GStorage.video.name,
+            (key) =>
+                key != GStorage.setting.name &&
+                key != GStorage.video.name &&
+                key != SettingsBackup.exPiliPlusSection,
           )
           .length,
     );

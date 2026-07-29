@@ -1388,7 +1388,7 @@
   "historyDeleteWatched": "Delete watched items",
   "historyDisabled": " Watch history is paused",
   "historyTapToEnable": "Turn on",
-  "statisticsTitle": "Viewing statistics",
+  "statisticsTitle": "Viewing statistics (Beta)",
   "statisticsLoading": "Analyzing watch history…",
   "statisticsLoadingCount": "Loaded {count} records…",
   "statisticsRange7Days": "7 days",

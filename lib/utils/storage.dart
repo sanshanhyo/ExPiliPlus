@@ -79,9 +79,15 @@ abstract final class GStorage {
   }
 
   static String exportAllSettings() {
+    final settingData = setting.toMap();
     return Utils.jsonEncoder.convert({
-      setting.name: SettingsBackup.prepareForExport(setting.toMap()),
+      setting.name: SettingsBackup.prepareForExport(settingData),
       video.name: video.toMap(),
+      SettingsBackup.exPiliPlusSection:
+          SettingsBackup.prepareExPiliPlusForExport(
+            settingData,
+            localCache.toMap(),
+          ),
     });
   }
 
@@ -91,12 +97,31 @@ abstract final class GStorage {
   static Future<List<void>> importAllJsonSettings(
     Map<String, dynamic> map,
   ) {
+    final settingSource = map[setting.name];
+    final videoSource = map[video.name];
+    final exPiliPlus = map[SettingsBackup.exPiliPlusSection];
+    if (settingSource != null && settingSource is! Map) {
+      throw const FormatException('setting must be an object');
+    }
+    if (videoSource != null && videoSource is! Map) {
+      throw const FormatException('video must be an object');
+    }
+    if (exPiliPlus != null && exPiliPlus is! Map) {
+      throw const FormatException('ExPiliplus settings must be an object');
+    }
     final importedSetting = SettingsBackup.prepareForImport(
-      map[setting.name] as Map<dynamic, dynamic>,
+      settingSource as Map<dynamic, dynamic>? ?? const {},
+      exPiliPlus: exPiliPlus as Map<dynamic, dynamic>?,
     );
+    final importedLocalCache = exPiliPlus == null
+        ? null
+        : SettingsBackup.prepareExPiliPlusLocalCacheForImport(exPiliPlus);
     return Future.wait([
       setting.clear().then((_) => setting.putAll(importedSetting)),
-      video.clear().then((_) => video.putAll(map[video.name])),
+      video.clear().then(
+        (_) => video.putAll(videoSource as Map<dynamic, dynamic>? ?? const {}),
+      ),
+      if (importedLocalCache != null) localCache.putAll(importedLocalCache),
     ]);
   }
 

@@ -3618,7 +3618,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoShareText.
   ///
   /// In zh, this message translates to:
-  /// **'{title}\nUploader：{uploader}\n{url}'**
+  /// **'{title}\nUP 主：{uploader}\n{url}'**
   String videoShareText(String title, String uploader, String url);
 
   /// No description provided for @videoShareToFeed.
@@ -3972,7 +3972,7 @@ abstract class AppLocalizations {
   /// No description provided for @videoConfirmBlockUploader.
   ///
   /// In zh, this message translates to:
-  /// **'确定拉黑 {name}（{id}）？\n\n被拉黑的 Uploader 可在隐私设置的黑名单管理中解除。'**
+  /// **'确定拉黑 {name}（{id}）？\n\n被拉黑的 UP 主可在隐私设置的黑名单管理中解除。'**
   String videoConfirmBlockUploader(String name, String id);
 
   /// No description provided for @timeJustNow.
@@ -5790,7 +5790,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedWaterfall.
   ///
   /// In zh, this message translates to:
-  /// **'Feed 启用瀑布流'**
+  /// **'动态页启用瀑布流'**
   String get settingsFeedWaterfall;
 
   /// No description provided for @settingsFeedWaterfallDescription.
@@ -5802,25 +5802,25 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedUploaderPosition.
   ///
   /// In zh, this message translates to:
-  /// **'Feed Uploader 显示位置'**
+  /// **'动态页 UP 主列表显示位置'**
   String get settingsFeedUploaderPosition;
 
   /// No description provided for @settingsShowAllFollowedUploaders.
   ///
   /// In zh, this message translates to:
-  /// **'Feed 显示所有已关注 Uploader'**
+  /// **'动态页显示所有已关注 UP 主'**
   String get settingsShowAllFollowedUploaders;
 
   /// No description provided for @settingsExpandLiveUploaders.
   ///
   /// In zh, this message translates to:
-  /// **'Feed 展开正在直播的 Uploader 列表'**
+  /// **'动态页展开正在直播的 UP 主列表'**
   String get settingsExpandLiveUploaders;
 
   /// No description provided for @settingsFeedUnreadBadge.
   ///
   /// In zh, this message translates to:
-  /// **'Feed 未读标记'**
+  /// **'动态未读标记'**
   String get settingsFeedUnreadBadge;
 
   /// No description provided for @settingsMessageUnreadBadge.
@@ -6234,7 +6234,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCheckUnreadFeed.
   ///
   /// In zh, this message translates to:
-  /// **'检查未读 Feed'**
+  /// **'检查未读动态'**
   String get settingsCheckUnreadFeed;
 
   /// No description provided for @settingsCheckUnreadFeedDescription.
@@ -6288,7 +6288,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsLandscapeUploaderSidebar.
   ///
   /// In zh, this message translates to:
-  /// **'横屏播放页在侧栏打开 Uploader 主页'**
+  /// **'横屏播放页在侧栏打开 UP 主主页'**
   String get settingsLandscapeUploaderSidebar;
 
   /// No description provided for @settingsLandscapeImagePreview.
@@ -6336,7 +6336,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedWarnings.
   ///
   /// In zh, this message translates to:
-  /// **'显示 Feed 警告／争议信息'**
+  /// **'显示动态警告／争议信息'**
   String get settingsFeedWarnings;
 
   /// No description provided for @settingsReverseEpisodesFromFirst.
@@ -6378,7 +6378,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedKeywordFilter.
   ///
   /// In zh, this message translates to:
-  /// **'Feed 关键词过滤'**
+  /// **'动态关键词过滤'**
   String get settingsFeedKeywordFilter;
 
   /// No description provided for @settingsExternalBrowser.
@@ -6540,7 +6540,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsShowDecorations.
   ///
   /// In zh, this message translates to:
-  /// **'展示头像、评论和 Feed 装饰'**
+  /// **'展示头像、评论和动态装饰'**
   String get settingsShowDecorations;
 
   /// No description provided for @settingsFanMedals.
@@ -6606,19 +6606,19 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedPostAntifraud.
   ///
   /// In zh, this message translates to:
-  /// **'发布／转发 Feed 反诈'**
+  /// **'发布／转发动态反诈'**
   String get settingsFeedPostAntifraud;
 
   /// No description provided for @settingsFeedPostAntifraudDescription.
   ///
   /// In zh, this message translates to:
-  /// **'发布／转发后检查 Feed 内容是否可见'**
+  /// **'发布／转发后检查动态内容是否可见'**
   String get settingsFeedPostAntifraudDescription;
 
   /// No description provided for @settingsBlockShoppingPosts.
   ///
   /// In zh, this message translates to:
-  /// **'屏蔽带货 Feed'**
+  /// **'屏蔽带货动态'**
   String get settingsBlockShoppingPosts;
 
   /// No description provided for @settingsBlockShoppingComments.
@@ -6642,7 +6642,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsSecondaryPageActionBar.
   ///
   /// In zh, this message translates to:
-  /// **'Feed／专栏详情页展示底部操作栏'**
+  /// **'动态／专栏详情页展示底部操作栏'**
   String get settingsSecondaryPageActionBar;
 
   /// No description provided for @settingsDragSubtitles.
@@ -6828,19 +6828,19 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeedDisplay.
   ///
   /// In zh, this message translates to:
-  /// **'Feed 展示'**
+  /// **'动态展示'**
   String get settingsFeedDisplay;
 
   /// No description provided for @settingsFeedInteractions.
   ///
   /// In zh, this message translates to:
-  /// **'显示 Feed 互动内容'**
+  /// **'显示动态互动内容'**
   String get settingsFeedInteractions;
 
   /// No description provided for @settingsFeedInteractionsDescription.
   ///
   /// In zh, this message translates to:
-  /// **'在 Feed 卡片底部显示互动内容，例如关注的人点赞、热评等'**
+  /// **'在动态卡片底部显示互动内容，例如关注的人点赞、热评等'**
   String get settingsFeedInteractionsDescription;
 
   /// No description provided for @settingsMemberDefaultTab.
@@ -6852,7 +6852,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsUploaderShopTab.
   ///
   /// In zh, this message translates to:
-  /// **'显示 Uploader 主页小店 Tab'**
+  /// **'显示 UP 主主页小店 Tab'**
   String get settingsUploaderShopTab;
 
   /// No description provided for @settingsProxy.
@@ -8398,7 +8398,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsTitle.
   ///
   /// In zh, this message translates to:
-  /// **'数据统计'**
+  /// **'数据统计（Beta）'**
   String get statisticsTitle;
 
   /// No description provided for @statisticsLoading.
