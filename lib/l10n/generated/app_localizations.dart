@@ -1137,6 +1137,30 @@ abstract class AppLocalizations {
   /// **'再次查看语言、主题和数据迁移引导，不会清除现有设置'**
   String get settingsOpenOnboardingDescription;
 
+  /// No description provided for @settingsEnablePermanentDynamicBlock.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用永久动态屏蔽'**
+  String get settingsEnablePermanentDynamicBlock;
+
+  /// No description provided for @settingsEnablePermanentDynamicBlockDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后，可将指定 UP 加入永久动态屏蔽名单'**
+  String get settingsEnablePermanentDynamicBlockDescription;
+
+  /// No description provided for @settingsDynamicBlockedUpList.
+  ///
+  /// In zh, this message translates to:
+  /// **'动态屏蔽 UP 名单'**
+  String get settingsDynamicBlockedUpList;
+
+  /// No description provided for @settingsDynamicBlockedUpCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 位 UP'**
+  String settingsDynamicBlockedUpCount(int count);
+
   /// No description provided for @settingsDefaultValue.
   ///
   /// In zh, this message translates to:
@@ -4413,17 +4437,29 @@ abstract class AppLocalizations {
   /// **'分享至消息'**
   String get feedShareToMessages;
 
-  /// No description provided for @feedBlockAuthorPosts.
+  /// No description provided for @feedTemporarilyBlock.
   ///
   /// In zh, this message translates to:
-  /// **'屏蔽 {name} 的动态'**
-  String feedBlockAuthorPosts(String name);
+  /// **'临时屏蔽 {name} 的动态'**
+  String feedTemporarilyBlock(String name);
 
-  /// No description provided for @feedAuthorPostsBlocked.
+  /// No description provided for @feedTemporarilyBlocked.
   ///
   /// In zh, this message translates to:
-  /// **'已屏蔽 {name}（{id}）的动态'**
-  String feedAuthorPostsBlocked(String name, String id);
+  /// **'已临时屏蔽 {name}（{id}）的动态，重启后恢复'**
+  String feedTemporarilyBlocked(String name, String id);
+
+  /// No description provided for @feedPermanentlyBlockAuthorPosts.
+  ///
+  /// In zh, this message translates to:
+  /// **'永久屏蔽 {name} 的动态'**
+  String feedPermanentlyBlockAuthorPosts(String name);
+
+  /// No description provided for @feedAuthorPostsPermanentlyBlocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'已永久屏蔽 {name}（{id}）的动态'**
+  String feedAuthorPostsPermanentlyBlocked(String name, String id);
 
   /// No description provided for @feedUnblockAuthorPosts.
   ///
@@ -4436,6 +4472,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'已取消屏蔽 {name} 的动态'**
   String feedAuthorPostsUnblocked(String name);
+
+  /// No description provided for @dynamicBlockedUpListTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'动态屏蔽 UP 名单（{count}）'**
+  String dynamicBlockedUpListTitle(int count);
+
+  /// No description provided for @dynamicBlockedUpListEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'名单中暂无 UP'**
+  String get dynamicBlockedUpListEmpty;
+
+  /// No description provided for @dynamicBlockedUpUnknownName.
+  ///
+  /// In zh, this message translates to:
+  /// **'UP {id}'**
+  String dynamicBlockedUpUnknownName(String id);
+
+  /// No description provided for @dynamicBlockedUpUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'UID：{id}'**
+  String dynamicBlockedUpUid(String id);
+
+  /// No description provided for @dynamicBlockedUpRemoveConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定将 {name} 移出动态屏蔽名单？'**
+  String dynamicBlockedUpRemoveConfirm(String name);
+
+  /// No description provided for @dynamicBlockedUpRemoved.
+  ///
+  /// In zh, this message translates to:
+  /// **'已移出动态屏蔽名单'**
+  String get dynamicBlockedUpRemoved;
 
   /// No description provided for @feedCheckPost.
   ///

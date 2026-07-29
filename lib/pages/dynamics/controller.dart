@@ -20,7 +20,12 @@ class DynamicsController
     with GetSingleTickerProviderStateMixin, AccountMixin {
   late final TabController tabController;
 
-  final Set<int> bannedMids = Pref.dynamicBannedMids;
+  final Set<int> tempBannedMids = <int>{};
+
+  Set<int> get bannedMids => {
+    ...tempBannedMids,
+    if (Pref.enablePermanentDynamicBlock) ...Pref.dynamicBannedMids,
+  };
 
   String? _offset;
   late int _page = 1;
@@ -83,12 +88,30 @@ class DynamicsController
     _jumpToTab(mid);
   }
 
-  Future<void> setAuthorBlocked(int mid, bool blocked) async {
-    await Pref.setDynamicAuthorBlocked(mid, blocked);
-    if (blocked) {
-      bannedMids.add(mid);
-    } else {
-      bannedMids.remove(mid);
+  void blockAuthorTemporarily(int mid) {
+    tempBannedMids.add(mid);
+  }
+
+  Future<void> setAuthorPermanentlyBlocked(
+    int mid,
+    bool blocked, {
+    String name = '',
+    String? face,
+  }) {
+    return Pref.setDynamicAuthorPermanentlyBlocked(
+      mid,
+      blocked,
+      name: name,
+      face: face,
+    );
+  }
+
+  void reloadDynamicTabs() {
+    for (final type in DynamicsTabType.values) {
+      if (type == .up) continue;
+      if (Get.isRegistered<DynamicsTabController>(tag: type.name)) {
+        Get.find<DynamicsTabController>(tag: type.name).onReload();
+      }
     }
   }
 

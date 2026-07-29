@@ -103,14 +103,32 @@ void main() {
       Hive.registerAdapter(SetIntAdapter());
     }
     var localCache = await Hive.openBox<dynamic>('localCache');
+    final setting = await Hive.openBox<dynamic>('setting');
     GStorage.localCache = localCache;
+    GStorage.setting = setting;
 
     try {
-      await Pref.setDynamicAuthorBlocked(1001, true);
-      await Pref.setDynamicAuthorBlocked(1002, true);
-      await Pref.setDynamicAuthorBlocked(1001, false);
+      expect(Pref.enablePermanentDynamicBlock, isFalse);
+
+      await Pref.setDynamicAuthorPermanentlyBlocked(
+        1001,
+        true,
+        name: 'First uploader',
+      );
+      await Pref.setDynamicAuthorPermanentlyBlocked(
+        1002,
+        true,
+        name: 'Second uploader',
+        face: 'https://example.com/avatar.jpg',
+      );
+      await Pref.setDynamicAuthorPermanentlyBlocked(1001, false);
 
       expect(Pref.dynamicBannedMids, {1002});
+      expect(Pref.dynamicBannedUps.single.name, 'Second uploader');
+      expect(
+        Pref.dynamicBannedUps.single.face,
+        'https://example.com/avatar.jpg',
+      );
 
       await localCache.close();
       localCache = await Hive.openBox<dynamic>('localCache');
@@ -119,8 +137,13 @@ void main() {
         Set<int>.from(localCache.get(LocalCacheKey.dynamicBannedMids) as Set),
         {1002},
       );
+      expect(
+        (localCache.get(LocalCacheKey.dynamicBannedUpList) as List).single,
+        containsPair('name', 'Second uploader'),
+      );
     } finally {
       await localCache.close();
+      await setting.close();
       await tempDir.delete(recursive: true);
     }
   });

@@ -266,11 +266,9 @@ class AuthorPanel extends StatelessWidget {
     final dynamicsController = Get.isRegistered<DynamicsController>()
         ? Get.find<DynamicsController>()
         : null;
-    final isAuthorBlocked =
-        mid != null &&
-        (dynamicsController?.bannedMids ?? Pref.dynamicBannedMids).contains(
-          mid,
-        );
+    final isAuthorPermanentlyBlocked =
+        mid != null && Pref.dynamicBannedMids.contains(mid);
+    final permanentBlockEnabled = Pref.enablePermanentDynamicBlock;
 
     showModalBottomSheet(
       context: context,
@@ -387,46 +385,76 @@ class AuthorPanel extends StatelessWidget {
               if (mid != null)
                 ListTile(
                   title: Text(
-                    isAuthorBlocked
+                    context.l10n.feedTemporarilyBlock(
+                      moduleAuthor.name ?? '',
+                    ),
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  leading: const Icon(
+                    Icons.visibility_off_outlined,
+                    size: 19,
+                  ),
+                  onTap: () {
+                    Get.back();
+                    dynamicsController?.blockAuthorTemporarily(mid);
+                    onBlock?.call();
+                    SmartDialog.showToast(
+                      context.l10n.feedTemporarilyBlocked(
+                        moduleAuthor.name ?? '',
+                        mid.toString(),
+                      ),
+                    );
+                  },
+                  minLeadingWidth: 0,
+                ),
+              if (mid != null && permanentBlockEnabled)
+                ListTile(
+                  title: Text(
+                    isAuthorPermanentlyBlocked
                         ? context.l10n.feedUnblockAuthorPosts(
                             moduleAuthor.name ?? '',
                           )
-                        : context.l10n.feedBlockAuthorPosts(
+                        : context.l10n.feedPermanentlyBlockAuthorPosts(
                             moduleAuthor.name ?? '',
                           ),
                     style: theme.textTheme.titleSmall,
                   ),
                   leading: Icon(
-                    isAuthorBlocked
+                    isAuthorPermanentlyBlocked
                         ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
+                        : Icons.block_outlined,
                     size: 19,
                   ),
                   onTap: () async {
                     Get.back();
-                    final successMessage = isAuthorBlocked
+                    final successMessage = isAuthorPermanentlyBlocked
                         ? context.l10n.feedAuthorPostsUnblocked(
                             moduleAuthor.name ?? '',
                           )
-                        : context.l10n.feedAuthorPostsBlocked(
+                        : context.l10n.feedAuthorPostsPermanentlyBlocked(
                             moduleAuthor.name ?? '',
                             mid.toString(),
                           );
                     try {
                       if (dynamicsController != null) {
-                        await dynamicsController.setAuthorBlocked(
+                        await dynamicsController.setAuthorPermanentlyBlocked(
                           mid,
-                          !isAuthorBlocked,
+                          !isAuthorPermanentlyBlocked,
+                          name: moduleAuthor.name ?? '',
+                          face: moduleAuthor.face,
                         );
                       } else {
-                        await Pref.setDynamicAuthorBlocked(
+                        await Pref.setDynamicAuthorPermanentlyBlocked(
                           mid,
-                          !isAuthorBlocked,
+                          !isAuthorPermanentlyBlocked,
+                          name: moduleAuthor.name ?? '',
+                          face: moduleAuthor.face,
                         );
                       }
-                      if (!isAuthorBlocked) {
+                      if (!isAuthorPermanentlyBlocked) {
                         onBlock?.call();
                       }
+                      dynamicsController?.reloadDynamicTabs();
                       SmartDialog.showToast(successMessage);
                     } catch (e) {
                       SmartDialog.showToast(e.toString());

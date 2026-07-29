@@ -1,6 +1,8 @@
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
+import 'package:ex_piliplus/pages/dynamic_banned_up_list/view.dart';
+import 'package:ex_piliplus/pages/dynamics/controller.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
 import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
@@ -33,6 +35,31 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       getSubtitle: () => l10n.settingsOpenOnboardingDescription,
       leading: const Icon(Icons.auto_awesome_outlined),
       onTap: (context, _) => Get.toNamed('/onboarding'),
+    ),
+    SwitchModel(
+      getTitle: () => l10n.settingsEnablePermanentDynamicBlock,
+      getSubtitle: () => l10n.settingsEnablePermanentDynamicBlockDescription,
+      leading: const Icon(Icons.visibility_off_outlined),
+      setKey: SettingBoxKey.enablePermanentDynamicBlock,
+      defaultVal: false,
+      onChanged: (_) {
+        if (Get.isRegistered<DynamicsController>()) {
+          Get.find<DynamicsController>().reloadDynamicTabs();
+        }
+      },
+    ),
+    NormalModel(
+      getTitle: () => l10n.settingsDynamicBlockedUpList,
+      getSubtitle: () => l10n.settingsDynamicBlockedUpCount(
+        Pref.dynamicBannedMids.length,
+      ),
+      leading: const Icon(Icons.manage_accounts_outlined),
+      getTrailing: (_) => const Icon(Icons.chevron_right),
+      onTap: (_, setState) {
+        Get.to<void>(
+          () => const DynamicBannedUpListPage(),
+        )?.whenComplete(setState);
+      },
     ),
     NormalModel(
       getTitle: () => l10n.settingsCustomThemeColor,

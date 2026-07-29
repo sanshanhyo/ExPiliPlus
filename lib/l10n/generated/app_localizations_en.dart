@@ -619,6 +619,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Review language, theme, and data migration without clearing your current settings';
 
   @override
+  String get settingsEnablePermanentDynamicBlock =>
+      'Enable permanent dynamic filtering';
+
+  @override
+  String get settingsEnablePermanentDynamicBlockDescription =>
+      'Allow uploaders to be added to a permanent dynamic filter list';
+
+  @override
+  String get settingsDynamicBlockedUpList => 'Filtered uploader list';
+
+  @override
+  String settingsDynamicBlockedUpCount(int count) {
+    return '$count uploaders';
+  }
+
+  @override
   String settingsDefaultValue(String value) {
     return 'Default: $value';
   }
@@ -2534,13 +2550,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedShareToMessages => 'Share in messages';
 
   @override
-  String feedBlockAuthorPosts(String name) {
-    return 'Hide posts from $name';
+  String feedTemporarilyBlock(String name) {
+    return 'Temporarily hide posts from $name';
   }
 
   @override
-  String feedAuthorPostsBlocked(String name, String id) {
-    return 'Posts from $name ($id) are now hidden';
+  String feedTemporarilyBlocked(String name, String id) {
+    return 'Posts from $name ($id) are hidden until restart';
+  }
+
+  @override
+  String feedPermanentlyBlockAuthorPosts(String name) {
+    return 'Permanently hide posts from $name';
+  }
+
+  @override
+  String feedAuthorPostsPermanentlyBlocked(String name, String id) {
+    return 'Posts from $name ($id) are permanently hidden';
   }
 
   @override
@@ -2552,6 +2578,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String feedAuthorPostsUnblocked(String name) {
     return 'Posts from $name are now visible';
   }
+
+  @override
+  String dynamicBlockedUpListTitle(int count) {
+    return 'Filtered uploaders ($count)';
+  }
+
+  @override
+  String get dynamicBlockedUpListEmpty =>
+      'No uploaders are permanently filtered';
+
+  @override
+  String dynamicBlockedUpUnknownName(String id) {
+    return 'Uploader $id';
+  }
+
+  @override
+  String dynamicBlockedUpUid(String id) {
+    return 'UID: $id';
+  }
+
+  @override
+  String dynamicBlockedUpRemoveConfirm(String name) {
+    return 'Remove $name from the dynamic filter list?';
+  }
+
+  @override
+  String get dynamicBlockedUpRemoved => 'Removed from the dynamic filter list';
 
   @override
   String get feedCheckPost => 'Check post';

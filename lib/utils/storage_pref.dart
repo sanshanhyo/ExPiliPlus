@@ -8,6 +8,7 @@ import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/bar_hide_type.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_badge_mode.dart';
+import 'package:ex_piliplus/models/common/dynamic/dynamic_banned_up.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamics_type.dart';
 import 'package:ex_piliplus/models/common/dynamic/up_panel_position.dart';
 import 'package:ex_piliplus/models/common/follow_order_type.dart';
@@ -78,14 +79,56 @@ abstract final class Pref {
     ),
   );
 
-  static Future<void> setDynamicAuthorBlocked(int mid, bool blocked) async {
+  static List<DynamicBannedUp> get dynamicBannedUps {
+    final rawList = _localCache.get(LocalCacheKey.dynamicBannedUpList);
+    final byMid = <int, DynamicBannedUp>{};
+    if (rawList is List) {
+      for (final raw in rawList) {
+        if (raw is Map) {
+          try {
+            final item = DynamicBannedUp.fromJson(raw);
+            byMid[item.mid] = item;
+          } catch (_) {}
+        }
+      }
+    }
+    for (final mid in dynamicBannedMids) {
+      byMid.putIfAbsent(
+        mid,
+        () => DynamicBannedUp(mid: mid, name: ''),
+      );
+    }
+    return byMid.values.toList(growable: false);
+  }
+
+  static Future<void> setDynamicAuthorPermanentlyBlocked(
+    int mid,
+    bool blocked, {
+    String name = '',
+    String? face,
+  }) async {
     final bannedMids = dynamicBannedMids;
+    final bannedUps = {
+      for (final item in dynamicBannedUps) item.mid: item,
+    };
     if (blocked) {
       bannedMids.add(mid);
+      final previous = bannedUps[mid];
+      bannedUps[mid] = DynamicBannedUp(
+        mid: mid,
+        name: name.isNotEmpty ? name : previous?.name ?? '',
+        face: face?.isNotEmpty == true ? face : previous?.face,
+      );
     } else {
       bannedMids.remove(mid);
+      bannedUps.remove(mid);
     }
-    await _localCache.put(LocalCacheKey.dynamicBannedMids, bannedMids);
+    await _localCache.putAll({
+      LocalCacheKey.dynamicBannedMids: bannedMids,
+      LocalCacheKey.dynamicBannedUpList: bannedUps.values
+          .map((item) => item.toJson())
+          .toList(growable: false),
+    });
   }
 
   static RuleFilter get danmakuFilterRule => _localCache.get(
@@ -969,6 +1012,11 @@ abstract final class Pref {
 
   static bool get autoLikeOpenedVideo =>
       _setting.get(SettingBoxKey.autoLikeOpenedVideo, defaultValue: false);
+
+  static bool get enablePermanentDynamicBlock => _setting.get(
+    SettingBoxKey.enablePermanentDynamicBlock,
+    defaultValue: false,
+  );
 
   static SuperChatType get superChatType =>
       SuperChatType.values[_setting.get(

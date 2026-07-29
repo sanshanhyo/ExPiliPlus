@@ -605,6 +605,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsOpenOnboardingDescription => '再次查看语言、主题和数据迁移引导，不会清除现有设置';
 
   @override
+  String get settingsEnablePermanentDynamicBlock => '启用永久动态屏蔽';
+
+  @override
+  String get settingsEnablePermanentDynamicBlockDescription =>
+      '开启后，可将指定 UP 加入永久动态屏蔽名单';
+
+  @override
+  String get settingsDynamicBlockedUpList => '动态屏蔽 UP 名单';
+
+  @override
+  String settingsDynamicBlockedUpCount(int count) {
+    return '$count 位 UP';
+  }
+
+  @override
   String settingsDefaultValue(String value) {
     return '默认值：$value';
   }
@@ -2484,13 +2499,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get feedShareToMessages => '分享至消息';
 
   @override
-  String feedBlockAuthorPosts(String name) {
-    return '屏蔽 $name 的动态';
+  String feedTemporarilyBlock(String name) {
+    return '临时屏蔽 $name 的动态';
   }
 
   @override
-  String feedAuthorPostsBlocked(String name, String id) {
-    return '已屏蔽 $name（$id）的动态';
+  String feedTemporarilyBlocked(String name, String id) {
+    return '已临时屏蔽 $name（$id）的动态，重启后恢复';
+  }
+
+  @override
+  String feedPermanentlyBlockAuthorPosts(String name) {
+    return '永久屏蔽 $name 的动态';
+  }
+
+  @override
+  String feedAuthorPostsPermanentlyBlocked(String name, String id) {
+    return '已永久屏蔽 $name（$id）的动态';
   }
 
   @override
@@ -2502,6 +2527,32 @@ class AppLocalizationsZh extends AppLocalizations {
   String feedAuthorPostsUnblocked(String name) {
     return '已取消屏蔽 $name 的动态';
   }
+
+  @override
+  String dynamicBlockedUpListTitle(int count) {
+    return '动态屏蔽 UP 名单（$count）';
+  }
+
+  @override
+  String get dynamicBlockedUpListEmpty => '名单中暂无 UP';
+
+  @override
+  String dynamicBlockedUpUnknownName(String id) {
+    return 'UP $id';
+  }
+
+  @override
+  String dynamicBlockedUpUid(String id) {
+    return 'UID：$id';
+  }
+
+  @override
+  String dynamicBlockedUpRemoveConfirm(String name) {
+    return '确定将 $name 移出动态屏蔽名单？';
+  }
+
+  @override
+  String get dynamicBlockedUpRemoved => '已移出动态屏蔽名单';
 
   @override
   String get feedCheckPost => '检查动态';
@@ -7793,6 +7844,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get settingsOpenOnboardingDescription => '再次查看語言、主題與資料遷移引導，不會清除現有設定';
 
   @override
+  String get settingsEnablePermanentDynamicBlock => '啟用永久動態隱藏';
+
+  @override
+  String get settingsEnablePermanentDynamicBlockDescription =>
+      '開啟後，可將指定 UP 加入永久動態隱藏名單';
+
+  @override
+  String get settingsDynamicBlockedUpList => '動態隱藏 UP 名單';
+
+  @override
+  String settingsDynamicBlockedUpCount(int count) {
+    return '$count 位 UP';
+  }
+
+  @override
   String settingsDefaultValue(String value) {
     return '預設值：$value';
   }
@@ -9672,13 +9738,23 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get feedShareToMessages => '分享至訊息';
 
   @override
-  String feedBlockAuthorPosts(String name) {
-    return '隱藏 $name 的動態';
+  String feedTemporarilyBlock(String name) {
+    return '暫時隱藏 $name 的動態';
   }
 
   @override
-  String feedAuthorPostsBlocked(String name, String id) {
-    return '已隱藏 $name（$id）的動態';
+  String feedTemporarilyBlocked(String name, String id) {
+    return '已暫時隱藏 $name（$id）的動態，重新啟動後恢復';
+  }
+
+  @override
+  String feedPermanentlyBlockAuthorPosts(String name) {
+    return '永久隱藏 $name 的動態';
+  }
+
+  @override
+  String feedAuthorPostsPermanentlyBlocked(String name, String id) {
+    return '已永久隱藏 $name（$id）的動態';
   }
 
   @override
@@ -9690,6 +9766,32 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String feedAuthorPostsUnblocked(String name) {
     return '已取消隱藏 $name 的動態';
   }
+
+  @override
+  String dynamicBlockedUpListTitle(int count) {
+    return '動態隱藏 UP 名單（$count）';
+  }
+
+  @override
+  String get dynamicBlockedUpListEmpty => '名單中暫無 UP';
+
+  @override
+  String dynamicBlockedUpUnknownName(String id) {
+    return 'UP $id';
+  }
+
+  @override
+  String dynamicBlockedUpUid(String id) {
+    return 'UID：$id';
+  }
+
+  @override
+  String dynamicBlockedUpRemoveConfirm(String name) {
+    return '確定將 $name 移出動態隱藏名單？';
+  }
+
+  @override
+  String get dynamicBlockedUpRemoved => '已移出動態隱藏名單';
 
   @override
   String get feedCheckPost => '檢查動態';
