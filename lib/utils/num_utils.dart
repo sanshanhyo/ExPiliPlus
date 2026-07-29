@@ -5,8 +5,15 @@ import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'package:get/get.dart';
 
 abstract final class NumUtils {
+  static const _numberPattern = r'([\d,.]+)\s*([千万萬亿億KMBT])?';
+
   static final _numRegExp = RegExp(
-    r'([\d.]+)([千万萬亿億KMBT])?',
+    _numberPattern,
+    caseSensitive: false,
+  );
+
+  static final _compactNumRegExp = RegExp(
+    '^\\s*$_numberPattern\\+?\\s*\$',
     caseSensitive: false,
   );
 
@@ -35,13 +42,22 @@ abstract final class NumUtils {
     if (numberStr == '-') return 0;
     try {
       final match = _numRegExp.firstMatch(numberStr)!;
-      var number = double.parse(match.group(1)!);
-      number *= _getUnit(match.group(2));
-      return number.toInt();
+      return _parseMatch(match)!;
     } catch (e) {
       if (kDebugMode) debugPrint('parse failed: "$numberStr" : $e');
       return 0;
     }
+  }
+
+  static int? _parseMatch(RegExpMatch match) {
+    final number = double.tryParse(match.group(1)!.replaceAll(',', ''));
+    if (number == null) return null;
+    return (number * _getUnit(match.group(2))).toInt();
+  }
+
+  static int? _tryParseCompactNum(String numberStr) {
+    final match = _compactNumRegExp.firstMatch(numberStr);
+    return match == null ? null : _parseMatch(match);
   }
 
   static String numFormat(dynamic number, {Locale? locale}) {
@@ -49,10 +65,9 @@ abstract final class NumUtils {
       return '0';
     }
     if (number is String) {
-      number = int.tryParse(number) ?? number;
-      if (number is String) {
-        return number;
-      }
+      final source = number;
+      number = num.tryParse(source) ?? _tryParseCompactNum(source);
+      if (number == null) return source;
     }
 
     String format(first, second) {
@@ -76,10 +91,6 @@ abstract final class NumUtils {
       } else if (number >= 10000) {
         return format(10000, isTraditional ? '萬' : '万');
       }
-    } else if (number >= 1000000000000) {
-      return format(1000000000000, 'T');
-    } else if (number >= 1000000000) {
-      return format(1000000000, 'B');
     } else if (number >= 1000000) {
       return format(1000000, 'M');
     } else if (number >= 1000) {

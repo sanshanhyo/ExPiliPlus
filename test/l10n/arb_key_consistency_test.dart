@@ -64,12 +64,19 @@ void main() {
     expect(NumUtils.numFormat(1000, locale: const Locale('en')), '1K');
     expect(NumUtils.numFormat(10000, locale: const Locale('en')), '10K');
     expect(NumUtils.numFormat(1500000, locale: const Locale('en')), '1.5M');
-    expect(NumUtils.numFormat(2000000000, locale: const Locale('en')), '2B');
+    expect(NumUtils.numFormat(2000000000, locale: const Locale('en')), '2000M');
+    expect(NumUtils.numFormat('1.5万', locale: const Locale('en')), '15K');
+    expect(NumUtils.numFormat('2亿', locale: const Locale('en')), '200M');
+    expect(NumUtils.numFormat('2B', locale: const Locale('en')), '2000M');
+    expect(NumUtils.numFormat('1T', locale: const Locale('en')), '1000000M');
 
     expect(NumUtils.numFormat(9999, locale: const Locale('zh')), '9999');
     expect(NumUtils.numFormat(10000, locale: const Locale('zh')), '1万');
     expect(NumUtils.numFormat(15000, locale: const Locale('zh')), '1.5万');
     expect(NumUtils.numFormat(200000000, locale: const Locale('zh')), '2亿');
+    expect(NumUtils.numFormat('1.5K', locale: const Locale('zh')), '1500');
+    expect(NumUtils.numFormat('1.5M', locale: const Locale('zh')), '150万');
+    expect(NumUtils.numFormat('2B', locale: const Locale('zh')), '20亿');
 
     const traditional = Locale.fromSubtags(
       languageCode: 'zh',
@@ -77,10 +84,21 @@ void main() {
     );
     expect(NumUtils.numFormat(10000, locale: traditional), '1萬');
     expect(NumUtils.numFormat(200000000, locale: traditional), '2億');
+    expect(NumUtils.numFormat('1.5M', locale: traditional), '150萬');
 
     expect(NumUtils.parseNum('1.5K'), 1500);
     expect(NumUtils.parseNum('1.5万'), 15000);
     expect(NumUtils.parseNum('1.5萬'), 15000);
+    expect(NumUtils.parseNum('播放 1,500 次'), 1500);
+  });
+
+  test('ExPiliPlus settings keep a viewing statistics entry', () {
+    final source = File(
+      'lib/pages/setting/models/ex_features_settings.dart',
+    ).readAsStringSync();
+
+    expect(source, contains('l10n.statisticsTitle'));
+    expect(source, contains("Get.toNamed('/historyStats')"));
   });
 
   test('member Feed tab remains localized in Chinese', () {

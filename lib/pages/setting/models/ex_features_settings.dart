@@ -36,6 +36,12 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       leading: const Icon(Icons.auto_awesome_outlined),
       onTap: (context, _) => Get.toNamed('/onboarding'),
     ),
+    NormalModel(
+      getTitle: () => l10n.statisticsTitle,
+      leading: const Icon(Icons.insights_outlined),
+      getTrailing: (_) => const Icon(Icons.chevron_right),
+      onTap: (context, _) => Get.toNamed('/historyStats'),
+    ),
     SwitchModel(
       getTitle: () => l10n.settingsEnablePermanentDynamicBlock,
       getSubtitle: () => l10n.settingsEnablePermanentDynamicBlockDescription,
