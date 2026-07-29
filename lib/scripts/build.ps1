@@ -33,6 +33,7 @@ try {
         throw "release tag '$Tag' does not match pubspec version 'v$releaseVersion'"
     }
 
+    $nativeVersion = ($releaseVersion -split '-', 2)[0]
     $displayVersion = if ($isRelease) {
         $releaseVersion
     }
@@ -56,6 +57,8 @@ try {
 
     if (-not [string]::IsNullOrWhiteSpace($env:GITHUB_ENV)) {
         Add-Content -Path $env:GITHUB_ENV -Value "version=$displayVersion"
+        Add-Content -Path $env:GITHUB_ENV -Value "native_version=$nativeVersion"
+        Add-Content -Path $env:GITHUB_ENV -Value "version_code=$versionCode"
         $isPrerelease = $releaseVersion.Contains('-').ToString().ToLowerInvariant()
         Add-Content -Path $env:GITHUB_ENV -Value "is_prerelease=$isPrerelease"
     }

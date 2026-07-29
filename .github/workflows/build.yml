@@ -83,26 +83,29 @@ jobs:
               shell: pwsh
               run: lib/scripts/patch.ps1 android
 
-            - name: Write key
+            - name: Configure Android signing
               if: ${{ github.event_name == 'workflow_dispatch' }}
               env:
-                  RELEASE_TAG: ${{ github.event.inputs.tag }}
                   SIGN_KEYSTORE_BASE64: ${{ secrets.SIGN_KEYSTORE_BASE64 }}
                   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
                   KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
                   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
               run: |
-                  if [ -n "$RELEASE_TAG" ] && {
+                  if [ -z "$SIGN_KEYSTORE_BASE64" ] &&
+                    [ -z "$KEYSTORE_PASSWORD" ] &&
+                    [ -z "$KEY_ALIAS" ] &&
+                    [ -z "$KEY_PASSWORD" ]; then
+                    echo "::notice::Android release keystore is not configured; using the debug signing fallback"
+                    exit 0
+                  fi
+                  if {
                     [ -z "$SIGN_KEYSTORE_BASE64" ] ||
                     [ -z "$KEYSTORE_PASSWORD" ] ||
                     [ -z "$KEY_ALIAS" ] ||
                     [ -z "$KEY_PASSWORD" ]
                   }; then
-                    echo "::error::All Android signing secrets are required for a tagged release"
+                    echo "::error::Android signing secrets must either all be configured or all be empty"
                     exit 1
-                  fi
-                  if [ -z "$SIGN_KEYSTORE_BASE64" ]; then
-                    exit 0
                   fi
                   echo "$SIGN_KEYSTORE_BASE64" | base64 --decode > android/app/key.jks
                   printf "storeFile=key.jks\n" >> android/key.properties

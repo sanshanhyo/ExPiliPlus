@@ -44,7 +44,10 @@ jobs:
 
       - name: Build iOS
         run: |
-          flutter build ios --release --no-codesign --dart-define-from-file=pili_release.json
+          flutter build ios --release --no-codesign \
+            --build-name="${{ env.native_version }}" \
+            --build-number="${{ env.version_code }}" \
+            --dart-define-from-file=pili_release.json
           rm -rf Payload
           mkdir -p Payload
           ditto build/ios/iphoneos/Runner.app Payload/Runner.app
