@@ -4605,6 +4605,124 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyTapToEnable => '点击开启';
 
   @override
+  String get statisticsTitle => '数据统计';
+
+  @override
+  String get statisticsLoading => '正在整理观看记录…';
+
+  @override
+  String statisticsLoadingCount(int count) {
+    return '已加载 $count 条记录…';
+  }
+
+  @override
+  String get statisticsRange7Days => '近 7 天';
+
+  @override
+  String get statisticsRange30Days => '近 30 天';
+
+  @override
+  String get statisticsRange90Days => '近 90 天';
+
+  @override
+  String get statisticsPartialData => '部分观看记录加载失败，当前统计可能不完整。';
+
+  @override
+  String get statisticsEmpty => '所选时间范围内没有观看记录';
+
+  @override
+  String get statisticsOverview => '概览';
+
+  @override
+  String statisticsDateRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get statisticsDistinctContent => '浏览过的不同内容';
+
+  @override
+  String get statisticsCompleted => '已看完';
+
+  @override
+  String get statisticsUnfinished => '未看完';
+
+  @override
+  String get statisticsActiveDays => '活跃天数';
+
+  @override
+  String get statisticsFavorited => '已收藏';
+
+  @override
+  String get statisticsActivity => '活跃日期';
+
+  @override
+  String get statisticsActivityDescription => '每个方格代表一天，颜色越深表示记录越多';
+
+  @override
+  String statisticsActivityTooltip(String date, int count) {
+    return '$date：$count 个内容';
+  }
+
+  @override
+  String get statisticsRecordTime => '记录时段';
+
+  @override
+  String get statisticsRecordTimeDescription => '按观看记录最后更新的时间统计';
+
+  @override
+  String get statisticsContentTypes => '内容类型';
+
+  @override
+  String get statisticsContentTypesDescription => '按不同内容的观看记录数量统计';
+
+  @override
+  String get statisticsTopUploaders => '常看 UP 主';
+
+  @override
+  String get statisticsTopUploadersDescription => '按浏览过的不同内容数量排序';
+
+  @override
+  String statisticsUploaderSummary(int contentCount, int completedCount) {
+    return '$contentCount 个内容 · $completedCount 个看完';
+  }
+
+  @override
+  String get statisticsContinueWatching => '继续观看';
+
+  @override
+  String statisticsRemainingTotal(String duration) {
+    return '这些内容共剩余 $duration';
+  }
+
+  @override
+  String statisticsRemaining(String duration) {
+    return '还剩 $duration';
+  }
+
+  @override
+  String get statisticsDataSourceNotice =>
+      '数据根据 bilibili 跨平台观看记录整理。暂停、清空或未记录的历史不会纳入，也不代表实际观看时长。';
+
+  @override
+  String get statisticsTypeVideo => '视频';
+
+  @override
+  String get statisticsTypePgc => '番剧与影视';
+
+  @override
+  String get statisticsTypeLive => '直播';
+
+  @override
+  String get statisticsTypeArticle => '文章';
+
+  @override
+  String get statisticsTypeCourse => '课程';
+
+  @override
+  String get statisticsTypeOther => '其他';
+
+  @override
   String get downloadOfflineTitle => '离线缓存';
 
   @override
@@ -11674,6 +11792,124 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get historyTapToEnable => '點擊開啟';
+
+  @override
+  String get statisticsTitle => '數據統計';
+
+  @override
+  String get statisticsLoading => '正在整理觀看記錄…';
+
+  @override
+  String statisticsLoadingCount(int count) {
+    return '已載入 $count 筆記錄…';
+  }
+
+  @override
+  String get statisticsRange7Days => '近 7 天';
+
+  @override
+  String get statisticsRange30Days => '近 30 天';
+
+  @override
+  String get statisticsRange90Days => '近 90 天';
+
+  @override
+  String get statisticsPartialData => '部分觀看記錄載入失敗，目前的統計可能不完整。';
+
+  @override
+  String get statisticsEmpty => '所選時間範圍內沒有觀看記錄';
+
+  @override
+  String get statisticsOverview => '概覽';
+
+  @override
+  String statisticsDateRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get statisticsDistinctContent => '瀏覽過的不同內容';
+
+  @override
+  String get statisticsCompleted => '已看完';
+
+  @override
+  String get statisticsUnfinished => '未看完';
+
+  @override
+  String get statisticsActiveDays => '活躍天數';
+
+  @override
+  String get statisticsFavorited => '已收藏';
+
+  @override
+  String get statisticsActivity => '活躍日期';
+
+  @override
+  String get statisticsActivityDescription => '每個方格代表一天，顏色越深表示記錄越多';
+
+  @override
+  String statisticsActivityTooltip(String date, int count) {
+    return '$date：$count 個內容';
+  }
+
+  @override
+  String get statisticsRecordTime => '記錄時段';
+
+  @override
+  String get statisticsRecordTimeDescription => '按觀看記錄最後更新的時間統計';
+
+  @override
+  String get statisticsContentTypes => '內容類型';
+
+  @override
+  String get statisticsContentTypesDescription => '按不同內容的觀看記錄數量統計';
+
+  @override
+  String get statisticsTopUploaders => '常看 UP 主';
+
+  @override
+  String get statisticsTopUploadersDescription => '按瀏覽過的不同內容數量排序';
+
+  @override
+  String statisticsUploaderSummary(int contentCount, int completedCount) {
+    return '$contentCount 個內容 · $completedCount 個看完';
+  }
+
+  @override
+  String get statisticsContinueWatching => '繼續觀看';
+
+  @override
+  String statisticsRemainingTotal(String duration) {
+    return '這些內容共剩餘 $duration';
+  }
+
+  @override
+  String statisticsRemaining(String duration) {
+    return '還剩 $duration';
+  }
+
+  @override
+  String get statisticsDataSourceNotice =>
+      '資料根據 bilibili 跨平台觀看記錄整理。暫停、清除或未記錄的歷史不會納入，也不代表實際觀看時長。';
+
+  @override
+  String get statisticsTypeVideo => '影片';
+
+  @override
+  String get statisticsTypePgc => '番劇與影視';
+
+  @override
+  String get statisticsTypeLive => '直播';
+
+  @override
+  String get statisticsTypeArticle => '文章';
+
+  @override
+  String get statisticsTypeCourse => '課程';
+
+  @override
+  String get statisticsTypeOther => '其他';
 
   @override
   String get downloadOfflineTitle => '離線快取';

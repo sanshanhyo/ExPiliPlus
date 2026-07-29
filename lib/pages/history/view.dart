@@ -162,6 +162,11 @@ class _HistoryPageState extends State<HistoryPage>
     bottom: _buildPauseTip,
     actions: [
       IconButton(
+        tooltip: context.l10n.statisticsTitle,
+        onPressed: () => Get.toNamed('/historyStats'),
+        icon: const Icon(Icons.insights_outlined),
+      ),
+      IconButton(
         tooltip: context.l10n.commonSearch,
         onPressed: () => Get.toNamed('/historySearch'),
         icon: const Icon(Icons.search_outlined),

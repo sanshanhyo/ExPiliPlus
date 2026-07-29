@@ -8323,6 +8323,216 @@ abstract class AppLocalizations {
   /// **'点击开启'**
   String get historyTapToEnable;
 
+  /// No description provided for @statisticsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据统计'**
+  String get statisticsTitle;
+
+  /// No description provided for @statisticsLoading.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在整理观看记录…'**
+  String get statisticsLoading;
+
+  /// No description provided for @statisticsLoadingCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'已加载 {count} 条记录…'**
+  String statisticsLoadingCount(int count);
+
+  /// No description provided for @statisticsRange7Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 7 天'**
+  String get statisticsRange7Days;
+
+  /// No description provided for @statisticsRange30Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 30 天'**
+  String get statisticsRange30Days;
+
+  /// No description provided for @statisticsRange90Days.
+  ///
+  /// In zh, this message translates to:
+  /// **'近 90 天'**
+  String get statisticsRange90Days;
+
+  /// No description provided for @statisticsPartialData.
+  ///
+  /// In zh, this message translates to:
+  /// **'部分观看记录加载失败，当前统计可能不完整。'**
+  String get statisticsPartialData;
+
+  /// No description provided for @statisticsEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'所选时间范围内没有观看记录'**
+  String get statisticsEmpty;
+
+  /// No description provided for @statisticsOverview.
+  ///
+  /// In zh, this message translates to:
+  /// **'概览'**
+  String get statisticsOverview;
+
+  /// No description provided for @statisticsDateRange.
+  ///
+  /// In zh, this message translates to:
+  /// **'{start} – {end}'**
+  String statisticsDateRange(String start, String end);
+
+  /// No description provided for @statisticsDistinctContent.
+  ///
+  /// In zh, this message translates to:
+  /// **'浏览过的不同内容'**
+  String get statisticsDistinctContent;
+
+  /// No description provided for @statisticsCompleted.
+  ///
+  /// In zh, this message translates to:
+  /// **'已看完'**
+  String get statisticsCompleted;
+
+  /// No description provided for @statisticsUnfinished.
+  ///
+  /// In zh, this message translates to:
+  /// **'未看完'**
+  String get statisticsUnfinished;
+
+  /// No description provided for @statisticsActiveDays.
+  ///
+  /// In zh, this message translates to:
+  /// **'活跃天数'**
+  String get statisticsActiveDays;
+
+  /// No description provided for @statisticsFavorited.
+  ///
+  /// In zh, this message translates to:
+  /// **'已收藏'**
+  String get statisticsFavorited;
+
+  /// No description provided for @statisticsActivity.
+  ///
+  /// In zh, this message translates to:
+  /// **'活跃日期'**
+  String get statisticsActivity;
+
+  /// No description provided for @statisticsActivityDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'每个方格代表一天，颜色越深表示记录越多'**
+  String get statisticsActivityDescription;
+
+  /// No description provided for @statisticsActivityTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'{date}：{count} 个内容'**
+  String statisticsActivityTooltip(String date, int count);
+
+  /// No description provided for @statisticsRecordTime.
+  ///
+  /// In zh, this message translates to:
+  /// **'记录时段'**
+  String get statisticsRecordTime;
+
+  /// No description provided for @statisticsRecordTimeDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'按观看记录最后更新的时间统计'**
+  String get statisticsRecordTimeDescription;
+
+  /// No description provided for @statisticsContentTypes.
+  ///
+  /// In zh, this message translates to:
+  /// **'内容类型'**
+  String get statisticsContentTypes;
+
+  /// No description provided for @statisticsContentTypesDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'按不同内容的观看记录数量统计'**
+  String get statisticsContentTypesDescription;
+
+  /// No description provided for @statisticsTopUploaders.
+  ///
+  /// In zh, this message translates to:
+  /// **'常看 UP 主'**
+  String get statisticsTopUploaders;
+
+  /// No description provided for @statisticsTopUploadersDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'按浏览过的不同内容数量排序'**
+  String get statisticsTopUploadersDescription;
+
+  /// No description provided for @statisticsUploaderSummary.
+  ///
+  /// In zh, this message translates to:
+  /// **'{contentCount} 个内容 · {completedCount} 个看完'**
+  String statisticsUploaderSummary(int contentCount, int completedCount);
+
+  /// No description provided for @statisticsContinueWatching.
+  ///
+  /// In zh, this message translates to:
+  /// **'继续观看'**
+  String get statisticsContinueWatching;
+
+  /// No description provided for @statisticsRemainingTotal.
+  ///
+  /// In zh, this message translates to:
+  /// **'这些内容共剩余 {duration}'**
+  String statisticsRemainingTotal(String duration);
+
+  /// No description provided for @statisticsRemaining.
+  ///
+  /// In zh, this message translates to:
+  /// **'还剩 {duration}'**
+  String statisticsRemaining(String duration);
+
+  /// No description provided for @statisticsDataSourceNotice.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据根据 bilibili 跨平台观看记录整理。暂停、清空或未记录的历史不会纳入，也不代表实际观看时长。'**
+  String get statisticsDataSourceNotice;
+
+  /// No description provided for @statisticsTypeVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'视频'**
+  String get statisticsTypeVideo;
+
+  /// No description provided for @statisticsTypePgc.
+  ///
+  /// In zh, this message translates to:
+  /// **'番剧与影视'**
+  String get statisticsTypePgc;
+
+  /// No description provided for @statisticsTypeLive.
+  ///
+  /// In zh, this message translates to:
+  /// **'直播'**
+  String get statisticsTypeLive;
+
+  /// No description provided for @statisticsTypeArticle.
+  ///
+  /// In zh, this message translates to:
+  /// **'文章'**
+  String get statisticsTypeArticle;
+
+  /// No description provided for @statisticsTypeCourse.
+  ///
+  /// In zh, this message translates to:
+  /// **'课程'**
+  String get statisticsTypeCourse;
+
+  /// No description provided for @statisticsTypeOther.
+  ///
+  /// In zh, this message translates to:
+  /// **'其他'**
+  String get statisticsTypeOther;
+
   /// No description provided for @downloadOfflineTitle.
   ///
   /// In zh, this message translates to:

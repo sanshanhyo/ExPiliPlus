@@ -21,6 +21,7 @@ import 'package:ex_piliplus/pages/follow_search/view.dart';
 import 'package:ex_piliplus/pages/follow_type/follow_same/view.dart';
 import 'package:ex_piliplus/pages/follow_type/followed/view.dart';
 import 'package:ex_piliplus/pages/history/view.dart';
+import 'package:ex_piliplus/pages/history_stats/view.dart';
 import 'package:ex_piliplus/pages/history_search/view.dart';
 import 'package:ex_piliplus/pages/home/view.dart';
 import 'package:ex_piliplus/pages/hot/view.dart';
@@ -124,6 +125,7 @@ class Routes {
     // 收藏搜索
     GetPage(name: '/favSearch', page: () => const FavSearchPage()),
     GetPage(name: '/historySearch', page: () => const HistorySearchPage()),
+    GetPage(name: '/historyStats', page: () => const HistoryStatisticsPage()),
     GetPage(name: '/laterSearch', page: () => const LaterSearchPage()),
     GetPage(name: '/followSearch', page: () => const FollowSearchPage()),
     // 消息页面

@@ -4775,6 +4775,129 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyTapToEnable => 'Turn on';
 
   @override
+  String get statisticsTitle => 'Viewing statistics';
+
+  @override
+  String get statisticsLoading => 'Analyzing watch history…';
+
+  @override
+  String statisticsLoadingCount(int count) {
+    return 'Loaded $count records…';
+  }
+
+  @override
+  String get statisticsRange7Days => '7 days';
+
+  @override
+  String get statisticsRange30Days => '30 days';
+
+  @override
+  String get statisticsRange90Days => '90 days';
+
+  @override
+  String get statisticsPartialData =>
+      'Some watch history couldn\'t be loaded. These statistics may be incomplete.';
+
+  @override
+  String get statisticsEmpty => 'No watch history in this time range';
+
+  @override
+  String get statisticsOverview => 'Overview';
+
+  @override
+  String statisticsDateRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get statisticsDistinctContent => 'Different items viewed';
+
+  @override
+  String get statisticsCompleted => 'Completed';
+
+  @override
+  String get statisticsUnfinished => 'Unfinished';
+
+  @override
+  String get statisticsActiveDays => 'Active days';
+
+  @override
+  String get statisticsFavorited => 'Favorited';
+
+  @override
+  String get statisticsActivity => 'Activity';
+
+  @override
+  String get statisticsActivityDescription =>
+      'Each square is one day; darker squares have more records';
+
+  @override
+  String statisticsActivityTooltip(String date, int count) {
+    return '$date: $count items';
+  }
+
+  @override
+  String get statisticsRecordTime => 'Record times';
+
+  @override
+  String get statisticsRecordTimeDescription =>
+      'Based on when each watch-history entry was last updated';
+
+  @override
+  String get statisticsContentTypes => 'Content types';
+
+  @override
+  String get statisticsContentTypesDescription =>
+      'Based on the number of different items in watch history';
+
+  @override
+  String get statisticsTopUploaders => 'Top uploaders';
+
+  @override
+  String get statisticsTopUploadersDescription =>
+      'Ranked by the number of different items viewed';
+
+  @override
+  String statisticsUploaderSummary(int contentCount, int completedCount) {
+    return '$contentCount viewed · $completedCount completed';
+  }
+
+  @override
+  String get statisticsContinueWatching => 'Continue watching';
+
+  @override
+  String statisticsRemainingTotal(String duration) {
+    return '$duration remaining across these items';
+  }
+
+  @override
+  String statisticsRemaining(String duration) {
+    return '$duration remaining';
+  }
+
+  @override
+  String get statisticsDataSourceNotice =>
+      'Based on cross-platform bilibili watch history. Paused, cleared, or unrecorded history isn\'t included, and these figures don\'t represent actual watch time.';
+
+  @override
+  String get statisticsTypeVideo => 'Videos';
+
+  @override
+  String get statisticsTypePgc => 'Anime & TV';
+
+  @override
+  String get statisticsTypeLive => 'Live';
+
+  @override
+  String get statisticsTypeArticle => 'Articles';
+
+  @override
+  String get statisticsTypeCourse => 'Courses';
+
+  @override
+  String get statisticsTypeOther => 'Other';
+
+  @override
   String get downloadOfflineTitle => 'Downloads';
 
   @override
