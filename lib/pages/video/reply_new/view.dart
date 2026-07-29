@@ -389,6 +389,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
 
   @override
   Future<void> onCustomPublish({List? pictures}) async {
+    final l10n = context.l10n;
     Map<String, int> atNameToMid = {};
     for (final e in editController.items) {
       if (e.type == RichTextType.at) {
@@ -401,19 +402,14 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
       oid: widget.oid,
       root: widget.root,
       parent: widget.parent,
-      message: widget.replyItem != null && widget.replyItem!.root != 0
-          ? context.l10n.replyReplyPrefix(
-              widget.replyItem!.member.name,
-              message,
-            )
-          : message,
+      message: message,
       atNameToMid: atNameToMid,
       pictures: pictures,
       syncToDynamic: _syncToDynamic.value,
     );
     if (res case Success(:final response)) {
       hasPub = true;
-      SmartDialog.showToast(context.l10n.commonSent);
+      SmartDialog.showToast(l10n.commonSent);
       Get.back(result: response);
     } else {
       res.toast();

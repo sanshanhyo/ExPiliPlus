@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:ex_piliplus/utils/settings_backup.dart';
+import 'package:ex_piliplus/utils/set_int_adapter.dart';
+import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_ce/hive.dart';
 
 void main() {
   group('SettingsBackup', () {
@@ -86,5 +92,36 @@ void main() {
         );
       },
     );
+  });
+
+  test('blocked dynamic authors survive reopening local storage', () async {
+    final tempDir = Directory.systemTemp.createTempSync(
+      'dynamic-author-filter-test-',
+    );
+    Hive.init(tempDir.path);
+    if (!Hive.isAdapterRegistered(11)) {
+      Hive.registerAdapter(SetIntAdapter());
+    }
+    var localCache = await Hive.openBox<dynamic>('localCache');
+    GStorage.localCache = localCache;
+
+    try {
+      await Pref.setDynamicAuthorBlocked(1001, true);
+      await Pref.setDynamicAuthorBlocked(1002, true);
+      await Pref.setDynamicAuthorBlocked(1001, false);
+
+      expect(Pref.dynamicBannedMids, {1002});
+
+      await localCache.close();
+      localCache = await Hive.openBox<dynamic>('localCache');
+
+      expect(
+        Set<int>.from(localCache.get(LocalCacheKey.dynamicBannedMids) as Set),
+        {1002},
+      );
+    } finally {
+      await localCache.close();
+      await tempDir.delete(recursive: true);
+    }
   });
 }

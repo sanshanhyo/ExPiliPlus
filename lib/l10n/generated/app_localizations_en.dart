@@ -1549,11 +1549,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get replyVideoScreenshot => 'Video screenshot';
 
   @override
-  String replyReplyPrefix(String name, String message) {
-    return 'Reply to @$name: $message';
-  }
-
-  @override
   String get replyVoteRedSide => 'Red side';
 
   @override
@@ -2539,13 +2534,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedShareToMessages => 'Share in messages';
 
   @override
-  String feedTemporarilyBlock(String name) {
+  String feedBlockAuthorPosts(String name) {
     return 'Hide posts from $name';
   }
 
   @override
-  String feedTemporarilyBlocked(String name, String id) {
-    return 'Posts from $name ($id) are hidden until restart';
+  String feedAuthorPostsBlocked(String name, String id) {
+    return 'Posts from $name ($id) are now hidden';
+  }
+
+  @override
+  String feedUnblockAuthorPosts(String name) {
+    return 'Show posts from $name';
+  }
+
+  @override
+  String feedAuthorPostsUnblocked(String name) {
+    return 'Posts from $name are now visible';
   }
 
   @override

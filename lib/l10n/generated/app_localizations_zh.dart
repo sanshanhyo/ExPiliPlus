@@ -1523,11 +1523,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get replyVideoScreenshot => '视频截图';
 
   @override
-  String replyReplyPrefix(String name, String message) {
-    return '回复 @$name：$message';
-  }
-
-  @override
   String get replyVoteRedSide => '红方';
 
   @override
@@ -2489,13 +2484,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get feedShareToMessages => '分享至消息';
 
   @override
-  String feedTemporarilyBlock(String name) {
-    return '临时屏蔽：$name';
+  String feedBlockAuthorPosts(String name) {
+    return '屏蔽 $name 的动态';
   }
 
   @override
-  String feedTemporarilyBlocked(String name, String id) {
-    return '已临时屏蔽 $name（$id），重启后恢复';
+  String feedAuthorPostsBlocked(String name, String id) {
+    return '已屏蔽 $name（$id）的动态';
+  }
+
+  @override
+  String feedUnblockAuthorPosts(String name) {
+    return '取消屏蔽 $name 的动态';
+  }
+
+  @override
+  String feedAuthorPostsUnblocked(String name) {
+    return '已取消屏蔽 $name 的动态';
   }
 
   @override
@@ -8588,11 +8593,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get replyVideoScreenshot => '影片截圖';
 
   @override
-  String replyReplyPrefix(String name, String message) {
-    return '回覆 @$name：$message';
-  }
-
-  @override
   String get replyVoteRedSide => '紅方';
 
   @override
@@ -9554,13 +9554,23 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get feedShareToMessages => '分享至訊息';
 
   @override
-  String feedTemporarilyBlock(String name) {
-    return '暫時封鎖：$name';
+  String feedBlockAuthorPosts(String name) {
+    return '隱藏 $name 的動態';
   }
 
   @override
-  String feedTemporarilyBlocked(String name, String id) {
-    return '已暫時封鎖 $name（$id），重新啟動後恢復';
+  String feedAuthorPostsBlocked(String name, String id) {
+    return '已隱藏 $name（$id）的動態';
+  }
+
+  @override
+  String feedUnblockAuthorPosts(String name) {
+    return '取消隱藏 $name 的動態';
+  }
+
+  @override
+  String feedAuthorPostsUnblocked(String name) {
+    return '已取消隱藏 $name 的動態';
   }
 
   @override

@@ -50,7 +50,7 @@ class DynamicsDataModel {
   DynamicsDataModel.fromJson(
     Map<String, dynamic> json, {
     DynamicsTabType type = DynamicsTabType.all,
-    Set<int>? tempBannedList,
+    Set<int>? bannedMids,
   }) {
     hasMore = json['has_more'];
 
@@ -58,7 +58,7 @@ class DynamicsDataModel {
     if (list != null && list.isNotEmpty) {
       items = <DynamicItemModel>[];
       late final filterBan =
-          type != DynamicsTabType.up && tempBannedList?.isNotEmpty == true;
+          type != DynamicsTabType.up && bannedMids?.isNotEmpty == true;
       for (final e in list) {
         DynamicItemModel item = DynamicItemModel.fromJson(e);
         if (antiGoodsDyn &&
@@ -78,8 +78,7 @@ class DynamicsDataModel {
             continue;
           }
         }
-        if (filterBan &&
-            tempBannedList!.contains(item.modules.moduleAuthor?.mid)) {
+        if (filterBan && bannedMids!.contains(item.modules.moduleAuthor?.mid)) {
           continue;
         }
         items!.add(item);
