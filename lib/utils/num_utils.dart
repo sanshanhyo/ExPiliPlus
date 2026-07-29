@@ -1,9 +1,12 @@
+import 'dart:ui' show Locale, PlatformDispatcher;
+
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
+import 'package:get/get.dart';
 
 abstract final class NumUtils {
   static final _numRegExp = RegExp(
-    r'([\d.]+)([千万亿KMBT])?',
+    r'([\d.]+)([千万萬亿億KMBT])?',
     caseSensitive: false,
   );
 
@@ -11,9 +14,9 @@ abstract final class NumUtils {
     switch (unit) {
       case '千':
         return 1000;
-      case '万':
+      case '万' || '萬':
         return 10000;
-      case '亿':
+      case '亿' || '億':
         return 100000000;
       case 'K' || 'k':
         return 1000;
@@ -41,7 +44,7 @@ abstract final class NumUtils {
     }
   }
 
-  static String numFormat(dynamic number) {
+  static String numFormat(dynamic number, {Locale? locale}) {
     if (number == null) {
       return '0';
     }
@@ -62,7 +65,18 @@ abstract final class NumUtils {
       }
     }
 
-    if (number >= 1000000000000) {
+    final effectiveLocale =
+        locale ?? Get.locale ?? PlatformDispatcher.instance.locale;
+    if (effectiveLocale.languageCode != 'en') {
+      final isTraditional =
+          effectiveLocale.scriptCode == 'Hant' ||
+          const {'HK', 'MO', 'TW'}.contains(effectiveLocale.countryCode);
+      if (number >= 100000000) {
+        return format(100000000, isTraditional ? '億' : '亿');
+      } else if (number >= 10000) {
+        return format(10000, isTraditional ? '萬' : '万');
+      }
+    } else if (number >= 1000000000000) {
       return format(1000000000000, 'T');
     } else if (number >= 1000000000) {
       return format(1000000000, 'B');
@@ -73,6 +87,8 @@ abstract final class NumUtils {
     } else {
       return number.toString();
     }
+
+    return number.toString();
   }
 
   static String formatPositiveDecimal(int number) {

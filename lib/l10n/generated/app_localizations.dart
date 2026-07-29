@@ -6972,7 +6972,7 @@ abstract class AppLocalizations {
   /// No description provided for @memberTabFeed.
   ///
   /// In zh, this message translates to:
-  /// **'Feed'**
+  /// **'动态'**
   String get memberTabFeed;
 
   /// No description provided for @memberTabUploads.

@@ -3883,7 +3883,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get memberTabHome => '主页';
 
   @override
-  String get memberTabFeed => 'Feed';
+  String get memberTabFeed => '动态';
 
   @override
   String get memberTabUploads => '投稿';
@@ -11123,7 +11123,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get memberTabHome => '首頁';
 
   @override
-  String get memberTabFeed => 'Feed';
+  String get memberTabFeed => '動態';
 
   @override
   String get memberTabUploads => '投稿';

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:ex_piliplus/l10n/generated/app_localizations_en.dart';
 import 'package:ex_piliplus/utils/extension/localized_server_text.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -58,13 +59,50 @@ void main() {
     );
   });
 
-  test('compact numbers use western K/M/B magnitudes', () {
-    expect(NumUtils.numFormat(999), '999');
-    expect(NumUtils.numFormat(1000), '1K');
-    expect(NumUtils.numFormat(10000), '10K');
-    expect(NumUtils.numFormat(1500000), '1.5M');
-    expect(NumUtils.numFormat(2000000000), '2B');
+  test('compact numbers use locale-appropriate magnitudes', () {
+    expect(NumUtils.numFormat(999, locale: const Locale('en')), '999');
+    expect(NumUtils.numFormat(1000, locale: const Locale('en')), '1K');
+    expect(NumUtils.numFormat(10000, locale: const Locale('en')), '10K');
+    expect(NumUtils.numFormat(1500000, locale: const Locale('en')), '1.5M');
+    expect(NumUtils.numFormat(2000000000, locale: const Locale('en')), '2B');
+
+    expect(NumUtils.numFormat(9999, locale: const Locale('zh')), '9999');
+    expect(NumUtils.numFormat(10000, locale: const Locale('zh')), '1万');
+    expect(NumUtils.numFormat(15000, locale: const Locale('zh')), '1.5万');
+    expect(NumUtils.numFormat(200000000, locale: const Locale('zh')), '2亿');
+
+    const traditional = Locale.fromSubtags(
+      languageCode: 'zh',
+      scriptCode: 'Hant',
+    );
+    expect(NumUtils.numFormat(10000, locale: traditional), '1萬');
+    expect(NumUtils.numFormat(200000000, locale: traditional), '2億');
+
     expect(NumUtils.parseNum('1.5K'), 1500);
+    expect(NumUtils.parseNum('1.5万'), 15000);
+    expect(NumUtils.parseNum('1.5萬'), 15000);
+  });
+
+  test('member Feed tab remains localized in Chinese', () {
+    final simplified =
+        jsonDecode(
+              File('lib/l10n/app_zh.arb').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final traditional =
+        jsonDecode(
+              File('lib/l10n/app_zh_Hant.arb').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final english =
+        jsonDecode(
+              File('lib/l10n/app_en.arb').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+
+    expect(simplified['memberTabFeed'], '动态');
+    expect(traditional['memberTabFeed'], '動態');
+    expect(english['memberTabFeed'], 'Feed');
   });
 
   test('known server labels are localized before display', () {
