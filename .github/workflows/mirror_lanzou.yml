@@ -1,0 +1,159 @@
+name: Mirror Release to Lanzou
+
+on:
+  release:
+    types:
+      - published
+  workflow_call:
+    inputs:
+      tag:
+        description: "Release tag to mirror"
+        required: true
+        type: string
+    secrets:
+      LANZOU_COOKIE:
+        required: false
+      LANZOU_FOLDER_PASSWORD:
+        required: false
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, e.g. v1.0.0 or v1.0.0-dev.1"
+        required: true
+        type: string
+
+jobs:
+  mirror-lanzou:
+    name: Mirror ${{ inputs.tag || github.event.release.tag_name }} to Lanzou
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: write
+    steps:
+      - name: Check Lanzou credentials
+        id: auth
+        env:
+          LANZOU_COOKIE: ${{ secrets.LANZOU_COOKIE }}
+        shell: bash
+        run: |
+          if [ -z "$LANZOU_COOKIE" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::LANZOU_COOKIE is not configured; skipping Lanzou mirror"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        if: ${{ steps.auth.outputs.enabled == 'true' }}
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        if: ${{ steps.auth.outputs.enabled == 'true' }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install Lanzou client
+        if: ${{ steps.auth.outputs.enabled == 'true' }}
+        run: python -m pip install "lanzou-api==2.6.10"
+
+      - name: Download GitHub Release assets
+        if: ${{ steps.auth.outputs.enabled == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+        shell: bash
+        run: |
+          mkdir -p release-assets
+          gh release download "$RELEASE_TAG" \
+            --repo "${{ github.repository }}" \
+            --dir release-assets \
+            --pattern "ExPiliplus_*"
+          find release-assets -maxdepth 1 -type f -print
+
+      - name: Upload release assets to Lanzou
+        if: ${{ steps.auth.outputs.enabled == 'true' }}
+        env:
+          LANZOU_COOKIE: ${{ secrets.LANZOU_COOKIE }}
+          LANZOU_FOLDER_PASSWORD: ${{ secrets.LANZOU_FOLDER_PASSWORD }}
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+        run: |
+          python .github/scripts/mirror_lanzou.py \
+            --tag "$RELEASE_TAG" \
+            --assets-dir release-assets \
+            --output lanzou-mirror.json
+
+      - name: Add Lanzou mirror to GitHub Release
+        if: ${{ steps.auth.outputs.enabled == 'true' }}
+        uses: actions/github-script@v9
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.event.release.tag_name }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const fs = require("fs");
+            const mirror = JSON.parse(
+              fs.readFileSync("lanzou-mirror.json", "utf8")
+            );
+            const { data: release } =
+              await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: process.env.RELEASE_TAG,
+              });
+
+            const start = "<!-- lanzou-mirror:start -->";
+            const end = "<!-- lanzou-mirror:end -->";
+            const password = mirror.password
+              ? `\n\n提取码：\`${mirror.password}\``
+              : "";
+            const section = [
+              start,
+              "",
+              "### 蓝奏云镜像",
+              "",
+              `[下载 ${mirror.tag}](${mirror.url})${password}`,
+              "",
+              "> 由 GitHub Actions 自动同步，GitHub Release 仍为主下载源。",
+              "",
+              end,
+            ].join("\n");
+
+            let body = release.body || "";
+            const startIndex = body.indexOf(start);
+            const endIndex = body.indexOf(end);
+            if (startIndex >= 0 && endIndex >= startIndex) {
+              body =
+                body.slice(0, startIndex) +
+                section +
+                body.slice(endIndex + end.length);
+            } else {
+              body = `${body.trimEnd()}\n\n${section}\n`;
+            }
+
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              body,
+            });
+
+            const fileList = mirror.files
+              .map((name) => `- \`${name}\``)
+              .join("\n");
+            fs.appendFileSync(
+              process.env.GITHUB_STEP_SUMMARY,
+              [
+                `## Lanzou mirror: ${mirror.tag}`,
+                "",
+                `- URL: ${mirror.url}`,
+                mirror.password
+                  ? `- Password: \`${mirror.password}\``
+                  : "- Password: none",
+                "",
+                "### Uploaded assets",
+                "",
+                fileList,
+                "",
+              ].join("\n")
+            );

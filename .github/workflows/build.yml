@@ -196,3 +196,26 @@ jobs:
             contents: write
         with:
             tag: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || '' }}
+
+    mirror_lanzou:
+        name: Mirror Release to Lanzou
+        needs:
+            - android
+            - ios
+            - mac
+            - win_x64
+            - linux_x64
+        if: >-
+            ${{
+                always() &&
+                github.event_name == 'workflow_dispatch' &&
+                github.event.inputs.tag != '' &&
+                !contains(needs.*.result, 'failure') &&
+                !contains(needs.*.result, 'cancelled')
+            }}
+        uses: ./.github/workflows/mirror_lanzou.yml
+        permissions:
+            contents: write
+        with:
+            tag: ${{ github.event.inputs.tag }}
+        secrets: inherit
