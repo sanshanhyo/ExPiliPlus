@@ -116,11 +116,22 @@ jobs:
           cp assets/images/logo/logo.png "$SRC_DIR/assets/expiliplus.png"
           tar -zcvf "$RPM_BUILD_ROOT/SOURCES/expiliplus-${{ env.version }}.tar.gz" -C "$PWD" "expiliplus-${{ env.version }}"
 
+          # RPM uses "-" to separate Version and Release, so neither field may
+          # contain a hyphen. Split ExPiliplus' display version accordingly.
+          RPM_VERSION="${{ env.version }}"
+          RPM_RELEASE="${RPM_VERSION#*-}"
+          if [ "$RPM_RELEASE" = "$RPM_VERSION" ]; then
+            RPM_RELEASE="1"
+          else
+            RPM_RELEASE="1.$RPM_RELEASE"
+          fi
+          RPM_VERSION="${RPM_VERSION%%-*}"
+
           printf "生成 spec 文件...\n"
           cat > "$RPM_BUILD_ROOT/SPECS/expiliplus.spec" <<EOF
           Name:           expiliplus
-          Version:        ${{ env.version }}
-          Release:        1%{?dist}
+          Version:        ${RPM_VERSION}
+          Release:        ${RPM_RELEASE}%{?dist}
           Summary:        ExPiliplus Linux Version
           License:        GPL-3.0
           Source0:        expiliplus-${{ env.version }}.tar.gz
@@ -165,7 +176,7 @@ jobs:
           /usr/share/icons/hicolor/512x512/apps/expiliplus.png
 
           %changelog
-          * DATE - ${{ env.version }}-1
+          * DATE - ${RPM_VERSION}-${RPM_RELEASE}
           - Initial RPM release
           EOF
 
