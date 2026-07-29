@@ -54,7 +54,11 @@ def parse_cookie(raw_cookie: str) -> dict[str, str]:
         raise ValueError(
             "LANZOU_COOKIE must contain: " + ", ".join(required)
         )
-    return {key: str(parsed[key]) for key in required}
+    return {
+        str(key): str(value)
+        for key, value in parsed.items()
+        if value is not None
+    }
 
 
 def collect_assets(assets_dir: Path, max_file_mb: int) -> list[Path]:
