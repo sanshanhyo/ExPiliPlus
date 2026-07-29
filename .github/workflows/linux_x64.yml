@@ -76,7 +76,9 @@ jobs:
           printf "修改控制文件...\n"
           # Debian uses "~" so development builds sort before their stable build.
           DEB_VERSION="${{ env.version }}"
-          DEB_VERSION="${DEB_VERSION/-/~}"
+          if [[ "$DEB_VERSION" == *-* ]]; then
+            DEB_VERSION="${DEB_VERSION%%-*}~${DEB_VERSION#*-}"
+          fi
           sed -i "2s/version_need_change/${DEB_VERSION}/g" DEBIAN/control
           # 计算安装大小并替换
           SIZE_KB=$(du -s -b --apparent-size . | awk '{print int($1)}')
