@@ -38,7 +38,7 @@ abstract final class DynamicsHttp {
   static Future<LoadingState<DynamicsDataModel>> followDynamic({
     int? hostMid,
     String? offset,
-    Set<int>? tempBannedList,
+    Set<int>? bannedMids,
     DynamicsTabType type = .all,
   }) async {
     Map<String, dynamic> data = {
@@ -53,14 +53,14 @@ abstract final class DynamicsHttp {
         DynamicsDataModel data = DynamicsDataModel.fromJson(
           res.data['data'],
           type: type,
-          tempBannedList: tempBannedList,
+          bannedMids: bannedMids,
         );
         if (data.loadNext == true) {
           return await followDynamic(
             type: type,
             offset: data.offset,
             hostMid: hostMid,
-            tempBannedList: tempBannedList,
+            bannedMids: bannedMids,
           );
         }
         return Success(data);

@@ -71,6 +71,23 @@ abstract final class Pref {
   static set blackMids(Set<int> blackMidsSet) =>
       _localCache.put(LocalCacheKey.blackMids, blackMidsSet);
 
+  static Set<int> get dynamicBannedMids => Set<int>.from(
+    _localCache.get(
+      LocalCacheKey.dynamicBannedMids,
+      defaultValue: const <int>{},
+    ),
+  );
+
+  static Future<void> setDynamicAuthorBlocked(int mid, bool blocked) async {
+    final bannedMids = dynamicBannedMids;
+    if (blocked) {
+      bannedMids.add(mid);
+    } else {
+      bannedMids.remove(mid);
+    }
+    await _localCache.put(LocalCacheKey.dynamicBannedMids, bannedMids);
+  }
+
   static RuleFilter get danmakuFilterRule => _localCache.get(
     LocalCacheKey.danmakuFilterRules,
     defaultValue: RuleFilter.empty(),

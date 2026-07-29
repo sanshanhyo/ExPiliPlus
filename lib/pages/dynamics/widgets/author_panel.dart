@@ -27,6 +27,7 @@ import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -260,6 +261,17 @@ class AuthorPanel extends StatelessWidget {
       }
     } catch (_) {}
 
+    final moduleAuthor = item.modules.moduleAuthor!;
+    final mid = moduleAuthor.mid;
+    final dynamicsController = Get.isRegistered<DynamicsController>()
+        ? Get.find<DynamicsController>()
+        : null;
+    final isAuthorBlocked =
+        mid != null &&
+        (dynamicsController?.bannedMids ?? Pref.dynamicBannedMids).contains(
+          mid,
+        );
+
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -269,7 +281,6 @@ class AuthorPanel extends StatelessWidget {
       ),
       builder: (context1) {
         final theme = Theme.of(context);
-        final moduleAuthor = item.modules.moduleAuthor!;
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.viewPaddingOf(context1).bottom,
@@ -373,29 +384,56 @@ class AuthorPanel extends StatelessWidget {
                   },
                   minLeadingWidth: 0,
                 ),
-              ListTile(
-                title: Text(
-                  context.l10n.feedTemporarilyBlock(moduleAuthor.name ?? ''),
-                  style: theme.textTheme.titleSmall,
+              if (mid != null)
+                ListTile(
+                  title: Text(
+                    isAuthorBlocked
+                        ? context.l10n.feedUnblockAuthorPosts(
+                            moduleAuthor.name ?? '',
+                          )
+                        : context.l10n.feedBlockAuthorPosts(
+                            moduleAuthor.name ?? '',
+                          ),
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  leading: Icon(
+                    isAuthorBlocked
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    size: 19,
+                  ),
+                  onTap: () async {
+                    Get.back();
+                    final successMessage = isAuthorBlocked
+                        ? context.l10n.feedAuthorPostsUnblocked(
+                            moduleAuthor.name ?? '',
+                          )
+                        : context.l10n.feedAuthorPostsBlocked(
+                            moduleAuthor.name ?? '',
+                            mid.toString(),
+                          );
+                    try {
+                      if (dynamicsController != null) {
+                        await dynamicsController.setAuthorBlocked(
+                          mid,
+                          !isAuthorBlocked,
+                        );
+                      } else {
+                        await Pref.setDynamicAuthorBlocked(
+                          mid,
+                          !isAuthorBlocked,
+                        );
+                      }
+                      if (!isAuthorBlocked) {
+                        onBlock?.call();
+                      }
+                      SmartDialog.showToast(successMessage);
+                    } catch (e) {
+                      SmartDialog.showToast(e.toString());
+                    }
+                  },
+                  minLeadingWidth: 0,
                 ),
-                leading: const Icon(Icons.visibility_off_outlined, size: 19),
-                onTap: () {
-                  Get.back();
-                  onBlock?.call();
-                  try {
-                    Get.find<DynamicsController>().tempBannedList.add(
-                      moduleAuthor.mid!,
-                    );
-                    SmartDialog.showToast(
-                      context.l10n.feedTemporarilyBlocked(
-                        moduleAuthor.name ?? '',
-                        moduleAuthor.mid!.toString(),
-                      ),
-                    );
-                  } catch (_) {}
-                },
-                minLeadingWidth: 0,
-              ),
               if (kDebugMode || moduleAuthor.mid == Accounts.main.mid) ...[
                 ListTile(
                   onTap: () {

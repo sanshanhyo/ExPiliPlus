@@ -20,7 +20,7 @@ class DynamicsController
     with GetSingleTickerProviderStateMixin, AccountMixin {
   late final TabController tabController;
 
-  final Set<int> tempBannedList = <int>{};
+  final Set<int> bannedMids = Pref.dynamicBannedMids;
 
   String? _offset;
   late int _page = 1;
@@ -81,6 +81,15 @@ class DynamicsController
 
     currentMid = mid;
     _jumpToTab(mid);
+  }
+
+  Future<void> setAuthorBlocked(int mid, bool blocked) async {
+    await Pref.setDynamicAuthorBlocked(mid, blocked);
+    if (blocked) {
+      bannedMids.add(mid);
+    } else {
+      bannedMids.remove(mid);
+    }
   }
 
   Future<void> singleRefresh() {

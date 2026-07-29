@@ -50,7 +50,7 @@ class DynamicsTabController
         offset: offset,
         type: dynamicsType,
         hostMid: dynamicsController.hostMid,
-        tempBannedList: dynamicsController.tempBannedList,
+        bannedMids: dynamicsController.bannedMids,
       );
 
   Future<void> onRemove(int index, dynamic dynamicId) async {
@@ -73,8 +73,15 @@ class DynamicsTabController
 
   void onBlock(int index) {
     if (dynamicsType != .up) {
+      final list = loadingState.value.data!;
+      final target = list[index];
+      final mid = target.modules.moduleAuthor?.mid;
       loadingState
-        ..value.data!.removeAt(index)
+        ..value.data!.removeWhere((item) {
+          return mid == null
+              ? identical(item, target)
+              : item.modules.moduleAuthor?.mid == mid;
+        })
         ..refresh();
     }
   }

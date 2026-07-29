@@ -2763,12 +2763,6 @@ abstract class AppLocalizations {
   /// **'视频截图'**
   String get replyVideoScreenshot;
 
-  /// No description provided for @replyReplyPrefix.
-  ///
-  /// In zh, this message translates to:
-  /// **'回复 @{name}：{message}'**
-  String replyReplyPrefix(String name, String message);
-
   /// No description provided for @replyVoteRedSide.
   ///
   /// In zh, this message translates to:
@@ -4419,17 +4413,29 @@ abstract class AppLocalizations {
   /// **'分享至消息'**
   String get feedShareToMessages;
 
-  /// No description provided for @feedTemporarilyBlock.
+  /// No description provided for @feedBlockAuthorPosts.
   ///
   /// In zh, this message translates to:
-  /// **'临时屏蔽：{name}'**
-  String feedTemporarilyBlock(String name);
+  /// **'屏蔽 {name} 的动态'**
+  String feedBlockAuthorPosts(String name);
 
-  /// No description provided for @feedTemporarilyBlocked.
+  /// No description provided for @feedAuthorPostsBlocked.
   ///
   /// In zh, this message translates to:
-  /// **'已临时屏蔽 {name}（{id}），重启后恢复'**
-  String feedTemporarilyBlocked(String name, String id);
+  /// **'已屏蔽 {name}（{id}）的动态'**
+  String feedAuthorPostsBlocked(String name, String id);
+
+  /// No description provided for @feedUnblockAuthorPosts.
+  ///
+  /// In zh, this message translates to:
+  /// **'取消屏蔽 {name} 的动态'**
+  String feedUnblockAuthorPosts(String name);
+
+  /// No description provided for @feedAuthorPostsUnblocked.
+  ///
+  /// In zh, this message translates to:
+  /// **'已取消屏蔽 {name} 的动态'**
+  String feedAuthorPostsUnblocked(String name);
 
   /// No description provided for @feedCheckPost.
   ///
