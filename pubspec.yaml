@@ -16,10 +16,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-# ExPiliplus keeps the first three numbers in sync with upstream PiliPlus.
-# The build number after + is the ExPiliplus suffix, displayed as 2.1.0-ex.1
-# and tagged on GitHub as v2.1.0-ex.1.
-version: 2.1.0+1
+# ExPiliPlus follows its own semantic version. The tracked PiliPlus version is
+# stored separately in UPSTREAM_VERSION.
+version: 1.0.0+1
 
 environment:
   sdk: ">=3.12.0"
@@ -145,6 +144,7 @@ dependencies:
   permission_handler_platform_interface: ^4.3.0
   pretty_qr_code: ^3.3.0
   protobuf: ^6.0.0
+  pub_semver: ^2.2.0
   re_highlight: ^0.0.3
   saver_gallery: ^5.0.2
   screen_brightness_platform_interface: ^2.1.0

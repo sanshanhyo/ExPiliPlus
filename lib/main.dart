@@ -192,6 +192,9 @@ void main() async {
   if (Pref.enableLog) {
     // 异常捕获 logo记录
     final customParameters = {
+      'Version': BuildConfig.versionName,
+      'Upstream Version': BuildConfig.upstreamVersion,
+      'Release Build': BuildConfig.releaseBuild,
       'Build Time': DateFormatUtils.format(
         BuildConfig.buildTime,
         format: DateFormatUtils.longFormatDs,

@@ -7,6 +7,11 @@ abstract final class BuildConfig {
     'pili.name',
     defaultValue: 'SNAPSHOT',
   );
+  static const String upstreamVersion = String.fromEnvironment(
+    'pili.upstream',
+    defaultValue: 'N/A',
+  );
+  static const bool releaseBuild = bool.fromEnvironment('pili.release');
 
   static const int buildTime = int.fromEnvironment('pili.time');
   static const String commitHash = String.fromEnvironment(

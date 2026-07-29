@@ -373,6 +373,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingImportLocalDescription => '选择导出的设置 JSON 文件';
 
   @override
+  String get onboardingImportHelp => '查看导出方法';
+
+  @override
+  String get onboardingImportHelpTitle => '如何从 PiliPlus 导出文件';
+
+  @override
+  String get onboardingImportHelpIntro => '在 PiliPlus 中，按要迁移的内容打开对应入口：';
+
+  @override
+  String get onboardingImportHelpSettingsPath => '我的 > 设置 > 关于 > 导入/导出设置';
+
+  @override
+  String get onboardingImportHelpLoginPath => '我的 > 设置 > 关于 > 导入/导出登录信息';
+
+  @override
+  String get onboardingImportHelpExportHint =>
+      '进入对应页面后，选择“导出文件至本地”。导出完成后返回 ExPiliPlus，选择生成的 JSON 文件。';
+
+  @override
   String get onboardingImportWebDav => '从 WebDAV 导入';
 
   @override
@@ -4261,6 +4280,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutCurrentVersion => '当前版本';
 
   @override
+  String get aboutUpstreamVersion => '上游版本';
+
+  @override
+  String get aboutBuildType => '构建类型';
+
+  @override
+  String get aboutStableBuild => '稳定版';
+
+  @override
+  String get aboutDevelopmentBuild => '开发版';
+
+  @override
+  String get aboutSelfCompiledBuild => '自编译版';
+
+  @override
   String get aboutOpenSupportedLinks => '打开受支持的链接';
 
   @override
@@ -5930,6 +5964,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get updateCheckFailed => '检查更新失败，GitHub 接口未返回数据，请检查网络';
+
+  @override
+  String get updateSelfCompiled => '自编译版不参与更新';
 
   @override
   String get updateAlreadyLatest => '已是最新版本';
@@ -7610,6 +7647,25 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get onboardingImportLocalDescription => '選擇匯出的設定 JSON 檔案';
+
+  @override
+  String get onboardingImportHelp => '查看匯出方法';
+
+  @override
+  String get onboardingImportHelpTitle => '如何從 PiliPlus 匯出檔案';
+
+  @override
+  String get onboardingImportHelpIntro => '在 PiliPlus 中，依要移轉的內容開啟對應入口：';
+
+  @override
+  String get onboardingImportHelpSettingsPath => '我的 > 設定 > 關於 > 匯入/匯出設定';
+
+  @override
+  String get onboardingImportHelpLoginPath => '我的 > 設定 > 關於 > 匯入/匯出登入資訊';
+
+  @override
+  String get onboardingImportHelpExportHint =>
+      '進入對應頁面後，選擇「匯出檔案至本機」。匯出完成後返回 ExPiliPlus，選擇產生的 JSON 檔案。';
 
   @override
   String get onboardingImportWebDav => '從 WebDAV 匯入';
@@ -11501,6 +11557,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aboutCurrentVersion => '目前版本';
 
   @override
+  String get aboutUpstreamVersion => '上游版本';
+
+  @override
+  String get aboutBuildType => '建置類型';
+
+  @override
+  String get aboutStableBuild => '穩定版';
+
+  @override
+  String get aboutDevelopmentBuild => '開發版';
+
+  @override
+  String get aboutSelfCompiledBuild => '自行編譯版';
+
+  @override
   String get aboutOpenSupportedLinks => '開啟支援的連結';
 
   @override
@@ -13170,6 +13241,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get updateCheckFailed => '檢查更新失敗，GitHub 介面未回傳資料，請檢查網路';
+
+  @override
+  String get updateSelfCompiled => '自行編譯版不參與更新';
 
   @override
   String get updateAlreadyLatest => '已是最新版本';

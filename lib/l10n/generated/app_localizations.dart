@@ -759,6 +759,42 @@ abstract class AppLocalizations {
   /// **'选择导出的设置 JSON 文件'**
   String get onboardingImportLocalDescription;
 
+  /// No description provided for @onboardingImportHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看导出方法'**
+  String get onboardingImportHelp;
+
+  /// No description provided for @onboardingImportHelpTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'如何从 PiliPlus 导出文件'**
+  String get onboardingImportHelpTitle;
+
+  /// No description provided for @onboardingImportHelpIntro.
+  ///
+  /// In zh, this message translates to:
+  /// **'在 PiliPlus 中，按要迁移的内容打开对应入口：'**
+  String get onboardingImportHelpIntro;
+
+  /// No description provided for @onboardingImportHelpSettingsPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的 > 设置 > 关于 > 导入/导出设置'**
+  String get onboardingImportHelpSettingsPath;
+
+  /// No description provided for @onboardingImportHelpLoginPath.
+  ///
+  /// In zh, this message translates to:
+  /// **'我的 > 设置 > 关于 > 导入/导出登录信息'**
+  String get onboardingImportHelpLoginPath;
+
+  /// No description provided for @onboardingImportHelpExportHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'进入对应页面后，选择“导出文件至本地”。导出完成后返回 ExPiliPlus，选择生成的 JSON 文件。'**
+  String get onboardingImportHelpExportHint;
+
   /// No description provided for @onboardingImportWebDav.
   ///
   /// In zh, this message translates to:
@@ -7683,6 +7719,36 @@ abstract class AppLocalizations {
   /// **'当前版本'**
   String get aboutCurrentVersion;
 
+  /// No description provided for @aboutUpstreamVersion.
+  ///
+  /// In zh, this message translates to:
+  /// **'上游版本'**
+  String get aboutUpstreamVersion;
+
+  /// No description provided for @aboutBuildType.
+  ///
+  /// In zh, this message translates to:
+  /// **'构建类型'**
+  String get aboutBuildType;
+
+  /// No description provided for @aboutStableBuild.
+  ///
+  /// In zh, this message translates to:
+  /// **'稳定版'**
+  String get aboutStableBuild;
+
+  /// No description provided for @aboutDevelopmentBuild.
+  ///
+  /// In zh, this message translates to:
+  /// **'开发版'**
+  String get aboutDevelopmentBuild;
+
+  /// No description provided for @aboutSelfCompiledBuild.
+  ///
+  /// In zh, this message translates to:
+  /// **'自编译版'**
+  String get aboutSelfCompiledBuild;
+
   /// No description provided for @aboutOpenSupportedLinks.
   ///
   /// In zh, this message translates to:
@@ -10684,6 +10750,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'检查更新失败，GitHub 接口未返回数据，请检查网络'**
   String get updateCheckFailed;
+
+  /// No description provided for @updateSelfCompiled.
+  ///
+  /// In zh, this message translates to:
+  /// **'自编译版不参与更新'**
+  String get updateSelfCompiled;
 
   /// No description provided for @updateAlreadyLatest.
   ///

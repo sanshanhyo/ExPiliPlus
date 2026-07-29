@@ -25,6 +25,7 @@ import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/update.dart';
+import 'package:ex_piliplus/utils/update_policy.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -41,8 +42,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  final currentVersion =
-      '${BuildConfig.versionName}+${BuildConfig.versionCode}';
+  final currentVersion = BuildConfig.versionName;
   RxString cacheSize = ''.obs;
 
   late int _pressCount = 0;
@@ -150,6 +150,26 @@ class _AboutPageState extends State<AboutPage> {
             leading: const Icon(Icons.commit_outlined),
             trailing: Text(
               currentVersion,
+              style: subTitleStyle,
+            ),
+          ),
+          ListTile(
+            title: Text(l10n.aboutUpstreamVersion),
+            leading: const Icon(Icons.call_split_outlined),
+            trailing: Text(
+              'PiliPlus ${BuildConfig.upstreamVersion}',
+              style: subTitleStyle,
+            ),
+          ),
+          ListTile(
+            title: Text(l10n.aboutBuildType),
+            leading: const Icon(Icons.inventory_2_outlined),
+            trailing: Text(
+              !BuildConfig.releaseBuild
+                  ? l10n.aboutSelfCompiledBuild
+                  : UpdatePolicy.isDevelopment(BuildConfig.versionName)
+                  ? l10n.aboutDevelopmentBuild
+                  : l10n.aboutStableBuild,
               style: subTitleStyle,
             ),
           ),

@@ -382,6 +382,28 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose an exported settings JSON file';
 
   @override
+  String get onboardingImportHelp => 'How to export';
+
+  @override
+  String get onboardingImportHelpTitle => 'Export a file from PiliPlus';
+
+  @override
+  String get onboardingImportHelpIntro =>
+      'In PiliPlus, open the entry for the data you want to move:';
+
+  @override
+  String get onboardingImportHelpSettingsPath =>
+      'Me > Settings > About > Import / export settings';
+
+  @override
+  String get onboardingImportHelpLoginPath =>
+      'Me > Settings > About > Import / export sign-in data';
+
+  @override
+  String get onboardingImportHelpExportHint =>
+      'Choose “Export to a local file”, then return to ExPiliPlus and select the exported JSON file.';
+
+  @override
   String get onboardingImportWebDav => 'Import from WebDAV';
 
   @override
@@ -4420,6 +4442,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutCurrentVersion => 'Current version';
 
   @override
+  String get aboutUpstreamVersion => 'Upstream version';
+
+  @override
+  String get aboutBuildType => 'Build type';
+
+  @override
+  String get aboutStableBuild => 'Stable';
+
+  @override
+  String get aboutDevelopmentBuild => 'Development';
+
+  @override
+  String get aboutSelfCompiledBuild => 'Self-compiled';
+
+  @override
   String get aboutOpenSupportedLinks => 'Open supported links';
 
   @override
@@ -6140,6 +6177,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updateCheckFailed =>
       'Couldn\'t check for updates. GitHub returned no data; check your connection';
+
+  @override
+  String get updateSelfCompiled =>
+      'Self-compiled builds don\'t receive updates';
 
   @override
   String get updateAlreadyLatest => 'You\'re using the latest version';

@@ -207,11 +207,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
       subtitle: l10n.onboardingImportSubtitle,
       children: [
         if (_settingsStatus != null) _StatusLine(text: _settingsStatus!),
-        _ActionTile(
-          icon: Icons.description_outlined,
-          title: l10n.onboardingImportLocal,
-          subtitle: l10n.onboardingImportLocalDescription,
-          onTap: _busy ? null : _importSettingsFromLocal,
+        Row(
+          children: [
+            Expanded(
+              child: _ActionTile(
+                icon: Icons.description_outlined,
+                title: l10n.onboardingImportLocal,
+                subtitle: l10n.onboardingImportLocalDescription,
+                onTap: _busy ? null : _importSettingsFromLocal,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Tooltip(
+              message: l10n.onboardingImportHelp,
+              child: IconButton.filledTonal(
+                onPressed: _busy ? null : _showImportHelpDialog,
+                icon: const Icon(Icons.help_outline),
+              ),
+            ),
+          ],
         ),
         _ActionTile(
           icon: Icons.cloud_download_outlined,
@@ -373,32 +387,49 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
-            child: Row(
-              children: [
-                if (_step > 0)
-                  TextButton.icon(
-                    onPressed: _busy ? null : _previous,
-                    icon: const Icon(Icons.arrow_back),
-                    label: Text(l10n.commonPrevious),
-                  )
-                else
-                  const Spacer(),
-                const Spacer(),
-                FilledButton.icon(
-                  onPressed: _busy ? null : _handlePrimary,
-                  icon: _busy
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Icon(
-                          _step == _steps.length - 1
-                              ? Icons.rocket_launch_outlined
-                              : Icons.arrow_forward,
-                        ),
-                  label: Text(_primaryLabel(l10n)),
-                ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final compact = constraints.maxWidth < 340;
+                final onPrevious = _busy ? null : _previous;
+                final onPrimary = _busy ? null : _handlePrimary;
+                final previousButton = compact
+                    ? TextButton(
+                        onPressed: onPrevious,
+                        child: Text(l10n.commonPrevious),
+                      )
+                    : TextButton.icon(
+                        onPressed: onPrevious,
+                        icon: const Icon(Icons.arrow_back),
+                        label: Text(l10n.commonPrevious),
+                      );
+                final primaryIcon = _busy
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(
+                        _step == _steps.length - 1
+                            ? Icons.rocket_launch_outlined
+                            : Icons.arrow_forward,
+                      );
+                final primaryButton = compact && !_busy
+                    ? FilledButton(
+                        onPressed: onPrimary,
+                        child: Text(_primaryLabel(l10n)),
+                      )
+                    : FilledButton.icon(
+                        onPressed: onPrimary,
+                        icon: primaryIcon,
+                        label: Text(_primaryLabel(l10n)),
+                      );
+                return Row(
+                  children: [
+                    if (_step > 0) previousButton else const Spacer(),
+                    const Spacer(),
+                    primaryButton,
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -465,6 +496,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
       source: l10n.onboardingSourceLocalFile,
     );
   }
+
+  Future<void> _showImportHelpDialog() => showDialog<void>(
+    context: context,
+    builder: (context) => const _ImportHelpDialog(),
+  );
 
   Future<void> _importSettingsFromWebDav() async {
     final l10n = context.l10n;
@@ -796,6 +832,97 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ImportHelpDialog extends StatelessWidget {
+  const _ImportHelpDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return AlertDialog(
+      icon: const Icon(Icons.help_outline),
+      title: Text(l10n.onboardingImportHelpTitle),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.onboardingImportHelpIntro),
+            const SizedBox(height: 20),
+            _ImportHelpItem(
+              icon: Icons.settings_outlined,
+              title: l10n.aboutSettingsData,
+              path: l10n.onboardingImportHelpSettingsPath,
+            ),
+            const SizedBox(height: 16),
+            _ImportHelpItem(
+              icon: Icons.key_outlined,
+              title: l10n.aboutLoginData,
+              path: l10n.onboardingImportHelpLoginPath,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              l10n.onboardingImportHelpExportHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.commonClose),
+        ),
+      ],
+    );
+  }
+}
+
+class _ImportHelpItem extends StatelessWidget {
+  const _ImportHelpItem({
+    required this.icon,
+    required this.title,
+    required this.path,
+  });
+
+  final IconData icon;
+  final String title;
+  final String path;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: colorScheme.primary),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: theme.textTheme.titleSmall),
+              const SizedBox(height: 3),
+              Text(
+                path,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

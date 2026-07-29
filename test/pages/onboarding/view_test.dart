@@ -19,6 +19,40 @@ void main() {
     GStorage.localCache = await Hive.openBox<dynamic>('localCache');
   });
 
+  testWidgets('local import help explains PiliPlus export paths', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(360, 640));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    await tester.pumpWidget(
+      const GetMaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: OnboardingPage(),
+      ),
+    );
+
+    await tester.tap(find.text(l10n.onboardingGetStarted));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip(l10n.onboardingImportHelp));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.onboardingImportHelpTitle), findsOneWidget);
+    expect(find.text(l10n.onboardingImportHelpSettingsPath), findsOneWidget);
+    expect(find.text(l10n.onboardingImportHelpLoginPath), findsOneWidget);
+    expect(find.text(l10n.onboardingImportHelpExportHint), findsOneWidget);
+
+    await tester.tap(find.text(l10n.commonClose));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.onboardingImportHelpTitle), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    Get.reset();
+  });
+
   testWidgets('finishing onboarding opened from settings returns to settings', (
     tester,
   ) async {

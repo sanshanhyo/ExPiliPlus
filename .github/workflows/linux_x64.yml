@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, e.g. v2.1.0-ex.1"
+        description: "Release tag, e.g. v1.0.0 or v1.0.0-dev.1"
         required: false
         default: ""
         type: string
@@ -43,7 +43,7 @@ jobs:
 
       - name: Set and Extract version
         shell: pwsh
-        run: lib/scripts/build.ps1
+        run: lib/scripts/build.ps1 -Platform linux -Tag "${{ inputs.tag }}"
 
       - name: Apply Patch
         shell: pwsh
@@ -74,8 +74,10 @@ jobs:
           cp ../assets/images/logo/logo.png usr/share/icons/hicolor/512x512/apps/expiliplus.png
 
           printf "修改控制文件...\n"
-          # 替换版本号
-          sed -i  "2s/version_need_change/${{ env.version }}/g" DEBIAN/control
+          # Debian uses "~" so development builds sort before their stable build.
+          DEB_VERSION="${{ env.version }}"
+          DEB_VERSION="${DEB_VERSION/-/~}"
+          sed -i "2s/version_need_change/${DEB_VERSION}/g" DEBIAN/control
           # 计算安装大小并替换
           SIZE_KB=$(du -s -b --apparent-size . | awk '{print int($1)}')
           SIZE_KB=$(($SIZE_KB - $(du -s -b --apparent-size DEBIAN | awk '{print int($1)}')))
@@ -116,16 +118,23 @@ jobs:
           cp assets/images/logo/logo.png "$SRC_DIR/assets/expiliplus.png"
           tar -zcvf "$RPM_BUILD_ROOT/SOURCES/expiliplus-${{ env.version }}.tar.gz" -C "$PWD" "expiliplus-${{ env.version }}"
 
-          # RPM uses "-" to separate Version and Release, so neither field may
-          # contain a hyphen. Split ExPiliplus' display version accordingly.
-          RPM_VERSION="${{ env.version }}"
-          RPM_RELEASE="${RPM_VERSION#*-}"
-          if [ "$RPM_RELEASE" = "$RPM_VERSION" ]; then
-            RPM_RELEASE="1"
-          else
-            RPM_RELEASE="1.$RPM_RELEASE"
+          # RPM development releases use Release 0.* so they sort before the
+          # stable Release 1 package with the same Version.
+          RPM_DISPLAY_VERSION="${{ env.version }}"
+          RPM_BUILD_METADATA=""
+          if [[ "$RPM_DISPLAY_VERSION" == *"+"* ]]; then
+            RPM_BUILD_METADATA="${RPM_DISPLAY_VERSION#*+}"
+            RPM_DISPLAY_VERSION="${RPM_DISPLAY_VERSION%%+*}"
           fi
-          RPM_VERSION="${RPM_VERSION%%-*}"
+          RPM_VERSION="${RPM_DISPLAY_VERSION%%-*}"
+          if [[ "$RPM_DISPLAY_VERSION" == *"-"* ]]; then
+            RPM_RELEASE="0.${RPM_DISPLAY_VERSION#*-}"
+          else
+            RPM_RELEASE="1"
+          fi
+          if [ -n "$RPM_BUILD_METADATA" ]; then
+            RPM_RELEASE="${RPM_RELEASE}.${RPM_BUILD_METADATA}"
+          fi
 
           printf "生成 spec 文件...\n"
           cat > "$RPM_BUILD_ROOT/SPECS/expiliplus.spec" <<EOF
@@ -237,6 +246,8 @@ jobs:
         with:
           tag_name: ${{ inputs.tag }}
           name: ${{ inputs.tag }}
+          prerelease: ${{ fromJSON(env.is_prerelease) }}
+          make_latest: ${{ env.is_prerelease == 'true' && 'false' || 'true' }}
           files: |
             ExPiliplus_linux_*.tar.gz
             ExPiliplus_linux_*.deb

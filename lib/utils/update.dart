@@ -10,6 +10,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/update_policy.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
@@ -22,99 +23,113 @@ abstract final class Update {
   static Future<void> checkUpdate([bool isAuto = true]) async {
     if (kDebugMode) return;
     final l10n = Get.context!.l10n;
-    SmartDialog.dismiss();
     try {
       final res = await Request().get(
         Api.latestApp,
+        queryParameters: const {'per_page': 100},
         options: Options(
           headers: {'user-agent': BrowserUa.mob},
           extra: {'account': const NoAccount()},
         ),
       );
-      if (res.data is Map || res.data.isEmpty) {
+      if (res.data is! List || res.data.isEmpty) {
         if (!isAuto) {
           SmartDialog.showToast(l10n.updateCheckFailed);
         }
         return;
       }
-      final data = res.data[0];
-      final int latest =
-          DateTime.parse(data['created_at']).millisecondsSinceEpoch ~/ 1000;
-      if (BuildConfig.buildTime >= latest) {
-        if (!isAuto) {
-          SmartDialog.showToast(l10n.updateAlreadyLatest);
-        }
-      } else {
-        SmartDialog.show(
-          animationType: SmartAnimationType.centerFade_otherSlide,
-          builder: (context) {
-            final colorScheme = ColorScheme.of(context);
-            Widget downloadBtn(String text, {String? ext}) => TextButton(
-              onPressed: () => onDownload(data, ext: ext),
-              child: Text(text),
-            );
-            return AlertDialog(
-              title: Text(l10n.updateNewVersion),
-              content: SizedBox(
-                height: 280,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${data['tag_name']}',
-                        style: const TextStyle(fontSize: 20),
+      final decision = UpdatePolicy.evaluate(
+        currentVersion: BuildConfig.versionName,
+        isReleaseBuild: BuildConfig.releaseBuild,
+        releases: res.data,
+      );
+      switch (decision.type) {
+        case UpdateDecisionType.selfCompiled:
+          if (!isAuto) {
+            SmartDialog.showToast(l10n.updateSelfCompiled);
+          }
+          return;
+        case UpdateDecisionType.upToDate:
+          if (!isAuto) {
+            SmartDialog.showToast(l10n.updateAlreadyLatest);
+          }
+          return;
+        case UpdateDecisionType.updateAvailable:
+          break;
+      }
+      final data = decision.release!;
+      SmartDialog.show(
+        animationType: SmartAnimationType.centerFade_otherSlide,
+        builder: (context) {
+          final colorScheme = ColorScheme.of(context);
+          Widget downloadBtn(String text, {String? ext}) => TextButton(
+            onPressed: () => onDownload(data, ext: ext),
+            child: Text(text),
+          );
+          return AlertDialog(
+            title: Text(l10n.updateNewVersion),
+            content: SizedBox(
+              height: 280,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${data['tag_name']}',
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(height: 8),
+                    Text('${data['body']}'),
+                    TextButton(
+                      onPressed: () => PageUtils.launchURL(
+                        '${Constants.sourceCodeUrl}/commits/main',
                       ),
-                      const SizedBox(height: 8),
-                      Text('${data['body']}'),
-                      TextButton(
-                        onPressed: () => PageUtils.launchURL(
-                          '${Constants.sourceCodeUrl}/commits/main',
-                        ),
-                        child: Text(
-                          l10n.updateViewFullChanges,
-                          style: TextStyle(color: colorScheme.primary),
-                        ),
+                      child: Text(
+                        l10n.updateViewFullChanges,
+                        style: TextStyle(color: colorScheme.primary),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              actions: [
-                if (isAuto)
-                  TextButton(
-                    onPressed: () {
-                      SmartDialog.dismiss();
-                      GStorage.setting.put(SettingBoxKey.autoUpdate, false);
-                    },
-                    child: Text(
-                      l10n.updateStopReminding,
-                      style: TextStyle(color: colorScheme.outline),
-                    ),
-                  ),
+            ),
+            actions: [
+              if (isAuto)
                 TextButton(
-                  onPressed: SmartDialog.dismiss,
+                  onPressed: () {
+                    SmartDialog.dismiss();
+                    GStorage.setting.put(SettingBoxKey.autoUpdate, false);
+                  },
                   child: Text(
-                    l10n.commonCancel,
+                    l10n.updateStopReminding,
                     style: TextStyle(color: colorScheme.outline),
                   ),
                 ),
-                if (Platform.isWindows) ...[
-                  downloadBtn('zip', ext: 'zip'),
-                  downloadBtn('exe', ext: 'exe'),
-                ] else if (Platform.isLinux) ...[
-                  downloadBtn('rpm', ext: 'rpm'),
-                  downloadBtn('deb', ext: 'deb'),
-                  downloadBtn('targz', ext: 'tar.gz'),
-                ] else
-                  downloadBtn('Github'),
-              ],
-            );
-          },
-        );
-      }
+              TextButton(
+                onPressed: SmartDialog.dismiss,
+                child: Text(
+                  l10n.commonCancel,
+                  style: TextStyle(color: colorScheme.outline),
+                ),
+              ),
+              if (Platform.isWindows) ...[
+                downloadBtn('zip', ext: 'zip'),
+                downloadBtn('exe', ext: 'exe'),
+              ] else if (Platform.isLinux) ...[
+                downloadBtn('rpm', ext: 'rpm'),
+                downloadBtn('deb', ext: 'deb'),
+                downloadBtn('targz', ext: 'tar.gz'),
+              ] else
+                downloadBtn('Github'),
+            ],
+          );
+        },
+      );
     } catch (e) {
       if (kDebugMode) debugPrint('failed to check update: $e');
+      if (!isAuto) {
+        SmartDialog.showToast(l10n.updateCheckFailed);
+      }
     }
   }
 

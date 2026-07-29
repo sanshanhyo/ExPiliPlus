@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag, e.g. v2.1.0-ex.1"
+        description: "Release tag, e.g. v1.0.0 or v1.0.0-dev.1"
         required: false
         default: ""
         type: string
@@ -36,7 +36,7 @@ jobs:
 
       - name: Set and Extract version
         shell: pwsh
-        run: lib/scripts/build.ps1
+        run: lib/scripts/build.ps1 -Platform macos -Tag "${{ inputs.tag }}"
 
       - name: Apply Patch
         shell: pwsh
@@ -60,6 +60,8 @@ jobs:
         with:
           tag_name: ${{ inputs.tag }}
           name: ${{ inputs.tag }}
+          prerelease: ${{ fromJSON(env.is_prerelease) }}
+          make_latest: ${{ env.is_prerelease == 'true' && 'false' || 'true' }}
           files: |
             ExPiliplus_macos_*.dmg
 
