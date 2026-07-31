@@ -21,6 +21,7 @@ import 'package:ex_piliplus/services/service_locator.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/calc_window_position.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/desktop_window_size.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/json_file_handler.dart';
 import 'package:ex_piliplus/utils/max_screen_size.dart';
@@ -167,7 +168,7 @@ void main() async {
     await windowManager.ensureInitialized();
 
     final windowOptions = WindowOptions(
-      minimumSize: const Size(400, 720),
+      minimumSize: DesktopWindowSize.minimumSize,
       skipTaskbar: false,
       titleBarStyle: Pref.showWindowTitleBar
           ? TitleBarStyle.normal
@@ -175,7 +176,14 @@ void main() async {
       title: Constants.appName,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
-      final windowSize = Pref.windowSize;
+      final savedWindowSize = Pref.windowSize;
+      final windowSize = DesktopWindowSize.restore(savedWindowSize);
+      if (windowSize != savedWindowSize) {
+        await GStorage.setting.put(SettingBoxKey.windowSize, [
+          windowSize.width,
+          windowSize.height,
+        ]);
+      }
       await windowManager.setBounds(
         await calcWindowPosition(windowSize) & windowSize,
       );

@@ -37,6 +37,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/fullscreen_mode.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/hwdec_type.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
+import 'package:ex_piliplus/utils/desktop_window_size.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
@@ -1033,9 +1034,11 @@ abstract final class Pref {
       _setting.get(SettingBoxKey.minimizeOnExit, defaultValue: true);
 
   static Size get windowSize {
-    final List<double>? size = (_setting.get(SettingBoxKey.windowSize) as List?)
-        ?.fromCast<double>();
-    return size == null ? const Size(1180.0, 720.0) : Size(size[0], size[1]);
+    final List? size = _setting.get(SettingBoxKey.windowSize) as List?;
+    if (size == null || size.length < 2 || size[0] is! num || size[1] is! num) {
+      return DesktopWindowSize.defaultSize;
+    }
+    return Size((size[0] as num).toDouble(), (size[1] as num).toDouble());
   }
 
   static List<double>? get windowPosition =>

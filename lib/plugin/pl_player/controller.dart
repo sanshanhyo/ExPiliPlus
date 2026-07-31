@@ -36,6 +36,7 @@ import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/asset_utils.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
+import 'package:ex_piliplus/utils/desktop_window_size.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/box_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
@@ -214,7 +215,7 @@ class PlPlayerController with BlockConfigMixin {
     return Future.wait([
       if (showWindowTitleBar)
         windowManager.setTitleBarStyle(TitleBarStyle.normal),
-      windowManager.setMinimumSize(const Size(400, 700)),
+      windowManager.setMinimumSize(DesktopWindowSize.minimumSize),
       windowManager.setBounds(_lastWindowBounds),
       setAlwaysOnTop(false),
       windowManager.setAspectRatio(0),
