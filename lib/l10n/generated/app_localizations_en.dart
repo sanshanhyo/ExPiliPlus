@@ -4868,11 +4868,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statisticsTitle => 'Viewing statistics (Beta)';
 
   @override
-  String get statisticsLoading => 'Analyzing watch history…';
+  String get statisticsLoading => 'Loading the latest 1,200 history records…';
 
   @override
   String statisticsLoadingCount(int count) {
-    return 'Loaded $count records…';
+    return 'Loaded $count / 1,200 records…';
   }
 
   @override
@@ -4886,18 +4886,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statisticsPartialData =>
-      'Some watch history couldn\'t be loaded. These statistics may be incomplete.';
+      'Some watch history couldn\'t be loaded. This summary may be incomplete.';
 
   @override
-  String get statisticsEmpty => 'No watch history in this time range';
+  String get statisticsEmpty => 'No watch history is available to analyze';
 
   @override
-  String get statisticsOverview => 'Overview';
+  String get statisticsOverview => 'Recent viewing overview';
 
   @override
   String statisticsDateRange(String start, String end) {
     return '$start – $end';
   }
+
+  @override
+  String statisticsRecordCoverage(int count, String start, String end) {
+    return 'Latest $count records · $start – $end';
+  }
+
+  @override
+  String get statisticsRecordLimitReached =>
+      'Reached bilibili\'s 1,200-record query limit';
 
   @override
   String get statisticsDistinctContent => 'Different items viewed';
@@ -4907,6 +4916,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statisticsUnfinished => 'Unfinished';
+
+  @override
+  String get statisticsContinueWatchingMetric => 'Ready to continue';
 
   @override
   String get statisticsActiveDays => 'Active days';
@@ -4919,7 +4931,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statisticsActivityDescription =>
-      'Each square is one day; darker squares have more records';
+      'The full date span covered by the available records';
 
   @override
   String statisticsActivityTooltip(String date, int count) {
@@ -4927,18 +4939,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get statisticsRecordTime => 'Record times';
+  String get statisticsRecordTime => 'Active hours';
 
   @override
   String get statisticsRecordTimeDescription =>
-      'Based on when each watch-history entry was last updated';
+      'Based on when each history entry was last updated';
+
+  @override
+  String statisticsHourTooltip(int hour, int count) {
+    return '$hour:00 · $count items';
+  }
 
   @override
   String get statisticsContentTypes => 'Content types';
 
   @override
   String get statisticsContentTypesDescription =>
-      'Based on the number of different items in watch history';
+      'The content mix in the available records';
 
   @override
   String get statisticsTopUploaders => 'Top uploaders';
@@ -4956,8 +4973,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statisticsContinueWatching => 'Continue watching';
 
   @override
-  String statisticsRemainingTotal(String duration) {
-    return '$duration remaining across these items';
+  String statisticsRemainingTotal(int count, String duration) {
+    return '$count items · about $duration remaining';
   }
 
   @override
@@ -4967,7 +4984,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statisticsDataSourceNotice =>
-      'Based on cross-platform bilibili watch history. Paused, cleared, or unrecorded history isn\'t included, and these figures don\'t represent actual watch time.';
+      'Based on up to the latest 1,200 cross-platform history records currently available from bilibili. Paused, cleared, or unrecorded history isn\'t included; record times and remaining durations don\'t represent actual watch time.';
 
   @override
   String get statisticsTypeVideo => 'Videos';

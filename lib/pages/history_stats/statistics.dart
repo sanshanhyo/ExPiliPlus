@@ -1,20 +1,5 @@
 import 'package:ex_piliplus/models_new/history/list.dart';
 
-enum HistoryStatisticsRange {
-  sevenDays(7),
-  thirtyDays(30),
-  ninetyDays(90);
-
-  const HistoryStatisticsRange(this.days);
-
-  final int days;
-
-  DateTime startOfPeriod(DateTime now) {
-    final today = DateTime(now.year, now.month, now.day);
-    return today.subtract(Duration(days: days - 1));
-  }
-}
-
 enum HistoryStatisticsContentType {
   video,
   pgc,
@@ -41,84 +26,133 @@ class HistoryUploaderStatistics {
     required this.mid,
     required this.contentCount,
     required this.completedCount,
+    this.avatarUrl,
   });
 
   final String name;
   final int? mid;
   final int contentCount;
   final int completedCount;
+  final String? avatarUrl;
+
+  HistoryUploaderStatistics copyWith({String? avatarUrl}) {
+    return HistoryUploaderStatistics(
+      name: name,
+      mid: mid,
+      contentCount: contentCount,
+      completedCount: completedCount,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+    );
+  }
 }
 
 class HistoryStatistics {
   const HistoryStatistics({
-    required this.range,
     required this.periodStart,
     required this.periodEnd,
+    required this.sourceRecordCount,
+    required this.reachedRecordLimit,
     required this.items,
     required this.totalContentCount,
     required this.completedCount,
-    required this.unfinishedCount,
     required this.activeDayCount,
     required this.favoritedCount,
     required this.remainingSeconds,
     required this.contentTypeCounts,
-    required this.hourBucketCounts,
+    required this.hourlyCounts,
     required this.activityByDay,
     required this.topUploaders,
-    required this.unfinishedItems,
+    required this.continueWatchingItems,
     required this.isPartial,
   });
 
-  final HistoryStatisticsRange range;
+  static const recordLimit = 1200;
+
   final DateTime periodStart;
   final DateTime periodEnd;
+  final int sourceRecordCount;
+  final bool reachedRecordLimit;
   final List<HistoryItemModel> items;
   final int totalContentCount;
   final int completedCount;
-  final int unfinishedCount;
   final int activeDayCount;
   final int favoritedCount;
   final int remainingSeconds;
   final Map<HistoryStatisticsContentType, int> contentTypeCounts;
-
-  /// Six four-hour buckets beginning at midnight.
-  final List<int> hourBucketCounts;
+  final List<int> hourlyCounts;
   final Map<DateTime, int> activityByDay;
   final List<HistoryUploaderStatistics> topUploaders;
-  final List<HistoryItemModel> unfinishedItems;
+  final List<HistoryItemModel> continueWatchingItems;
   final bool isPartial;
+
+  int get continueWatchingCount => continueWatchingItems.length;
+
+  HistoryStatistics withUploaderAvatars(Map<int, String> avatars) {
+    if (avatars.isEmpty) return this;
+    return HistoryStatistics(
+      periodStart: periodStart,
+      periodEnd: periodEnd,
+      sourceRecordCount: sourceRecordCount,
+      reachedRecordLimit: reachedRecordLimit,
+      items: items,
+      totalContentCount: totalContentCount,
+      completedCount: completedCount,
+      activeDayCount: activeDayCount,
+      favoritedCount: favoritedCount,
+      remainingSeconds: remainingSeconds,
+      contentTypeCounts: contentTypeCounts,
+      hourlyCounts: hourlyCounts,
+      activityByDay: activityByDay,
+      topUploaders: List.unmodifiable(
+        topUploaders.map((uploader) {
+          final mid = uploader.mid;
+          final avatar = mid == null ? null : avatars[mid];
+          return avatar == null
+              ? uploader
+              : uploader.copyWith(avatarUrl: avatar);
+        }),
+      ),
+      continueWatchingItems: continueWatchingItems,
+      isPartial: isPartial,
+    );
+  }
 }
 
 abstract final class HistoryStatisticsCalculator {
+  static const _minimumContinueRatio = 0.05;
+  static const _maximumContinueRatio = 0.95;
+
   static HistoryStatistics calculate({
     required Iterable<HistoryItemModel> source,
-    required HistoryStatisticsRange range,
     required DateTime now,
+    int? sourceRecordCount,
+    bool reachedRecordLimit = false,
     bool isPartial = false,
   }) {
-    final periodStart = range.startOfPeriod(now);
-    final periodEnd = now;
+    final sourceItems = source.toList(growable: false);
     final uniqueItems = <String, HistoryItemModel>{};
 
-    for (final item in source) {
-      final viewAt = item.viewAt;
-      if (viewAt == null) continue;
-      final viewedAt = DateTime.fromMillisecondsSinceEpoch(viewAt * 1000);
-      if (viewedAt.isBefore(periodStart) || viewedAt.isAfter(periodEnd)) {
-        continue;
-      }
+    for (final item in sourceItems) {
+      if (item.viewAt == null) continue;
       uniqueItems.putIfAbsent(_contentKey(item), () => item);
     }
 
     final items = uniqueItems.values.toList()
       ..sort((a, b) => (b.viewAt ?? 0).compareTo(a.viewAt ?? 0));
+    final today = DateTime(now.year, now.month, now.day);
+    final oldestViewAt = items.lastOrNull?.viewAt;
+    final periodStart = oldestViewAt == null
+        ? today
+        : _startOfDay(
+            DateTime.fromMillisecondsSinceEpoch(oldestViewAt * 1000),
+          );
     final typeCounts = {
       for (final type in HistoryStatisticsContentType.values) type: 0,
     };
-    final hourBuckets = List<int>.filled(6, 0);
+    final hourlyCounts = List<int>.filled(24, 0);
     final activityByDay = <DateTime, int>{};
     final uploaderBuilders = <String, _UploaderStatisticsBuilder>{};
-    final unfinishedItems = <HistoryItemModel>[];
+    final continueWatchingItems = <HistoryItemModel>[];
 
     var completedCount = 0;
     var favoritedCount = 0;
@@ -137,8 +171,8 @@ abstract final class HistoryStatisticsCalculator {
       final viewedAt = DateTime.fromMillisecondsSinceEpoch(
         item.viewAt! * 1000,
       );
-      hourBuckets[viewedAt.hour ~/ 4]++;
-      final day = DateTime(viewedAt.year, viewedAt.month, viewedAt.day);
+      hourlyCounts[viewedAt.hour]++;
+      final day = _startOfDay(viewedAt);
       activityByDay.update(day, (value) => value + 1, ifAbsent: () => 1);
 
       final authorName = item.authorName?.trim();
@@ -157,13 +191,9 @@ abstract final class HistoryStatisticsCalculator {
 
       final progress = item.progress;
       final duration = item.duration;
-      if (!completed &&
-          progress != null &&
-          progress > 0 &&
-          duration != null &&
-          duration > progress) {
-        unfinishedItems.add(item);
-        remainingSeconds += duration - progress;
+      if (_canContinueWatching(progress: progress, duration: duration)) {
+        continueWatchingItems.add(item);
+        remainingSeconds += duration! - progress!;
       }
     }
 
@@ -180,27 +210,52 @@ abstract final class HistoryStatisticsCalculator {
             .toList()
           ..sort((a, b) {
             final countCompare = b.contentCount.compareTo(a.contentCount);
-            return countCompare != 0 ? countCompare : a.name.compareTo(b.name);
+            if (countCompare != 0) return countCompare;
+            final completedCompare = b.completedCount.compareTo(
+              a.completedCount,
+            );
+            return completedCompare != 0
+                ? completedCompare
+                : a.name.compareTo(b.name);
           });
 
     return HistoryStatistics(
-      range: range,
       periodStart: periodStart,
-      periodEnd: periodEnd,
+      periodEnd: now,
+      sourceRecordCount: sourceRecordCount ?? sourceItems.length,
+      reachedRecordLimit: reachedRecordLimit,
       items: List.unmodifiable(items),
       totalContentCount: items.length,
       completedCount: completedCount,
-      unfinishedCount: unfinishedItems.length,
       activeDayCount: activityByDay.length,
       favoritedCount: favoritedCount,
       remainingSeconds: remainingSeconds,
       contentTypeCounts: Map.unmodifiable(typeCounts),
-      hourBucketCounts: List.unmodifiable(hourBuckets),
+      hourlyCounts: List.unmodifiable(hourlyCounts),
       activityByDay: Map.unmodifiable(activityByDay),
       topUploaders: List.unmodifiable(topUploaders),
-      unfinishedItems: List.unmodifiable(unfinishedItems),
+      continueWatchingItems: List.unmodifiable(continueWatchingItems),
       isPartial: isPartial,
     );
+  }
+
+  static bool _canContinueWatching({
+    required int? progress,
+    required int? duration,
+  }) {
+    if (progress == null ||
+        duration == null ||
+        progress < 0 ||
+        duration <= 0 ||
+        progress > duration) {
+      return false;
+    }
+    final ratio = progress / duration;
+    return ratio >= _minimumContinueRatio && ratio <= _maximumContinueRatio;
+  }
+
+  static DateTime _startOfDay(DateTime value) {
+    return DateTime(value.year, value.month, value.day);
   }
 
   static String _contentKey(HistoryItemModel item) {

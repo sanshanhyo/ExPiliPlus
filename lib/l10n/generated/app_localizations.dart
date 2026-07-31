@@ -8470,13 +8470,13 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsLoading.
   ///
   /// In zh, this message translates to:
-  /// **'正在整理观看记录…'**
+  /// **'正在读取最近 1200 条观看记录…'**
   String get statisticsLoading;
 
   /// No description provided for @statisticsLoadingCount.
   ///
   /// In zh, this message translates to:
-  /// **'已加载 {count} 条记录…'**
+  /// **'已读取 {count} / 1200 条记录…'**
   String statisticsLoadingCount(int count);
 
   /// No description provided for @statisticsRange7Days.
@@ -8500,19 +8500,19 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsPartialData.
   ///
   /// In zh, this message translates to:
-  /// **'部分观看记录加载失败，当前统计可能不完整。'**
+  /// **'部分观看记录加载失败，本次统计可能不完整。'**
   String get statisticsPartialData;
 
   /// No description provided for @statisticsEmpty.
   ///
   /// In zh, this message translates to:
-  /// **'所选时间范围内没有观看记录'**
+  /// **'当前没有可统计的观看记录'**
   String get statisticsEmpty;
 
   /// No description provided for @statisticsOverview.
   ///
   /// In zh, this message translates to:
-  /// **'概览'**
+  /// **'最近观看概览'**
   String get statisticsOverview;
 
   /// No description provided for @statisticsDateRange.
@@ -8520,6 +8520,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{start} – {end}'**
   String statisticsDateRange(String start, String end);
+
+  /// No description provided for @statisticsRecordCoverage.
+  ///
+  /// In zh, this message translates to:
+  /// **'最近 {count} 条记录 · {start} – {end}'**
+  String statisticsRecordCoverage(int count, String start, String end);
+
+  /// No description provided for @statisticsRecordLimitReached.
+  ///
+  /// In zh, this message translates to:
+  /// **'已达到 bilibili 可查询上限（1200 条）'**
+  String get statisticsRecordLimitReached;
 
   /// No description provided for @statisticsDistinctContent.
   ///
@@ -8538,6 +8550,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'未看完'**
   String get statisticsUnfinished;
+
+  /// No description provided for @statisticsContinueWatchingMetric.
+  ///
+  /// In zh, this message translates to:
+  /// **'可继续观看'**
+  String get statisticsContinueWatchingMetric;
 
   /// No description provided for @statisticsActiveDays.
   ///
@@ -8560,7 +8578,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsActivityDescription.
   ///
   /// In zh, this message translates to:
-  /// **'每个方格代表一天，颜色越深表示记录越多'**
+  /// **'覆盖当前可查询记录的完整日期范围'**
   String get statisticsActivityDescription;
 
   /// No description provided for @statisticsActivityTooltip.
@@ -8572,14 +8590,20 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsRecordTime.
   ///
   /// In zh, this message translates to:
-  /// **'记录时段'**
+  /// **'活跃时段'**
   String get statisticsRecordTime;
 
   /// No description provided for @statisticsRecordTimeDescription.
   ///
   /// In zh, this message translates to:
-  /// **'按观看记录最后更新的时间统计'**
+  /// **'按观看记录最后更新时间统计'**
   String get statisticsRecordTimeDescription;
+
+  /// No description provided for @statisticsHourTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'{hour}:00 · {count} 个内容'**
+  String statisticsHourTooltip(int hour, int count);
 
   /// No description provided for @statisticsContentTypes.
   ///
@@ -8590,7 +8614,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsContentTypesDescription.
   ///
   /// In zh, this message translates to:
-  /// **'按不同内容的观看记录数量统计'**
+  /// **'当前可查询记录中的内容构成'**
   String get statisticsContentTypesDescription;
 
   /// No description provided for @statisticsTopUploaders.
@@ -8620,8 +8644,8 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsRemainingTotal.
   ///
   /// In zh, this message translates to:
-  /// **'这些内容共剩余 {duration}'**
-  String statisticsRemainingTotal(String duration);
+  /// **'{count} 个内容 · 预计剩余 {duration}'**
+  String statisticsRemainingTotal(int count, String duration);
 
   /// No description provided for @statisticsRemaining.
   ///
@@ -8632,7 +8656,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsDataSourceNotice.
   ///
   /// In zh, this message translates to:
-  /// **'数据根据 bilibili 跨平台观看记录整理。暂停、清空或未记录的历史不会纳入，也不代表实际观看时长。'**
+  /// **'数据基于 bilibili 当前最多可查询的最近 1200 条跨平台观看记录。暂停、清空或未记录的历史不会纳入，记录时间与剩余时长也不代表实际观看时长。'**
   String get statisticsDataSourceNotice;
 
   /// No description provided for @statisticsTypeVideo.
