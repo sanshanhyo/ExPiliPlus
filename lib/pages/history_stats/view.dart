@@ -502,104 +502,185 @@ class _ActivitySection extends StatelessWidget {
             subtitle: context.l10n.statisticsActivityDescription,
           ),
           const SizedBox(height: 18),
-          Expanded(child: _ActivityHeatmap(statistics: statistics)),
+          Expanded(child: _ActivityCalendar(statistics: statistics)),
         ],
       ),
     );
   }
 }
 
-class _ActivityHeatmap extends StatelessWidget {
-  const _ActivityHeatmap({required this.statistics});
+class _ActivityCalendar extends StatelessWidget {
+  const _ActivityCalendar({required this.statistics});
 
   final HistoryStatistics statistics;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final start = statistics.periodStart;
-    final end = DateTime(
-      statistics.periodEnd.year,
-      statistics.periodEnd.month,
-      statistics.periodEnd.day,
-    );
-    final dates = <DateTime?>[
-      ...List<DateTime?>.filled(start.weekday - 1, null),
-      for (
-        var day = start;
-        !day.isAfter(end);
-        day = day.add(const Duration(days: 1))
-      )
-        day,
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final monthFormat = DateFormat.yMMMM(locale);
+    final dateFormat = DateFormat.MMMd(locale);
+    final weekdayLabels = [
+      l10n.weekdayMondayShort,
+      l10n.weekdayTuesdayShort,
+      l10n.weekdayWednesdayShort,
+      l10n.weekdayThursdayShort,
+      l10n.weekdayFridayShort,
+      l10n.weekdaySaturdayShort,
+      l10n.weekdaySundayShort,
     ];
-    while (dates.length % 7 != 0) {
-      dates.add(null);
-    }
-
     final maxCount = math.max(
       1,
       statistics.activityByDay.values.fold<int>(0, math.max),
     );
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final dateFormat = DateFormat.MMMd(locale);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final weekCount = dates.length ~/ 7;
-        const gap = 4.0;
-        final desiredCell =
-            (constraints.maxWidth - gap * (weekCount - 1)) / weekCount;
-        final cellSize = desiredCell.clamp(14.0, 28.0);
-        final contentWidth = weekCount * cellSize + gap * (weekCount - 1);
+    final startMonth = DateTime(
+      statistics.periodStart.year,
+      statistics.periodStart.month,
+    );
+    final endMonth = DateTime(
+      statistics.periodEnd.year,
+      statistics.periodEnd.month,
+    );
+    final months = [
+      for (
+        var month = startMonth;
+        !month.isAfter(endMonth);
+        month = DateTime(month.year, month.month + 1)
+      )
+        month,
+    ];
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          reverse: true,
-          child: SizedBox(
-            width: math.max(contentWidth, constraints.maxWidth),
-            child: Align(
-              alignment: contentWidth < constraints.maxWidth
-                  ? Alignment.center
-                  : Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (var week = 0; week < weekCount; week++) ...[
-                    if (week > 0) const SizedBox(width: gap),
-                    Column(
-                      children: [
-                        for (var weekday = 0; weekday < 7; weekday++) ...[
-                          if (weekday > 0) const SizedBox(height: gap),
-                          _ActivityCell(
-                            date: dates[week * 7 + weekday],
-                            count: dates[week * 7 + weekday] == null
-                                ? 0
-                                : statistics.activityByDay[dates[week * 7 +
-                                          weekday]] ??
-                                      0,
-                            maxCount: maxCount,
-                            size: cellSize,
-                            dateFormat: dateFormat,
-                            emptyColor: colors.surfaceContainerHighest,
-                            activeColor: colors.primary,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
-                ],
-              ),
+    // Chronological months in a reversed vertical scroll view: the latest
+    // month is initially visible, earlier months scroll in from above.
+    return SingleChildScrollView(
+      reverse: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < months.length; index++) ...[
+            if (index > 0) const SizedBox(height: 12),
+            _ActivityMonthBlock(
+              month: months[index],
+              heading: monthFormat.format(months[index]),
+              weekdayLabels: weekdayLabels,
+              activityByDay: statistics.activityByDay,
+              maxCount: maxCount,
+              dateFormat: dateFormat,
+              emptyColor: colors.surfaceContainerHighest,
+              activeColor: colors.primary,
             ),
-          ),
-        );
-      },
+          ],
+        ],
+      ),
     );
   }
 }
 
-class _ActivityCell extends StatelessWidget {
-  const _ActivityCell({
+class _ActivityMonthBlock extends StatelessWidget {
+  const _ActivityMonthBlock({
+    required this.month,
+    required this.heading,
+    required this.weekdayLabels,
+    required this.activityByDay,
+    required this.maxCount,
+    required this.dateFormat,
+    required this.emptyColor,
+    required this.activeColor,
+  });
+
+  final DateTime month;
+  final String heading;
+  final List<String> weekdayLabels;
+  final Map<DateTime, int> activityByDay;
+  final int maxCount;
+  final DateFormat dateFormat;
+  final Color emptyColor;
+  final Color activeColor;
+
+  static const double _gap = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
+    final leadingBlanks = DateTime(month.year, month.month, 1).weekday - 1;
+    final weekCount = (leadingBlanks + daysInMonth + 6) ~/ 7;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cellSize = (constraints.maxWidth - _gap * 6) / 7;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              heading,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                for (var index = 0; index < 7; index++) ...[
+                  if (index > 0) const SizedBox(width: _gap),
+                  SizedBox(
+                    width: cellSize,
+                    child: Text(
+                      weekdayLabels[index],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: _gap),
+            for (var week = 0; week < weekCount; week++) ...[
+              if (week > 0) const SizedBox(height: _gap),
+              Row(
+                children: [
+                  for (var weekday = 0; weekday < 7; weekday++) ...[
+                    if (weekday > 0) const SizedBox(width: _gap),
+                    _buildDayCell(
+                      cellSize,
+                      week * 7 + weekday - leadingBlanks + 1,
+                      daysInMonth,
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDayCell(double cellSize, int dayNumber, int daysInMonth) {
+    if (dayNumber < 1 || dayNumber > daysInMonth) {
+      return SizedBox.square(dimension: cellSize);
+    }
+    final date = DateTime(month.year, month.month, dayNumber);
+    return _ActivityDayCell(
+      date: date,
+      count: activityByDay[date] ?? 0,
+      maxCount: maxCount,
+      size: cellSize,
+      dateFormat: dateFormat,
+      emptyColor: emptyColor,
+      activeColor: activeColor,
+    );
+  }
+}
+
+class _ActivityDayCell extends StatelessWidget {
+  const _ActivityDayCell({
     required this.date,
     required this.count,
     required this.maxCount,
@@ -609,7 +690,7 @@ class _ActivityCell extends StatelessWidget {
     required this.activeColor,
   });
 
-  final DateTime? date;
+  final DateTime date;
   final int count;
   final int maxCount;
   final double size;
@@ -619,25 +700,34 @@ class _ActivityCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (date == null) return SizedBox.square(dimension: size);
+    final theme = Theme.of(context);
     final ratio = count / maxCount;
     final color = count == 0
         ? emptyColor
         : activeColor.withValues(alpha: 0.22 + ratio * 0.78);
     final label = context.l10n.statisticsActivityTooltip(
-      dateFormat.format(date!),
+      dateFormat.format(date),
       count,
     );
+    final textColor = count > 0 && ratio >= 0.5
+        ? theme.colorScheme.onPrimary
+        : theme.colorScheme.onSurfaceVariant;
     return Tooltip(
       message: label,
       child: Semantics(
         label: label,
+        excludeSemantics: true,
         child: Container(
           width: size,
           height: size,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(math.max(2, size * 0.22)),
+          ),
+          child: Text(
+            '${date.day}',
+            style: theme.textTheme.labelSmall?.copyWith(color: textColor),
           ),
         ),
       ),
@@ -791,11 +881,9 @@ class _ContentTypePieSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final entries =
-        statistics.contentTypeCounts.entries
-            .where((entry) => entry.value > 0)
-            .toList()
-          ..sort((a, b) => b.value.compareTo(a.value));
+    final entries = statistics.contentGroups
+        .where((entry) => entry.count > 0)
+        .toList();
     final palette = [
       colors.primary,
       colors.tertiary,
@@ -804,7 +892,7 @@ class _ContentTypePieSection extends StatelessWidget {
       const Color(0xFFD69E2E),
       colors.outline,
     ];
-    final total = entries.fold<int>(0, (sum, entry) => sum + entry.value);
+    final total = entries.fold<int>(0, (sum, entry) => sum + entry.count);
 
     return _SectionCard(
       child: Column(
@@ -832,7 +920,7 @@ class _ContentTypePieSection extends StatelessWidget {
                       sections: [
                         for (var index = 0; index < entries.length; index++)
                           PieChartSectionData(
-                            value: entries[index].value.toDouble(),
+                            value: entries[index].count.toDouble(),
                             color: palette[index % palette.length],
                             radius: 27,
                             showTitle: false,
@@ -872,27 +960,30 @@ class _ContentTypePieSection extends StatelessWidget {
                   100.0,
                   (constraints.maxWidth - 12) / 2,
                 );
-                return Align(
-                  alignment: Alignment.topCenter,
-                  child: Wrap(
-                    spacing: 12,
-                    runSpacing: 8,
-                    children: [
-                      for (var index = 0; index < entries.length; index++)
-                        SizedBox(
-                          width: itemWidth,
-                          child: _PieLegendItem(
-                            color: palette[index % palette.length],
-                            label: entries[index].key.localizedLabel(
-                              context.l10n,
+                return SingleChildScrollView(
+                  key: const ValueKey('statistics-content-legend-scroll'),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: [
+                        for (var index = 0; index < entries.length; index++)
+                          SizedBox(
+                            width: itemWidth,
+                            child: _PieLegendItem(
+                              color: palette[index % palette.length],
+                              label: entries[index].localizedLabel(
+                                context.l10n,
+                              ),
+                              value: entries[index].count,
+                              percentage: total == 0
+                                  ? 0
+                                  : entries[index].count / total * 100,
                             ),
-                            value: entries[index].value,
-                            percentage: total == 0
-                                ? 0
-                                : entries[index].value / total * 100,
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -1488,5 +1579,17 @@ extension on HistoryStatisticsContentType {
       HistoryStatisticsContentType.course => l10n.statisticsTypeCourse,
       HistoryStatisticsContentType.other => l10n.statisticsTypeOther,
     };
+  }
+}
+
+extension on HistoryStatisticsContentGroup {
+  String localizedLabel(AppLocalizations l10n) {
+    final typeLabel = type.localizedLabel(l10n);
+    final partition = this.partition;
+    final hasPartition =
+        type == HistoryStatisticsContentType.video ||
+        type == HistoryStatisticsContentType.live;
+    if (!hasPartition) return typeLabel;
+    return '$typeLabel · ${partition ?? l10n.statisticsUncategorized}';
   }
 }

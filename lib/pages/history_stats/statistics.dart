@@ -20,6 +20,30 @@ enum HistoryStatisticsContentType {
   }
 }
 
+class HistoryStatisticsContentGroup {
+  const HistoryStatisticsContentGroup({
+    required this.type,
+    required this.partition,
+    required this.count,
+  });
+
+  final HistoryStatisticsContentType type;
+  final String? partition;
+  final int count;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is HistoryStatisticsContentGroup &&
+            type == other.type &&
+            partition == other.partition &&
+            count == other.count;
+  }
+
+  @override
+  int get hashCode => Object.hash(type, partition, count);
+}
+
 class HistoryUploaderStatistics {
   const HistoryUploaderStatistics({
     required this.name,
@@ -58,7 +82,7 @@ class HistoryStatistics {
     required this.activeDayCount,
     required this.favoritedCount,
     required this.remainingSeconds,
-    required this.contentTypeCounts,
+    required this.contentGroups,
     required this.hourlyCounts,
     required this.activityByDay,
     required this.topUploaders,
@@ -78,7 +102,7 @@ class HistoryStatistics {
   final int activeDayCount;
   final int favoritedCount;
   final int remainingSeconds;
-  final Map<HistoryStatisticsContentType, int> contentTypeCounts;
+  final List<HistoryStatisticsContentGroup> contentGroups;
   final List<int> hourlyCounts;
   final Map<DateTime, int> activityByDay;
   final List<HistoryUploaderStatistics> topUploaders;
@@ -86,6 +110,16 @@ class HistoryStatistics {
   final bool isPartial;
 
   int get continueWatchingCount => continueWatchingItems.length;
+
+  Map<HistoryStatisticsContentType, int> get contentTypeCounts {
+    final counts = {
+      for (final type in HistoryStatisticsContentType.values) type: 0,
+    };
+    for (final group in contentGroups) {
+      counts[group.type] = counts[group.type]! + group.count;
+    }
+    return Map.unmodifiable(counts);
+  }
 
   HistoryStatistics withUploaderAvatars(Map<int, String> avatars) {
     if (avatars.isEmpty) return this;
@@ -100,7 +134,7 @@ class HistoryStatistics {
       activeDayCount: activeDayCount,
       favoritedCount: favoritedCount,
       remainingSeconds: remainingSeconds,
-      contentTypeCounts: contentTypeCounts,
+      contentGroups: contentGroups,
       hourlyCounts: hourlyCounts,
       activityByDay: activityByDay,
       topUploaders: List.unmodifiable(
@@ -146,9 +180,8 @@ abstract final class HistoryStatisticsCalculator {
         : _startOfDay(
             DateTime.fromMillisecondsSinceEpoch(oldestViewAt * 1000),
           );
-    final typeCounts = {
-      for (final type in HistoryStatisticsContentType.values) type: 0,
-    };
+    final contentGroupCounts =
+        <({HistoryStatisticsContentType type, String? partition}), int>{};
     final hourlyCounts = List<int>.filled(24, 0);
     final activityByDay = <DateTime, int>{};
     final uploaderBuilders = <String, _UploaderStatisticsBuilder>{};
@@ -163,10 +196,17 @@ abstract final class HistoryStatisticsCalculator {
       if (completed) completedCount++;
       if (item.isFav == 1) favoritedCount++;
 
-      final type = HistoryStatisticsContentType.fromBusiness(
-        item.history.business,
+      final business = item.history.business;
+      final type = HistoryStatisticsContentType.fromBusiness(business);
+      final groupKey = (
+        type: type,
+        partition: _partitionFor(item, business),
       );
-      typeCounts[type] = typeCounts[type]! + 1;
+      contentGroupCounts.update(
+        groupKey,
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
 
       final viewedAt = DateTime.fromMillisecondsSinceEpoch(
         item.viewAt! * 1000,
@@ -219,6 +259,18 @@ abstract final class HistoryStatisticsCalculator {
                 : a.name.compareTo(b.name);
           });
 
+    final contentGroups =
+        contentGroupCounts.entries
+            .map(
+              (entry) => HistoryStatisticsContentGroup(
+                type: entry.key.type,
+                partition: entry.key.partition,
+                count: entry.value,
+              ),
+            )
+            .toList()
+          ..sort(_compareContentGroups);
+
     return HistoryStatistics(
       periodStart: periodStart,
       periodEnd: now,
@@ -230,7 +282,7 @@ abstract final class HistoryStatisticsCalculator {
       activeDayCount: activityByDay.length,
       favoritedCount: favoritedCount,
       remainingSeconds: remainingSeconds,
-      contentTypeCounts: Map.unmodifiable(typeCounts),
+      contentGroups: List.unmodifiable(contentGroups),
       hourlyCounts: List.unmodifiable(hourlyCounts),
       activityByDay: Map.unmodifiable(activityByDay),
       topUploaders: List.unmodifiable(topUploaders),
@@ -256,6 +308,37 @@ abstract final class HistoryStatisticsCalculator {
 
   static DateTime _startOfDay(DateTime value) {
     return DateTime(value.year, value.month, value.day);
+  }
+
+  static String? _partitionFor(
+    HistoryItemModel item,
+    String? business,
+  ) {
+    final canPartition = switch (business) {
+      'archive' || null || '' || 'live' => true,
+      _ => false,
+    };
+    if (!canPartition) return null;
+
+    final partition = item.tagName?.trim();
+    return partition?.isNotEmpty == true ? partition : null;
+  }
+
+  static int _compareContentGroups(
+    HistoryStatisticsContentGroup a,
+    HistoryStatisticsContentGroup b,
+  ) {
+    final countCompare = b.count.compareTo(a.count);
+    if (countCompare != 0) return countCompare;
+
+    final typeCompare = a.type.index.compareTo(b.type.index);
+    if (typeCompare != 0) return typeCompare;
+
+    final aPartition = a.partition;
+    final bPartition = b.partition;
+    if (aPartition == null) return bPartition == null ? 0 : 1;
+    if (bPartition == null) return -1;
+    return aPartition.compareTo(bPartition);
   }
 
   static String _contentKey(HistoryItemModel item) {

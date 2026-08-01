@@ -4690,7 +4690,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyTapToEnable => '点击开启';
 
   @override
-  String get statisticsTitle => '数据统计（Beta）';
+  String get statisticsTitle => '数据统计（Beta 2）';
 
   @override
   String get statisticsLoading => '正在读取最近 1200 条观看记录…';
@@ -4822,6 +4822,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get statisticsTypeOther => '其他';
+
+  @override
+  String get statisticsUncategorized => '未分类';
 
   @override
   String get downloadOfflineTitle => '离线缓存';
@@ -11983,7 +11986,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get historyTapToEnable => '點擊開啟';
 
   @override
-  String get statisticsTitle => '數據統計（Beta）';
+  String get statisticsTitle => '數據統計（Beta 2）';
 
   @override
   String get statisticsLoading => '正在讀取最近 1200 筆觀看記錄…';
@@ -12115,6 +12118,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get statisticsTypeOther => '其他';
+
+  @override
+  String get statisticsUncategorized => '未分類';
 
   @override
   String get downloadOfflineTitle => '離線快取';
