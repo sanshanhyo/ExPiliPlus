@@ -13198,6 +13198,90 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'保存'**
   String get commonSave;
+
+  /// No description provided for @videoShareAsTicket.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享为分享票'**
+  String get videoShareAsTicket;
+
+  /// No description provided for @shareTicketTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享票'**
+  String get shareTicketTitle;
+
+  /// No description provided for @shareTicketPostscript.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享附言'**
+  String get shareTicketPostscript;
+
+  /// No description provided for @shareTicketPostscriptHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'写下你的推荐语'**
+  String get shareTicketPostscriptHint;
+
+  /// No description provided for @shareTicketSave.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存图片'**
+  String get shareTicketSave;
+
+  /// No description provided for @shareTicketShare.
+  ///
+  /// In zh, this message translates to:
+  /// **'系统分享'**
+  String get shareTicketShare;
+
+  /// No description provided for @shareTicketLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享票所需资源加载失败，请重试'**
+  String get shareTicketLoadFailed;
+
+  /// No description provided for @shareTicketRetry.
+  ///
+  /// In zh, this message translates to:
+  /// **'重试'**
+  String get shareTicketRetry;
+
+  /// No description provided for @shareTicketPublishedAt.
+  ///
+  /// In zh, this message translates to:
+  /// **'发布'**
+  String get shareTicketPublishedAt;
+
+  /// No description provided for @shareTicketPlays.
+  ///
+  /// In zh, this message translates to:
+  /// **'播放'**
+  String get shareTicketPlays;
+
+  /// No description provided for @shareTicketDanmaku.
+  ///
+  /// In zh, this message translates to:
+  /// **'弹幕'**
+  String get shareTicketDanmaku;
+
+  /// No description provided for @shareTicketLikes.
+  ///
+  /// In zh, this message translates to:
+  /// **'点赞'**
+  String get shareTicketLikes;
+
+  /// No description provided for @shareTicketSharer.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享者'**
+  String get shareTicketSharer;
+
+  /// No description provided for @shareTicketFrom.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享来自 ExPiliPlus'**
+  String get shareTicketFrom;
 }
 
 class _AppLocalizationsDelegate

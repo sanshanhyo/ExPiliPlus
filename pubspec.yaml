@@ -272,6 +272,7 @@ flutter:
       platforms: [linux, macos]
     - path: assets/images/live/
     - path: assets/images/paycoins/
+    - path: assets/images/share_ticket/
     - path: assets/shaders/
     - path: assets/fonts/licenses/
 

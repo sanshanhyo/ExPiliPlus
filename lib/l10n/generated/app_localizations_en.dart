@@ -7567,4 +7567,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonSave => 'Save';
+
+  @override
+  String get videoShareAsTicket => 'Share as ticket';
+
+  @override
+  String get shareTicketTitle => 'Share ticket';
+
+  @override
+  String get shareTicketPostscript => 'Postscript';
+
+  @override
+  String get shareTicketPostscriptHint => 'Write a recommendation';
+
+  @override
+  String get shareTicketSave => 'Save image';
+
+  @override
+  String get shareTicketShare => 'System share';
+
+  @override
+  String get shareTicketLoadFailed =>
+      'Required share ticket resources failed to load. Please retry';
+
+  @override
+  String get shareTicketRetry => 'Retry';
+
+  @override
+  String get shareTicketPublishedAt => 'Published';
+
+  @override
+  String get shareTicketPlays => 'Plays';
+
+  @override
+  String get shareTicketDanmaku => 'Danmaku';
+
+  @override
+  String get shareTicketLikes => 'Likes';
+
+  @override
+  String get shareTicketSharer => 'Shared by';
+
+  @override
+  String get shareTicketFrom => 'Shared from ExPiliPlus';
 }

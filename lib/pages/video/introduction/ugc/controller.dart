@@ -24,6 +24,7 @@ import 'package:ex_piliplus/models_new/video/video_detail/stat_detail.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/ugc_season.dart';
 import 'package:ex_piliplus/pages/common/common_intro_controller.dart';
 import 'package:ex_piliplus/pages/dynamics_repost/view.dart';
+import 'package:ex_piliplus/pages/share_ticket/view.dart';
 import 'package:ex_piliplus/pages/video/related/controller.dart';
 import 'package:ex_piliplus/pages/video/reply/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -333,6 +334,17 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
             onTap: () {
               Get.back();
               PageUtils.launchURL(videoUrl);
+            },
+          ),
+          ListTile(
+            dense: true,
+            title: Text(
+              l10n.videoShareAsTicket,
+              style: const TextStyle(fontSize: 14),
+            ),
+            onTap: () {
+              Get.back();
+              ShareTicketPage.push(context, videoDetail);
             },
           ),
           if (PlatformUtils.isMobile)

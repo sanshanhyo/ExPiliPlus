@@ -2246,5 +2246,19 @@
   "playerProgressBar": "Progress bar",
   "commonPlay": "Play",
   "settingsSpeedTestTimeout": "Speed test timed out",
-  "commonSave": "Save"
+  "commonSave": "Save",
+  "videoShareAsTicket": "Share as ticket",
+  "shareTicketTitle": "Share ticket",
+  "shareTicketPostscript": "Postscript",
+  "shareTicketPostscriptHint": "Write a recommendation",
+  "shareTicketSave": "Save image",
+  "shareTicketShare": "System share",
+  "shareTicketLoadFailed": "Required share ticket resources failed to load. Please retry",
+  "shareTicketRetry": "Retry",
+  "shareTicketPublishedAt": "Published",
+  "shareTicketPlays": "Plays",
+  "shareTicketDanmaku": "Danmaku",
+  "shareTicketLikes": "Likes",
+  "shareTicketSharer": "Shared by",
+  "shareTicketFrom": "Shared from ExPiliPlus"
 }

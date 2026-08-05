@@ -2246,5 +2246,19 @@
   "playerProgressBar": "進度條",
   "commonPlay": "播放",
   "settingsSpeedTestTimeout": "測速逾時",
-  "commonSave": "儲存"
+  "commonSave": "儲存",
+  "videoShareAsTicket": "分享為分享票",
+  "shareTicketTitle": "分享票",
+  "shareTicketPostscript": "分享附言",
+  "shareTicketPostscriptHint": "寫下你的推薦語",
+  "shareTicketSave": "儲存圖片",
+  "shareTicketShare": "系統分享",
+  "shareTicketLoadFailed": "分享票所需資源載入失敗，請重試",
+  "shareTicketRetry": "重試",
+  "shareTicketPublishedAt": "發布",
+  "shareTicketPlays": "播放",
+  "shareTicketDanmaku": "彈幕",
+  "shareTicketLikes": "按讚",
+  "shareTicketSharer": "分享者",
+  "shareTicketFrom": "分享來自 ExPiliPlus"
 }

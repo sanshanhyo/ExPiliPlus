@@ -7329,6 +7329,48 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonSave => '保存';
+
+  @override
+  String get videoShareAsTicket => '分享为分享票';
+
+  @override
+  String get shareTicketTitle => '分享票';
+
+  @override
+  String get shareTicketPostscript => '分享附言';
+
+  @override
+  String get shareTicketPostscriptHint => '写下你的推荐语';
+
+  @override
+  String get shareTicketSave => '保存图片';
+
+  @override
+  String get shareTicketShare => '系统分享';
+
+  @override
+  String get shareTicketLoadFailed => '分享票所需资源加载失败，请重试';
+
+  @override
+  String get shareTicketRetry => '重试';
+
+  @override
+  String get shareTicketPublishedAt => '发布';
+
+  @override
+  String get shareTicketPlays => '播放';
+
+  @override
+  String get shareTicketDanmaku => '弹幕';
+
+  @override
+  String get shareTicketLikes => '点赞';
+
+  @override
+  String get shareTicketSharer => '分享者';
+
+  @override
+  String get shareTicketFrom => '分享来自 ExPiliPlus';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -14657,4 +14699,46 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get commonSave => '儲存';
+
+  @override
+  String get videoShareAsTicket => '分享為分享票';
+
+  @override
+  String get shareTicketTitle => '分享票';
+
+  @override
+  String get shareTicketPostscript => '分享附言';
+
+  @override
+  String get shareTicketPostscriptHint => '寫下你的推薦語';
+
+  @override
+  String get shareTicketSave => '儲存圖片';
+
+  @override
+  String get shareTicketShare => '系統分享';
+
+  @override
+  String get shareTicketLoadFailed => '分享票所需資源載入失敗，請重試';
+
+  @override
+  String get shareTicketRetry => '重試';
+
+  @override
+  String get shareTicketPublishedAt => '發布';
+
+  @override
+  String get shareTicketPlays => '播放';
+
+  @override
+  String get shareTicketDanmaku => '彈幕';
+
+  @override
+  String get shareTicketLikes => '按讚';
+
+  @override
+  String get shareTicketSharer => '分享者';
+
+  @override
+  String get shareTicketFrom => '分享來自 ExPiliPlus';
 }
