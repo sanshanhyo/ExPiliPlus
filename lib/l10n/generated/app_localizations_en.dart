@@ -4865,7 +4865,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyTapToEnable => 'Turn on';
 
   @override
-  String get statisticsTitle => 'Viewing statistics (Beta 3)';
+  String get statisticsTitle => 'Viewing statistics (Beta 4)';
 
   @override
   String get statisticsLoading => 'Loading the latest 1,200 history records…';
@@ -4927,6 +4927,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statisticsFavorited => 'Favorited';
 
   @override
+  String get statisticsCurrentStreak => 'Current active streak';
+
+  @override
+  String get statisticsLongestStreak => 'Longest active streak';
+
+  @override
+  String get statisticsWeekdayDistribution => 'Weekday distribution';
+
+  @override
+  String get statisticsWeekdayDistributionDescription =>
+      'Records grouped by the day of the week';
+
+  @override
+  String get statisticsActivityTapHint => 'View records for this date';
+
+  @override
+  String get statisticsNoActivityRecords =>
+      'No records are available for this date';
+
+  @override
+  String get statisticsExportJson => 'Export JSON';
+
+  @override
+  String get statisticsExportCsv => 'Export CSV';
+
+  @override
+  String get statisticsExportScreenshot => 'Save screenshot';
+
+  @override
   String get statisticsActivity => 'Activity';
 
   @override
@@ -4936,6 +4965,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String statisticsActivityTooltip(String date, int count) {
     return '$date: $count items';
+  }
+
+  @override
+  String statisticsActivityRecords(String date, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count records',
+      one: '$count record',
+    );
+    return '$date · $_temp0';
   }
 
   @override

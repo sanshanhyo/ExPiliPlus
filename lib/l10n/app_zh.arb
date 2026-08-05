@@ -1695,7 +1695,7 @@
   "historyDeleteWatched": "删除已看记录",
   "historyDisabled": " 历史记录功能已关闭",
   "historyTapToEnable": "点击开启",
-  "statisticsTitle": "数据统计（Beta 3）",
+  "statisticsTitle": "数据统计（Beta 4）",
   "statisticsLoading": "正在读取最近 1200 条观看记录…",
   "statisticsLoadingCount": "已读取 {count} / 1200 条记录…",
   "@statisticsLoadingCount": {
@@ -1743,6 +1743,15 @@
   "statisticsContinueWatchingMetric": "可继续观看",
   "statisticsActiveDays": "活跃天数",
   "statisticsFavorited": "已收藏",
+  "statisticsCurrentStreak": "当前连续活跃",
+  "statisticsLongestStreak": "最长连续活跃",
+  "statisticsWeekdayDistribution": "星期分布",
+  "statisticsWeekdayDistributionDescription": "按星期统计观看记录数量",
+  "statisticsActivityTapHint": "查看这一天的记录",
+  "statisticsNoActivityRecords": "这一天没有可查看的记录",
+  "statisticsExportJson": "导出 JSON",
+  "statisticsExportCsv": "导出 CSV",
+  "statisticsExportScreenshot": "保存统计截图",
   "statisticsActivity": "活跃日期",
   "statisticsActivityDescription": "覆盖当前可查询记录的完整日期范围",
   "statisticsActivityTooltip": "{date}：{count} 个内容",
@@ -1754,6 +1763,13 @@
       "count": {
         "type": "int"
       }
+    }
+  },
+  "statisticsActivityRecords": "{date} · {count} 条记录",
+  "@statisticsActivityRecords": {
+    "placeholders": {
+      "date": {"type": "String"},
+      "count": {"type": "int"}
     }
   },
   "statisticsRecordTime": "活跃时段",

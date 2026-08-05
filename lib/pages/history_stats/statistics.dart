@@ -111,6 +111,47 @@ class HistoryStatistics {
 
   int get continueWatchingCount => continueWatchingItems.length;
 
+  /// The number of consecutive active days in the latest detected run.
+  ///
+  /// This is based on the loaded history range, so it does not imply that
+  /// activity outside the currently queryable records was absent.
+  int get currentActiveStreak => _streaks.$1;
+
+  /// The longest consecutive active-day run in the loaded history range.
+  int get longestActiveStreak => _streaks.$2;
+
+  /// Counts of records grouped from Monday through Sunday.
+  List<int> get weekdayCounts {
+    final counts = List<int>.filled(DateTime.daysPerWeek, 0);
+    for (final entry in activityByDay.entries) {
+      counts[entry.key.weekday - 1] += entry.value;
+    }
+    return List.unmodifiable(counts);
+  }
+
+  (int current, int longest) get _streaks {
+    if (activityByDay.isEmpty) return (0, 0);
+    final dates = activityByDay.keys.toList()..sort();
+    var longest = 1;
+    var run = 1;
+    for (var index = 1; index < dates.length; index++) {
+      if (_calendarDayDistance(dates[index - 1], dates[index]) == 1) {
+        run++;
+      } else {
+        if (run > longest) longest = run;
+        run = 1;
+      }
+    }
+    if (run > longest) longest = run;
+    return (run, longest);
+  }
+
+  int _calendarDayDistance(DateTime first, DateTime second) {
+    final firstUtc = DateTime.utc(first.year, first.month, first.day);
+    final secondUtc = DateTime.utc(second.year, second.month, second.day);
+    return secondUtc.difference(firstUtc).inDays;
+  }
+
   Map<HistoryStatisticsContentType, int> get contentTypeCounts {
     final counts = {
       for (final type in HistoryStatisticsContentType.values) type: 0,

@@ -8464,7 +8464,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsTitle.
   ///
   /// In zh, this message translates to:
-  /// **'数据统计（Beta 3）'**
+  /// **'数据统计（Beta 4）'**
   String get statisticsTitle;
 
   /// No description provided for @statisticsLoading.
@@ -8569,6 +8569,60 @@ abstract class AppLocalizations {
   /// **'已收藏'**
   String get statisticsFavorited;
 
+  /// No description provided for @statisticsCurrentStreak.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前连续活跃'**
+  String get statisticsCurrentStreak;
+
+  /// No description provided for @statisticsLongestStreak.
+  ///
+  /// In zh, this message translates to:
+  /// **'最长连续活跃'**
+  String get statisticsLongestStreak;
+
+  /// No description provided for @statisticsWeekdayDistribution.
+  ///
+  /// In zh, this message translates to:
+  /// **'星期分布'**
+  String get statisticsWeekdayDistribution;
+
+  /// No description provided for @statisticsWeekdayDistributionDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'按星期统计观看记录数量'**
+  String get statisticsWeekdayDistributionDescription;
+
+  /// No description provided for @statisticsActivityTapHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'查看这一天的记录'**
+  String get statisticsActivityTapHint;
+
+  /// No description provided for @statisticsNoActivityRecords.
+  ///
+  /// In zh, this message translates to:
+  /// **'这一天没有可查看的记录'**
+  String get statisticsNoActivityRecords;
+
+  /// No description provided for @statisticsExportJson.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出 JSON'**
+  String get statisticsExportJson;
+
+  /// No description provided for @statisticsExportCsv.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出 CSV'**
+  String get statisticsExportCsv;
+
+  /// No description provided for @statisticsExportScreenshot.
+  ///
+  /// In zh, this message translates to:
+  /// **'保存统计截图'**
+  String get statisticsExportScreenshot;
+
   /// No description provided for @statisticsActivity.
   ///
   /// In zh, this message translates to:
@@ -8586,6 +8640,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{date}：{count} 个内容'**
   String statisticsActivityTooltip(String date, int count);
+
+  /// No description provided for @statisticsActivityRecords.
+  ///
+  /// In zh, this message translates to:
+  /// **'{date} · {count} 条记录'**
+  String statisticsActivityRecords(String date, int count);
 
   /// No description provided for @statisticsRecordTime.
   ///

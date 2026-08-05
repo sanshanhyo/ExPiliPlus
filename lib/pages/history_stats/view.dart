@@ -1,4 +1,6 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
@@ -7,13 +9,18 @@ import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models_new/history/list.dart';
 import 'package:ex_piliplus/pages/history/open_item.dart';
 import 'package:ex_piliplus/pages/history_stats/controller.dart';
+import 'package:ex_piliplus/pages/history_stats/export.dart';
 import 'package:ex_piliplus/pages/history_stats/statistics.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/storage_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+enum _StatisticsExportAction { json, csv, screenshot }
 
 class HistoryStatisticsPage extends StatefulWidget {
   const HistoryStatisticsPage({super.key});
@@ -26,6 +33,7 @@ class _HistoryStatisticsPageState extends State<HistoryStatisticsPage> {
   static const _controllerTag = 'history-statistics';
 
   late final HistoryStatisticsController _controller;
+  final _statisticsBoundaryKey = GlobalKey();
 
   @override
   void initState() {
@@ -48,6 +56,36 @@ class _HistoryStatisticsPageState extends State<HistoryStatisticsPage> {
       appBar: AppBar(
         title: Text(context.l10n.statisticsTitle),
         actions: [
+          PopupMenuButton<_StatisticsExportAction>(
+            tooltip: context.l10n.commonExport,
+            onSelected: _export,
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: _StatisticsExportAction.json,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.data_object_outlined),
+                  title: Text(context.l10n.statisticsExportJson),
+                ),
+              ),
+              PopupMenuItem(
+                value: _StatisticsExportAction.csv,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.table_chart_outlined),
+                  title: Text(context.l10n.statisticsExportCsv),
+                ),
+              ),
+              PopupMenuItem(
+                value: _StatisticsExportAction.screenshot,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.screenshot_monitor_outlined),
+                  title: Text(context.l10n.statisticsExportScreenshot),
+                ),
+              ),
+            ],
+          ),
           IconButton(
             tooltip: context.l10n.commonRefresh,
             onPressed: _controller.load,
@@ -60,6 +98,54 @@ class _HistoryStatisticsPageState extends State<HistoryStatisticsPage> {
     );
   }
 
+  Future<void> _export(_StatisticsExportAction action) async {
+    final state = _controller.loadingState.value;
+    if (state is! Success<HistoryStatistics>) return;
+
+    final stamp = DateFormat('yyyyMMdd-HHmmss').format(DateTime.now());
+    switch (action) {
+      case _StatisticsExportAction.json:
+        await StorageUtils.saveBytes2File(
+          name: 'history-statistics-$stamp.json',
+          bytes: HistoryStatisticsExport.jsonBytes(state.response),
+          allowedExtensions: ['json'],
+        );
+      case _StatisticsExportAction.csv:
+        await StorageUtils.saveBytes2File(
+          name: 'history-statistics-$stamp.csv',
+          bytes: HistoryStatisticsExport.csvBytes(state.response),
+          allowedExtensions: ['csv'],
+        );
+      case _StatisticsExportAction.screenshot:
+        await _saveScreenshot(stamp);
+    }
+  }
+
+  Future<void> _saveScreenshot(String stamp) async {
+    final pixelRatio = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 3.0);
+    await WidgetsBinding.instance.endOfFrame;
+    final renderObject = _statisticsBoundaryKey.currentContext
+        ?.findRenderObject();
+    if (renderObject is! RenderRepaintBoundary) return;
+    final image = await renderObject.toImage(pixelRatio: pixelRatio);
+    try {
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+      await StorageUtils.saveBytes2File(
+        name: 'history-statistics-$stamp.png',
+        bytes: Uint8List.fromList(
+          byteData.buffer.asUint8List(
+            byteData.offsetInBytes,
+            byteData.lengthInBytes,
+          ),
+        ),
+        allowedExtensions: ['png'],
+      );
+    } finally {
+      image.dispose();
+    }
+  }
+
   Widget _buildState(LoadingState<HistoryStatistics> state) {
     return switch (state) {
       Loading() => _LoadingStatistics(
@@ -70,9 +156,12 @@ class _HistoryStatisticsPageState extends State<HistoryStatisticsPage> {
         errMsg: errMsg,
         onReload: _controller.load,
       ),
-      Success(:final response) => HistoryStatisticsContent(
-        statistics: response,
-        onRefresh: _controller.load,
+      Success(:final response) => RepaintBoundary(
+        key: _statisticsBoundaryKey,
+        child: HistoryStatisticsContent(
+          statistics: response,
+          onRefresh: _controller.load,
+        ),
       ),
     };
   }
@@ -141,6 +230,8 @@ class HistoryStatisticsContent extends StatelessWidget {
                     _MetricGrid(statistics: statistics),
                     const SizedBox(height: 12),
                     _AnalyticsSection(statistics: statistics),
+                    const SizedBox(height: 12),
+                    _WeekdayDistributionSection(statistics: statistics),
                     if (statistics.topUploaders.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       _UploaderSection(statistics: statistics),
@@ -357,6 +448,18 @@ class _MetricGrid extends StatelessWidget {
         value: statistics.favoritedCount,
         color: colors.error,
       ),
+      _MetricData(
+        icon: Icons.local_fire_department_outlined,
+        label: context.l10n.statisticsCurrentStreak,
+        value: statistics.currentActiveStreak,
+        color: colors.tertiary,
+      ),
+      _MetricData(
+        icon: Icons.workspace_premium_outlined,
+        label: context.l10n.statisticsLongestStreak,
+        value: statistics.longestActiveStreak,
+        color: colors.primary,
+      ),
     ];
 
     return LayoutBuilder(
@@ -485,6 +588,87 @@ class _AnalyticsSection extends StatelessWidget {
   }
 }
 
+class _WeekdayDistributionSection extends StatelessWidget {
+  const _WeekdayDistributionSection({required this.statistics});
+
+  final HistoryStatistics statistics;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final counts = statistics.weekdayCounts;
+    final maxCount = math.max(1, counts.fold<int>(0, math.max));
+    final labels = [
+      context.l10n.weekdayMondayShort,
+      context.l10n.weekdayTuesdayShort,
+      context.l10n.weekdayWednesdayShort,
+      context.l10n.weekdayThursdayShort,
+      context.l10n.weekdayFridayShort,
+      context.l10n.weekdaySaturdayShort,
+      context.l10n.weekdaySundayShort,
+    ];
+
+    return _SectionCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            icon: Icons.bar_chart_outlined,
+            title: context.l10n.statisticsWeekdayDistribution,
+            subtitle: context.l10n.statisticsWeekdayDistributionDescription,
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 150,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                for (var index = 0; index < counts.length; index++) ...[
+                  if (index > 0) const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${counts[index]}',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Flexible(
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: FractionallySizedBox(
+                              heightFactor: counts[index] / maxCount,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: colors.primary,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          labels[index],
+                          style: theme.textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ActivitySection extends StatelessWidget {
   const _ActivitySection({required this.statistics});
 
@@ -513,6 +697,92 @@ class _ActivityCalendar extends StatelessWidget {
   const _ActivityCalendar({required this.statistics});
 
   final HistoryStatistics statistics;
+
+  Future<void> _showDateRecords(BuildContext context, DateTime date) async {
+    final records = statistics.items
+        .where((item) {
+          final viewAt = item.viewAt;
+          if (viewAt == null) return false;
+          final viewedAt = DateTime.fromMillisecondsSinceEpoch(viewAt * 1000);
+          return viewedAt.year == date.year &&
+              viewedAt.month == date.month &&
+              viewedAt.day == date.day;
+        })
+        .toList(growable: false);
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final dateFormat = DateFormat.yMMMMd(locale);
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        final l10n = sheetContext.l10n;
+        return ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 560),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.statisticsActivityRecords(
+                    dateFormat.format(date),
+                    records.length,
+                  ),
+                  style: Theme.of(sheetContext).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 10),
+                if (records.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 28),
+                    child: Center(
+                      child: Text(l10n.statisticsNoActivityRecords),
+                    ),
+                  )
+                else
+                  Flexible(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: records.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 2),
+                      itemBuilder: (_, index) {
+                        final item = records[index];
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: NetworkImgLayer(
+                            src: item.cover,
+                            width: 72,
+                            height: 48,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          title: Text(
+                            item.title ?? l10n.commonNoData,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            item.authorName?.trim().isNotEmpty == true
+                                ? item.authorName!.trim()
+                                : item.history.business ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onTap: () async {
+                            Navigator.of(sheetContext).pop();
+                            await HistoryItemNavigation.open(context, item);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -572,6 +842,7 @@ class _ActivityCalendar extends StatelessWidget {
               activityStart: activityStart,
               activityEnd: activityEnd,
               maxCount: maxCount,
+              onDateTap: (date) => _showDateRecords(context, date),
               dateFormat: dateFormat,
               emptyColor: colors.surfaceContainerHighest,
               activeColor: colors.primary,
@@ -595,6 +866,7 @@ class _ActivityMonthBlock extends StatelessWidget {
     required this.dateFormat,
     required this.emptyColor,
     required this.activeColor,
+    required this.onDateTap,
   });
 
   final DateTime month;
@@ -607,6 +879,7 @@ class _ActivityMonthBlock extends StatelessWidget {
   final DateFormat dateFormat;
   final Color emptyColor;
   final Color activeColor;
+  final ValueChanged<DateTime> onDateTap;
 
   static const double _gap = 4;
 
@@ -689,6 +962,7 @@ class _ActivityMonthBlock extends StatelessWidget {
       dateFormat: dateFormat,
       emptyColor: emptyColor,
       activeColor: activeColor,
+      onTap: () => onDateTap(date),
     );
   }
 
@@ -706,6 +980,7 @@ class _ActivityDayCell extends StatelessWidget {
     required this.dateFormat,
     required this.emptyColor,
     required this.activeColor,
+    required this.onTap,
   });
 
   final DateTime date;
@@ -715,6 +990,7 @@ class _ActivityDayCell extends StatelessWidget {
   final DateFormat dateFormat;
   final Color emptyColor;
   final Color activeColor;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -733,19 +1009,25 @@ class _ActivityDayCell extends StatelessWidget {
     return Tooltip(
       message: label,
       child: Semantics(
+        button: true,
+        onTapHint: context.l10n.statisticsActivityTapHint,
         label: label,
         excludeSemantics: true,
-        child: Container(
-          width: size,
-          height: size,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(math.max(2, size * 0.22)),
-          ),
-          child: Text(
-            '${date.day}',
-            style: theme.textTheme.labelSmall?.copyWith(color: textColor),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(math.max(2, size * 0.22)),
+          child: Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(math.max(2, size * 0.22)),
+            ),
+            child: Text(
+              '${date.day}',
+              style: theme.textTheme.labelSmall?.copyWith(color: textColor),
+            ),
           ),
         ),
       ),

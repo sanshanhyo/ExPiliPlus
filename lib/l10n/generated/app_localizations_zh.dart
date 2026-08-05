@@ -4690,7 +4690,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyTapToEnable => '点击开启';
 
   @override
-  String get statisticsTitle => '数据统计（Beta 3）';
+  String get statisticsTitle => '数据统计（Beta 4）';
 
   @override
   String get statisticsLoading => '正在读取最近 1200 条观看记录…';
@@ -4750,6 +4750,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get statisticsFavorited => '已收藏';
 
   @override
+  String get statisticsCurrentStreak => '当前连续活跃';
+
+  @override
+  String get statisticsLongestStreak => '最长连续活跃';
+
+  @override
+  String get statisticsWeekdayDistribution => '星期分布';
+
+  @override
+  String get statisticsWeekdayDistributionDescription => '按星期统计观看记录数量';
+
+  @override
+  String get statisticsActivityTapHint => '查看这一天的记录';
+
+  @override
+  String get statisticsNoActivityRecords => '这一天没有可查看的记录';
+
+  @override
+  String get statisticsExportJson => '导出 JSON';
+
+  @override
+  String get statisticsExportCsv => '导出 CSV';
+
+  @override
+  String get statisticsExportScreenshot => '保存统计截图';
+
+  @override
   String get statisticsActivity => '活跃日期';
 
   @override
@@ -4758,6 +4785,11 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String statisticsActivityTooltip(String date, int count) {
     return '$date：$count 个内容';
+  }
+
+  @override
+  String statisticsActivityRecords(String date, int count) {
+    return '$date · $count 条记录';
   }
 
   @override
@@ -11986,7 +12018,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get historyTapToEnable => '點擊開啟';
 
   @override
-  String get statisticsTitle => '數據統計（Beta 3）';
+  String get statisticsTitle => '數據統計（Beta 4）';
 
   @override
   String get statisticsLoading => '正在讀取最近 1200 筆觀看記錄…';
@@ -12046,6 +12078,33 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get statisticsFavorited => '已收藏';
 
   @override
+  String get statisticsCurrentStreak => '目前連續活躍';
+
+  @override
+  String get statisticsLongestStreak => '最長連續活躍';
+
+  @override
+  String get statisticsWeekdayDistribution => '星期分佈';
+
+  @override
+  String get statisticsWeekdayDistributionDescription => '按星期統計觀看記錄數量';
+
+  @override
+  String get statisticsActivityTapHint => '查看這一天的記錄';
+
+  @override
+  String get statisticsNoActivityRecords => '這一天沒有可查看的記錄';
+
+  @override
+  String get statisticsExportJson => '匯出 JSON';
+
+  @override
+  String get statisticsExportCsv => '匯出 CSV';
+
+  @override
+  String get statisticsExportScreenshot => '儲存統計截圖';
+
+  @override
   String get statisticsActivity => '活躍日期';
 
   @override
@@ -12054,6 +12113,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String statisticsActivityTooltip(String date, int count) {
     return '$date：$count 個內容';
+  }
+
+  @override
+  String statisticsActivityRecords(String date, int count) {
+    return '$date · $count 筆記錄';
   }
 
   @override

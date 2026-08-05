@@ -123,6 +123,59 @@ void main() {
       expect(result.continueWatchingItems.single.title, 'EP2');
     });
 
+    test('calculates active streaks and weekday distribution', () {
+      final result = HistoryStatisticsCalculator.calculate(
+        source: [
+          item(
+            id: 'mon',
+            viewedAt: DateTime(2026, 7, 27, 9),
+            author: 'A',
+          ),
+          item(
+            id: 'tue-one',
+            viewedAt: DateTime(2026, 7, 28, 9),
+            author: 'A',
+          ),
+          item(
+            id: 'tue-two',
+            viewedAt: DateTime(2026, 7, 28, 10),
+            author: 'B',
+          ),
+          item(
+            id: 'thu',
+            viewedAt: DateTime(2026, 7, 30, 9),
+            author: 'A',
+          ),
+          item(
+            id: 'fri',
+            viewedAt: DateTime(2026, 7, 31, 9),
+            author: 'A',
+          ),
+          item(
+            id: 'sat',
+            viewedAt: DateTime(2026, 8, 1, 9),
+            author: 'A',
+          ),
+        ],
+        now: now,
+      );
+
+      expect(result.currentActiveStreak, 3);
+      expect(result.longestActiveStreak, 3);
+      expect(result.weekdayCounts, [1, 2, 0, 1, 1, 1, 0]);
+    });
+
+    test('returns zero streaks and weekday counts for empty statistics', () {
+      final result = HistoryStatisticsCalculator.calculate(
+        source: const [],
+        now: now,
+      );
+
+      expect(result.currentActiveStreak, 0);
+      expect(result.longestActiveStreak, 0);
+      expect(result.weekdayCounts, [0, 0, 0, 0, 0, 0, 0]);
+    });
+
     test('groups only video and live records by normalized tag name', () {
       final result = HistoryStatisticsCalculator.calculate(
         source: [

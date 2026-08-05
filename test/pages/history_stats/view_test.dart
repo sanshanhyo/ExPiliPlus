@@ -83,6 +83,61 @@ void main() {
     }
   });
 
+  testWidgets('active date opens records for that date', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final viewedAt = DateTime(2026, 8, 4, 10);
+    final item = HistoryItemModel(
+      title: 'Record on Tuesday',
+      history: History(oid: 1, bvid: 'BV1', business: 'archive'),
+      authorName: 'Uploader',
+      viewAt: viewedAt.millisecondsSinceEpoch ~/ 1000,
+      progress: -1,
+      duration: 600,
+      kid: 1,
+    );
+    final statistics = HistoryStatisticsCalculator.calculate(
+      source: [item],
+      now: DateTime(2026, 8, 5),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: HistoryStatisticsContent(
+            statistics: statistics,
+            onRefresh: () async {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(HistoryStatisticsContent));
+    final l10n = AppLocalizations.of(context);
+    final dateFormat = DateFormat.MMMd(
+      Localizations.localeOf(context).toLanguageTag(),
+    );
+    final activityTooltip = find.byTooltip(
+      l10n.statisticsActivityTooltip(
+        dateFormat.format(DateTime(2026, 8, 4)),
+        1,
+      ),
+    );
+    await tester.ensureVisible(activityTooltip);
+    await tester.pumpAndSettle();
+    await tester.tap(activityTooltip);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Record on Tuesday'), findsOneWidget);
+    expect(find.text('August 4, 2026 · 1 record'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('content chart shows type and partition entries', (tester) async {
     await tester.binding.setSurfaceSize(const Size(360, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
