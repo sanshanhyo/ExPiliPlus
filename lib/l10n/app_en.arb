@@ -1399,7 +1399,7 @@
   "historyDeleteWatched": "Delete watched items",
   "historyDisabled": " Watch history is paused",
   "historyTapToEnable": "Turn on",
-  "statisticsTitle": "Viewing statistics (Beta 2)",
+  "statisticsTitle": "Viewing statistics (Beta 3)",
   "statisticsLoading": "Loading the latest 1,200 history records…",
   "statisticsLoadingCount": "Loaded {count} / 1,200 records…",
   "statisticsRange7Days": "7 days",

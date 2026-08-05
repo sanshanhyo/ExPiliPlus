@@ -4690,7 +4690,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get historyTapToEnable => '点击开启';
 
   @override
-  String get statisticsTitle => '数据统计（Beta 2）';
+  String get statisticsTitle => '数据统计（Beta 3）';
 
   @override
   String get statisticsLoading => '正在读取最近 1200 条观看记录…';
@@ -11986,7 +11986,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get historyTapToEnable => '點擊開啟';
 
   @override
-  String get statisticsTitle => '數據統計（Beta 2）';
+  String get statisticsTitle => '數據統計（Beta 3）';
 
   @override
   String get statisticsLoading => '正在讀取最近 1200 筆觀看記錄…';

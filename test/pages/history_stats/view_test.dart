@@ -179,7 +179,7 @@ void main() {
   });
 
   testWidgets(
-    'multi-month calendar shows month headings, day numbers, and blank cells',
+    'multi-month calendar trims dates outside the active range',
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(360, 800));
       addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -234,11 +234,33 @@ void main() {
       // Month headings for both months in the range.
       expect(find.text('June 2026'), findsOneWidget);
       expect(find.text('July 2026'), findsOneWidget);
-      // Day numbers appear in every in-month cell (both months have a 15th
-      // and a 20th, so each day number shows twice).
+      // Active day numbers remain visible in both months.
       expect(find.text('15'), findsNWidgets(2));
       expect(find.text('20'), findsNWidgets(2));
-      // Leading/trailing out-of-month blank cells render without exceptions.
+      // Dates outside the first and last detectable activity are omitted.
+      final context = tester.element(find.byType(HistoryStatisticsContent));
+      final l10n = AppLocalizations.of(context);
+      final locale = Localizations.localeOf(context).toLanguageTag();
+      final dateFormat = DateFormat.MMMd(locale);
+      expect(
+        find.byTooltip(
+          l10n.statisticsActivityTooltip(
+            dateFormat.format(DateTime(2026, 6, 1)),
+            0,
+          ),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byTooltip(
+          l10n.statisticsActivityTooltip(
+            dateFormat.format(DateTime(2026, 7, 29)),
+            0,
+          ),
+        ),
+        findsNothing,
+      );
+      // Week-alignment placeholders still render without exceptions.
       expect(tester.takeException(), isNull);
     },
   );

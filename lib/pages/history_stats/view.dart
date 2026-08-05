@@ -534,14 +534,17 @@ class _ActivityCalendar extends StatelessWidget {
       1,
       statistics.activityByDay.values.fold<int>(0, math.max),
     );
+    final activeDates = statistics.activityByDay.keys.toList()..sort();
+    final activityStart = activeDates.first;
+    final activityEnd = activeDates.last;
 
     final startMonth = DateTime(
-      statistics.periodStart.year,
-      statistics.periodStart.month,
+      activityStart.year,
+      activityStart.month,
     );
     final endMonth = DateTime(
-      statistics.periodEnd.year,
-      statistics.periodEnd.month,
+      activityEnd.year,
+      activityEnd.month,
     );
     final months = [
       for (
@@ -566,6 +569,8 @@ class _ActivityCalendar extends StatelessWidget {
               heading: monthFormat.format(months[index]),
               weekdayLabels: weekdayLabels,
               activityByDay: statistics.activityByDay,
+              activityStart: activityStart,
+              activityEnd: activityEnd,
               maxCount: maxCount,
               dateFormat: dateFormat,
               emptyColor: colors.surfaceContainerHighest,
@@ -584,6 +589,8 @@ class _ActivityMonthBlock extends StatelessWidget {
     required this.heading,
     required this.weekdayLabels,
     required this.activityByDay,
+    required this.activityStart,
+    required this.activityEnd,
     required this.maxCount,
     required this.dateFormat,
     required this.emptyColor,
@@ -594,6 +601,8 @@ class _ActivityMonthBlock extends StatelessWidget {
   final String heading;
   final List<String> weekdayLabels;
   final Map<DateTime, int> activityByDay;
+  final DateTime activityStart;
+  final DateTime activityEnd;
   final int maxCount;
   final DateFormat dateFormat;
   final Color emptyColor;
@@ -605,8 +614,13 @@ class _ActivityMonthBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
-    final leadingBlanks = DateTime(month.year, month.month, 1).weekday - 1;
-    final weekCount = (leadingBlanks + daysInMonth + 6) ~/ 7;
+    final firstDay = _isSameMonth(month, activityStart) ? activityStart.day : 1;
+    final lastDay = _isSameMonth(month, activityEnd)
+        ? activityEnd.day
+        : daysInMonth;
+    final leadingBlanks =
+        DateTime(month.year, month.month, firstDay).weekday - 1;
+    final weekCount = (leadingBlanks + lastDay - firstDay + 1 + 6) ~/ 7;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -649,8 +663,8 @@ class _ActivityMonthBlock extends StatelessWidget {
                     if (weekday > 0) const SizedBox(width: _gap),
                     _buildDayCell(
                       cellSize,
-                      week * 7 + weekday - leadingBlanks + 1,
-                      daysInMonth,
+                      week * 7 + weekday - leadingBlanks + firstDay,
+                      lastDay,
                     ),
                   ],
                 ],
@@ -662,8 +676,8 @@ class _ActivityMonthBlock extends StatelessWidget {
     );
   }
 
-  Widget _buildDayCell(double cellSize, int dayNumber, int daysInMonth) {
-    if (dayNumber < 1 || dayNumber > daysInMonth) {
+  Widget _buildDayCell(double cellSize, int dayNumber, int lastDay) {
+    if (dayNumber < 1 || dayNumber > lastDay) {
       return SizedBox.square(dimension: cellSize);
     }
     final date = DateTime(month.year, month.month, dayNumber);
@@ -676,6 +690,10 @@ class _ActivityMonthBlock extends StatelessWidget {
       emptyColor: emptyColor,
       activeColor: activeColor,
     );
+  }
+
+  bool _isSameMonth(DateTime first, DateTime second) {
+    return first.year == second.year && first.month == second.month;
   }
 }
 

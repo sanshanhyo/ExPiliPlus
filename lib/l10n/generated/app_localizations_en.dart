@@ -4865,7 +4865,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyTapToEnable => 'Turn on';
 
   @override
-  String get statisticsTitle => 'Viewing statistics (Beta 2)';
+  String get statisticsTitle => 'Viewing statistics (Beta 3)';
 
   @override
   String get statisticsLoading => 'Loading the latest 1,200 history records…';

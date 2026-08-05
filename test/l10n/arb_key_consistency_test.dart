@@ -153,7 +153,7 @@ void main() {
     }
   });
 
-  test('viewing statistics is marked as Beta 2 in every locale', () {
+  test('viewing statistics is marked as Beta 3 in every locale', () {
     for (final path in [
       'lib/l10n/app_zh.arb',
       'lib/l10n/app_zh_Hant.arb',
@@ -163,8 +163,8 @@ void main() {
           jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
       expect(
         messages['statisticsTitle'],
-        contains('Beta 2'),
-        reason: '$path must mark viewing statistics as Beta 2',
+        contains('Beta 3'),
+        reason: '$path must mark viewing statistics as Beta 3',
       );
     }
   });

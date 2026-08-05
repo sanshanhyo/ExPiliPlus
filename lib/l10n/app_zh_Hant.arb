@@ -1399,7 +1399,7 @@
   "historyDeleteWatched": "刪除已看記錄",
   "historyDisabled": " 觀看記錄功能已關閉",
   "historyTapToEnable": "點擊開啟",
-  "statisticsTitle": "數據統計（Beta 2）",
+  "statisticsTitle": "數據統計（Beta 3）",
   "statisticsLoading": "正在讀取最近 1200 筆觀看記錄…",
   "statisticsLoadingCount": "已讀取 {count} / 1200 筆記錄…",
   "statisticsRange7Days": "近 7 天",
