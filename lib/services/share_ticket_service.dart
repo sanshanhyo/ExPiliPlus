@@ -2,6 +2,7 @@ import 'package:ex_piliplus/models/model_owner.dart';
 import 'package:ex_piliplus/models/user/info.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/data.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
+import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 
 class ShareTicketStats {
@@ -28,6 +29,7 @@ class ShareTicketData {
     required this.cover,
     required this.title,
     required this.pubdate,
+    required this.duration,
     required this.uploader,
     required this.uploaderLevel,
     required this.stats,
@@ -53,6 +55,7 @@ class ShareTicketData {
       cover: cover,
       title: title,
       pubdate: video.pubdate,
+      duration: video.duration,
       uploader: Owner(
         mid: owner.mid,
         name: owner.name,
@@ -72,6 +75,7 @@ class ShareTicketData {
   final String cover;
   final String title;
   final int? pubdate;
+  final int? duration;
   final Owner uploader;
   final int uploaderLevel;
   final ShareTicketStats stats;
@@ -87,6 +91,8 @@ class ShareTicketData {
   String get qrContent => videoUrl;
 
   String get publishedAt => DateFormatUtils.format(pubdate);
+
+  String get durationText => DurationUtils.formatDuration(duration);
 
   String get sharerName => sharer?.uname ?? '';
 

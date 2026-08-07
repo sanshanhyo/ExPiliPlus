@@ -15,6 +15,7 @@ void main() {
         bvid: 'BV1TEST123',
         pic: 'https://example.com/cover.jpg',
         title: '测试视频',
+        duration: 42,
         owner: Owner(
           mid: 100,
           name: '测试 UP 主',
@@ -40,6 +41,7 @@ void main() {
 
     expect(find.byType(ShareTicketCanvas), findsOneWidget);
     expect(find.text('分享者'), findsOneWidget);
+    expect(find.text('00:42'), findsOneWidget);
     expect(find.byType(PrettyQrView), findsOneWidget);
   });
 }

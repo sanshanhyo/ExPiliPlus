@@ -2,7 +2,7 @@
 
 > 状态：已实现，待设备与桌面人工回归<br>
 > 记录日期：2026-08-05<br>
-> 更新日期：2026-08-05<br>
+> 更新日期：2026-08-07<br>
 > 适用版本：`1.0.0-dev.1`，`main`<br>
 > 范围：仅包含 UGC BV 视频的分享票入口、编辑/预览、PNG 生成、保存和系统分享；不包含番剧/PGC、音频、本地视频和私信分享逻辑
 
@@ -30,7 +30,7 @@
 | 类型 | 结论 | 依据 |
 | --- | --- | --- |
 | 已确认 | UGC 分享菜单由 `UgcIntroController.actionShareVideo` 构造，本轮入口只加入此处。 | `lib/pages/video/introduction/ugc/controller.dart` |
-| 已确认 | 视频详情已经提供 BV、封面、标题、发布时间、UP 主和统计字段。 | `lib/models_new/video/video_detail/data.dart`、`lib/models/model_owner.dart` |
+| 已确认 | 视频详情已经提供 BV、封面、标题、发布时间、时长、UP 主和统计字段；分享票右上角展示视频时长而非分享时间。 | `lib/models_new/video/video_detail/data.dart`、`lib/models/model_owner.dart`、`lib/services/share_ticket_service.dart` |
 | 已确认 | UP 主等级和头像由现有 `MemberHttp.memberInfo` 补充，当前用户来自 `Pref.userInfoCache`。 | `lib/http/member.dart`、`lib/utils/storage_pref.dart` |
 | 已确认 | 模板原图为 1086×1448，已复制到 Flutter 资源目录。 | `docs/share2.png`、`assets/images/share_ticket/share2.png`、`pubspec.yaml` |
 | 已确认 | 二维码内容使用标准视频路径 `https://www.bilibili.com/video/<bvid>`。 | `lib/services/share_ticket_service.dart` |
@@ -92,7 +92,7 @@ flowchart TD
 - 资源加载依赖 Bilibili 图片和会员资料接口；网络不可用时页面不会生成半成品图片，而是停留在错误/重试状态。
 - `MemberHttp.memberInfo` 是现有网络接口，本轮没有新增依赖或替换请求协议；接口字段缺失时按资源失败处理。
 - 图片保存复用 `ImageUtils.saveByteImg`，移动端仍遵循既有相册权限策略，桌面端仍使用既有文件选择器。
-- 预览使用 `FittedBox` 缩放，截图使用固定尺寸画布；仍需在小屏、字体替换和长文本场景进行人工视觉验证。
+- 预览使用 `FittedBox` 缩放，截图使用固定尺寸画布；单行短标题会将下方信息整体上移，底部来源文案已上移并增强可读性；仍需在小屏、字体替换和长文本场景进行人工视觉验证。
 - 分享者头像为空时只渲染空头像框和空名称，不把未登录视为资源错误。
 
 ## 6. 验证记录
@@ -120,3 +120,4 @@ flowchart TD
 ## 8. 更新记录
 
 - 2026-08-05：新增分享票入口、数据服务、模板渲染页面、三语言文案、模板资源和自动化测试；记录当前自动化验证结果及待完成的平台人工回归。
+- 2026-08-07：根据视觉反馈将右上角字段改为视频时长；短标题时压缩标题下方留白；底部 ExPiliPlus 来源文案上移并提高可读性；二维码和统计图标风格暂不调整。

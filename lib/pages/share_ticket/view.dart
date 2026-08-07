@@ -324,6 +324,12 @@ class ShareTicketCanvas extends StatelessWidget {
       color: _ink,
       fontFamily: 'Source Han Serif CN',
     );
+    final titleStyle = base.copyWith(
+      fontSize: 31,
+      height: 1.28,
+      fontWeight: FontWeight.w700,
+    );
+    final contentShift = _contentShift(context, titleStyle);
     return SizedBox(
       width: width,
       height: height,
@@ -350,13 +356,17 @@ class ShareTicketCanvas extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 796,
-            top: 137,
-            width: 108,
-            child: Text(
-              TimeOfDay.now().format(context),
-              textAlign: TextAlign.center,
-              style: base.copyWith(fontSize: 27, color: Colors.white),
+            left: 782,
+            top: 136,
+            width: 130,
+            height: 42,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                data.durationText,
+                textAlign: TextAlign.center,
+                style: base.copyWith(fontSize: 27, color: Colors.white),
+              ),
             ),
           ),
           Positioned(
@@ -368,16 +378,12 @@ class ShareTicketCanvas extends StatelessWidget {
               data.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: base.copyWith(
-                fontSize: 31,
-                height: 1.28,
-                fontWeight: FontWeight.w700,
-              ),
+              style: titleStyle,
             ),
           ),
           Positioned(
             left: 178,
-            top: 730,
+            top: 730 + contentShift,
             child: _Avatar(
               url: data.uploader.face ?? '',
               size: 78,
@@ -386,7 +392,7 @@ class ShareTicketCanvas extends StatelessWidget {
           ),
           Positioned(
             left: 286,
-            top: 744,
+            top: 744 + contentShift,
             width: 500,
             child: Row(
               children: [
@@ -424,7 +430,7 @@ class ShareTicketCanvas extends StatelessWidget {
           ),
           Positioned(
             left: 286,
-            top: 790,
+            top: 790 + contentShift,
             child: Text(
               '${data.publishedAt} ${l10n.shareTicketPublishedAt}',
               style: base.copyWith(
@@ -435,7 +441,7 @@ class ShareTicketCanvas extends StatelessWidget {
           ),
           Positioned(
             left: 180,
-            top: 855,
+            top: 855 + contentShift,
             width: 730,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -460,7 +466,7 @@ class ShareTicketCanvas extends StatelessWidget {
           ),
           Positioned(
             left: 180,
-            top: 961,
+            top: 961 + contentShift,
             width: 735,
             height: 120,
             child: Row(
@@ -547,20 +553,30 @@ class ShareTicketCanvas extends StatelessWidget {
           ),
           Positioned(
             left: 365,
-            top: 1380,
+            top: 1360,
             width: 360,
             child: Text(
               l10n.shareTicketFrom,
               textAlign: TextAlign.center,
               style: base.copyWith(
                 fontSize: 19,
-                color: _ink.withValues(alpha: .8),
+                color: _ink.withValues(alpha: .9),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  double _contentShift(BuildContext context, TextStyle titleStyle) {
+    final painter = TextPainter(
+      text: TextSpan(text: data.title, style: titleStyle),
+      textDirection: Directionality.of(context),
+      maxLines: 2,
+      ellipsis: '…',
+    )..layout(maxWidth: 730);
+    return painter.computeLineMetrics().length <= 1 ? -36 : 0;
   }
 }
 

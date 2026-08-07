@@ -12,6 +12,7 @@ void main() {
       pic: 'https://example.com/cover.jpg',
       title: '测试视频',
       pubdate: DateTime(2024, 5, 20, 18, 30).millisecondsSinceEpoch ~/ 1000,
+      duration: 222,
       owner: Owner(
         mid: 100,
         name: '测试 UP 主',
@@ -44,6 +45,7 @@ void main() {
     expect(ticket.sharerName, '分享者');
     expect(ticket.sharerFace, 'https://example.com/sharer.jpg');
     expect(ticket.publishedAt, isNotEmpty);
+    expect(ticket.durationText, '03:42');
   });
 
   test('truncates a postscript to the supported length', () {
@@ -52,6 +54,7 @@ void main() {
       cover: 'https://example.com/cover.jpg',
       title: '测试视频',
       pubdate: null,
+      duration: null,
       uploader: Owner(mid: 100, name: '测试 UP 主'),
       uploaderLevel: 1,
       stats: const ShareTicketStats(view: 0, danmaku: 0, like: 0),
