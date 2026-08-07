@@ -8464,7 +8464,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsTitle.
   ///
   /// In zh, this message translates to:
-  /// **'数据统计（Beta 4）'**
+  /// **'数据统计'**
   String get statisticsTitle;
 
   /// No description provided for @statisticsLoading.

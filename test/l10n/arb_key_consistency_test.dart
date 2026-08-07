@@ -153,21 +153,24 @@ void main() {
     }
   });
 
-  test('viewing statistics is marked as Beta 4 in every locale', () {
-    for (final path in [
-      'lib/l10n/app_zh.arb',
-      'lib/l10n/app_zh_Hant.arb',
-      'lib/l10n/app_en.arb',
-    ]) {
-      final messages =
-          jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
-      expect(
-        messages['statisticsTitle'],
-        contains('Beta 4'),
-        reason: '$path must mark viewing statistics as Beta 4',
-      );
-    }
-  });
+  test(
+    'viewing statistics is released without a Beta label in every locale',
+    () {
+      for (final path in [
+        'lib/l10n/app_zh.arb',
+        'lib/l10n/app_zh_Hant.arb',
+        'lib/l10n/app_en.arb',
+      ]) {
+        final messages =
+            jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
+        expect(
+          messages['statisticsTitle'],
+          isNot(contains('Beta')),
+          reason: '$path must not mark viewing statistics as Beta',
+        );
+      }
+    },
+  );
 
   test('known server labels are localized before display', () {
     final l10n = AppLocalizationsEn();

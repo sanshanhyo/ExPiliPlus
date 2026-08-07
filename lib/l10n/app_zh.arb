@@ -1695,7 +1695,7 @@
   "historyDeleteWatched": "删除已看记录",
   "historyDisabled": " 历史记录功能已关闭",
   "historyTapToEnable": "点击开启",
-  "statisticsTitle": "数据统计（Beta 4）",
+  "statisticsTitle": "数据统计",
   "statisticsLoading": "正在读取最近 1200 条观看记录…",
   "statisticsLoadingCount": "已读取 {count} / 1200 条记录…",
   "@statisticsLoadingCount": {
