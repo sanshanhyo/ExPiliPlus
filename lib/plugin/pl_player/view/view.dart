@@ -48,6 +48,8 @@ import 'package:ex_piliplus/plugin/pl_player/widgets/backward_seek.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/bottom_control.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/common_btn.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/forward_seek.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_convert_gif.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_convert_webp.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/play_pause_btn.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
@@ -1864,7 +1866,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               ),
             ),
 
-          // 截图
+          // 动态截图和截图
           if (plPlayerController.showFsScreenshotBtn)
             ViewSafeArea(
               left: false,
@@ -1876,24 +1878,49 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     translation: const Offset(-1, -0.4),
                     child: Offstage(
                       offstage: !plPlayerController.showControls.value,
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          color: Color(0x45000000),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        child: ComBtn(
-                          tooltip: l10n.playerScreenshot,
-                          icon: const Icon(
-                            Icons.photo_camera,
-                            size: 20,
-                            color: Colors.white,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          DecoratedBox(
+                            decoration: const BoxDecoration(
+                              color: Color(0x45000000),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                            child: ComBtn(
+                              tooltip: l10n.playerGifRecord,
+                              icon: const Icon(
+                                Icons.gif_box_outlined,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              onTap: isLive ? null : showGifRecorder,
+                            ),
                           ),
-                          onLongPress:
-                              (Platform.isAndroid || kDebugMode) && !isLive
-                              ? screenshotWebp
-                              : null,
-                          onTap: plPlayerController.takeScreenshot,
-                        ),
+                          const SizedBox(height: 8),
+                          DecoratedBox(
+                            decoration: const BoxDecoration(
+                              color: Color(0x45000000),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                            child: ComBtn(
+                              tooltip: l10n.playerScreenshot,
+                              icon: const Icon(
+                                Icons.photo_camera,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              onLongPress:
+                                  (Platform.isAndroid || kDebugMode) && !isLive
+                                  ? screenshotWebp
+                                  : null,
+                              onTap: plPlayerController.takeScreenshot,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -2083,6 +2110,96 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> showGifRecorder() async {
+    final l10n = context.l10n;
+    final videoInfo = videoDetailController.data;
+    final availableVideos = videoInfo.dash?.video
+        ?.where((video) => video.baseUrl?.isNotEmpty == true)
+        .toList();
+    if (availableVideos == null || availableVideos.isEmpty) {
+      SmartDialog.showToast(l10n.playerGifSourceUnavailable);
+      return;
+    }
+
+    availableVideos.sort((a, b) => (a.width ?? 0).compareTo(b.width ?? 0));
+    String? sourceFor(int width) {
+      final video = availableVideos.firstWhere(
+        (item) => (item.width ?? 0) >= width,
+        orElse: () => availableVideos.last,
+      );
+      return video.baseUrl;
+    }
+
+    final sourceUrls = <GifResolution, String>{};
+    final source480 = sourceFor(GifResolution.p480.width);
+    final source720 = sourceFor(GifResolution.p720.width);
+    if (source480 != null) sourceUrls[GifResolution.p480] = source480;
+    if (source720 != null) sourceUrls[GifResolution.p720] = source720;
+    if (sourceUrls.isEmpty) {
+      SmartDialog.showToast(l10n.playerGifSourceUnavailable);
+      return;
+    }
+
+    final ctr = plPlayerController;
+    final wasPlaying = ctr.playerStatus.isPlaying;
+    if (wasPlaying) await ctr.pause();
+    if (!mounted) return;
+
+    final options = await showDialog<GifRecordOptions>(
+      context: context,
+      builder: (context) => GifRecordDialog(
+        videoController: ctr.videoController!,
+        duration: ctr.durationInMilliseconds / 1000,
+        initialPosition: ctr.positionInMilliseconds / 1000,
+        sourceUrls: sourceUrls,
+      ),
+    );
+    if (options == null) {
+      if (wasPlaying) ctr.play();
+      return;
+    }
+
+    final progress = 0.0.obs;
+    final time =
+        '${options.start.toStringAsFixed(3)}_${options.end.toStringAsFixed(3)}';
+    final name =
+        '${ctr.cid}-$time-${options.resolution.width}p-${options.fps}fps.gif';
+    final file = '$tmpDirPath/$name';
+    final mpv = MpvConvertGif(
+      options.url,
+      file,
+      options.start,
+      options.end,
+      width: options.resolution.width,
+      fps: options.fps,
+      progress: progress,
+    );
+    final future = mpv.convert().whenComplete(
+      () => SmartDialog.dismiss(status: SmartStatus.loading),
+    );
+
+    SmartDialog.showLoading(
+      backType: SmartBackType.normal,
+      builder: (_) => LoadingWidget(
+        progress: progress,
+        msg: l10n.commonSavingMayTakeTime,
+      ),
+      onDismiss: () async {
+        if (progress.value < 1.0) mpv.dispose();
+        if (await future) {
+          await ImageUtils.saveFileImg(
+            filePath: file,
+            fileName: name,
+            needToast: true,
+          );
+        } else {
+          SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+        }
+        if (wasPlaying) ctr.play();
+      },
     );
   }
 

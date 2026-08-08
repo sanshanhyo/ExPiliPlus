@@ -1,0 +1,110 @@
+# GIF 录制工程实现记录
+
+> 状态：已实现待验证<br>
+> 记录日期：2026-08-07<br>
+> 更新日期：2026-08-07<br>
+> 适用版本：`1.0.0-dev.1`<br>
+> 范围：播放器界面的 GIF 片段选择、GIF 转码和保存；不包含 GIF 编辑、音频、贴纸、文字和分享链路
+
+## 1. 当前结论
+
+已在播放器截图按钮上方增加 GIF 录制入口，并实现二级选择界面：视频预览、片段范围选择、3/5/8/10 秒快捷长度、480p/720p 输出分辨率、10/12/15 FPS、无音频和无限循环提示。确认导出后使用项目已有的 libmpv 转码链路生成 `.gif`，移动端复用 `ImageUtils.saveFileImg` 保存到应用相册，桌面端复用已有文件保存回退。业务代码已修改；真机、模拟器和桌面端运行时转码尚未完成验证。
+
+## 2. 背景与任务范围
+
+### 2.1 要解决的问题
+
+用户可以从播放器界面直接截取当前视频附近的短片段，选择长度、输出分辨率和帧率后导出 GIF。入口应位于现有截图按钮上方，并尽量复用现有播放器、画质源选择、转码进度和保存能力。
+
+### 2.2 不解决的问题
+
+- 不录制音频；GIF 输出固定为无限循环。
+- 不处理直播流；直播场景的 GIF 按钮不可用。
+- 不增加独立下载任务、后台转码队列或 GIF 编辑器。
+- 不保证所有视频源都能由当前平台的 libmpv GIF 编码器成功生成；该行为需要运行时验证。
+
+## 3. 依据与现状
+
+| 类型 | 结论 | 依据 |
+| --- | --- | --- |
+| 已确认 | 播放器已有全屏截图按钮和截图保存链路。 | `lib/plugin/pl_player/view/view.dart` 截图控制区域；`lib/plugin/pl_player/controller.dart` 的 `takeScreenshot` |
+| 已确认 | 项目已有 WebP 动态截图使用 libmpv、片段范围和转码进度，可作为 GIF 转码实现基础。 | `lib/plugin/pl_player/view/view.dart` 的 `screenshotWebp`；`lib/plugin/pl_player/widgets/mpv_convert_webp.dart` |
+| 已确认 | `ImageUtils.saveFileImg` 移动端调用 `SaverGallery.saveFile`，桌面端调用 `FilePicker.saveFile`。 | `lib/utils/image_utils.dart` |
+| 已确认 | 视频详情模型提供多个 DASH 视频源以及宽度信息，可按目标输出宽度选择源。 | `lib/models/video/play/url.dart`；`lib/pages/video/controller.dart` 的 `findVideoByQa` |
+| 候选方向 | 后续可加入视频缩略图时间轴，替代当前 RangeSlider。 | 当前任务只要求类似剪辑软件的范围选择，先复用 Flutter 原生控件降低改动范围。 |
+| 待验证 | 当前打包的 libmpv 是否在 Android、iOS、Windows、macOS、Linux 全部包含 GIF muxer/编码器。 | 各平台执行一次 3 秒、480p、10 FPS 导出，并检查生成文件可被系统相册/图片查看器打开。 |
+
+## 4. 技术路线
+
+```mermaid
+flowchart TD
+  A[播放器 GIF 按钮] --> B[暂停当前播放]
+  B --> C[GIF 选择界面]
+  C --> D[选择片段范围]
+  C --> E[选择 480p/720p 与 10/12/15 FPS]
+  D --> F[GifRecordOptions]
+  E --> F
+  F --> G[MpvConvertGif]
+  G --> H[libmpv: GIF + fps + scale + no audio + loop=0]
+  H --> I{转码结果}
+  I -->|成功| J[ImageUtils.saveFileImg]
+  I -->|失败/取消| K[提示失败或取消]
+```
+
+入口位于 `PLVideoPlayer` 的全屏/桌面画面控制区域，GIF 按钮和截图按钮共用显示条件，GIF 按钮排在截图按钮上方。选择界面使用当前 `VideoController` 显示视频画面，`RangeSlider` 负责选取时间范围，范围最大 10 秒，默认从当前播放位置附近选择 5 秒。确认后根据 480p/720p 目标宽度从 DASH 视频列表选择源，并由 `MpvConvertGif` 进行无音频 GIF 转码。
+
+转码过程中沿用已有 `SmartDialog` 加载层和进度值；成功后调用 `ImageUtils.saveFileImg`。移动端由现有 `SaverGallery` 保存到应用相册路径，桌面端由现有文件选择器让用户选择保存位置。用户取消选择时恢复进入 GIF 界面前的播放状态；导出结束后也恢复原播放状态。
+
+## 5. 实施记录
+
+### 5.1 变更文件
+
+| 文件 | 变更 | 原因 |
+| --- | --- | --- |
+| `lib/plugin/pl_player/view/view.dart` | 修改 | 增加 GIF 入口、选择流程、视频源选择、转码与保存调用 |
+| `lib/plugin/pl_player/widgets/gif_record_dialog.dart` | 新增 | 实现 GIF 二级选择界面和导出选项模型 |
+| `lib/plugin/pl_player/widgets/mpv_convert_gif.dart` | 新增 | 封装 libmpv GIF 转码、进度观察和取消清理 |
+| `lib/l10n/app_zh.arb` | 修改 | 增加简体中文 GIF 文案 |
+| `lib/l10n/app_zh_Hant.arb` | 修改 | 增加繁体中文 GIF 文案 |
+| `lib/l10n/app_en.arb` | 修改 | 增加英文 GIF 文案 |
+| `lib/l10n/generated/app_localizations*.dart` | 生成更新 | 同步 ARB 消息键 |
+
+### 5.2 关键决策
+
+- **已确认：** 最大片段长度采用 10 秒，默认长度采用 5 秒；快捷选项为 3、5、8、10 秒，若视频不足则按视频长度限制。
+- **已确认：** 输出分辨率提供 480p 和 720p；帧率提供 10、12、15 FPS，默认 720p/12 FPS。
+- **已确认：** GIF 不包含音频，使用 `loop=0` 输出无限循环 GIF。
+- **已确认：** 不新增依赖，复用 `media_kit`/libmpv、`saver_gallery`、`file_picker` 和现有保存工具。
+- **候选方向：** 未来可将视频源选择单独展示为“源画质”，目前按输出宽度自动选择最接近且不低于目标宽度的 DASH 源。
+- **待验证：** iOS 相册权限、Android 不同 SDK、桌面文件选择器的 GIF 类型过滤和各平台 GIF 编码器能力需要实际运行确认。
+
+### 5.3 兼容性和风险
+
+- 转码为 CPU 密集型操作，GIF 文件体积可能随分辨率、帧率和片段长度快速增长；界面沿用已有“保存可能需要时间”的加载提示。
+- `MpvConvertGif` 通过 libmpv 的 GIF muxer 和 `lavc` GIF 编码器输出；若某个平台构建未带该能力，会进入失败提示路径。
+- 保存失败、用户取消桌面保存和文件不存在均由现有 `ImageUtils.saveFileImg` 处理。
+- 当前选择界面复用正在播放的 `VideoController`，没有独立预览播放器；关闭对话框后需重点回归播放状态、进度位置和重复打开行为。
+
+## 6. 验证记录
+
+| 层级 | 命令/平台/输入 | 预期 | 实际 | 结果 |
+| --- | --- | --- | --- | --- |
+| 格式化 | `/Users/husky/Developer/sdk/flutter/bin/dart format lib/plugin/pl_player/view/view.dart lib/plugin/pl_player/widgets/gif_record_dialog.dart lib/plugin/pl_player/widgets/mpv_convert_gif.dart` | 变更 Dart 文件格式化 | 已执行，无格式化错误 | 通过 |
+| 静态检查 | `/Users/husky/Developer/sdk/flutter/bin/flutter analyze` | 新增代码无 error | 新增文件和播放器改动无 error；仓库仍有既有 info 级提示 | 通过（无新增 error） |
+| 自动化测试 | `/Users/husky/Developer/sdk/flutter/bin/flutter test test/l10n/arb_key_consistency_test.dart` | 三种 ARB 键一致且本地化检查通过 | 10 个测试全部通过 | 通过 |
+| 差异检查 | `git diff --check` | 无空白错误 | 待本轮结束执行 | 待执行 |
+| 人工回归 | Android/iOS 真机或模拟器；播放普通 DASH 视频，选择 3 秒、480p、10 FPS 导出 | 生成可播放 GIF 并出现在相册 | 当前环境未运行设备回归 | 待验证 |
+| 人工回归 | Windows/macOS/Linux 桌面；选择同样参数导出 | 文件选择器保存 `.gif`，图片查看器可打开 | 当前环境未运行桌面回归 | 待验证 |
+
+## 7. 遗留问题与下一步
+
+| 问题 | 影响 | 下一步 | 前置条件 |
+| --- | --- | --- | --- |
+| 各平台 libmpv 是否包含 GIF 编码支持未知 | 可能出现转码失败 | 在目标平台导出最小参数 GIF，检查日志和文件头 | 可运行的设备/桌面构建 |
+| 当前视频预览复用播放器控制器 | 可能影响暂停、seek 和关闭后的播放状态 | 回归打开/取消/导出/重复打开四条路径 | 真实视频播放环境 |
+| 相册权限与 GIF 媒体类型未做专项回归 | 可能保存成功但相册不展示，或触发权限提示 | Android 低 SDK、Android 29+、iOS 新旧照片权限分别验证 | 设备和系统权限状态 |
+| `docs/` 当前被 `.gitignore` 忽略 | 工程记录默认不会进入 Git 变更 | 由项目负责人决定是否调整忽略策略或单独纳入文档 | 项目负责人确认 |
+
+## 8. 更新记录
+
+- 2026-08-07：创建 GIF 录制实现记录；记录播放器入口、范围选择、libmpv GIF 转码、相册/桌面保存和待验证平台风险。

@@ -1433,6 +1433,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerUnmuted => 'Unmuted';
 
   @override
+  String get playerGifRecord => 'Record GIF';
+
+  @override
+  String get playerGifRecordLength => 'Clip length';
+
+  @override
+  String get playerGifResolution => 'Resolution';
+
+  @override
+  String get playerGifFrameRate => 'Frame rate';
+
+  @override
+  String get playerGifNoAudioLoop => 'No audio · Infinite loop · GIF';
+
+  @override
+  String get playerGifExport => 'Export GIF';
+
+  @override
+  String get playerGifSourceUnavailable => 'GIF source is unavailable';
+
+  @override
   String get playerAnimatedScreenshot => 'Animated screenshot';
 
   @override

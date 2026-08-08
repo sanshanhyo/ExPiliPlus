@@ -2565,6 +2565,48 @@ abstract class AppLocalizations {
   /// **'已取消静音'**
   String get playerUnmuted;
 
+  /// No description provided for @playerGifRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'截取 GIF'**
+  String get playerGifRecord;
+
+  /// No description provided for @playerGifRecordLength.
+  ///
+  /// In zh, this message translates to:
+  /// **'片段长度'**
+  String get playerGifRecordLength;
+
+  /// No description provided for @playerGifResolution.
+  ///
+  /// In zh, this message translates to:
+  /// **'输出分辨率'**
+  String get playerGifResolution;
+
+  /// No description provided for @playerGifFrameRate.
+  ///
+  /// In zh, this message translates to:
+  /// **'帧率'**
+  String get playerGifFrameRate;
+
+  /// No description provided for @playerGifNoAudioLoop.
+  ///
+  /// In zh, this message translates to:
+  /// **'不包含音频 · 无限循环 · GIF 文件'**
+  String get playerGifNoAudioLoop;
+
+  /// No description provided for @playerGifExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导出 GIF'**
+  String get playerGifExport;
+
+  /// No description provided for @playerGifSourceUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无可用的 GIF 视频源'**
+  String get playerGifSourceUnavailable;
+
   /// No description provided for @playerAnimatedScreenshot.
   ///
   /// In zh, this message translates to:

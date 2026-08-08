@@ -1411,6 +1411,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get playerUnmuted => '已取消静音';
 
   @override
+  String get playerGifRecord => '截取 GIF';
+
+  @override
+  String get playerGifRecordLength => '片段长度';
+
+  @override
+  String get playerGifResolution => '输出分辨率';
+
+  @override
+  String get playerGifFrameRate => '帧率';
+
+  @override
+  String get playerGifNoAudioLoop => '不包含音频 · 无限循环 · GIF 文件';
+
+  @override
+  String get playerGifExport => '导出 GIF';
+
+  @override
+  String get playerGifSourceUnavailable => '暂无可用的 GIF 视频源';
+
+  @override
   String get playerAnimatedScreenshot => '动态截图';
 
   @override
@@ -8778,6 +8799,27 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get playerUnmuted => '已取消靜音';
+
+  @override
+  String get playerGifRecord => '截取 GIF';
+
+  @override
+  String get playerGifRecordLength => '片段長度';
+
+  @override
+  String get playerGifResolution => '輸出解析度';
+
+  @override
+  String get playerGifFrameRate => '幀率';
+
+  @override
+  String get playerGifNoAudioLoop => '不包含音訊 · 無限循環 · GIF 檔案';
+
+  @override
+  String get playerGifExport => '匯出 GIF';
+
+  @override
+  String get playerGifSourceUnavailable => '目前沒有可用的 GIF 影片來源';
 
   @override
   String get playerAnimatedScreenshot => '動態截圖';
