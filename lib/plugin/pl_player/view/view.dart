@@ -2177,9 +2177,26 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       fps: options.fps,
       progress: progress,
     );
-    final future = mpv.convert().whenComplete(
-      () => SmartDialog.dismiss(status: SmartStatus.loading),
-    );
+    var completedByConversion = false;
+    var dismissedByUser = false;
+    var handledDismiss = false;
+    late final Future<bool> conversion;
+
+    Future<void> handleDismiss() async {
+      if (handledDismiss) return;
+      handledDismiss = true;
+      final success = await conversion;
+      if (success) {
+        await ImageUtils.saveFileImg(
+          filePath: file,
+          fileName: name,
+          needToast: true,
+        );
+      } else if (!dismissedByUser) {
+        SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+      }
+      if (wasPlaying) ctr.play();
+    }
 
     SmartDialog.showLoading(
       backType: SmartBackType.normal,
@@ -2187,20 +2204,23 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
         progress: progress,
         msg: l10n.commonSavingMayTakeTime,
       ),
-      onDismiss: () async {
-        if (progress.value < 1.0) mpv.dispose();
-        if (await future) {
-          await ImageUtils.saveFileImg(
-            filePath: file,
-            fileName: name,
-            needToast: true,
-          );
-        } else {
-          SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+      onDismiss: () {
+        if (!completedByConversion) {
+          dismissedByUser = true;
+          mpv.dispose();
         }
-        if (wasPlaying) ctr.play();
+        unawaited(handleDismiss());
       },
     );
+
+    conversion = mpv.convert();
+    unawaited(() async {
+      await conversion;
+      completedByConversion = true;
+      if (!dismissedByUser) {
+        await SmartDialog.dismiss(status: SmartStatus.loading);
+      }
+    }());
   }
 
   Future<void> screenshotWebp() async {

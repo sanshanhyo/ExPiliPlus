@@ -1,12 +1,12 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
-import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:get/get_rx/get_rx.dart';
 import 'package:media_kit/ffi/src/allocation.dart';
@@ -44,7 +44,10 @@ class MpvConvertGif {
   }) : duration = end - start;
 
   Future<void> _init() async {
-    final enableHA = Pref.enableHA;
+    final output = File(outFile);
+    await output.parent.create(recursive: true);
+    if (output.existsSync()) await output.delete();
+
     _ctx = await Initializer.create(
       _mpv,
       _onEvent,
@@ -58,11 +61,16 @@ class MpvConvertGif {
         'ovcopts': 'codec=gif',
         'vf': 'fps=$fps,scale=$width:-2:flags=lanczos',
         'audio': 'no',
-        if (enableHA) 'vo': 'gpu',
-        if (enableHA) 'hwdec': '${Pref.hardwareDecoding},auto-copy',
+        // GIF encoding runs in a headless mpv instance. Do not inherit the
+        // player's GPU renderer or hardware decoder configuration here.
+        'vo': 'null',
       },
     );
     _initialized = true;
+    if (_disposed) {
+      _disposeNative();
+      return;
+    }
     NativePlayer.setHeader(
       _mpv,
       _ctx,
@@ -73,27 +81,45 @@ class MpvConvertGif {
       _observeProperty('time-pos');
     }
     final level = (kDebugMode ? 'info' : 'error').toNativeUtf8();
-    _mpv.mpv_request_log_messages(_ctx, level);
+    final result = _mpv.mpv_request_log_messages(_ctx, level);
     calloc.free(level);
+    if (result < 0) {
+      _recordError('mpv_request_log_messages failed: ${_errorText(result)}');
+    }
+
+    debugPrint(
+      'GifConvert: start input=${_describeUrl(url)} output=$outFile '
+      'range=${start.toStringAsFixed(3)}-${(start + duration).toStringAsFixed(3)} '
+      'width=$width fps=$fps',
+    );
   }
 
   void dispose() {
     if (_disposed) return;
     _disposed = true;
-    if (_initialized) {
-      Initializer.dispose(_ctx);
-      _mpv.mpv_terminate_destroy(_ctx);
-    }
+    _disposeNative();
     if (!_completer.isCompleted) _completer.complete(false);
+  }
+
+  void _disposeNative() {
+    if (!_initialized) return;
+    Initializer.dispose(_ctx);
+    _mpv.mpv_terminate_destroy(_ctx);
+    _initialized = false;
   }
 
   Future<bool> convert() async {
     try {
       await _init();
       if (_disposed) return false;
-      _command(['loadfile', url]);
+      final result = _command(['loadfile', url]);
+      if (result < 0) {
+        _complete(false);
+        return false;
+      }
       return _completer.future;
     } catch (error, stackTrace) {
+      _recordError('initialization failed: $error');
       debugPrint('GifConvert: initialization failed: $error\n$stackTrace');
       _complete(false);
       return false;
@@ -115,6 +141,7 @@ class MpvConvertGif {
         break;
       case generated.mpv_event_id.MPV_EVENT_FILE_LOADED:
         _loaded = true;
+        debugPrint('GifConvert: input loaded');
         break;
       case generated.mpv_event_id.MPV_EVENT_LOG_MESSAGE:
         final log = event.ref.data.cast<generated.mpv_event_log_message>().ref;
@@ -123,7 +150,7 @@ class MpvConvertGif {
         final text = log.text.toDartString().trim();
         debugPrint('GifConvert: $level $prefix : $text');
         if (level == 'error' || level == 'fatal') {
-          _lastError = text;
+          _recordError(text);
         }
         break;
       case generated.mpv_event_id.MPV_EVENT_END_FILE:
@@ -131,21 +158,28 @@ class MpvConvertGif {
         final reason = end.reason;
         final error = end.error;
         final output = File(outFile);
+        final exists = output.existsSync();
+        final size = exists ? output.lengthSync() : 0;
+        final header = exists ? _readHeader(output) : '';
+        final errorText = error == 0 ? '' : _errorText(error);
+        final validHeader = header == 'GIF87a' || header == 'GIF89a';
         final success =
             reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF &&
-            _loaded &&
+            error == 0 &&
             _lastError == null &&
-            output.existsSync() &&
-            output.lengthSync() > 0;
+            exists &&
+            size > 0 &&
+            validHeader;
         debugPrint(
-          'GifConvert: end reason=$reason error=$error '
-          'loaded=$_loaded output=${output.existsSync()} '
-          'size=${output.existsSync() ? output.lengthSync() : 0} '
-          'lastError=$_lastError',
+          'GifConvert: end reason=$reason error=$error'
+          '${errorText.isEmpty ? '' : ' ($errorText)'} '
+          'loaded=$_loaded output=$exists size=$size header=$header '
+          'lastError=$_lastError success=$success',
         );
         _complete(success);
         break;
       case generated.mpv_event_id.MPV_EVENT_SHUTDOWN:
+        _recordError('mpv shutdown before GIF conversion completed');
         _complete(false);
         break;
     }
@@ -159,22 +193,28 @@ class MpvConvertGif {
     dispose();
   }
 
-  void _command(List<String> args) {
+  int _command(List<String> args) {
     final pointers = args.map((e) => e.toNativeUtf8()).toList();
     final arr = calloc<Pointer<Uint8>>(pointers.length + 1);
     for (int i = 0; i < args.length; i++) {
       arr[i] = pointers[i];
     }
 
-    _mpv.mpv_command(_ctx, arr);
+    final result = _mpv.mpv_command(_ctx, arr);
 
     calloc.free(arr);
     pointers.forEach(calloc.free);
+    if (result < 0) {
+      _recordError(
+        'mpv_command(${args.join(' ')}) failed: ${_errorText(result)}',
+      );
+    }
+    return result;
   }
 
   void _observeProperty(String property) {
     final name = property.toNativeUtf8();
-    _mpv.mpv_observe_property(
+    final result = _mpv.mpv_observe_property(
       _ctx,
       property.hashCode,
       name,
@@ -182,5 +222,40 @@ class MpvConvertGif {
     );
 
     calloc.free(name);
+    if (result < 0) {
+      _recordError(
+        'mpv_observe_property($property) failed: ${_errorText(result)}',
+      );
+    }
+  }
+
+  void _recordError(String error) {
+    if (error.trim().isEmpty) return;
+    _lastError ??= error.trim();
+    debugPrint('GifConvert: error $_lastError');
+  }
+
+  String _errorText(int error) {
+    final text = _mpv.mpv_error_string(error);
+    return text == nullptr ? 'code $error' : text.toDartString();
+  }
+
+  String _readHeader(File output) {
+    RandomAccessFile? file;
+    try {
+      file = output.openSync();
+      return latin1.decode(file.readSync(6));
+    } catch (error) {
+      debugPrint('GifConvert: cannot read output header: $error');
+      return '';
+    } finally {
+      file?.closeSync();
+    }
+  }
+
+  String _describeUrl(String value) {
+    final uri = Uri.tryParse(value);
+    if (uri == null) return '<invalid-url>';
+    return '${uri.scheme}://${uri.host}${uri.path}';
   }
 }
