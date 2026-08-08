@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
@@ -19,7 +20,10 @@ class MpvConvertGif {
   late final Pointer<generated.mpv_handle> _ctx;
   final _completer = Completer<bool>();
 
-  bool _success = false;
+  bool _loaded = false;
+  bool _disposed = false;
+  bool _initialized = false;
+  String? _lastError;
 
   final String url;
   final String outFile;
@@ -58,6 +62,7 @@ class MpvConvertGif {
         if (enableHA) 'hwdec': '${Pref.hardwareDecoding},auto-copy',
       },
     );
+    _initialized = true;
     NativePlayer.setHeader(
       _mpv,
       _ctx,
@@ -73,18 +78,31 @@ class MpvConvertGif {
   }
 
   void dispose() {
-    Initializer.dispose(_ctx);
-    _mpv.mpv_terminate_destroy(_ctx);
+    if (_disposed) return;
+    _disposed = true;
+    if (_initialized) {
+      Initializer.dispose(_ctx);
+      _mpv.mpv_terminate_destroy(_ctx);
+    }
     if (!_completer.isCompleted) _completer.complete(false);
   }
 
   Future<bool> convert() async {
-    await _init();
-    _command(['loadfile', url]);
-    return _completer.future;
+    try {
+      await _init();
+      if (_disposed) return false;
+      _command(['loadfile', url]);
+      return _completer.future;
+    } catch (error, stackTrace) {
+      debugPrint('GifConvert: initialization failed: $error\n$stackTrace');
+      _complete(false);
+      return false;
+    }
   }
 
   Future<void>? _onEvent(Pointer<generated.mpv_event> event) {
+    if (_disposed) return null;
+
     switch (event.ref.event_id) {
       case generated.mpv_event_id.MPV_EVENT_PROPERTY_CHANGE:
         final prop = event.ref.data.cast<generated.mpv_event_property>().ref;
@@ -96,7 +114,7 @@ class MpvConvertGif {
         }
         break;
       case generated.mpv_event_id.MPV_EVENT_FILE_LOADED:
-        _success = true;
+        _loaded = true;
         break;
       case generated.mpv_event_id.MPV_EVENT_LOG_MESSAGE:
         final log = event.ref.data.cast<generated.mpv_event_log_message>().ref;
@@ -104,20 +122,41 @@ class MpvConvertGif {
         final level = log.level.toDartString().trim();
         final text = log.text.toDartString().trim();
         debugPrint('GifConvert: $level $prefix : $text');
-        if (kDebugMode) {
-          if (level == 'error' || level == 'fatal') _success = false;
-        } else {
-          _success = false;
+        if (level == 'error' || level == 'fatal') {
+          _lastError = text;
         }
         break;
-      case generated.mpv_event_id.MPV_EVENT_END_FILE ||
-          generated.mpv_event_id.MPV_EVENT_SHUTDOWN:
-        progress?.value = 1;
-        _completer.complete(_success);
-        dispose();
+      case generated.mpv_event_id.MPV_EVENT_END_FILE:
+        final end = event.ref.data.cast<generated.mpv_event_end_file>().ref;
+        final reason = end.reason;
+        final error = end.error;
+        final output = File(outFile);
+        final success =
+            reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF &&
+            _loaded &&
+            _lastError == null &&
+            output.existsSync() &&
+            output.lengthSync() > 0;
+        debugPrint(
+          'GifConvert: end reason=$reason error=$error '
+          'loaded=$_loaded output=${output.existsSync()} '
+          'size=${output.existsSync() ? output.lengthSync() : 0} '
+          'lastError=$_lastError',
+        );
+        _complete(success);
+        break;
+      case generated.mpv_event_id.MPV_EVENT_SHUTDOWN:
+        _complete(false);
         break;
     }
     return null;
+  }
+
+  void _complete(bool success) {
+    if (_completer.isCompleted) return;
+    progress?.value = 1;
+    _completer.complete(success);
+    dispose();
   }
 
   void _command(List<String> args) {

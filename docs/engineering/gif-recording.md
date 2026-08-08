@@ -1,14 +1,14 @@
 # GIF 录制工程实现记录
 
-> 状态：已实现待验证<br>
+> 状态：已修复待真机验证<br>
 > 记录日期：2026-08-07<br>
-> 更新日期：2026-08-07<br>
+> 更新日期：2026-08-08<br>
 > 适用版本：`1.0.0-dev.1`<br>
 > 范围：播放器界面的 GIF 片段选择、GIF 转码和保存；不包含 GIF 编辑、音频、贴纸、文字和分享链路
 
 ## 1. 当前结论
 
-已在播放器截图按钮上方增加 GIF 录制入口，并实现二级选择界面：视频预览、片段范围选择、3/5/8/10 秒快捷长度、480p/720p 输出分辨率、10/12/15 FPS、无音频和无限循环提示。确认导出后使用项目已有的 libmpv 转码链路生成 `.gif`，移动端复用 `ImageUtils.saveFileImg` 保存到应用相册，桌面端复用已有文件保存回退。业务代码已修改；真机、模拟器和桌面端运行时转码尚未完成验证。
+已在播放器截图按钮上方增加 GIF 录制入口，并实现二级选择界面：视频预览、片段范围选择、3/5/8/10 秒快捷长度、480p/720p 输出分辨率、10/12/15 FPS、无音频和无限循环提示。确认导出后使用项目已有的 libmpv 转码链路生成 `.gif`，移动端复用 `ImageUtils.saveFileImg` 保存到应用相册，桌面端复用已有文件保存回退。收到用户反馈：iOS 上 GIF 转码失败或已取消；经检查确认原 iOS 默认 libmpv 构建不包含 GIF 视频编码器，已切换为包含编码器的 `video-encodersgpl` 构建，并增强转码结束原因、错误日志和输出文件校验。真机、模拟器和桌面端运行时转码仍待完成验证。
 
 ## 2. 背景与任务范围
 
@@ -31,8 +31,10 @@
 | 已确认 | 项目已有 WebP 动态截图使用 libmpv、片段范围和转码进度，可作为 GIF 转码实现基础。 | `lib/plugin/pl_player/view/view.dart` 的 `screenshotWebp`；`lib/plugin/pl_player/widgets/mpv_convert_webp.dart` |
 | 已确认 | `ImageUtils.saveFileImg` 移动端调用 `SaverGallery.saveFile`，桌面端调用 `FilePicker.saveFile`。 | `lib/utils/image_utils.dart` |
 | 已确认 | 视频详情模型提供多个 DASH 视频源以及宽度信息，可按目标输出宽度选择源。 | `lib/models/video/play/url.dart`；`lib/pages/video/controller.dart` 的 `findVideoByQa` |
+| 已确认 | iOS 默认 `media_kit_libs_ios_video` 使用的 libmpv 构建不包含 GIF 视频编码器；`video-encodersgpl` 构建包含 GIF encoder。 | 上游 Darwin build flavor 说明；对两个 iOS artifact 的 `Avcodec.framework` 字符串检查 |
 | 候选方向 | 后续可加入视频缩略图时间轴，替代当前 RangeSlider。 | 当前任务只要求类似剪辑软件的范围选择，先复用 Flutter 原生控件降低改动范围。 |
-| 待验证 | 当前打包的 libmpv 是否在 Android、iOS、Windows、macOS、Linux 全部包含 GIF muxer/编码器。 | 各平台执行一次 3 秒、480p、10 FPS 导出，并检查生成文件可被系统相册/图片查看器打开。 |
+| 已确认 | iOS 依赖已改为本地 `media_kit_libs_ios_video` 包，并在其 Makefile 中固定使用 `video-encodersgpl` artifact 及 SHA256。 | `pubspec.yaml` dependency override；`third_party/media_kit_libs_ios_video/ios/Makefile` |
+| 待验证 | 当前修复后的 iOS 构建能否在真机完成转码并写入相册；用户已反馈其他平台尚未测试。 | 在 iOS 真机执行一次 3 秒、480p、10 FPS 导出，并检查生成文件可被系统相册打开；随后补测 Android、Windows、macOS、Linux。 |
 
 ## 4. 技术路线
 
@@ -76,7 +78,8 @@ flowchart TD
 - **已确认：** GIF 不包含音频，使用 `loop=0` 输出无限循环 GIF。
 - **已确认：** 不新增依赖，复用 `media_kit`/libmpv、`saver_gallery`、`file_picker` 和现有保存工具。
 - **候选方向：** 未来可将视频源选择单独展示为“源画质”，目前按输出宽度自动选择最接近且不低于目标宽度的 DASH 源。
-- **待验证：** iOS 相册权限、Android 不同 SDK、桌面文件选择器的 GIF 类型过滤和各平台 GIF 编码器能力需要实际运行确认。
+- **已确认：** iOS 默认 libmpv artifact 不含 GIF 视频编码器，是本次“转码失败或已取消”反馈的根因；本地 iOS media_kit 包已切换到 `video-encodersgpl` flavor，并保留 SHA256 校验。
+- **待验证：** iOS 真机相册权限与实际导出链路、Android 不同 SDK、桌面文件选择器的 GIF 类型过滤和各平台 GIF 编码器能力需要实际运行确认。
 
 ### 5.3 兼容性和风险
 
@@ -92,15 +95,20 @@ flowchart TD
 | 格式化 | `/Users/husky/Developer/sdk/flutter/bin/dart format lib/plugin/pl_player/view/view.dart lib/plugin/pl_player/widgets/gif_record_dialog.dart lib/plugin/pl_player/widgets/mpv_convert_gif.dart` | 变更 Dart 文件格式化 | 已执行，无格式化错误 | 通过 |
 | 静态检查 | `/Users/husky/Developer/sdk/flutter/bin/flutter analyze` | 新增代码无 error | 新增文件和播放器改动无 error；仓库仍有既有 info 级提示 | 通过（无新增 error） |
 | 自动化测试 | `/Users/husky/Developer/sdk/flutter/bin/flutter test test/l10n/arb_key_consistency_test.dart` | 三种 ARB 键一致且本地化检查通过 | 10 个测试全部通过 | 通过 |
+| iOS 依赖构建 | `make -C third_party/media_kit_libs_ios_video/ios all` | 下载并校验包含 GIF encoder 的 XCFramework | 已下载 `video-encodersgpl` artifact，SHA256 校验通过并完成 XCFramework 解压/符号链接 | 通过 |
+| Dart 格式化 | `/Users/husky/Developer/sdk/flutter/bin/dart format lib/plugin/pl_player/widgets/mpv_convert_gif.dart` | 转码实现格式正确 | 已执行，无格式化错误 | 通过 |
+| 静态检查（转码实现） | `/Users/husky/Developer/sdk/flutter/bin/flutter analyze lib/plugin/pl_player/widgets/mpv_convert_gif.dart` | 转码实现无 analyzer error | 无问题 | 通过 |
+| CocoaPods | `cd ios && pod install --no-repo-update` | 安装 iOS 依赖并生成 Xcode 工程 | 当前环境 `pod` 命令不可用：`command not found: pod` | 未完成 |
 | 差异检查 | `git diff --check` | 无空白错误 | 待本轮结束执行 | 待执行 |
-| 人工回归 | Android/iOS 真机或模拟器；播放普通 DASH 视频，选择 3 秒、480p、10 FPS 导出 | 生成可播放 GIF 并出现在相册 | 当前环境未运行设备回归 | 待验证 |
+| 人工回归 | iOS 真机；播放普通 DASH 视频，选择 3 秒、480p、10 FPS 导出 | 生成可播放 GIF 并出现在相册 | 用户已反馈此前转码失败或已取消；切换 encoder flavor 后尚未由本环境重新运行 | 待验证 |
 | 人工回归 | Windows/macOS/Linux 桌面；选择同样参数导出 | 文件选择器保存 `.gif`，图片查看器可打开 | 当前环境未运行桌面回归 | 待验证 |
 
 ## 7. 遗留问题与下一步
 
 | 问题 | 影响 | 下一步 | 前置条件 |
 | --- | --- | --- | --- |
-| 各平台 libmpv 是否包含 GIF 编码支持未知 | 可能出现转码失败 | 在目标平台导出最小参数 GIF，检查日志和文件头 | 可运行的设备/桌面构建 |
+| iOS 真机转码和相册保存尚未回归 | 仍可能存在平台集成、权限或保存链路问题 | 在切换 `video-encodersgpl` 后执行最小参数 GIF 导出，检查日志、文件头和相册 | 可运行的 iOS 真机构建、CocoaPods |
+| 其他平台尚未测试 | 可能存在各平台 libmpv 编码能力或保存行为差异 | 在 Android、Windows、macOS、Linux 分别导出最小参数 GIF | 可运行的目标平台构建 |
 | 当前视频预览复用播放器控制器 | 可能影响暂停、seek 和关闭后的播放状态 | 回归打开/取消/导出/重复打开四条路径 | 真实视频播放环境 |
 | 相册权限与 GIF 媒体类型未做专项回归 | 可能保存成功但相册不展示，或触发权限提示 | Android 低 SDK、Android 29+、iOS 新旧照片权限分别验证 | 设备和系统权限状态 |
 | `docs/` 当前被 `.gitignore` 忽略 | 工程记录默认不会进入 Git 变更 | 由项目负责人决定是否调整忽略策略或单独纳入文档 | 项目负责人确认 |
@@ -108,3 +116,4 @@ flowchart TD
 ## 8. 更新记录
 
 - 2026-08-07：创建 GIF 录制实现记录；记录播放器入口、范围选择、libmpv GIF 转码、相册/桌面保存和待验证平台风险。
+- 2026-08-08：记录 iOS 转码失败反馈，确认默认 iOS libmpv 缺少 GIF encoder；新增本地 iOS media_kit 依赖并切换到 `video-encodersgpl` artifact，增强转码失败/取消和输出文件校验；记录 CocoaPods 与真机回归限制。

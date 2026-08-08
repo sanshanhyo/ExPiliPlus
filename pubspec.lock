@@ -1122,11 +1122,9 @@ packages:
   media_kit_libs_ios_video:
     dependency: "direct overridden"
     description:
-      path: "libs/ios/media_kit_libs_ios_video"
-      ref: "version_1.2.5"
-      resolved-ref: deac6b62569584b6a5e28e6c60c187a0a7281b3a
-      url: "https://github.com/My-Responsitories/media-kit.git"
-    source: git
+      path: "third_party/media_kit_libs_ios_video"
+      relative: true
+    source: path
     version: "1.1.4"
   media_kit_libs_linux:
     dependency: transitive
