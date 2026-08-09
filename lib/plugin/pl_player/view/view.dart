@@ -48,8 +48,8 @@ import 'package:ex_piliplus/plugin/pl_player/widgets/backward_seek.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/bottom_control.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/common_btn.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/forward_seek.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
-import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_convert_gif.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_convert_webp.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/play_pause_btn.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
@@ -2116,14 +2116,21 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
   Future<void> showGifRecorder() async {
     final l10n = context.l10n;
     final videoInfo = videoDetailController.data;
-    final availableVideos = videoInfo.dash?.video
+    final videoCandidates = videoInfo.dash?.video
         ?.where((video) => video.baseUrl?.isNotEmpty == true)
         .toList();
-    if (availableVideos == null || availableVideos.isEmpty) {
+    if (videoCandidates == null || videoCandidates.isEmpty) {
       SmartDialog.showToast(l10n.playerGifSourceUnavailable);
       return;
     }
+    var availableVideos = videoCandidates;
 
+    if (Platform.isIOS) {
+      final avcVideos = availableVideos
+          .where((video) => video.codecs?.startsWith('avc1') == true)
+          .toList();
+      if (avcVideos.isNotEmpty) availableVideos = avcVideos;
+    }
     availableVideos.sort((a, b) => (a.width ?? 0).compareTo(b.width ?? 0));
     String? sourceFor(int width) {
       final video = availableVideos.firstWhere(
@@ -2168,7 +2175,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     final name =
         '${ctr.cid}-$time-${options.resolution.width}p-${options.fps}fps.gif';
     final file = '$tmpDirPath/$name';
-    final mpv = MpvConvertGif(
+    final converter = createGifConverter(
       options.url,
       file,
       options.start,
@@ -2207,13 +2214,13 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       onDismiss: () {
         if (!completedByConversion) {
           dismissedByUser = true;
-          mpv.dispose();
+          converter.dispose();
         }
         unawaited(handleDismiss());
       },
     );
 
-    conversion = mpv.convert();
+    conversion = converter.convert();
     unawaited(() async {
       await conversion;
       completedByConversion = true;

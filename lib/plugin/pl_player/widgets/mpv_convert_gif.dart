@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter_base.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:get/get_rx/get_rx.dart';
 import 'package:media_kit/ffi/src/allocation.dart';
@@ -15,7 +16,7 @@ import 'package:media_kit/generated/libmpv/bindings.dart' as generated;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit/src/player/native/core/initializer.dart';
 
-class MpvConvertGif {
+class MpvConvertGif implements GifConverter {
   final _mpv = NativePlayer.mpv;
   late final Pointer<generated.mpv_handle> _ctx;
   final _completer = Completer<bool>();
@@ -94,6 +95,7 @@ class MpvConvertGif {
     );
   }
 
+  @override
   void dispose() {
     if (_disposed) return;
     _disposed = true;
@@ -108,6 +110,7 @@ class MpvConvertGif {
     _initialized = false;
   }
 
+  @override
   Future<bool> convert() async {
     try {
       await _init();
