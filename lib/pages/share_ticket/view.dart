@@ -315,21 +315,24 @@ class ShareTicketCanvas extends StatelessWidget {
   final double width;
   final double height;
 
-  static const _ink = Color(0xFF443429);
-  static const _accent = Color(0xFF9B583D);
+  static const _cyan = Color(0xFF2ECAD3);
+  static const _coral = Color(0xFFFF4F55);
+  static const _onDark = Color(0xFFF1F4F6);
+  static const _mutedOnDark = Color(0xFFAAB3BC);
+  static const _onLight = Color(0xFF202630);
+  static const _mutedOnLight = Color(0xFF66717C);
 
   @override
   Widget build(BuildContext context) {
     const base = TextStyle(
-      color: _ink,
-      fontFamily: 'Source Han Serif CN',
+      color: _onDark,
+      decoration: TextDecoration.none,
     );
     final titleStyle = base.copyWith(
-      fontSize: 31,
-      height: 1.28,
+      fontSize: 34,
+      height: 1.22,
       fontWeight: FontWeight.w700,
     );
-    final contentShift = _contentShift(context, titleStyle);
     return SizedBox(
       width: width,
       height: height,
@@ -337,43 +340,130 @@ class ShareTicketCanvas extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/share_ticket/share2.png',
+              'assets/images/share_ticket/share_ticket_v2_terminal.png',
               fit: BoxFit.fill,
             ),
           ),
           Positioned(
-            left: 165,
-            top: 116,
-            width: 756,
-            height: 438,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.network(
-                data.cover.http2https,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+            left: 116,
+            top: 66,
+            width: 854,
+            height: 58,
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/images/logo/logo.png',
+                    width: 48,
+                    height: 48,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ExPiliPlus',
+                      style: base.copyWith(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: .8,
+                      ),
+                    ),
+                    Text(
+                      l10n.shareTicketTitle,
+                      style: base.copyWith(
+                        color: _mutedOnDark,
+                        fontSize: 15,
+                        letterSpacing: .5,
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 9,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: _cyan.withValues(alpha: .55)),
+                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xB3161B22),
+                  ),
+                  child: Text(
+                    data.bvid,
+                    style: base.copyWith(
+                      color: _cyan,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 116,
+            top: 148,
+            width: 854,
+            height: 480,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: _cyan.withValues(alpha: .7)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x73000000),
+                    blurRadius: 22,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(19),
+                child: Image.network(
+                  data.cover.http2https,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                ),
               ),
             ),
           ),
           Positioned(
-            left: 782,
-            top: 136,
-            width: 130,
-            height: 42,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                data.durationText,
-                textAlign: TextAlign.center,
-                style: base.copyWith(fontSize: 27, color: Colors.white),
+            right: 136,
+            top: 168,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: const Color(0xD9161B22),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.white24),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 7,
+                ),
+                child: Text(
+                  data.durationText,
+                  style: base.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
             ),
           ),
           Positioned(
-            left: 178,
-            top: 590,
-            width: 730,
-            height: 112,
+            left: 124,
+            top: 654,
+            width: 838,
+            height: 90,
             child: Text(
               data.title,
               maxLines: 2,
@@ -382,134 +472,176 @@ class ShareTicketCanvas extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 178,
-            top: 730 + contentShift,
-            child: _Avatar(
-              url: data.uploader.face ?? '',
-              size: 78,
-              borderColor: _ink,
-            ),
-          ),
-          Positioned(
-            left: 286,
-            top: 744 + contentShift,
-            width: 500,
+            left: 124,
+            top: 766,
+            width: 838,
+            height: 66,
             child: Row(
               children: [
-                Flexible(
-                  child: Text(
-                    data.uploader.name ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: base.copyWith(fontSize: 25),
-                  ),
+                _Avatar(
+                  image: _networkImage(data.uploader.face ?? ''),
+                  size: 64,
+                  borderColor: _cyan,
                 ),
-                const SizedBox(width: 10),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: _accent,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
-                      vertical: 2,
-                    ),
-                    child: Text(
-                      'LV${data.uploaderLevel}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              data.uploader.name ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: base.copyWith(
+                                fontSize: 23,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: _cyan,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              child: Text(
+                                'LV${data.uploaderLevel}',
+                                style: base.copyWith(
+                                  color: _onLight,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${data.publishedAt} ${l10n.shareTicketPublishedAt}',
+                        style: base.copyWith(
+                          color: _mutedOnDark,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
           Positioned(
-            left: 286,
-            top: 790 + contentShift,
-            child: Text(
-              '${data.publishedAt} ${l10n.shareTicketPublishedAt}',
-              style: base.copyWith(
-                fontSize: 18,
-                color: _ink.withValues(alpha: .72),
+            left: 124,
+            top: 854,
+            width: 838,
+            height: 82,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _StatItem(
+                    icon: Icons.play_arrow_rounded,
+                    value: data.stats.viewText,
+                    label: l10n.shareTicketPlays,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: _StatItem(
+                    icon: Icons.chat_bubble_outline_rounded,
+                    value: data.stats.danmakuText,
+                    label: l10n.shareTicketDanmaku,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: _StatItem(
+                    icon: Icons.thumb_up_alt_outlined,
+                    value: data.stats.likeText,
+                    label: l10n.shareTicketLikes,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 124,
+            top: 958,
+            width: 838,
+            height: 116,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: const Color(0x96171D25),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.white12),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: 6,
+                    decoration: const BoxDecoration(
+                      color: _coral,
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(14),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(22, 14, 20, 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.shareTicketPostscript,
+                            style: base.copyWith(
+                              color: _cyan,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: .8,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Expanded(
+                            child: Text(
+                              data.postscript,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: base.copyWith(fontSize: 21, height: 1.28),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           Positioned(
-            left: 180,
-            top: 855 + contentShift,
-            width: 730,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _StatItem(
-                  icon: Icons.play_arrow,
-                  value: data.stats.viewText,
-                  label: l10n.shareTicketPlays,
-                ),
-                _StatItem(
-                  icon: Icons.chat_bubble,
-                  value: data.stats.danmakuText,
-                  label: l10n.shareTicketDanmaku,
-                ),
-                _StatItem(
-                  icon: Icons.thumb_up,
-                  value: data.stats.likeText,
-                  label: l10n.shareTicketLikes,
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 180,
-            top: 961 + contentShift,
-            width: 735,
-            height: 120,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 52,
-                  height: 120,
-                  alignment: Alignment.center,
-                  color: _accent,
-                  child: Text(
-                    l10n.shareTicketPostscript,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      height: 1.2,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(22, 12, 16, 8),
-                    child: Text(
-                      data.postscript,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                      style: base.copyWith(fontSize: 23, height: 1.35),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: 190,
-            top: 1143,
-            width: 206,
-            height: 206,
-            child: ColoredBox(
-              color: Colors.white,
+            left: 124,
+            top: 1174,
+            width: 200,
+            height: 200,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x24000000), blurRadius: 10),
+                ],
+              ),
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(12),
                 child: PrettyQrView.data(
                   data: data.qrContent,
                   decoration: const PrettyQrDecoration(
@@ -520,31 +652,26 @@ class ShareTicketCanvas extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 520,
-            top: 1165,
-            child: _Avatar(
-              url: data.sharerFace,
-              size: 124,
-              borderColor: _ink,
-            ),
-          ),
-          Positioned(
-            left: 675,
-            top: 1200,
-            width: 275,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            left: 364,
+            top: 1176,
+            width: 590,
+            height: 50,
+            child: Row(
               children: [
-                Text(
-                  l10n.shareTicketSharer,
-                  style: base.copyWith(fontSize: 24),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    'assets/images/logo/logo.png',
+                    width: 44,
+                    height: 44,
+                  ),
                 ),
+                const SizedBox(width: 14),
                 Text(
-                  data.sharerName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  l10n.shareTicketFrom,
                   style: base.copyWith(
-                    fontSize: 28,
+                    color: _onLight,
+                    fontSize: 23,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -552,16 +679,67 @@ class ShareTicketCanvas extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 365,
-            top: 1360,
-            width: 360,
-            child: Text(
-              l10n.shareTicketFrom,
-              textAlign: TextAlign.center,
-              style: base.copyWith(
-                fontSize: 19,
-                color: _ink.withValues(alpha: .9),
-              ),
+            left: 364,
+            top: 1252,
+            width: 590,
+            height: 82,
+            child: Row(
+              children: [
+                _Avatar(
+                  image: _networkImage(data.sharerFace),
+                  size: 78,
+                  borderColor: _onLight,
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.shareTicketSharer,
+                        style: base.copyWith(
+                          color: _mutedOnLight,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        data.sharerName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: base.copyWith(
+                          color: _onLight,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 364,
+            top: 1351,
+            width: 590,
+            child: Row(
+              children: [
+                Container(width: 34, height: 3, color: _cyan),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    data.videoUrl,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: base.copyWith(
+                      color: _mutedOnLight,
+                      fontSize: 15,
+                      letterSpacing: .2,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -569,25 +747,19 @@ class ShareTicketCanvas extends StatelessWidget {
     );
   }
 
-  double _contentShift(BuildContext context, TextStyle titleStyle) {
-    final painter = TextPainter(
-      text: TextSpan(text: data.title, style: titleStyle),
-      textDirection: Directionality.of(context),
-      maxLines: 2,
-      ellipsis: '…',
-    )..layout(maxWidth: 730);
-    return painter.computeLineMetrics().length <= 1 ? -36 : 0;
+  ImageProvider<Object>? _networkImage(String url) {
+    return url.isEmpty ? null : NetworkImage(url.http2https);
   }
 }
 
 class _Avatar extends StatelessWidget {
   const _Avatar({
-    required this.url,
+    required this.image,
     required this.size,
     required this.borderColor,
   });
 
-  final String url;
+  final ImageProvider<Object>? image;
   final double size;
   final Color borderColor;
 
@@ -596,15 +768,19 @@ class _Avatar extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: borderColor, width: 2),
       ),
       child: ClipOval(
-        child: url.isEmpty
+        child: image == null
             ? const SizedBox.shrink()
-            : Image.network(url.http2https, fit: BoxFit.cover),
+            : Image(
+                image: image!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
       ),
     );
   }
@@ -623,32 +799,51 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 42, color: const Color(0xFF4B423A)),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0x8F171D25),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
           children: [
-            Text(
-              value,
-              style: const TextStyle(
-                color: Color(0xFF443429),
-                fontSize: 27,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Color(0xFF443429),
-                fontSize: 18,
+            Icon(icon, size: 27, color: ShareTicketCanvas._cyan),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: ShareTicketCanvas._onDark,
+                      fontSize: 23,
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.none,
+                      fontFeatures: [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: ShareTicketCanvas._mutedOnDark,
+                      fontSize: 14,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
