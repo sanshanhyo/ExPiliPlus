@@ -245,7 +245,7 @@ git diff --check
 | 脱敏证据 | `build/logs/ios27-gif-device-gif-export.log`：`video-track-loaded`、帧进度、`finalize success`、输出约 5 MB；其余矩阵及权限/生命周期结果由用户真机确认 |
 | 已尝试修复 | iOS 15 deployment target；`SaverGallery.saveImage` 原始字节保存；原生视频轨道异步加载和脱敏日志；保存前照片权限检查；取消竞态保护；定向/全量测试、签名 Release 构建通过 |
 | 当前阻塞 | 无；本手册完成条件已全部满足 |
-| 下一步 | 将本次相关代码和文档提交并推送到 `main` |
+| 下一步 | 无；相关代码和文档已提交为 `c96cc16ea` 并推送到 `origin/main` |
 
 ## 9. 更新记录
 

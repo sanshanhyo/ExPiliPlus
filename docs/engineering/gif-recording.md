@@ -131,7 +131,7 @@ iOS 原生会话接收视频 URL、输出路径、开始时间、持续时间、
 
 | 问题 | 影响 | 下一步 | 前置条件 |
 | --- | --- | --- | --- |
-| iOS 27 真机真实 DASH/相册未回归 | CDN Header/Range、系统解码、权限或相册展示仍可能失败 | 已完成 24 组矩阵及相册检查 | 用户真机和登录态 |
+| iOS 27 真机真实 DASH/相册验收 | CDN Header/Range、系统解码、权限或相册展示风险 | 已完成 24 组矩阵及相册检查 | 用户真机和登录态 |
 | Flutter VM Service 未被发现 | Codex 无法自动采集页面和 GIF 运行日志 | 用户直接操作已安装应用；必要时修复当前 Flutter/Scheme/SPM 调试连接 | 实体设备解锁、调试连接或用户现场操作 |
 | 显式 workspace 构建无法解析 Flutter 模块 | 独立 `xcodebuild` 验证失败，不能作为 GIF 业务通过证据 | 由项目负责人决定是否整理现有 SPM/Flutter workspace 集成；不因该错误改 GIF 逻辑 | 当前工作区 SPM/签名配置决定 |
 | iOS GIF 照片库保存 | 原导出成功但用户看不到 GIF | 已改用 `SaverGallery.saveImage` 原始字节路径；完整矩阵和动画播放已确认 | 用户确认通过 |
