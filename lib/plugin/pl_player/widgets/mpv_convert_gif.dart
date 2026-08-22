@@ -24,6 +24,7 @@ class MpvConvertGif implements GifConverter {
   bool _loaded = false;
   bool _disposed = false;
   bool _initialized = false;
+  bool _succeeded = false;
   String? _lastError;
 
   final String url;
@@ -100,6 +101,7 @@ class MpvConvertGif implements GifConverter {
     if (_disposed) return;
     _disposed = true;
     _disposeNative();
+    if (!_succeeded) _removeOutputIfPresent();
     if (!_completer.isCompleted) _completer.complete(false);
   }
 
@@ -191,9 +193,19 @@ class MpvConvertGif implements GifConverter {
 
   void _complete(bool success) {
     if (_completer.isCompleted) return;
+    _succeeded = success;
     progress?.value = 1;
     _completer.complete(success);
     dispose();
+  }
+
+  void _removeOutputIfPresent() {
+    try {
+      final output = File(outFile);
+      if (output.existsSync()) output.deleteSync();
+    } catch (error) {
+      debugPrint('GifConvert: cannot remove temporary output: $error');
+    }
   }
 
   int _command(List<String> args) {

@@ -2126,10 +2126,13 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     var availableVideos = videoCandidates;
 
     if (Platform.isIOS) {
-      final avcVideos = availableVideos
+      availableVideos = availableVideos
           .where((video) => video.codecs?.startsWith('avc1') == true)
           .toList();
-      if (avcVideos.isNotEmpty) availableVideos = avcVideos;
+      if (availableVideos.isEmpty) {
+        SmartDialog.showToast(l10n.playerGifSourceUnavailable);
+        return;
+      }
     }
     availableVideos.sort((a, b) => (a.width ?? 0).compareTo(b.width ?? 0));
     String? sourceFor(int width) {
@@ -2187,22 +2190,39 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     var completedByConversion = false;
     var dismissedByUser = false;
     var handledDismiss = false;
-    late final Future<bool> conversion;
+    final conversion = converter.convert();
 
     Future<void> handleDismiss() async {
       if (handledDismiss) return;
       handledDismiss = true;
-      final success = await conversion;
-      if (success) {
-        await ImageUtils.saveFileImg(
-          filePath: file,
-          fileName: name,
-          needToast: true,
-        );
-      } else if (!dismissedByUser) {
-        SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+      try {
+        final success = await conversion;
+        if (success && !dismissedByUser) {
+          if (!await ImageUtils.checkPermissionDependOnSdkInt()) return;
+          await ImageUtils.saveFileImg(
+            filePath: file,
+            fileName: name,
+            needToast: true,
+          );
+        } else if (!dismissedByUser) {
+          SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+        }
+      } catch (error, stackTrace) {
+        debugPrint('GifExport: failed to finish export: $error\n$stackTrace');
+        if (!dismissedByUser) {
+          SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+        }
+      } finally {
+        try {
+          final temporaryFile = File(file);
+          if (temporaryFile.existsSync()) await temporaryFile.delete();
+        } catch (error, stackTrace) {
+          debugPrint(
+            'GifExport: failed to remove temporary file: $error\n$stackTrace',
+          );
+        }
+        if (wasPlaying) await ctr.play();
       }
-      if (wasPlaying) ctr.play();
     }
 
     SmartDialog.showLoading(
@@ -2220,7 +2240,6 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       },
     );
 
-    conversion = converter.convert();
     unawaited(() async {
       await conversion;
       completedByConversion = true;

@@ -307,12 +307,28 @@ abstract final class ImageUtils {
     }
     SaveResult? res;
     if (PlatformUtils.isMobile) {
-      res = await SaverGallery.saveFile(
-        filePath: filePath,
-        fileName: fileName,
-        albumPath: _albumPath,
-        skipIfExists: false,
-      );
+      if (Platform.isIOS && filePath.toLowerCase().endsWith('.gif')) {
+        // saver_gallery's iOS saveFile path treats GIFs as images but passes
+        // the local path through URL(string:), which is not a file URL.
+        // saveImage uses PHAssetCreationRequest with the original bytes and
+        // preserves the animated GIF resource.
+        res = await SaverGallery.saveImage(
+          await file.readAsBytes(),
+          fileName: fileName,
+          albumPath: _albumPath,
+          skipIfExists: false,
+        );
+        debugPrint(
+          'GifSave: success=${res.isSuccess}; error=${res.errorMessage}',
+        );
+      } else {
+        res = await SaverGallery.saveFile(
+          filePath: filePath,
+          fileName: fileName,
+          albumPath: _albumPath,
+          skipIfExists: false,
+        );
+      }
     } else {
       final savePath = await FilePicker.saveFile(
         type: type,

@@ -1,4 +1,5 @@
 import AVFoundation
+import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
@@ -24,11 +25,17 @@ final class GifExportSession {
     DispatchQueue.global(qos: .userInitiated).async { [self] in
       do {
         let request = try GifExportRequest(arguments: arguments)
+        diagnostic(
+          "start duration=\(request.duration) width=\(request.width) fps=\(request.fps)"
+        )
         let outputPath = try render(request, onProgress: onProgress)
+        diagnostic("end success outputBytes=\(fileSize(atPath: outputPath))")
         completion(.success(outputPath))
       } catch let error as GifExportError {
+        diagnostic("end error=\(error.diagnosticDescription)")
         completion(.failure(error))
       } catch {
+        diagnostic("end errorDomain=\((error as NSError).domain) errorCode=\((error as NSError).code)")
         completion(.failure(.frameGeneration(error.localizedDescription)))
       }
     }
@@ -47,6 +54,7 @@ final class GifExportSession {
     if fileManager.fileExists(atPath: outputURL.path) {
       try fileManager.removeItem(at: outputURL)
     }
+    diagnostic("output-created pathExtension=\(outputURL.pathExtension)")
 
     let asset = AVURLAsset(
       url: request.sourceURL,
@@ -58,20 +66,23 @@ final class GifExportSession {
         AVURLAssetPreferPreciseDurationAndTimingKey: true,
       ]
     )
-    guard let videoTrack = asset.tracks(withMediaType: .video).first else {
-      throw GifExportError.assetUnreadable
+    diagnostic("asset-created")
+    guard let videoTrack = try loadVideoTracks(asset).first else {
+      throw GifExportError.assetUnreadable("No video track was loaded.")
     }
+    diagnostic("video-track-loaded")
 
     let transformedSize = videoTrack.naturalSize.applying(videoTrack.preferredTransform)
     let sourceWidth = abs(transformedSize.width)
     let sourceHeight = abs(transformedSize.height)
     guard sourceWidth > 0, sourceHeight > 0 else {
-      throw GifExportError.assetUnreadable
+      throw GifExportError.assetUnreadable("Video track has no usable dimensions.")
     }
     let targetWidth = request.width
     let targetHeight = max(1, Int((Double(targetWidth) * Double(sourceHeight / sourceWidth)).rounded()))
 
     let frameCount = max(1, Int((request.duration * Double(request.fps)).rounded(.down)))
+    diagnostic("frame-plan count=\(frameCount) target=\(targetWidth)x\(targetHeight)")
     guard let destination = CGImageDestinationCreateWithURL(
       outputURL as CFURL,
       UTType.gif.identifier as CFString,
@@ -118,16 +129,58 @@ final class GifExportSession {
         }
         CGImageDestinationAddImage(destination, image, frameProperties)
         onProgress(Double(index + 1) / Double(frameCount))
+        if index == 0 || index + 1 == frameCount || (index + 1) % max(1, request.fps) == 0 {
+          diagnostic("frame-progress index=\(index + 1) total=\(frameCount)")
+        }
       }
       try checkCancellation()
       guard CGImageDestinationFinalize(destination) else {
         throw GifExportError.outputFinalize
       }
+      diagnostic("finalize success")
       return outputURL.path
     } catch {
       try? fileManager.removeItem(at: outputURL)
       throw error
     }
+  }
+
+  private func loadVideoTracks(_ asset: AVAsset) throws -> [AVAssetTrack] {
+    let semaphore = DispatchSemaphore(value: 0)
+    asset.loadValuesAsynchronously(forKeys: ["tracks"]) {
+      semaphore.signal()
+    }
+    guard semaphore.wait(timeout: .now() + 60) == .success else {
+      diagnostic("video-track-load-timeout")
+      throw GifExportError.assetUnreadable("Timed out while loading video tracks.")
+    }
+
+    var loadError: NSError?
+    let status = asset.statusOfValue(forKey: "tracks", error: &loadError)
+    guard status == .loaded else {
+      if let loadError {
+        diagnostic(
+          "video-track-load-failed domain=\(loadError.domain) code=\(loadError.code)"
+        )
+        throw GifExportError.assetUnreadable(
+          "Video tracks failed to load (\(loadError.domain), \(loadError.code))."
+        )
+      }
+      diagnostic("video-track-load-failed status=\(status.rawValue)")
+      throw GifExportError.assetUnreadable(
+        "Video tracks failed to load (status \(status.rawValue))."
+      )
+    }
+    return asset.tracks(withMediaType: .video)
+  }
+
+  private func diagnostic(_ message: String) {
+    NSLog("GifExport: %@", message)
+  }
+
+  private func fileSize(atPath path: String) -> UInt64 {
+    let attributes = try? FileManager.default.attributesOfItem(atPath: path)
+    return (attributes?[.size] as? NSNumber)?.uint64Value ?? 0
   }
 
   private func checkCancellation() throws {
@@ -206,8 +259,25 @@ private struct GifExportRequest {
 enum GifExportError: Error {
   case invalidArguments
   case cancelled
-  case assetUnreadable
+  case assetUnreadable(String)
   case outputCreation
   case frameGeneration(String)
   case outputFinalize
+
+  var diagnosticDescription: String {
+    switch self {
+    case .invalidArguments:
+      return "invalid_arguments"
+    case .cancelled:
+      return "cancelled"
+    case .assetUnreadable(let message):
+      return "asset_unreadable message=\(message)"
+    case .outputCreation:
+      return "output_creation_failed"
+    case .frameGeneration(let message):
+      return "frame_generation_failed message=\(message)"
+    case .outputFinalize:
+      return "output_finalize_failed"
+    }
+  }
 }

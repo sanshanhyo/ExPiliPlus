@@ -43,6 +43,7 @@ class IosGifConverter implements GifConverter {
     if (_disposed || _converting) return false;
     _converting = true;
     _channel.setMethodCallHandler(_handleNativeCall);
+    var success = false;
     try {
       final result = await _channel.invokeMethod<String>('generate', {
         'url': url,
@@ -55,11 +56,13 @@ class IosGifConverter implements GifConverter {
         'referer': HttpString.baseUrl,
       });
       if (_disposed || result != outFile) return false;
-      return _hasGifHeader(File(outFile));
+      success = _hasGifHeader(File(outFile));
+      return success;
     } on PlatformException catch (error, stackTrace) {
       if (error.code != 'cancelled') {
         debugPrint(
-          'IosGifConvert: ${error.code}: ${error.message}\n$stackTrace',
+          'IosGifConvert: ${error.code}: ${error.message}; '
+          'details=${error.details}\n$stackTrace',
         );
       }
       return false;
@@ -67,6 +70,7 @@ class IosGifConverter implements GifConverter {
       debugPrint('IosGifConvert: $error\n$stackTrace');
       return false;
     } finally {
+      if (!success) _removeOutputIfPresent();
       progress?.value = 1;
       _converting = false;
       _channel.setMethodCallHandler(null);
@@ -87,6 +91,15 @@ class IosGifConverter implements GifConverter {
     _disposed = true;
     if (_converting) {
       unawaited(_channel.invokeMethod<void>('cancel'));
+    }
+  }
+
+  void _removeOutputIfPresent() {
+    try {
+      final output = File(outFile);
+      if (output.existsSync()) output.deleteSync();
+    } catch (error) {
+      debugPrint('IosGifConvert: cannot remove temporary output: $error');
     }
   }
 

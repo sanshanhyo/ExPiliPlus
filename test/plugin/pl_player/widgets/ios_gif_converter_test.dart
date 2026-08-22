@@ -50,6 +50,7 @@ void main() {
     expect(received?.arguments, containsPair('width', 480));
     expect(received?.arguments, containsPair('fps', 10));
     expect(progress.value, 1);
+    expect(output.existsSync(), isTrue);
   });
 
   test('cancels the native export when disposed', () async {
@@ -100,5 +101,6 @@ void main() {
     );
 
     expect(await converter.convert(), isFalse);
+    expect(output.existsSync(), isFalse);
   });
 }
