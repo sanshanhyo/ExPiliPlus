@@ -1881,24 +1881,26 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: Color(0x45000000),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
+                          if (PlatformUtils.isDarwin) ...[
+                            DecoratedBox(
+                              decoration: const BoxDecoration(
+                                color: Color(0x45000000),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              child: ComBtn(
+                                tooltip: l10n.playerGifRecord,
+                                icon: const Icon(
+                                  Icons.gif_box_outlined,
+                                  size: 20,
+                                  color: Colors.white,
+                                ),
+                                onTap: isLive ? null : showGifRecorder,
                               ),
                             ),
-                            child: ComBtn(
-                              tooltip: l10n.playerGifRecord,
-                              icon: const Icon(
-                                Icons.gif_box_outlined,
-                                size: 20,
-                                color: Colors.white,
-                              ),
-                              onTap: isLive ? null : showGifRecorder,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
+                            const SizedBox(height: 8),
+                          ],
                           DecoratedBox(
                             decoration: const BoxDecoration(
                               color: Color(0x45000000),
