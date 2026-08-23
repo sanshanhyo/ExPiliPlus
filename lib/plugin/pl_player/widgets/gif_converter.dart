@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:ex_piliplus/plugin/pl_player/widgets/darwin_gif_converter.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter_base.dart';
-import 'package:ex_piliplus/plugin/pl_player/widgets/ios_gif_converter.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_convert_gif.dart';
 import 'package:get/get_rx/get_rx.dart';
 
@@ -14,8 +14,8 @@ GifConverter createGifConverter(
   required int fps,
   RxDouble? progress,
 }) {
-  if (Platform.isIOS) {
-    return IosGifConverter(
+  if (Platform.isIOS || Platform.isMacOS) {
+    return DarwinGifConverter(
       url,
       outFile,
       start,

@@ -97,9 +97,12 @@ void main() async {
   await _initAppPath();
   try {
     await GStorage.init();
-  } catch (e) {
-    await Utils.copyText(e.toString());
-    if (kDebugMode) debugPrint('GStorage init error: $e');
+  } catch (e, stackTrace) {
+    if (kDebugMode) {
+      debugPrint('GStorage init error: $e');
+      debugPrintStack(stackTrace: stackTrace);
+    }
+    await Utils.copyText(e.toString(), needToast: false);
     exit(0);
   }
   await AppFontManager.init();

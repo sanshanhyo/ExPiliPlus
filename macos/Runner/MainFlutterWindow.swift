@@ -14,6 +14,7 @@ class MainFlutterWindow: NSWindow {
     self.backgroundColor = .windowBackgroundColor
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+    (NSApp.delegate as? AppDelegate)?.registerGifExport(with: flutterViewController)
 
     // 监听首帧渲染完成再显示窗口
     NotificationCenter.default.addObserver(

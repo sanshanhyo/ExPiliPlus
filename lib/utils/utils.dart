@@ -33,7 +33,7 @@ abstract final class Utils {
     bool needToast = true,
     String? toastText,
   }) {
-    if (needToast) {
+    if (needToast && Get.context != null) {
       SmartDialog.showToast(
         toastText ?? AppLocalizations.of(Get.context!).commonCopied,
       );

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:ex_piliplus/plugin/pl_player/widgets/ios_gif_converter.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/darwin_gif_converter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -32,7 +32,7 @@ void main() {
       return output.path;
     });
     final progress = 0.0.obs;
-    final converter = IosGifConverter(
+    final converter = DarwinGifConverter(
       'https://example.com/video.m4s',
       output.path,
       1.5,
@@ -66,7 +66,7 @@ void main() {
       }
       return null;
     });
-    final converter = IosGifConverter(
+    final converter = DarwinGifConverter(
       'https://example.com/video.m4s',
       '${tempDir.path}/result.gif',
       0,
@@ -90,7 +90,7 @@ void main() {
       await output.writeAsString('not a gif');
       return output.path;
     });
-    final converter = IosGifConverter(
+    final converter = DarwinGifConverter(
       'https://example.com/video.m4s',
       output.path,
       0,
@@ -102,5 +102,32 @@ void main() {
 
     expect(await converter.convert(), isFalse);
     expect(output.existsSync(), isFalse);
+  });
+
+  test('does not start a second export while one is running', () async {
+    final generateResult = Completer<String>();
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'generate') return generateResult.future;
+      if (call.method == 'cancel') {
+        generateResult.completeError(PlatformException(code: 'cancelled'));
+      }
+      return null;
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s',
+      '${tempDir.path}/result.gif',
+      0,
+      3,
+      width: 480,
+      fps: 10,
+      channel: channel,
+    );
+
+    final first = converter.convert();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(await converter.convert(), isFalse);
+    converter.dispose();
+    expect(await first, isFalse);
   });
 }

@@ -89,7 +89,10 @@ abstract final class ImageUtils {
         return true;
       }
     }
-    return requestPer();
+    // Desktop save dialogs grant access to the user-selected destination;
+    // permission_handler has no macOS implementation for photo storage.
+    if (Platform.isIOS) return requestPer();
+    return true;
   }
 
   static Future<bool> downloadLivePhoto({

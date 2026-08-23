@@ -2125,7 +2125,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     }
     var availableVideos = videoCandidates;
 
-    if (Platform.isIOS) {
+    if (PlatformUtils.isDarwin) {
       availableVideos = availableVideos
           .where((video) => video.codecs?.startsWith('avc1') == true)
           .toList();
@@ -2156,7 +2156,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     final ctr = plPlayerController;
     final wasPlaying = ctr.playerStatus.isPlaying;
     if (wasPlaying) await ctr.pause();
-    if (!mounted) return;
+    if (!mounted) {
+      if (wasPlaying) await ctr.play();
+      return;
+    }
 
     final options = await showDialog<GifRecordOptions>(
       context: context,
