@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 # ExPiliPlus follows its own semantic version. The tracked PiliPlus version is
 # stored separately in UPSTREAM_VERSION.
-version: 1.0.0-dev.1+1
+version: 1.0.0-dev.2+1
 
 environment:
   sdk: ">=3.12.0"
