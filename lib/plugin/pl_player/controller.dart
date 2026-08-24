@@ -348,6 +348,7 @@ class PlPlayerController with BlockConfigMixin {
   late final showDmChart = Pref.showDmChart;
   late final showViewPoints = Pref.showViewPoints;
   late final showFsScreenshotBtn = Pref.showFsScreenshotBtn;
+  late final showFsGifBtn = Pref.showFsGifBtn;
   late final showFsLockBtn = Pref.showFsLockBtn;
   late final keyboardControl = Pref.keyboardControl;
   late final uiScale = Pref.uiScale;

@@ -339,6 +339,12 @@ abstract class AppLocalizations {
   /// **'进入视频详情后自动点赞一次，已点赞的视频会跳过'**
   String get settingsAutoLikeOpenedVideosDescription;
 
+  /// No description provided for @settingsEnableGifRecord.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用 GIF 截取按钮'**
+  String get settingsEnableGifRecord;
+
   /// No description provided for @settingsPiliPlusThemeRestored.
   ///
   /// In zh, this message translates to:
@@ -2618,12 +2624,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'帧率'**
   String get playerGifFrameRate;
-
-  /// No description provided for @playerGifNoAudioLoop.
-  ///
-  /// In zh, this message translates to:
-  /// **'不包含音频 · 无限循环 · GIF 文件'**
-  String get playerGifNoAudioLoop;
 
   /// No description provided for @playerGifExport.
   ///

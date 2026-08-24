@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class GifRecordDialog extends StatefulWidget {
     required this.duration,
     required this.initialPosition,
     required this.sourceUrls,
+    this.videoPreview,
     super.key,
   });
 
@@ -43,6 +45,7 @@ class GifRecordDialog extends StatefulWidget {
   final double duration;
   final double initialPosition;
   final Map<GifResolution, String> sourceUrls;
+  final Widget? videoPreview;
 
   @override
   State<GifRecordDialog> createState() => _GifRecordDialogState();
@@ -103,140 +106,204 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
-    final maxWidth = math.min(MediaQuery.sizeOf(context).width - 32, 760.0);
+    final maxWidth = math.min(MediaQuery.sizeOf(context).width - 32, 1040.0);
     return Dialog(
       insetPadding: const EdgeInsets.all(16),
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: 760),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                l10n.playerGifRecord,
-                style: theme.textTheme.titleLarge,
-              ),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: ColoredBox(
-                  color: Colors.black,
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Video(
-                      controller: widget.videoController,
-                      controls: NoVideoControls,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                '${_format(_range.start)} - ${_format(_range.end)}  ·  ${(_range.end - _range.start).toStringAsFixed(1)}s',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
-              ),
-              RangeSlider(
-                min: 0,
-                max: _max,
-                values: _range,
-                labels: RangeLabels(
-                  _format(_range.start),
-                  _format(_range.end),
-                ),
-                onChanged: _max <= 0 ? null : _updateRange,
-              ),
-              Text(
-                l10n.playerGifRecordLength,
-                style: theme.textTheme.titleSmall,
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: [
-                  for (final length in [3, 5, 8, 10])
-                    ChoiceChip(
-                      label: Text('${length}s'),
-                      selected:
-                          (_range.end - _range.start - length).abs() < 0.05,
-                      onSelected: length > _max
-                          ? null
-                          : (_) {
-                              final end = math.min(_max, _range.start + length);
-                              final start = math
-                                  .max(0, end - length)
-                                  .toDouble();
-                              setState(
-                                () =>
-                                    _range = RangeValues(start, end.toDouble()),
-                              );
-                              widget.videoController.player.seek(
-                                Duration(milliseconds: (start * 1000).round()),
-                              );
-                            },
-                    ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: _SelectField<GifResolution>(
-                      label: l10n.playerGifResolution,
-                      value: _resolution,
-                      values: widget.sourceUrls.keys,
-                      labelBuilder: (value) => '${value.width}p',
-                      onChanged: (value) => setState(() => _resolution = value),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: _SelectField<int>(
-                      label: l10n.playerGifFrameRate,
-                      value: _fps,
-                      values: const [10, 12, 15],
-                      labelBuilder: (value) => '$value FPS',
-                      onChanged: (value) => setState(() => _fps = value),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                l10n.playerGifNoAudioLoop,
-                style: theme.textTheme.bodySmall,
-              ),
-              const SizedBox(height: 14),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: Navigator.of(context).pop,
-                    child: Text(l10n.commonCancel),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton.icon(
-                    onPressed: _range.end > _range.start
-                        ? () => Navigator.of(context).pop(
-                            GifRecordOptions(
-                              start: _range.start,
-                              end: _range.end,
-                              resolution: _resolution,
-                              fps: _fps,
-                              url: widget.sourceUrls[_resolution]!,
-                            ),
-                          )
-                        : null,
-                    icon: const Icon(Icons.file_download_outlined),
-                    label: Text(l10n.playerGifExport),
-                  ),
-                ],
-              ),
-            ],
+        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: 680),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 28, 20, 16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 760) {
+                return SingleChildScrollView(
+                  child: _buildNarrowLayout(theme, l10n),
+                );
+              }
+              return _buildWideLayout(theme, l10n);
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildWideLayout(ThemeData theme, AppLocalizations l10n) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          flex: 5,
+          child: _buildPreview(theme),
+        ),
+        const SizedBox(width: 24),
+        Expanded(
+          flex: 3,
+          child: _buildOptions(theme, l10n),
+        ),
+        const SizedBox(width: 16),
+        SizedBox(
+          width: 56,
+          height: 360,
+          child: _buildActions(l10n),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNarrowLayout(ThemeData theme, AppLocalizations l10n) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildPreview(theme),
+        const SizedBox(height: 20),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildOptions(theme, l10n)),
+            const SizedBox(width: 12),
+            SizedBox(
+              width: 56,
+              height: 280,
+              child: _buildActions(l10n),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPreview(ThemeData theme) {
+    return Column(
+      key: const ValueKey('gif-preview'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: ColoredBox(
+            color: Colors.black,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child:
+                  widget.videoPreview ??
+                  Video(
+                    controller: widget.videoController,
+                    controls: NoVideoControls,
+                  ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          '${_format(_range.start)} - ${_format(_range.end)}  ·  ${(_range.end - _range.start).toStringAsFixed(1)}s',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyMedium,
+        ),
+        RangeSlider(
+          min: 0,
+          max: _max,
+          values: _range,
+          labels: RangeLabels(
+            _format(_range.start),
+            _format(_range.end),
+          ),
+          onChanged: _max <= 0 ? null : _updateRange,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOptions(ThemeData theme, AppLocalizations l10n) {
+    return Column(
+      key: const ValueKey('gif-options'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.playerGifRecordLength,
+          style: theme.textTheme.titleSmall,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final length in [3, 5, 8, 10])
+              ChoiceChip(
+                label: Text('${length}s'),
+                selected: (_range.end - _range.start - length).abs() < 0.05,
+                onSelected: length > _max
+                    ? null
+                    : (_) {
+                        final end = math.min(_max, _range.start + length);
+                        final start = math.max(0, end - length).toDouble();
+                        setState(
+                          () => _range = RangeValues(start, end.toDouble()),
+                        );
+                        widget.videoController.player.seek(
+                          Duration(milliseconds: (start * 1000).round()),
+                        );
+                      },
+              ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        _SelectField<GifResolution>(
+          label: l10n.playerGifResolution,
+          value: _resolution,
+          values: widget.sourceUrls.keys,
+          labelBuilder: (value) => '${value.width}p',
+          onChanged: (value) => setState(() => _resolution = value),
+        ),
+        const SizedBox(height: 14),
+        _SelectField<int>(
+          label: l10n.playerGifFrameRate,
+          value: _fps,
+          values: const [10, 12, 15],
+          labelBuilder: (value) => '$value FPS',
+          onChanged: (value) => setState(() => _fps = value),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActions(AppLocalizations l10n) {
+    final canExport = _range.end > _range.start;
+    return Column(
+      key: const ValueKey('gif-actions'),
+      children: [
+        const Spacer(),
+        Semantics(
+          button: true,
+          label: l10n.playerGifExport,
+          child: IconButton(
+            key: const ValueKey('gif-export-button'),
+            tooltip: l10n.playerGifExport,
+            onPressed: canExport
+                ? () => Navigator.of(context).pop(
+                    GifRecordOptions(
+                      start: _range.start,
+                      end: _range.end,
+                      resolution: _resolution,
+                      fps: _fps,
+                      url: widget.sourceUrls[_resolution]!,
+                    ),
+                  )
+                : null,
+            icon: const Icon(Icons.file_download_outlined),
+          ),
+        ),
+        const Spacer(),
+        Semantics(
+          button: true,
+          label: l10n.commonCancel,
+          child: IconButton(
+            key: const ValueKey('gif-cancel-button'),
+            tooltip: l10n.commonCancel,
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.close),
+          ),
+        ),
+      ],
     );
   }
 }

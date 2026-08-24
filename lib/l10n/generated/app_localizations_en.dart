@@ -144,6 +144,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Automatically likes a video once when you open its details; videos you already liked are skipped';
 
   @override
+  String get settingsEnableGifRecord => 'Enable GIF capture button';
+
+  @override
   String get settingsPiliPlusThemeRestored => 'PiliPlus theme color restored';
 
   @override
@@ -1459,9 +1462,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get playerGifFrameRate => 'Frame rate';
-
-  @override
-  String get playerGifNoAudioLoop => 'No audio · Infinite loop · GIF';
 
   @override
   String get playerGifExport => 'Export GIF';

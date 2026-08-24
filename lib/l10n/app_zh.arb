@@ -61,6 +61,7 @@
   "settingsUploaderProfileShuffle": "UP 主页显示随机播放按钮",
   "settingsAutoLikeOpenedVideos": "自动点赞点开的视频",
   "settingsAutoLikeOpenedVideosDescription": "进入视频详情后自动点赞一次，已点赞的视频会跳过",
+  "settingsEnableGifRecord": "启用 GIF 截取按钮",
   "settingsPiliPlusThemeRestored": "已恢复 PiliPlus 主题色",
   "settingsThemeColorSet": "主题色已设为 {color}",
   "@settingsThemeColorSet": {
@@ -597,7 +598,6 @@
   "playerGifRecordLength": "片段长度",
   "playerGifResolution": "输出分辨率",
   "playerGifFrameRate": "帧率",
-  "playerGifNoAudioLoop": "不包含音频 · 无限循环 · GIF 文件",
   "playerGifExport": "导出 GIF",
   "playerGifSourceUnavailable": "暂无可用的 GIF 视频源",
   "playerAnimatedScreenshot": "动态截图",

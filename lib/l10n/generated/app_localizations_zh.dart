@@ -136,6 +136,9 @@ class AppLocalizationsZh extends AppLocalizations {
       '进入视频详情后自动点赞一次，已点赞的视频会跳过';
 
   @override
+  String get settingsEnableGifRecord => '启用 GIF 截取按钮';
+
+  @override
   String get settingsPiliPlusThemeRestored => '已恢复 PiliPlus 主题色';
 
   @override
@@ -1436,9 +1439,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get playerGifFrameRate => '帧率';
-
-  @override
-  String get playerGifNoAudioLoop => '不包含音频 · 无限循环 · GIF 文件';
 
   @override
   String get playerGifExport => '导出 GIF';
@@ -7548,6 +7548,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
       '進入影片詳細資料後自動按讚一次，已按讚的影片會略過';
 
   @override
+  String get settingsEnableGifRecord => '啟用 GIF 截取按鈕';
+
+  @override
   String get settingsPiliPlusThemeRestored => '已還原 PiliPlus 主題色';
 
   @override
@@ -8848,9 +8851,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get playerGifFrameRate => '幀率';
-
-  @override
-  String get playerGifNoAudioLoop => '不包含音訊 · 無限循環 · GIF 檔案';
 
   @override
   String get playerGifExport => '匯出 GIF';

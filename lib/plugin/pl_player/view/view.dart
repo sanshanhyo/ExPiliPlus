@@ -1369,6 +1369,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       fontSize: 12,
     );
     final isLive = plPlayerController.isLive;
+    final showGifButton =
+        plPlayerController.showFsGifBtn &&
+        (PlatformUtils.isDarwin || Platform.isAndroid);
+    final showScreenshotButton = plPlayerController.showFsScreenshotBtn;
+    final showCaptureActions = showGifButton || showScreenshotButton;
 
     final child = Stack(
       fit: StackFit.passthrough,
@@ -1866,8 +1871,8 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               ),
             ),
 
-          // 动态截图和截图
-          if (plPlayerController.showFsScreenshotBtn)
+          // GIF 和截图
+          if (showCaptureActions)
             ViewSafeArea(
               left: false,
               right: !plPlayerController.removeSafeArea,
@@ -1875,13 +1880,16 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                 () => Align(
                   alignment: Alignment.centerRight,
                   child: FractionalTranslation(
-                    translation: const Offset(-1, -0.4),
+                    translation: Offset(
+                      -1,
+                      showGifButton && showScreenshotButton ? -0.18 : -0.4,
+                    ),
                     child: Offstage(
                       offstage: !plPlayerController.showControls.value,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (PlatformUtils.isDarwin || Platform.isAndroid) ...[
+                          if (showGifButton) ...[
                             DecoratedBox(
                               decoration: const BoxDecoration(
                                 color: Color(0x45000000),
@@ -1901,27 +1909,29 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                             ),
                             const SizedBox(height: 8),
                           ],
-                          DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: Color(0x45000000),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
+                          if (showScreenshotButton)
+                            DecoratedBox(
+                              decoration: const BoxDecoration(
+                                color: Color(0x45000000),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              child: ComBtn(
+                                tooltip: l10n.playerScreenshot,
+                                icon: const Icon(
+                                  Icons.photo_camera,
+                                  size: 20,
+                                  color: Colors.white,
+                                ),
+                                onLongPress:
+                                    (Platform.isAndroid || kDebugMode) &&
+                                        !isLive
+                                    ? screenshotWebp
+                                    : null,
+                                onTap: plPlayerController.takeScreenshot,
                               ),
                             ),
-                            child: ComBtn(
-                              tooltip: l10n.playerScreenshot,
-                              icon: const Icon(
-                                Icons.photo_camera,
-                                size: 20,
-                                color: Colors.white,
-                              ),
-                              onLongPress:
-                                  (Platform.isAndroid || kDebugMode) && !isLive
-                                  ? screenshotWebp
-                                  : null,
-                              onTap: plPlayerController.takeScreenshot,
-                            ),
-                          ),
                         ],
                       ),
                     ),

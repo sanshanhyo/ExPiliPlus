@@ -43,6 +43,12 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       onTap: (context, _) => Get.toNamed('/historyStats'),
     ),
     SwitchModel(
+      getTitle: () => l10n.settingsEnableGifRecord,
+      leading: const Icon(Icons.gif_box_outlined),
+      setKey: SettingBoxKey.showFsGifBtn,
+      defaultVal: true,
+    ),
+    SwitchModel(
       getTitle: () => l10n.settingsEnablePermanentDynamicBlock,
       getSubtitle: () => l10n.settingsEnablePermanentDynamicBlockDescription,
       leading: const Icon(Icons.visibility_off_outlined),

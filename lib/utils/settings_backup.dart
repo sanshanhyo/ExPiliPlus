@@ -11,6 +11,7 @@ abstract final class SettingsBackup {
     SettingBoxKey.customThemeColor,
     SettingBoxKey.showRandomVideoButton,
     SettingBoxKey.autoLikeOpenedVideo,
+    SettingBoxKey.showFsGifBtn,
   };
 
   /// Keeps the custom theme color field in every new backup.
@@ -25,7 +26,8 @@ abstract final class SettingsBackup {
       ..putIfAbsent(SettingBoxKey.customThemeColor, () => null)
       ..putIfAbsent(SettingBoxKey.enablePermanentDynamicBlock, () => false)
       ..putIfAbsent(SettingBoxKey.showRandomVideoButton, () => false)
-      ..putIfAbsent(SettingBoxKey.autoLikeOpenedVideo, () => false);
+      ..putIfAbsent(SettingBoxKey.autoLikeOpenedVideo, () => false)
+      ..putIfAbsent(SettingBoxKey.showFsGifBtn, () => true);
   }
 
   static Map<String, dynamic> prepareExPiliPlusForExport(

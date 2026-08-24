@@ -21,6 +21,7 @@ void main() {
           SettingBoxKey.customThemeColor: 0xFF123456,
           SettingBoxKey.showRandomVideoButton: true,
           SettingBoxKey.autoLikeOpenedVideo: true,
+          SettingBoxKey.showFsGifBtn: false,
         },
         {
           LocalCacheKey.dynamicBannedMids: <int>{1002, 1001},
@@ -43,6 +44,7 @@ void main() {
       expect(result[SettingBoxKey.customThemeColor], 0xFF123456);
       expect(result[SettingBoxKey.showRandomVideoButton], isTrue);
       expect(result[SettingBoxKey.autoLikeOpenedVideo], isTrue);
+      expect(result[SettingBoxKey.showFsGifBtn], isFalse);
       expect(result[LocalCacheKey.dynamicBannedMids], [1001, 1002]);
       expect(
         result[LocalCacheKey.dynamicBannedUpList],
@@ -58,6 +60,7 @@ void main() {
         SettingBoxKey.customThemeColor: 0xFFABCDEF,
         SettingBoxKey.showRandomVideoButton: true,
         SettingBoxKey.autoLikeOpenedVideo: true,
+        SettingBoxKey.showFsGifBtn: false,
         LocalCacheKey.dynamicBannedMids: [1001],
         LocalCacheKey.dynamicBannedUpList: [
           {'mid': 1001, 'name': 'Uploader', 'face': null},
@@ -79,6 +82,7 @@ void main() {
       expect(setting[SettingBoxKey.customThemeColor], 0xFFABCDEF);
       expect(setting[SettingBoxKey.showRandomVideoButton], isTrue);
       expect(setting[SettingBoxKey.autoLikeOpenedVideo], isTrue);
+      expect(setting[SettingBoxKey.showFsGifBtn], isFalse);
       expect(localCache[LocalCacheKey.dynamicBannedMids], <int>{1001});
       expect(
         localCache[LocalCacheKey.dynamicBannedUpList],
@@ -103,6 +107,7 @@ void main() {
       expect(result[SettingBoxKey.enablePermanentDynamicBlock], isFalse);
       expect(result[SettingBoxKey.showRandomVideoButton], isFalse);
       expect(result[SettingBoxKey.autoLikeOpenedVideo], isFalse);
+      expect(result[SettingBoxKey.showFsGifBtn], isTrue);
     });
 
     test('preserves an enabled custom theme color', () {
