@@ -38,8 +38,8 @@ import UIKit
       }
       let info = CTTelephonyNetworkInfo()
       let radio = info.dataServiceIdentifier.flatMap {
-        info.serviceCurrentRadioAccessTechnology[$0]
-      } ?? info.serviceCurrentRadioAccessTechnology.values.first
+        info.serviceCurrentRadioAccessTechnology?[$0]
+      } ?? info.serviceCurrentRadioAccessTechnology?.values.first
       switch radio {
       case CTRadioAccessTechnologyNR, CTRadioAccessTechnologyNRNSA:
         result("5G")
