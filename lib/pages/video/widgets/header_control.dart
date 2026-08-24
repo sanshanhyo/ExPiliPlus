@@ -587,77 +587,89 @@ class HeaderControlState extends State<HeaderControl>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 2, 12, 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      context.l10n.playerQuickActions,
-                      style: theme.textTheme.titleSmall,
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 2),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Get.back();
+                    _showQuickActionEditor();
+                  },
+                  child: Text(
+                    context.l10n.playerQuickActionsEdit,
+                    style: TextStyle(
+                      color: theme.colorScheme.outline,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                      _showQuickActionEditor();
-                    },
-                    child: Text(
-                      context.l10n.playerQuickActionsEdit,
-                      style: TextStyle(
-                        color: theme.colorScheme.outline,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: selected.map((id) {
-                final action = actions.firstWhere((item) => item.id == id);
-                final active = _isQuickActionActive(id);
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Column(
-                      children: [
-                        IconButton(
-                          onPressed: action.available
-                              ? () {
-                                  _runQuickAction(id);
-                                  (context as Element).markNeedsBuild();
-                                }
-                              : null,
-                          icon: Icon(action.icon),
-                          style: IconButton.styleFrom(
-                            shape: const CircleBorder(),
-                            backgroundColor: active
-                                ? theme.colorScheme.secondaryContainer
-                                : theme.colorScheme.surfaceContainerHighest,
-                            foregroundColor: active
-                                ? theme.colorScheme.onSecondaryContainer
-                                : theme.colorScheme.onSurfaceVariant,
-                          ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final itemWidth = constraints.maxWidth / selected.length;
+                final iconSize = (itemWidth * 0.22)
+                    .clamp(30.0, 36.0)
+                    .toDouble();
+                final labelFontSize = (itemWidth * 0.08)
+                    .clamp(12.0, 14.0)
+                    .toDouble();
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: selected.map((id) {
+                    final action = actions.firstWhere(
+                      (item) => item.id == id,
+                    );
+                    final active = _isQuickActionActive(id);
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              iconSize: iconSize,
+                              onPressed: action.available
+                                  ? () {
+                                      _runQuickAction(id);
+                                      (context as Element).markNeedsBuild();
+                                    }
+                                  : null,
+                              icon: Icon(action.icon),
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(),
+                                backgroundColor: active
+                                    ? theme.colorScheme.secondaryContainer
+                                    : theme.colorScheme.surfaceContainerHighest,
+                                foregroundColor: active
+                                    ? theme.colorScheme.onSecondaryContainer
+                                    : theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Flexible(
+                              child: Text(
+                                action.title,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  fontSize: labelFontSize,
+                                  height: 1.15,
+                                  color: action.available
+                                      ? null
+                                      : theme.colorScheme.outline,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          action.title,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: action.available
-                                ? null
-                                : theme.colorScheme.outline,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }).toList(),
                 );
-              }).toList(),
+              },
             ),
-            const Divider(height: 18),
           ],
         );
       },
@@ -704,39 +716,115 @@ class HeaderControlState extends State<HeaderControl>
                       setState(() {});
                     },
                     children: [
-                      for (final id in selected)
-                        ListTile(
-                          key: ValueKey('selected-$id'),
-                          leading: Icon(
-                            actions.firstWhere((item) => item.id == id).icon,
-                          ),
-                          title: Text(
-                            actions.firstWhere((item) => item.id == id).title,
-                          ),
-                          trailing: const Icon(Icons.drag_handle),
+                      for (var index = 0; index < selected.length; index++)
+                        Builder(
+                          builder: (context) {
+                            final id = selected[index];
+                            final action = actions.firstWhere(
+                              (item) => item.id == id,
+                            );
+                            final mutedColor = theme.colorScheme.outline;
+                            return ListTile(
+                              key: ValueKey('selected-$id'),
+                              leading: ReorderableDragStartListener(
+                                index: index,
+                                child: Icon(
+                                  Icons.drag_handle,
+                                  color: action.available ? null : mutedColor,
+                                ),
+                              ),
+                              title: Row(
+                                children: [
+                                  Icon(
+                                    action.icon,
+                                    color: action.available ? null : mutedColor,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      action.title,
+                                      style: TextStyle(
+                                        color: action.available
+                                            ? null
+                                            : mutedColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Checkbox(
+                                value: true,
+                                onChanged: (_) {
+                                  selected.remove(id);
+                                  setState(() {});
+                                },
+                                fillColor: action.available
+                                    ? null
+                                    : WidgetStatePropertyAll(
+                                        theme.colorScheme.outlineVariant,
+                                      ),
+                                checkColor: action.available
+                                    ? null
+                                    : theme.colorScheme.onSurfaceVariant,
+                              ),
+                            );
+                          },
                         ),
                     ],
                   ),
                 ),
                 const Divider(),
-                for (final action in actions)
-                  CheckboxListTile(
-                    dense: true,
-                    value: selected.contains(action.id),
-                    secondary: Icon(action.icon),
-                    title: Text(action.title),
-                    subtitle: action.available
-                        ? null
-                        : Text(l10n.playerQuickActionsUnavailable),
-                    onChanged: (_) {
-                      if (selected.contains(action.id)) {
-                        selected.remove(action.id);
-                      } else if (selected.length < 3) {
-                        selected.add(action.id);
-                      }
-                      setState(() {});
+                for (final action in actions) ...[
+                  Builder(
+                    builder: (context) {
+                      final isUnavailable = !action.available;
+                      final mutedColor = theme.colorScheme.outline;
+                      return CheckboxListTile(
+                        dense: true,
+                        value: selected.contains(action.id),
+                        controlAffinity: ListTileControlAffinity.trailing,
+                        fillColor: isUnavailable
+                            ? WidgetStateProperty.resolveWith((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return theme.colorScheme.outlineVariant;
+                                }
+                                return Colors.transparent;
+                              })
+                            : null,
+                        checkColor: isUnavailable
+                            ? theme.colorScheme.onSurfaceVariant
+                            : null,
+                        side: isUnavailable
+                            ? BorderSide(color: mutedColor)
+                            : null,
+                        secondary: Icon(
+                          action.icon,
+                          color: isUnavailable ? mutedColor : null,
+                        ),
+                        title: Text(
+                          action.title,
+                          style: TextStyle(
+                            color: isUnavailable ? mutedColor : null,
+                          ),
+                        ),
+                        subtitle: action.available
+                            ? null
+                            : Text(
+                                l10n.playerQuickActionsUnavailable,
+                                style: TextStyle(color: mutedColor),
+                              ),
+                        onChanged: (_) {
+                          if (selected.contains(action.id)) {
+                            selected.remove(action.id);
+                          } else if (selected.length < 3) {
+                            selected.add(action.id);
+                          }
+                          setState(() {});
+                        },
+                      );
                     },
                   ),
+                ],
                 Padding(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
                   child: Row(
