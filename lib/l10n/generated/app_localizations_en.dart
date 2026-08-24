@@ -1104,6 +1104,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerSleepTimer => 'Sleep timer';
 
   @override
+  String get playerQuickActions => 'Quick actions';
+
+  @override
+  String get playerQuickActionsEdit => 'Edit';
+
+  @override
+  String get playerQuickActionsDescription =>
+      'Choose and reorder three actions shown at the top.';
+
+  @override
+  String get playerQuickActionsUnavailable => 'Currently unavailable';
+
+  @override
+  String get playerQuickActionsRestoreDefault => 'Restore defaults';
+
+  @override
   String get playerPlaybackUrl => 'Playback URL';
 
   @override
@@ -2908,6 +2924,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFullscreenBattery => 'Show battery level in full screen';
+
+  @override
+  String get settingsFullscreenNetworkType =>
+      'Show network type in full screen';
+
+  @override
+  String get settingsFullscreenNetworkTypeDescription =>
+      'Show Wi‑Fi, 4G, 5G, or Unknown beside the battery on mobile devices.';
 
   @override
   String get settingsDoubleTapSeek => 'Double-tap to seek';

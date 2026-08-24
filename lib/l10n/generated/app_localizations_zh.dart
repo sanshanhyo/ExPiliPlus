@@ -1086,6 +1086,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get playerSleepTimer => '定时停止播放';
 
   @override
+  String get playerQuickActions => '快捷操作';
+
+  @override
+  String get playerQuickActionsEdit => '编辑';
+
+  @override
+  String get playerQuickActionsDescription => '选择并排序三个显示在顶部的操作。';
+
+  @override
+  String get playerQuickActionsUnavailable => '当前不可用';
+
+  @override
+  String get playerQuickActionsRestoreDefault => '恢复默认';
+
+  @override
   String get playerPlaybackUrl => '播放地址';
 
   @override
@@ -2839,6 +2854,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsFullscreenBattery => '全屏显示电池电量';
+
+  @override
+  String get settingsFullscreenNetworkType => '全屏显示网络制式';
+
+  @override
+  String get settingsFullscreenNetworkTypeDescription =>
+      '在移动设备全屏播放器的电量附近显示 Wi‑Fi、4G、5G 或未知。';
 
   @override
   String get settingsDoubleTapSeek => '双击快退／快进';
@@ -8476,6 +8498,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get playerSleepTimer => '睡眠計時器';
 
   @override
+  String get playerQuickActions => '快捷操作';
+
+  @override
+  String get playerQuickActionsEdit => '編輯';
+
+  @override
+  String get playerQuickActionsDescription => '選擇並排序三個顯示在頂部的操作。';
+
+  @override
+  String get playerQuickActionsUnavailable => '目前不可用';
+
+  @override
+  String get playerQuickActionsRestoreDefault => '恢復預設';
+
+  @override
   String get playerPlaybackUrl => '播放網址';
 
   @override
@@ -10230,6 +10267,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsFullscreenBattery => '全螢幕顯示電池電量';
+
+  @override
+  String get settingsFullscreenNetworkType => '全螢幕顯示網路制式';
+
+  @override
+  String get settingsFullscreenNetworkTypeDescription =>
+      '在行動裝置全螢幕播放器的電池附近顯示 Wi‑Fi、4G、5G 或未知。';
 
   @override
   String get settingsDoubleTapSeek => '雙擊倒退／快進';

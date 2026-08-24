@@ -12,6 +12,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/bottom_progress_behavior.dar
 import 'package:ex_piliplus/plugin/pl_player/models/fullscreen_mode.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
+import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
@@ -79,6 +80,15 @@ List<SettingsModel> playSettings(BuildContext context) {
       setKey: SettingBoxKey.showBatteryLevel,
       defaultVal: PlatformUtils.isMobile,
     ),
+    if (PlatformUtils.isMobile)
+      SwitchModel(
+        title: l10n.settingsFullscreenNetworkType,
+        subtitle: l10n.settingsFullscreenNetworkTypeDescription,
+        leading: const Icon(Icons.network_check_outlined),
+        setKey: SettingBoxKey.showNetworkType,
+        defaultVal: true,
+        onChanged: (value) => NetworkTypeService.setEnabled(value),
+      ),
     SwitchModel(
       title: l10n.settingsDoubleTapSeek,
       subtitle: l10n.settingsDoubleTapSeekDescription,

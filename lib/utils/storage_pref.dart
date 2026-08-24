@@ -31,6 +31,7 @@ import 'package:ex_piliplus/models/user/danmaku_rule.dart';
 import 'package:ex_piliplus/models/user/info.dart';
 import 'package:ex_piliplus/pages/setting/pages/fullscreen_sc_size.dart'
     show kFullScreenSCWidth;
+import 'package:ex_piliplus/pages/video/widgets/player_quick_actions.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/audio_output_type.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/bottom_progress_behavior.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/fullscreen_mode.dart';
@@ -1087,6 +1088,22 @@ abstract final class Pref {
     SettingBoxKey.showBatteryLevel,
     defaultValue: PlatformUtils.isMobile,
   );
+
+  static bool get showNetworkType => _setting.get(
+    SettingBoxKey.showNetworkType,
+    defaultValue: PlatformUtils.isMobile,
+  );
+
+  static List<String> get playerQuickActionIds {
+    final value = _setting.get(SettingBoxKey.playerQuickActionIds);
+    return PlayerQuickActionConfig.normalize(value is List ? value : null);
+  }
+
+  static Future<void> setPlayerQuickActionIds(Iterable<String> ids) =>
+      _setting.put(
+        SettingBoxKey.playerQuickActionIds,
+        PlayerQuickActionConfig.normalize(ids).toList(growable: false),
+      );
 
   static FollowOrderType get followOrderType =>
       FollowOrderType.values[_setting.get(

@@ -1,10 +1,12 @@
 import Flutter
+import CoreTelephony
 import UIKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var gifExportChannel: FlutterMethodChannel?
   private var gifExportSession: GifExportSession?
+  private var networkTypeChannel: FlutterMethodChannel?
 
   override func application(
     _ application: UIApplication,
@@ -23,6 +25,29 @@ import UIKit
     gifExportChannel = channel
     channel.setMethodCallHandler { [weak self] call, result in
       self?.handleGifExport(call, result: result)
+    }
+    let networkChannel = FlutterMethodChannel(
+      name: "io.github.sanshanhyo.expiliplus/network_type",
+      binaryMessenger: engineBridge.applicationRegistrar.messenger()
+    )
+    networkTypeChannel = networkChannel
+    networkChannel.setMethodCallHandler { call, result in
+      guard call.method == "getCellularNetworkType" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      let info = CTTelephonyNetworkInfo()
+      let radio = info.dataServiceIdentifier.flatMap {
+        info.serviceCurrentRadioAccessTechnology[$0]
+      } ?? info.serviceCurrentRadioAccessTechnology.values.first
+      switch radio {
+      case CTRadioAccessTechnologyNR, CTRadioAccessTechnologyNRNSA:
+        result("5G")
+      case CTRadioAccessTechnologyLTE:
+        result("4G")
+      default:
+        result("未知")
+      }
     }
   }
 

@@ -2019,6 +2019,36 @@ abstract class AppLocalizations {
   /// **'定时停止播放'**
   String get playerSleepTimer;
 
+  /// No description provided for @playerQuickActions.
+  ///
+  /// In zh, this message translates to:
+  /// **'快捷操作'**
+  String get playerQuickActions;
+
+  /// No description provided for @playerQuickActionsEdit.
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑'**
+  String get playerQuickActionsEdit;
+
+  /// No description provided for @playerQuickActionsDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择并排序三个显示在顶部的操作。'**
+  String get playerQuickActionsDescription;
+
+  /// No description provided for @playerQuickActionsUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前不可用'**
+  String get playerQuickActionsUnavailable;
+
+  /// No description provided for @playerQuickActionsRestoreDefault.
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认'**
+  String get playerQuickActionsRestoreDefault;
+
   /// No description provided for @playerPlaybackUrl.
   ///
   /// In zh, this message translates to:
@@ -5042,6 +5072,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'全屏显示电池电量'**
   String get settingsFullscreenBattery;
+
+  /// No description provided for @settingsFullscreenNetworkType.
+  ///
+  /// In zh, this message translates to:
+  /// **'全屏显示网络制式'**
+  String get settingsFullscreenNetworkType;
+
+  /// No description provided for @settingsFullscreenNetworkTypeDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'在移动设备全屏播放器的电量附近显示 Wi‑Fi、4G、5G 或未知。'**
+  String get settingsFullscreenNetworkTypeDescription;
 
   /// No description provided for @settingsDoubleTapSeek.
   ///

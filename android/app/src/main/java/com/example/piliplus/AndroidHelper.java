@@ -19,6 +19,9 @@ import android.graphics.drawable.Icon;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Build;
+import android.telephony.TelephonyCallback;
+import android.telephony.TelephonyDisplayInfo;
+import android.telephony.TelephonyManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Rational;
@@ -41,6 +44,16 @@ public final class AndroidHelper {
     public static final boolean isPipAvailable;
 
     public static volatile boolean isPipMode = false;
+    private static volatile int cellularOverrideNetworkType = 0;
+    private static Object cellularCallback;
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private static final class CellularCallback extends TelephonyCallback implements TelephonyCallback.DisplayInfoListener {
+        @Override
+        public void onDisplayInfoChanged(TelephonyDisplayInfo info) {
+            cellularOverrideNetworkType = info.getOverrideNetworkType();
+        }
+    }
 
     static {
         PackageManager pm = getContext().getPackageManager();
@@ -57,6 +70,52 @@ public final class AndroidHelper {
 
     public static int sdkInt() {
         return Build.VERSION.SDK_INT;
+    }
+
+    public static boolean hasTelephony() {
+        return getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY_RADIO_ACCESS);
+    }
+
+    public static void startCellularNetworkListener() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || !hasTelephony()) return;
+        try {
+            TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+            final CellularCallback callback = new CellularCallback();
+            cellularCallback = callback;
+            manager.registerTelephonyCallback(getContext().getMainExecutor(), callback);
+        } catch (SecurityException ignored) {
+            cellularCallback = null;
+        }
+    }
+
+    public static void stopCellularNetworkListener() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || cellularCallback == null) return;
+        try {
+            TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+            manager.unregisterTelephonyCallback((TelephonyCallback) cellularCallback);
+        } catch (SecurityException ignored) {
+        } finally {
+            cellularCallback = null;
+            cellularOverrideNetworkType = 0;
+        }
+    }
+
+    public static String cellularNetworkType() {
+        if (!hasTelephony()) return "未知";
+        try {
+            TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                    (cellularOverrideNetworkType == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NR_NSA ||
+                            cellularOverrideNetworkType == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NR_ADVANCED)) {
+                return "5G";
+            }
+            int networkType = manager.getDataNetworkType();
+            if (networkType == TelephonyManager.NETWORK_TYPE_NR) return "5G";
+            if (networkType == TelephonyManager.NETWORK_TYPE_LTE) return "4G";
+            return "未知";
+        } catch (SecurityException ignored) {
+            return "未知";
+        }
     }
 
     public static void back() {

@@ -20,6 +20,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/mobile_observer.dart';
+import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
@@ -56,6 +57,12 @@ class _MainAppState extends PopScopeState<MainApp>
   @override
   void initState() {
     super.initState();
+    if (PlatformUtils.isMobile) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await NetworkTypeService.start();
+        if (mounted) await NetworkTypeService.preparePermission(context);
+      });
+    }
     addObserverMobile(this);
     if (PlatformUtils.isDesktop) {
       windowManager
@@ -111,6 +118,7 @@ class _MainAppState extends PopScopeState<MainApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      if (PlatformUtils.isMobile) NetworkTypeService.refresh();
       _mainController
         ..checkUnreadDynamic()
         ..checkDefaultSearch(true)

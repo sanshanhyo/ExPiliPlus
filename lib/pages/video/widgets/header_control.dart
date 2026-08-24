@@ -40,6 +40,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart'
     show shutdownTimerService;
+import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
@@ -57,6 +58,7 @@ import 'package:ex_piliplus/utils/storage_utils.dart';
 import 'package:ex_piliplus/utils/subtitle_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/video_utils.dart';
+import 'package:ex_piliplus/pages/video/widgets/player_quick_actions.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:canvas_danmaku/canvas_danmaku.dart';
 import 'package:collection/collection.dart';
@@ -146,23 +148,45 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
     if (_showCurrTime) {
       return [
         if (_showBatteryLevel) ...[
-          Obx(
-            () {
-              final batteryLevel = _batteryLevel.value;
-              if (batteryLevel == null) {
-                return const SizedBox.shrink();
-              }
-              return Text(
-                '$batteryLevel%',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Obx(
+                () {
+                  final batteryLevel = _batteryLevel.value;
+                  if (batteryLevel == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return Text(
+                    '$batteryLevel%',
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                  );
+                },
+              ),
+              if (PlatformUtils.isMobile && Pref.showNetworkType)
+                Obx(
+                  () => Text(
+                    NetworkTypeService.label(NetworkTypeService.current.value),
+                    style: const TextStyle(color: Colors.white, fontSize: 11),
+                  ),
                 ),
-              );
-            },
+            ],
           ),
           const SizedBox(width: 10),
         ],
+        if (!_showBatteryLevel &&
+            PlatformUtils.isMobile &&
+            Pref.showNetworkType)
+          Obx(
+            () => Text(
+              NetworkTypeService.label(NetworkTypeService.current.value),
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+            ),
+          ),
+        if (!_showBatteryLevel &&
+            PlatformUtils.isMobile &&
+            Pref.showNetworkType)
+          const SizedBox(width: 10),
         Obx(
           () => Text(
             now.value,
@@ -176,6 +200,20 @@ mixin TimeBatteryMixin<T extends StatefulWidget> on State<T> {
     }
     return null;
   }
+}
+
+class _PlayerQuickAction {
+  const _PlayerQuickAction({
+    required this.id,
+    required this.title,
+    required this.icon,
+    required this.available,
+  });
+
+  final String id;
+  final String title;
+  final IconData icon;
+  final bool available;
 }
 
 class HeaderControl extends StatefulWidget {
@@ -369,6 +407,536 @@ class HeaderControlState extends State<HeaderControl>
     }
   }
 
+  bool get _audioOnlyAvailable =>
+      (isFileSource && !(plPlayerController.dataSource as FileSource).isMp4) ||
+      (!isFileSource && videoDetailCtr.audioUrl?.isNotEmpty == true);
+
+  List<_PlayerQuickAction> _quickActions(BuildContext context) {
+    final l10n = context.l10n;
+    final player = plPlayerController.videoPlayerController;
+    return [
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.watchLater,
+        title: l10n.videoAddToWatchLater,
+        icon: Icons.watch_later_outlined,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.notes,
+        title: l10n.videoViewNotes,
+        icon: Icons.note_alt_outlined,
+        available: videoDetailCtr.epId == null,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.downloads,
+        title: l10n.mineDownloads,
+        icon: MdiIcons.folderDownloadOutline,
+        available: !isFileSource,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.saveCover,
+        title: l10n.videoSaveCover,
+        icon: Icons.image_outlined,
+        available: videoDetailCtr.cover.value.isNotEmpty,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.sleepTimer,
+        title: l10n.playerSleepTimer,
+        icon: Icons.hourglass_top_outlined,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.playbackUrl,
+        title: l10n.playerPlaybackUrl,
+        icon: Icons.link,
+        available: !isFileSource,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.reloadVideo,
+        title: l10n.playerReloadVideo,
+        icon: Icons.refresh_outlined,
+        available: !isFileSource,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.superResolution,
+        title: l10n.playerSuperResolution,
+        icon: Icons.stay_current_landscape_outlined,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.volume,
+        title: l10n.playerVolume,
+        icon: Icons.volume_up,
+        available: PlatformUtils.isMobile && player != null,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.cdnSettings,
+        title: l10n.playerCdnSettings,
+        icon: MdiIcons.cloudPlusOutline,
+        available: !isFileSource,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.flipHorizontal,
+        title: l10n.playerFlipHorizontal,
+        icon: Icons.flip,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.flipVertical,
+        title: l10n.playerFlipVertical,
+        icon: Icons.screen_rotation_alt_outlined,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.audioOnly,
+        title: l10n.playerAudioOnly,
+        icon: Icons.headphones,
+        available: _audioOnlyAvailable,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.backgroundPlayback,
+        title: l10n.playerBackgroundPlayback,
+        icon: Icons.play_circle_outline,
+        available: PlatformUtils.isMobile,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.videoQuality,
+        title: l10n.playerSelectVideoQuality,
+        icon: Icons.play_circle_outline,
+        available: !isFileSource,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.audioQuality,
+        title: l10n.playerSelectAudioQuality,
+        icon: Icons.album_outlined,
+        available: !isFileSource && videoDetailCtr.currentAudioQa != null,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.codec,
+        title: l10n.playerCodec,
+        icon: Icons.av_timer_outlined,
+        available: !isFileSource,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.playbackOrder,
+        title: l10n.playerPlaybackOrder,
+        icon: Icons.repeat,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.danmakuList,
+        title: l10n.playerDanmakuList,
+        icon: CustomIcons.dm_on,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.danmakuSettings,
+        title: l10n.playerDanmakuSettings,
+        icon: CustomIcons.dm_settings,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.subtitleSettings,
+        title: l10n.playerSubtitleSettings,
+        icon: Icons.subtitles_outlined,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.loadSubtitles,
+        title: l10n.playerLoadSubtitles,
+        icon: Icons.file_open_outlined,
+        available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.saveSubtitles,
+        title: l10n.playerSaveSubtitles,
+        icon: Icons.download_outlined,
+        available: !isFileSource && videoDetailCtr.subtitles.isNotEmpty,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.playbackInfo,
+        title: l10n.playerPlaybackInfo,
+        icon: Icons.info_outline,
+        available: player != null,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.report,
+        title: l10n.commonReport,
+        icon: Icons.error_outline,
+        available: true,
+      ),
+    ];
+  }
+
+  bool _isQuickActionActive(String id) => switch (id) {
+    PlayerQuickActionId.flipHorizontal => plPlayerController.flipX.value,
+    PlayerQuickActionId.flipVertical => plPlayerController.flipY.value,
+    PlayerQuickActionId.audioOnly => plPlayerController.onlyPlayAudio.value,
+    PlayerQuickActionId.backgroundPlayback =>
+      plPlayerController.continuePlayInBackground.value,
+    _ => false,
+  };
+
+  Widget _buildQuickActions(BuildContext context) {
+    return Obx(
+      () {
+        final theme = Theme.of(context);
+        final actions = _quickActions(context);
+        final selected = Pref.playerQuickActionIds;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 2, 12, 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      context.l10n.playerQuickActions,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                      _showQuickActionEditor();
+                    },
+                    child: Text(
+                      context.l10n.playerQuickActionsEdit,
+                      style: TextStyle(
+                        color: theme.colorScheme.outline,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: selected.map((id) {
+                final action = actions.firstWhere((item) => item.id == id);
+                final active = _isQuickActionActive(id);
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(
+                      children: [
+                        IconButton(
+                          onPressed: action.available
+                              ? () {
+                                  _runQuickAction(id);
+                                  (context as Element).markNeedsBuild();
+                                }
+                              : null,
+                          icon: Icon(action.icon),
+                          style: IconButton.styleFrom(
+                            shape: const CircleBorder(),
+                            backgroundColor: active
+                                ? theme.colorScheme.secondaryContainer
+                                : theme.colorScheme.surfaceContainerHighest,
+                            foregroundColor: active
+                                ? theme.colorScheme.onSecondaryContainer
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        Text(
+                          action.title,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: action.available
+                                ? null
+                                : theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const Divider(height: 18),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showQuickActionEditor() {
+    var selected = Pref.playerQuickActionIds;
+    showBottomSheet(
+      (context, setState) {
+        final actions = _quickActions(context);
+        final theme = Theme.of(context);
+        final l10n = context.l10n;
+        return Padding(
+          padding: const EdgeInsets.all(12),
+          child: Material(
+            clipBehavior: Clip.hardEdge,
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              children: [
+                ListTile(
+                  title: Text(l10n.playerQuickActions),
+                  subtitle: Text(l10n.playerQuickActionsDescription),
+                  trailing: IconButton(
+                    tooltip: l10n.playerQuickActionsRestoreDefault,
+                    icon: const Icon(Icons.restore),
+                    onPressed: () {
+                      selected = PlayerQuickActionConfig.defaults.toList();
+                      setState(() {});
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ReorderableListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onReorder: (oldIndex, newIndex) {
+                      if (newIndex > oldIndex) newIndex--;
+                      final value = selected.removeAt(oldIndex);
+                      selected.insert(newIndex, value);
+                      setState(() {});
+                    },
+                    children: [
+                      for (final id in selected)
+                        ListTile(
+                          key: ValueKey('selected-$id'),
+                          leading: Icon(
+                            actions.firstWhere((item) => item.id == id).icon,
+                          ),
+                          title: Text(
+                            actions.firstWhere((item) => item.id == id).title,
+                          ),
+                          trailing: const Icon(Icons.drag_handle),
+                        ),
+                    ],
+                  ),
+                ),
+                const Divider(),
+                for (final action in actions)
+                  CheckboxListTile(
+                    dense: true,
+                    value: selected.contains(action.id),
+                    secondary: Icon(action.icon),
+                    title: Text(action.title),
+                    subtitle: action.available
+                        ? null
+                        : Text(l10n.playerQuickActionsUnavailable),
+                    onChanged: (_) {
+                      if (selected.contains(action.id)) {
+                        selected.remove(action.id);
+                      } else if (selected.length < 3) {
+                        selected.add(action.id);
+                      }
+                      setState(() {});
+                    },
+                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: Get.back,
+                        child: Text(l10n.commonCancel),
+                      ),
+                      FilledButton(
+                        onPressed: selected.length == 3
+                            ? () async {
+                                await Pref.setPlayerQuickActionIds(selected);
+                                Get.back();
+                              }
+                            : null,
+                        child: Text(l10n.commonSave),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showCdnSettings() async {
+    final l10n = context.l10n;
+    final result = await showDialog<CDNService>(
+      context: context,
+      builder: (context) => CdnSelectDialog(
+        sample: videoInfo.dash?.video?.firstOrNull,
+      ),
+    );
+    if (result != null) {
+      VideoUtils.cdnService = result;
+      await setting.put(SettingBoxKey.CDNService, result.name);
+      SmartDialog.showToast(
+        l10n.playerCdnSetReloading(result.localizedLabel(l10n)),
+      );
+      videoDetailCtr.queryVideoUrl(fromReset: true);
+    }
+  }
+
+  void _toggleAudioOnly() {
+    final onlyPlayAudio = plPlayerController.onlyPlayAudio.value;
+    plPlayerController.onlyPlayAudio.value = !onlyPlayAudio;
+    final player = plPlayerController.videoPlayerController;
+    if (player == null) return;
+    if (onlyPlayAudio && player.state.tracks.video.length <= 2) {
+      videoDetailCtr.playerInit();
+    } else {
+      player.setProperty(
+        'file-local-options/vid',
+        onlyPlayAudio ? 'auto' : 'no',
+      );
+    }
+  }
+
+  void _runQuickAction(String id) {
+    switch (id) {
+      case PlayerQuickActionId.watchLater:
+        Get.back();
+        introController.viewLater();
+        return;
+      case PlayerQuickActionId.notes:
+        Get.back();
+        videoDetailCtr.showNoteList(context);
+        return;
+      case PlayerQuickActionId.downloads:
+        Get.back();
+        videoDetailCtr.onDownload(context);
+        return;
+      case PlayerQuickActionId.saveCover:
+        Get.back();
+        ImageUtils.downloadImg([videoDetailCtr.cover.value]);
+        return;
+      case PlayerQuickActionId.sleepTimer:
+        Get.back();
+        shutdownTimerService.showScheduleExitDialog(
+          context,
+          isFullScreen: isFullScreen,
+        );
+        return;
+      case PlayerQuickActionId.playbackUrl:
+        Get.back();
+        videoDetailCtr.editPlayUrl();
+        return;
+      case PlayerQuickActionId.reloadVideo:
+        Get.back();
+        videoDetailCtr.queryVideoUrl(fromReset: true);
+        return;
+      case PlayerQuickActionId.superResolution:
+        Get.back();
+        showDialog<SuperResolutionType>(
+          context: context,
+          builder: (context) => SelectDialog(
+            title: context.l10n.playerSuperResolution,
+            value: plPlayerController.superResolutionType.value,
+            values: SuperResolutionType.values
+                .map((value) => (value, value.localizedLabel(context.l10n)))
+                .toList(),
+          ),
+        ).then((value) {
+          if (value != null) plPlayerController.setShader(value);
+        });
+        return;
+      case PlayerQuickActionId.volume:
+        final player = plPlayerController.videoPlayerController;
+        if (player != null) {
+          showPlayerVolumeDialog(
+            context,
+            () => (context as Element).markNeedsBuild(),
+            onChanged: player.setVolume,
+          );
+        }
+        return;
+      case PlayerQuickActionId.cdnSettings:
+        Get.back();
+        _showCdnSettings();
+        return;
+      case PlayerQuickActionId.flipHorizontal:
+        plPlayerController.flipX.value = !plPlayerController.flipX.value;
+        return;
+      case PlayerQuickActionId.flipVertical:
+        plPlayerController.flipY.value = !plPlayerController.flipY.value;
+        return;
+      case PlayerQuickActionId.audioOnly:
+        _toggleAudioOnly();
+        return;
+      case PlayerQuickActionId.backgroundPlayback:
+        plPlayerController.setContinuePlayInBackground();
+        return;
+      case PlayerQuickActionId.videoQuality:
+        Get.back();
+        showSetVideoQa();
+        return;
+      case PlayerQuickActionId.audioQuality:
+        Get.back();
+        showSetAudioQa();
+        return;
+      case PlayerQuickActionId.codec:
+        Get.back();
+        showSetDecodeFormats();
+        return;
+      case PlayerQuickActionId.playbackOrder:
+        Get.back();
+        showDialog<PlayRepeat>(
+          context: context,
+          builder: (context) => SelectDialog(
+            title: context.l10n.playerPlaybackOrder,
+            value: plPlayerController.playRepeat,
+            values: PlayRepeat.values
+                .map((value) => (value, value.localizedLabel(context.l10n)))
+                .toList(),
+          ),
+        ).then((value) {
+          if (value != null) plPlayerController.setPlayRepeat(value);
+        });
+        return;
+      case PlayerQuickActionId.danmakuList:
+        Get.back();
+        showDanmakuPool();
+        return;
+      case PlayerQuickActionId.danmakuSettings:
+        Get.back();
+        showSetDanmaku();
+        return;
+      case PlayerQuickActionId.subtitleSettings:
+        Get.back();
+        showSetSubtitle();
+        return;
+      case PlayerQuickActionId.loadSubtitles:
+        Get.back();
+        _loadSubtitles();
+        return;
+      case PlayerQuickActionId.saveSubtitles:
+        Get.back();
+        onExportSubtitle();
+        return;
+      case PlayerQuickActionId.playbackInfo:
+        Get.back();
+        if (plPlayerController.videoPlayerController case final player?) {
+          showPlayerInfo(context, player: player);
+        }
+        return;
+      case PlayerQuickActionId.report:
+        if (!Accounts.main.isLogin) {
+          SmartDialog.showToast(context.l10n.accountPleaseSignIn);
+        } else {
+          Get.back();
+          PageUtils.reportVideo(videoDetailCtr.aid);
+        }
+        return;
+    }
+  }
+
   /// 设置面板
   void showSettingSheet() {
     showBottomSheet(
@@ -384,6 +952,7 @@ class HeaderControlState extends State<HeaderControl>
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 14),
               children: [
+                _buildQuickActions(context),
                 ListTile(
                   dense: true,
                   onTap: () {
@@ -520,24 +1089,9 @@ class HeaderControlState extends State<HeaderControl>
                       ),
                       style: subTitleStyle,
                     ),
-                    onTap: () async {
+                    onTap: () {
                       Get.back();
-                      final result = await showDialog<CDNService>(
-                        context: context,
-                        builder: (context) => CdnSelectDialog(
-                          sample: videoInfo.dash?.video?.firstOrNull,
-                        ),
-                      );
-                      if (result != null) {
-                        VideoUtils.cdnService = result;
-                        setting.put(SettingBoxKey.CDNService, result.name);
-                        SmartDialog.showToast(
-                          l10n.playerCdnSetReloading(
-                            result.localizedLabel(l10n),
-                          ),
-                        );
-                        videoDetailCtr.queryVideoUrl(fromReset: true);
-                      }
+                      _showCdnSettings();
                     },
                   ),
                 SingleChildScrollView(
@@ -588,21 +1142,7 @@ class HeaderControlState extends State<HeaderControl>
                                 plPlayerController.onlyPlayAudio.value;
                             return ActionRowLineItem(
                               iconData: Icons.headphones,
-                              onTap: () {
-                                plPlayerController.onlyPlayAudio.value =
-                                    !onlyPlayAudio;
-                                final player =
-                                    plPlayerController.videoPlayerController!;
-                                if (onlyPlayAudio &&
-                                    player.state.tracks.video.length <= 2) {
-                                  videoDetailCtr.playerInit();
-                                } else {
-                                  player.setProperty(
-                                    'file-local-options/vid',
-                                    onlyPlayAudio ? 'auto' : 'no',
-                                  );
-                                }
-                              },
+                              onTap: _toggleAudioOnly,
                               text: l10n.playerAudioOnly,
                               selectStatus: onlyPlayAudio,
                             );
@@ -1229,6 +1769,54 @@ class HeaderControlState extends State<HeaderControl>
         );
       },
     );
+  }
+
+  Future<void> _loadSubtitles() async {
+    final l10n = context.l10n;
+    try {
+      final result = await FilePicker.pickFile(
+        type: .custom,
+        allowedExtensions: const ['json', 'vtt', 'srt', 'ass'],
+      );
+      if (result == null) return;
+      final file = result.xFile;
+      final path = file.path;
+      final name = file.name;
+      final length = videoDetailCtr.subtitles.length;
+      if (name.endsWith('.json')) {
+        final file = File(path);
+        final stream = file.openRead().transform(utf8.decoder);
+        final buffer = StringBuffer();
+        await for (final chunk in stream) {
+          if (!mounted) return;
+          buffer.write(chunk);
+        }
+        if (!mounted) return;
+        var subtitle = await compute<List, String>(
+          SubtitleUtils.json2Vtt,
+          jsonDecode(buffer.toString())['body'],
+        );
+        if (!mounted) return;
+        videoDetailCtr.vttSubtitles[length] = (
+          isData: true,
+          id: subtitle,
+        );
+      } else {
+        videoDetailCtr.vttSubtitles[length] = (
+          isData: false,
+          id: path,
+        );
+      }
+      videoDetailCtr.subtitles.add(
+        Subtitle(
+          lan: '',
+          lanDoc: name.split('.').firstOrNull ?? name,
+        ),
+      );
+      await videoDetailCtr.setSubtitle(length + 1);
+    } catch (e) {
+      SmartDialog.showToast(l10n.commonLoadFailed('$e'));
+    }
   }
 
   void onExportSubtitle() {
