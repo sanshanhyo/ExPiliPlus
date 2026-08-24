@@ -607,16 +607,30 @@ class HeaderControlState extends State<HeaderControl>
             ),
             LayoutBuilder(
               builder: (context, constraints) {
-                final itemWidth = constraints.maxWidth / selected.length;
+                const minItemWidth = 120.0;
+                final capacity = (constraints.maxWidth / minItemWidth)
+                    .floor()
+                    .clamp(1, actions.length)
+                    .toInt();
+                final displayIds = PlayerQuickActionConfig.displayOrder(
+                  preferred: selected,
+                  available: actions
+                      .where((action) => action.available)
+                      .map((action) => action.id),
+                  capacity: capacity,
+                );
+                if (displayIds.isEmpty) return const SizedBox.shrink();
+
+                final itemWidth = constraints.maxWidth / displayIds.length;
                 final iconSize = (itemWidth * 0.22)
-                    .clamp(30.0, 36.0)
+                    .clamp(26.0, 32.0)
                     .toDouble();
                 final labelFontSize = (itemWidth * 0.08)
                     .clamp(12.0, 14.0)
                     .toDouble();
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: selected.map((id) {
+                  children: displayIds.map((id) {
                     final action = actions.firstWhere(
                       (item) => item.id == id,
                     );
@@ -629,6 +643,11 @@ class HeaderControlState extends State<HeaderControl>
                           children: [
                             IconButton(
                               iconSize: iconSize,
+                              constraints: BoxConstraints.tightFor(
+                                width: iconSize + 16,
+                                height: iconSize + 16,
+                              ),
+                              padding: const EdgeInsets.all(8),
                               onPressed: action.available
                                   ? () {
                                       _runQuickAction(id);
@@ -670,6 +689,7 @@ class HeaderControlState extends State<HeaderControl>
                 );
               },
             ),
+            const SizedBox(height: 12),
           ],
         );
       },
@@ -683,6 +703,53 @@ class HeaderControlState extends State<HeaderControl>
         final actions = _quickActions(context);
         final theme = Theme.of(context);
         final l10n = context.l10n;
+
+        ListTile buildSelectedActionTile(int index) {
+          final id = selected[index];
+          final action = actions.firstWhere((item) => item.id == id);
+          final mutedColor = theme.colorScheme.outline;
+          return ListTile(
+            key: ValueKey('selected-$id'),
+            leading: ReorderableDragStartListener(
+              index: index,
+              child: Icon(
+                Icons.drag_handle,
+                color: action.available ? null : mutedColor,
+              ),
+            ),
+            title: Row(
+              children: [
+                Icon(
+                  action.icon,
+                  color: action.available ? null : mutedColor,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    action.title,
+                    style: TextStyle(
+                      color: action.available ? null : mutedColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            trailing: Checkbox(
+              value: true,
+              onChanged: (_) {
+                selected.remove(id);
+                setState(() {});
+              },
+              fillColor: action.available
+                  ? null
+                  : WidgetStatePropertyAll(theme.colorScheme.outlineVariant),
+              checkColor: action.available
+                  ? null
+                  : theme.colorScheme.onSurfaceVariant,
+            ),
+          );
+        }
+
         return Padding(
           padding: const EdgeInsets.all(12),
           child: Material(
@@ -717,59 +784,7 @@ class HeaderControlState extends State<HeaderControl>
                     },
                     children: [
                       for (var index = 0; index < selected.length; index++)
-                        Builder(
-                          builder: (context) {
-                            final id = selected[index];
-                            final action = actions.firstWhere(
-                              (item) => item.id == id,
-                            );
-                            final mutedColor = theme.colorScheme.outline;
-                            return ListTile(
-                              key: ValueKey('selected-$id'),
-                              leading: ReorderableDragStartListener(
-                                index: index,
-                                child: Icon(
-                                  Icons.drag_handle,
-                                  color: action.available ? null : mutedColor,
-                                ),
-                              ),
-                              title: Row(
-                                children: [
-                                  Icon(
-                                    action.icon,
-                                    color: action.available ? null : mutedColor,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      action.title,
-                                      style: TextStyle(
-                                        color: action.available
-                                            ? null
-                                            : mutedColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              trailing: Checkbox(
-                                value: true,
-                                onChanged: (_) {
-                                  selected.remove(id);
-                                  setState(() {});
-                                },
-                                fillColor: action.available
-                                    ? null
-                                    : WidgetStatePropertyAll(
-                                        theme.colorScheme.outlineVariant,
-                                      ),
-                                checkColor: action.available
-                                    ? null
-                                    : theme.colorScheme.onSurfaceVariant,
-                              ),
-                            );
-                          },
-                        ),
+                        buildSelectedActionTile(index),
                     ],
                   ),
                 ),

@@ -80,4 +80,26 @@ abstract final class PlayerQuickActionConfig {
     }
     return result;
   }
+
+  static List<String> displayOrder({
+    required Iterable<String> preferred,
+    required Iterable<String> available,
+    required int capacity,
+  }) {
+    if (capacity <= 0) return const [];
+
+    final result = <String>[];
+    final seen = <String>{};
+
+    void add(Iterable<String> ids) {
+      for (final id in ids) {
+        if (result.length >= capacity) break;
+        if (seen.add(id)) result.add(id);
+      }
+    }
+
+    add(preferred);
+    add(available);
+    return result;
+  }
 }

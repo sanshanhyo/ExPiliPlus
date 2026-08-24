@@ -1114,7 +1114,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get playerQuickActionsDescription =>
-      'Choose and reorder three actions shown at the top.';
+      'Choose and reorder the priority actions shown at the top.';
 
   @override
   String get playerQuickActionsUnavailable => 'Currently unavailable';

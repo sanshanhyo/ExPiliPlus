@@ -323,7 +323,7 @@
   "playerSleepTimer": "Sleep timer",
   "playerQuickActions": "Quick actions",
   "playerQuickActionsEdit": "Edit",
-  "playerQuickActionsDescription": "Choose and reorder three actions shown at the top.",
+  "playerQuickActionsDescription": "Choose and reorder the priority actions shown at the top.",
   "playerQuickActionsUnavailable": "Currently unavailable",
   "playerQuickActionsRestoreDefault": "Restore defaults",
   "playerPlaybackUrl": "Playback URL",

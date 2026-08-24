@@ -40,5 +40,60 @@ void main() {
         PlayerQuickActionConfig.defaults,
       );
     });
+
+    test('keeps preferred order and fills the display capacity', () {
+      expect(
+        PlayerQuickActionConfig.displayOrder(
+          preferred: [
+            PlayerQuickActionId.cdnSettings,
+            PlayerQuickActionId.audioOnly,
+          ],
+          available: [
+            PlayerQuickActionId.watchLater,
+            PlayerQuickActionId.cdnSettings,
+            PlayerQuickActionId.notes,
+          ],
+          capacity: 4,
+        ),
+        [
+          PlayerQuickActionId.cdnSettings,
+          PlayerQuickActionId.audioOnly,
+          PlayerQuickActionId.watchLater,
+          PlayerQuickActionId.notes,
+        ],
+      );
+    });
+
+    test('truncates the display list to the available capacity', () {
+      expect(
+        PlayerQuickActionConfig.displayOrder(
+          preferred: PlayerQuickActionConfig.defaults,
+          available: PlayerQuickActionConfig.all,
+          capacity: 2,
+        ),
+        [
+          PlayerQuickActionId.sleepTimer,
+          PlayerQuickActionId.cdnSettings,
+        ],
+      );
+    });
+
+    test('only appends actions provided as available', () {
+      expect(
+        PlayerQuickActionConfig.displayOrder(
+          preferred: [PlayerQuickActionId.sleepTimer],
+          available: [
+            PlayerQuickActionId.cdnSettings,
+            PlayerQuickActionId.audioOnly,
+          ],
+          capacity: 3,
+        ),
+        [
+          PlayerQuickActionId.sleepTimer,
+          PlayerQuickActionId.cdnSettings,
+          PlayerQuickActionId.audioOnly,
+        ],
+      );
+    });
   });
 }
