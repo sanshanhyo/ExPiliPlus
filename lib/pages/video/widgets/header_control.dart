@@ -35,6 +35,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
 import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/action_item.dart';
 import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:ex_piliplus/pages/video/widgets/header_mixin.dart';
+import 'package:ex_piliplus/pages/video/widgets/player_quick_action_editor_actions.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -761,14 +762,22 @@ class HeaderControlState extends State<HeaderControl>
                     ListTile(
                       title: Text(l10n.playerQuickActions),
                       subtitle: Text(l10n.playerQuickActionsDescription),
-                      trailing: IconButton(
-                        tooltip: l10n.playerQuickActionsRestoreDefault,
-                        icon: const Icon(Icons.restore),
-                        onPressed: () {
-                          selected = PlayerQuickActionConfig.defaults.toList();
-                          setState(() {});
-                        },
-                      ),
+                    ),
+                    PlayerQuickActionEditorActions(
+                      restoreDefaultTooltip:
+                          l10n.playerQuickActionsRestoreDefault,
+                      cancelLabel: l10n.commonCancel,
+                      saveLabel: l10n.commonSave,
+                      onRestoreDefault: () {
+                        selected = PlayerQuickActionConfig.defaults.toList();
+                        setState(() {});
+                      },
+                      onCancel: Get.back,
+                      onSave: () async {
+                        await Pref.setPlayerQuickActionIds(selected);
+                        Get.back();
+                      },
+                      saveEnabled: selected.isNotEmpty,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -842,29 +851,6 @@ class HeaderControlState extends State<HeaderControl>
                         },
                       ),
                     ],
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: Get.back,
-                            child: Text(l10n.commonCancel),
-                          ),
-                          FilledButton(
-                            onPressed: selected.isNotEmpty
-                                ? () async {
-                                    await Pref.setPlayerQuickActionIds(
-                                      selected,
-                                    );
-                                    Get.back();
-                                  }
-                                : null,
-                            child: Text(l10n.commonSave),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
