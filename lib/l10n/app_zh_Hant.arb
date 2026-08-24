@@ -323,7 +323,7 @@
   "playerSleepTimer": "睡眠計時器",
   "playerQuickActions": "快捷操作",
   "playerQuickActionsEdit": "編輯",
-  "playerQuickActionsDescription": "選擇並排序頂部優先顯示的操作。",
+  "playerQuickActionsDescription": "選擇並排序顯示在頂部的操作。",
   "playerQuickActionsUnavailable": "目前不可用",
   "playerQuickActionsRestoreDefault": "恢復預設",
   "playerPlaybackUrl": "播放網址",

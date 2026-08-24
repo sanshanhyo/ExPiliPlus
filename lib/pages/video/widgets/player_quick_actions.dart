@@ -27,6 +27,8 @@ abstract final class PlayerQuickActionId {
 }
 
 abstract final class PlayerQuickActionConfig {
+  static const minDisplayItemWidth = 120.0;
+
   static const defaults = <String>[
     PlayerQuickActionId.sleepTimer,
     PlayerQuickActionId.cdnSettings,
@@ -70,36 +72,14 @@ abstract final class PlayerQuickActionConfig {
         }
       }
     }
-    for (final value in defaults) {
-      if (result.length == 3) break;
-      if (!result.contains(value)) result.add(value);
-    }
-    for (final value in all) {
-      if (result.length == 3) break;
-      if (!result.contains(value)) result.add(value);
-    }
-    return result;
+    return result.isEmpty ? defaults.toList() : result;
   }
 
-  static List<String> displayOrder({
-    required Iterable<String> preferred,
-    required Iterable<String> available,
-    required int capacity,
+  static int capacityForWidth(
+    double width, {
+    required int actionCount,
   }) {
-    if (capacity <= 0) return const [];
-
-    final result = <String>[];
-    final seen = <String>{};
-
-    void add(Iterable<String> ids) {
-      for (final id in ids) {
-        if (result.length >= capacity) break;
-        if (seen.add(id)) result.add(id);
-      }
-    }
-
-    add(preferred);
-    add(available);
-    return result;
+    if (!width.isFinite) return actionCount;
+    return (width / minDisplayItemWidth).floor().clamp(1, actionCount).toInt();
   }
 }

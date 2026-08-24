@@ -477,7 +477,7 @@
   "playerSleepTimer": "定时停止播放",
   "playerQuickActions": "快捷操作",
   "playerQuickActionsEdit": "编辑",
-  "playerQuickActionsDescription": "选择并排序顶部优先显示的操作。",
+  "playerQuickActionsDescription": "选择并排序显示在顶部的操作。",
   "playerQuickActionsUnavailable": "当前不可用",
   "playerQuickActionsRestoreDefault": "恢复默认",
   "playerPlaybackUrl": "播放地址",

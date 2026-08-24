@@ -607,18 +607,11 @@ class HeaderControlState extends State<HeaderControl>
             ),
             LayoutBuilder(
               builder: (context, constraints) {
-                const minItemWidth = 120.0;
-                final capacity = (constraints.maxWidth / minItemWidth)
-                    .floor()
-                    .clamp(1, actions.length)
-                    .toInt();
-                final displayIds = PlayerQuickActionConfig.displayOrder(
-                  preferred: selected,
-                  available: actions
-                      .where((action) => action.available)
-                      .map((action) => action.id),
-                  capacity: capacity,
+                final capacity = PlayerQuickActionConfig.capacityForWidth(
+                  constraints.maxWidth,
+                  actionCount: actions.length,
                 );
+                final displayIds = selected.take(capacity).toList();
                 if (displayIds.isEmpty) return const SizedBox.shrink();
 
                 final itemWidth = constraints.maxWidth / displayIds.length;
@@ -750,120 +743,133 @@ class HeaderControlState extends State<HeaderControl>
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.all(12),
-          child: Material(
-            clipBehavior: Clip.hardEdge,
-            color: theme.colorScheme.surface,
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              children: [
-                ListTile(
-                  title: Text(l10n.playerQuickActions),
-                  subtitle: Text(l10n.playerQuickActionsDescription),
-                  trailing: IconButton(
-                    tooltip: l10n.playerQuickActionsRestoreDefault,
-                    icon: const Icon(Icons.restore),
-                    onPressed: () {
-                      selected = PlayerQuickActionConfig.defaults.toList();
-                      setState(() {});
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: ReorderableListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onReorder: (oldIndex, newIndex) {
-                      if (newIndex > oldIndex) newIndex--;
-                      final value = selected.removeAt(oldIndex);
-                      selected.insert(newIndex, value);
-                      setState(() {});
-                    },
-                    children: [
-                      for (var index = 0; index < selected.length; index++)
-                        buildSelectedActionTile(index),
-                    ],
-                  ),
-                ),
-                const Divider(),
-                for (final action in actions) ...[
-                  Builder(
-                    builder: (context) {
-                      final isUnavailable = !action.available;
-                      final mutedColor = theme.colorScheme.outline;
-                      return CheckboxListTile(
-                        dense: true,
-                        value: selected.contains(action.id),
-                        controlAffinity: ListTileControlAffinity.trailing,
-                        fillColor: isUnavailable
-                            ? WidgetStateProperty.resolveWith((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return theme.colorScheme.outlineVariant;
-                                }
-                                return Colors.transparent;
-                              })
-                            : null,
-                        checkColor: isUnavailable
-                            ? theme.colorScheme.onSurfaceVariant
-                            : null,
-                        side: isUnavailable
-                            ? BorderSide(color: mutedColor)
-                            : null,
-                        secondary: Icon(
-                          action.icon,
-                          color: isUnavailable ? mutedColor : null,
-                        ),
-                        title: Text(
-                          action.title,
-                          style: TextStyle(
-                            color: isUnavailable ? mutedColor : null,
-                          ),
-                        ),
-                        subtitle: action.available
-                            ? null
-                            : Text(
-                                l10n.playerQuickActionsUnavailable,
-                                style: TextStyle(color: mutedColor),
-                              ),
-                        onChanged: (_) {
-                          if (selected.contains(action.id)) {
-                            selected.remove(action.id);
-                          } else if (selected.length < 3) {
-                            selected.add(action.id);
-                          }
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final capacity = PlayerQuickActionConfig.capacityForWidth(
+              constraints.maxWidth,
+              actionCount: actions.length,
+            );
+            return Padding(
+              padding: const EdgeInsets.all(12),
+              child: Material(
+                clipBehavior: Clip.hardEdge,
+                color: theme.colorScheme.surface,
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  children: [
+                    ListTile(
+                      title: Text(l10n.playerQuickActions),
+                      subtitle: Text(l10n.playerQuickActionsDescription),
+                      trailing: IconButton(
+                        tooltip: l10n.playerQuickActionsRestoreDefault,
+                        icon: const Icon(Icons.restore),
+                        onPressed: () {
+                          selected = PlayerQuickActionConfig.defaults.toList();
                           setState(() {});
                         },
-                      );
-                    },
-                  ),
-                ],
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: Get.back,
-                        child: Text(l10n.commonCancel),
                       ),
-                      FilledButton(
-                        onPressed: selected.length == 3
-                            ? () async {
-                                await Pref.setPlayerQuickActionIds(selected);
-                                Get.back();
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: ReorderableListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        buildDefaultDragHandles: false,
+                        onReorder: (oldIndex, newIndex) {
+                          if (newIndex > oldIndex) newIndex--;
+                          final value = selected.removeAt(oldIndex);
+                          selected.insert(newIndex, value);
+                          setState(() {});
+                        },
+                        children: [
+                          for (var index = 0; index < selected.length; index++)
+                            buildSelectedActionTile(index),
+                        ],
+                      ),
+                    ),
+                    const Divider(),
+                    for (final action in actions) ...[
+                      Builder(
+                        builder: (context) {
+                          final isUnavailable = !action.available;
+                          final mutedColor = theme.colorScheme.outline;
+                          return CheckboxListTile(
+                            dense: true,
+                            value: selected.contains(action.id),
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            fillColor: isUnavailable
+                                ? WidgetStateProperty.resolveWith((states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return theme.colorScheme.outlineVariant;
+                                    }
+                                    return Colors.transparent;
+                                  })
+                                : null,
+                            checkColor: isUnavailable
+                                ? theme.colorScheme.onSurfaceVariant
+                                : null,
+                            side: isUnavailable
+                                ? BorderSide(color: mutedColor)
+                                : null,
+                            secondary: Icon(
+                              action.icon,
+                              color: isUnavailable ? mutedColor : null,
+                            ),
+                            title: Text(
+                              action.title,
+                              style: TextStyle(
+                                color: isUnavailable ? mutedColor : null,
+                              ),
+                            ),
+                            subtitle: action.available
+                                ? null
+                                : Text(
+                                    l10n.playerQuickActionsUnavailable,
+                                    style: TextStyle(color: mutedColor),
+                                  ),
+                            onChanged: (_) {
+                              if (selected.contains(action.id)) {
+                                if (selected.length > 1) {
+                                  selected.remove(action.id);
+                                }
+                              } else if (selected.length < capacity) {
+                                selected.add(action.id);
                               }
-                            : null,
-                        child: Text(l10n.commonSave),
+                              setState(() {});
+                            },
+                          );
+                        },
                       ),
                     ],
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: Get.back,
+                            child: Text(l10n.commonCancel),
+                          ),
+                          FilledButton(
+                            onPressed: selected.isNotEmpty
+                                ? () async {
+                                    await Pref.setPlayerQuickActionIds(
+                                      selected,
+                                    );
+                                    Get.back();
+                                  }
+                                : null,
+                            child: Text(l10n.commonSave),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );

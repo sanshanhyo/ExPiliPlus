@@ -2040,7 +2040,7 @@ abstract class AppLocalizations {
   /// No description provided for @playerQuickActionsDescription.
   ///
   /// In zh, this message translates to:
-  /// **'选择并排序顶部优先显示的操作。'**
+  /// **'选择并排序显示在顶部的操作。'**
   String get playerQuickActionsDescription;
 
   /// No description provided for @playerQuickActionsUnavailable.

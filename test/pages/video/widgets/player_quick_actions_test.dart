@@ -13,23 +13,23 @@ void main() {
         ]),
         [
           PlayerQuickActionId.audioOnly,
-          PlayerQuickActionId.sleepTimer,
-          PlayerQuickActionId.cdnSettings,
         ],
       );
     });
 
-    test('keeps a valid custom order and exactly three items', () {
+    test('keeps an arbitrary valid custom order', () {
       expect(
         PlayerQuickActionConfig.normalize([
           PlayerQuickActionId.report,
           PlayerQuickActionId.codec,
           PlayerQuickActionId.sleepTimer,
+          PlayerQuickActionId.audioOnly,
         ]),
         [
           PlayerQuickActionId.report,
           PlayerQuickActionId.codec,
           PlayerQuickActionId.sleepTimer,
+          PlayerQuickActionId.audioOnly,
         ],
       );
     });
@@ -41,58 +41,20 @@ void main() {
       );
     });
 
-    test('keeps preferred order and fills the display capacity', () {
+    test('calculates the display capacity from the available width', () {
       expect(
-        PlayerQuickActionConfig.displayOrder(
-          preferred: [
-            PlayerQuickActionId.cdnSettings,
-            PlayerQuickActionId.audioOnly,
-          ],
-          available: [
-            PlayerQuickActionId.watchLater,
-            PlayerQuickActionId.cdnSettings,
-            PlayerQuickActionId.notes,
-          ],
-          capacity: 4,
+        PlayerQuickActionConfig.capacityForWidth(
+          480,
+          actionCount: PlayerQuickActionConfig.all.length,
         ),
-        [
-          PlayerQuickActionId.cdnSettings,
-          PlayerQuickActionId.audioOnly,
-          PlayerQuickActionId.watchLater,
-          PlayerQuickActionId.notes,
-        ],
+        4,
       );
-    });
-
-    test('truncates the display list to the available capacity', () {
       expect(
-        PlayerQuickActionConfig.displayOrder(
-          preferred: PlayerQuickActionConfig.defaults,
-          available: PlayerQuickActionConfig.all,
-          capacity: 2,
+        PlayerQuickActionConfig.capacityForWidth(
+          1000,
+          actionCount: 3,
         ),
-        [
-          PlayerQuickActionId.sleepTimer,
-          PlayerQuickActionId.cdnSettings,
-        ],
-      );
-    });
-
-    test('only appends actions provided as available', () {
-      expect(
-        PlayerQuickActionConfig.displayOrder(
-          preferred: [PlayerQuickActionId.sleepTimer],
-          available: [
-            PlayerQuickActionId.cdnSettings,
-            PlayerQuickActionId.audioOnly,
-          ],
-          capacity: 3,
-        ),
-        [
-          PlayerQuickActionId.sleepTimer,
-          PlayerQuickActionId.cdnSettings,
-          PlayerQuickActionId.audioOnly,
-        ],
+        3,
       );
     });
   });

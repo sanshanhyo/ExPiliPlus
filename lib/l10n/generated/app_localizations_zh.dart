@@ -1095,7 +1095,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get playerQuickActionsEdit => '编辑';
 
   @override
-  String get playerQuickActionsDescription => '选择并排序顶部优先显示的操作。';
+  String get playerQuickActionsDescription => '选择并排序显示在顶部的操作。';
 
   @override
   String get playerQuickActionsUnavailable => '当前不可用';
@@ -8507,7 +8507,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get playerQuickActionsEdit => '編輯';
 
   @override
-  String get playerQuickActionsDescription => '選擇並排序頂部優先顯示的操作。';
+  String get playerQuickActionsDescription => '選擇並排序顯示在頂部的操作。';
 
   @override
   String get playerQuickActionsUnavailable => '目前不可用';
