@@ -1,0 +1,84 @@
+name: Build Android GIF libmpv
+
+on:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: Build three ABI GIF libmpv JARs
+        runs-on: ubuntu-22.04
+
+        steps:
+            - name: Checkout ExPiliPlus
+              uses: actions/checkout@v7
+
+            - name: Setup Java
+              uses: actions/setup-java@v5
+              with:
+                  distribution: temurin
+                  java-version: "21"
+                  cache: gradle
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v5
+
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: "3.44.8"
+                  channel: stable
+                  cache: true
+
+            - name: Install native build tools
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y autoconf pkg-config libtool ninja-build nasm unzip python3-pip python3-setuptools
+                  python3 -m pip install --break-system-packages meson jsonschema jinja2
+
+            - name: Build pinned GIF libmpv artifacts
+              run: |
+                  chmod +x lib/scripts/build_android_gif_libmpv.sh
+                  lib/scripts/build_android_gif_libmpv.sh build/android-gif-libmpv
+
+            - name: Validate APK native integration
+              env:
+                  MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ github.workspace }}/build/android-gif-libmpv
+              run: |
+                  for abi in arm64-v8a armeabi-v7a x86_64; do
+                      jar="build/android-gif-libmpv/default-${abi}.jar"
+                      unzip -p "$jar" "lib/${abi}/libmpv.so" | strings | grep -q 'ff_gif_encoder'
+                      unzip -p "$jar" "lib/${abi}/libmpv.so" | strings | grep -q 'ff_gif_muxer'
+                      if unzip -p "$jar" "lib/${abi}/libmpv.so" | strings | grep -Eiq 'ff_libx264|--enable-libx264|libx264-lossless'; then
+                          echo "GIF-only JAR contains x264 symbols: $jar"
+                          exit 1
+                      fi
+                  done
+                  test -s build/android-gif-libmpv/source-license.txt
+                  test -s build/android-gif-libmpv/licenses.txt
+                  flutter pub get
+                  flutter build apk --debug --target-platform android-arm64,android-arm,android-x64
+
+            - name: Validate GIF symbols in APK
+              run: |
+                  apk="build/app/outputs/flutter-apk/app-debug.apk"
+                  for abi in arm64-v8a armeabi-v7a x86_64; do
+                      unzip -p "$apk" "lib/${abi}/libmpv.so" | strings | grep -q 'ff_gif_encoder'
+                      unzip -p "$apk" "lib/${abi}/libmpv.so" | strings | grep -q 'ff_gif_muxer'
+                  done
+
+            - name: Upload artifacts and audit metadata
+              uses: actions/upload-artifact@v7
+              with:
+                  archive: false
+                  name: ExPiliPlus_android_gif_libmpv
+                  path: |
+                      build/android-gif-libmpv/default-*.jar
+                      build/android-gif-libmpv/build-metadata.txt
+                      build/android-gif-libmpv/build.log
+                      build/android-gif-libmpv/licenses.txt
+                      build/android-gif-libmpv/source-license.txt
+                      build/android-gif-libmpv/licenses/**
+                      build/app/outputs/flutter-apk/*.apk

@@ -1,0 +1,19 @@
+source_repository=https://github.com/bggRGjQaUbCoE/libmpv-android-video-build.git
+source_tag=vnext
+source_commit=0bb77586769b9e882123197ef8dc940bae5de8b2
+patch_sha256=7dd5b08a7a215164ae55ab05b98e248ac22d379dcc5f43e1758adc993f8c75d4
+compatibility_patch_sha256=35662bd0431b784b4c43bcc23f06a2e8ab9c1b50afb3ce74f7f35c2cb245d2d0
+ffmpeg_config_gif_encoder=deps/ffmpeg/_build-arm64/ffbuild/config.mak
+ffmpeg_config_gif_muxer=deps/ffmpeg/_build-arm64/ffbuild/config.mak
+build_command=buildscripts/bundle_default.sh
+gif_only=true
+gif_encoder=enabled
+gif_muxer=enabled
+gpl_encoder_set=disabled
+x264=disabled
+license_inventory=licenses.txt
+source_license=source-license.txt
+artifacts=
+default-arm64-v8a.jar ab166504daf12e4d9ab331da14bf2d074f8361a183034f2daa61b31f06802d03 6800083 bytes
+default-armeabi-v7a.jar 147adfaaa6a6efdfbed070601a85f7bf9376050358c0b39e057e0b42fbb3d017 6406169 bytes
+default-x86_64.jar 6f16577649c6493bb5372d23034c1d33ac04f170cf61fec6ae790531519b4a5b 7588221 bytes

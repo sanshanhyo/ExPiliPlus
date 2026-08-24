@@ -1,0 +1,11 @@
+diff --git a/buildscripts/flavors/default.sh b/buildscripts/flavors/default.sh
+--- a/buildscripts/flavors/default.sh
++++ b/buildscripts/flavors/default.sh
+@@ -160,5 +160,7 @@
+ 	--enable-demuxer=dash \
+ 	--enable-demuxer=webm_dash_manifest \
+ 	--enable-muxer=webp \
++	--enable-muxer=gif \
++	--enable-encoder=gif \
+ 	\
+ 	--enable-demuxer=aac \

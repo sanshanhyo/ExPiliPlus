@@ -1,0 +1,189 @@
+import java.nio.file.Files
+import java.security.MessageDigest
+import java.util.zip.ZipFile
+
+group 'com.alexmercerind.media_kit_libs_android_video'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    if (project.android.hasProperty('namespace')) {
+        namespace 'com.alexmercerind.media_kit_libs_android_video'
+    }
+
+    compileSdkVersion 36
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+
+    dependencies {
+        implementation fileTree(dir: "$buildDir/output", include: '*.jar')
+    }
+}
+
+def sha256(File file) {
+    MessageDigest digest = MessageDigest.getInstance('SHA-256')
+    return digest.digest(Files.readAllBytes(file.toPath())).encodeHex().toString()
+}
+
+def containsBytes(byte[] haystack, byte[] needle) {
+    if (needle.length == 0 || haystack.length < needle.length) {
+        return false
+    }
+    for (int start = 0; start <= haystack.length - needle.length; start++) {
+        boolean match = true
+        for (int offset = 0; offset < needle.length; offset++) {
+            if (haystack[start + offset] != needle[offset]) {
+                match = false
+                break
+            }
+        }
+        if (match) {
+            return true
+        }
+    }
+    return false
+}
+
+def filesToUse = [
+    [
+        name: 'default-arm64-v8a.jar',
+        abi: 'arm64-v8a',
+        destination: file("$buildDir/v1.1.6/default-arm64-v8a.jar"),
+    ],
+    [
+        name: 'default-armeabi-v7a.jar',
+        abi: 'armeabi-v7a',
+        destination: file("$buildDir/v1.1.6/default-armeabi-v7a.jar"),
+    ],
+    [
+        name: 'default-x86_64.jar',
+        abi: 'x86_64',
+        destination: file("$buildDir/v1.1.6/default-x86_64.jar"),
+    ],
+]
+
+def expectedSourceCommit = '0bb77586769b9e882123197ef8dc940bae5de8b2'
+
+def localArtifactHashes = [:]
+def localMetadata = [:]
+def configuredArtifactDir = System.getenv('MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR')
+def localArtifactDir = configuredArtifactDir
+    ? file(configuredArtifactDir)
+    : file("$projectDir/../../android-gif-libmpv/artifacts")
+
+def metadataFile = new File(localArtifactDir, 'build-metadata.txt')
+if (!metadataFile.isFile()) {
+    throw new GradleException(
+        "GIF-only artifact directory is missing build-metadata.txt: ${localArtifactDir}",
+    )
+}
+metadataFile.eachLine { line ->
+    def metadataSeparator = line.indexOf('=')
+    if (metadataSeparator > 0) {
+        localMetadata[line.substring(0, metadataSeparator)] =
+            line.substring(metadataSeparator + 1).trim()
+    }
+    def fields = line.trim().split(/\s+/)
+    if (fields.size() == 4 &&
+        fields[0].startsWith('default-') &&
+        fields[0].endsWith('.jar') &&
+        fields[1] ==~ /[0-9a-fA-F]{64}/ &&
+        fields[2] ==~ /[0-9]+/ &&
+        fields[3] == 'bytes') {
+        localArtifactHashes[fields[0]] = fields[1].toLowerCase()
+    }
+}
+if (localMetadata['source_commit'] != expectedSourceCommit ||
+    localMetadata['gif_only'] != 'true' ||
+    localMetadata['gif_encoder'] != 'enabled' ||
+    localMetadata['gif_muxer'] != 'enabled' ||
+    localMetadata['gpl_encoder_set'] != 'disabled' ||
+    localMetadata['x264'] != 'disabled') {
+    throw new GradleException(
+        "GIF artifact metadata is not an approved GIF-only build: ${metadataFile}",
+    )
+}
+if (localArtifactHashes.size() != filesToUse.size()) {
+    throw new GradleException(
+        "GIF artifact metadata does not list all expected ABI JARs: ${metadataFile}",
+    )
+}
+if (!new File(localArtifactDir, 'source-license.txt').isFile() ||
+    !new File(localArtifactDir, 'licenses.txt').isFile()) {
+    throw new GradleException(
+        "GIF-only artifact directory is missing license inventory: ${localArtifactDir}",
+    )
+}
+
+task downloadDependencies {
+    doLast {
+        def outputDir = file("$buildDir/output")
+        delete outputDir
+        outputDir.mkdirs()
+
+        filesToUse.each { fileInfo ->
+            def destFile = fileInfo.destination
+            def localFile = file(new File(localArtifactDir, fileInfo.name))
+            if (!localFile.isFile()) {
+                throw new GradleException("Missing GIF-only artifact: ${localFile}")
+            }
+            def localSha256 = sha256(localFile)
+            def expectedLocalSha256 = localArtifactHashes[fileInfo.name]
+            if (expectedLocalSha256 == null ||
+                localSha256.toString().trim().compareTo(expectedLocalSha256) != 0) {
+                throw new GradleException("SHA-256 verification failed for ${localFile}")
+            }
+            def nativePath = "lib/${fileInfo.abi}/libmpv.so"
+            def nativeBytes
+            new ZipFile(localFile).withCloseable { archive ->
+                def nativeEntry = archive.getEntry(nativePath)
+                if (nativeEntry == null) {
+                    throw new GradleException("Missing ${nativePath} in ${localFile}")
+                }
+                nativeBytes = archive.getInputStream(nativeEntry).bytes
+            }
+            if (!containsBytes(nativeBytes, 'ff_gif_encoder'.bytes) ||
+                !containsBytes(nativeBytes, 'ff_gif_muxer'.bytes)) {
+                throw new GradleException("GIF symbols are missing from ${localFile}")
+            }
+            if (containsBytes(nativeBytes, 'ff_libx264'.bytes) ||
+                containsBytes(nativeBytes, '--enable-libx264'.bytes) ||
+                containsBytes(nativeBytes, 'libx264-lossless'.bytes)) {
+                throw new GradleException("x264 symbols are present in ${localFile}")
+            }
+            copy {
+                from localFile
+                into outputDir
+            }
+        }
+    }
+}
+
+assemble.dependsOn(downloadDependencies)
+preBuild.dependsOn(downloadDependencies)

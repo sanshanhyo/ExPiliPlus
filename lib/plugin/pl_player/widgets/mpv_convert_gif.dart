@@ -1,13 +1,13 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter_base.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/gif_file_validator.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:get/get_rx/get_rx.dart';
 import 'package:media_kit/ffi/src/allocation.dart';
@@ -59,8 +59,7 @@ class MpvConvertGif implements GifConverter {
         'end': (start + duration).toStringAsFixed(3),
         'of': 'gif',
         'ofopts': 'loop=0',
-        'ovc': 'lavc',
-        'ovcopts': 'codec=gif',
+        'ovc': 'gif',
         'vf': 'fps=$fps,scale=$width:-2:flags=lanczos',
         'audio': 'no',
         // GIF encoding runs in a headless mpv instance. Do not inherit the
@@ -69,6 +68,7 @@ class MpvConvertGif implements GifConverter {
       },
     );
     _initialized = true;
+    _logRuntimeCapabilities();
     if (_disposed) {
       _disposeNative();
       return;
@@ -90,7 +90,8 @@ class MpvConvertGif implements GifConverter {
     }
 
     debugPrint(
-      'GifConvert: start input=${_describeUrl(url)} output=$outFile '
+      'GifConvert: start input=${_describeUrl(url)} '
+      'output=${File(outFile).uri.pathSegments.last} '
       'range=${start.toStringAsFixed(3)}-${(start + duration).toStringAsFixed(3)} '
       'width=$width fps=$fps',
     );
@@ -123,9 +124,9 @@ class MpvConvertGif implements GifConverter {
         return false;
       }
       return _completer.future;
-    } catch (error, stackTrace) {
+    } catch (error) {
       _recordError('initialization failed: $error');
-      debugPrint('GifConvert: initialization failed: $error\n$stackTrace');
+      debugPrint('GifConvert: initialization failed');
       _complete(false);
       return false;
     }
@@ -152,7 +153,7 @@ class MpvConvertGif implements GifConverter {
         final log = event.ref.data.cast<generated.mpv_event_log_message>().ref;
         final prefix = log.prefix.toDartString().trim();
         final level = log.level.toDartString().trim();
-        final text = log.text.toDartString().trim();
+        final text = _sanitizeDiagnostic(log.text.toDartString());
         debugPrint('GifConvert: $level $prefix : $text');
         if (level == 'error' || level == 'fatal') {
           _recordError(text);
@@ -165,20 +166,30 @@ class MpvConvertGif implements GifConverter {
         final output = File(outFile);
         final exists = output.existsSync();
         final size = exists ? output.lengthSync() : 0;
-        final header = exists ? _readHeader(output) : '';
-        final errorText = error == 0 ? '' : _errorText(error);
-        final validHeader = header == 'GIF87a' || header == 'GIF89a';
+        var validation = exists ? _validateOutput(output) : null;
+        if (validation != null &&
+            validation.frameCount >= 2 &&
+            !validation.hasInfiniteLoop) {
+          _ensureInfiniteLoop(output);
+          validation = _validateOutput(output);
+        }
+        final header = validation?.header ?? '';
+        final errorText = error == 0
+            ? ''
+            : _sanitizeDiagnostic(_errorText(error));
         final success =
             reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF &&
             error == 0 &&
             _lastError == null &&
             exists &&
             size > 0 &&
-            validHeader;
+            validation?.isValid == true;
         debugPrint(
           'GifConvert: end reason=$reason error=$error'
           '${errorText.isEmpty ? '' : ' ($errorText)'} '
           'loaded=$_loaded output=$exists size=$size header=$header '
+          'frames=${validation?.frameCount ?? 0} '
+          'loop=${validation?.hasInfiniteLoop ?? false} '
           'lastError=$_lastError success=$success',
         );
         _complete(success);
@@ -204,7 +215,7 @@ class MpvConvertGif implements GifConverter {
       final output = File(outFile);
       if (output.existsSync()) output.deleteSync();
     } catch (error) {
-      debugPrint('GifConvert: cannot remove temporary output: $error');
+      debugPrint('GifConvert: cannot remove temporary output');
     }
   }
 
@@ -221,7 +232,7 @@ class MpvConvertGif implements GifConverter {
     pointers.forEach(calloc.free);
     if (result < 0) {
       _recordError(
-        'mpv_command(${args.join(' ')}) failed: ${_errorText(result)}',
+        'mpv_command failed: ${_errorText(result)}',
       );
     }
     return result;
@@ -245,8 +256,9 @@ class MpvConvertGif implements GifConverter {
   }
 
   void _recordError(String error) {
-    if (error.trim().isEmpty) return;
-    _lastError ??= error.trim();
+    final sanitized = _sanitizeDiagnostic(error);
+    if (sanitized.isEmpty) return;
+    _lastError ??= sanitized;
     debugPrint('GifConvert: error $_lastError');
   }
 
@@ -255,22 +267,88 @@ class MpvConvertGif implements GifConverter {
     return text == nullptr ? 'code $error' : text.toDartString();
   }
 
-  String _readHeader(File output) {
-    RandomAccessFile? file;
+  GifFileValidation _validateOutput(File output) {
     try {
-      file = output.openSync();
-      return latin1.decode(file.readSync(6));
-    } catch (error) {
-      debugPrint('GifConvert: cannot read output header: $error');
-      return '';
-    } finally {
-      file?.closeSync();
+      return GifFileValidation.fromBytes(output.readAsBytesSync());
+    } catch (_) {
+      debugPrint('GifConvert: cannot validate output');
+      return const GifFileValidation(
+        header: '',
+        frameCount: 0,
+        hasInfiniteLoop: false,
+        isComplete: false,
+        trailerOffset: null,
+        repairOffset: null,
+      );
+    }
+  }
+
+  void _ensureInfiniteLoop(File output) {
+    try {
+      final bytes = output.readAsBytesSync();
+      final before = GifFileValidation.fromBytes(bytes);
+      final repaired = GifFileValidation.ensureInfiniteLoop(bytes);
+      debugPrint(
+        'GifConvert: loopRepair frames=${before.frameCount} '
+        'complete=${before.isComplete} trailer=${before.trailerOffset != null} '
+        'repair=${before.repairOffset != null} '
+        'changed=${!identical(bytes, repaired)} '
+        'bytes=${bytes.length}->${repaired.length}',
+      );
+      if (!identical(bytes, repaired)) {
+        output.writeAsBytesSync(repaired, flush: true);
+      }
+    } catch (_) {
+      debugPrint('GifConvert: cannot add loop extension');
     }
   }
 
   String _describeUrl(String value) {
     final uri = Uri.tryParse(value);
     if (uri == null) return '<invalid-url>';
-    return '${uri.scheme}://${uri.host}${uri.path}';
+    return '${uri.scheme}://${uri.host}';
+  }
+
+  String _sanitizeDiagnostic(String value) {
+    return value
+        .replaceAll(RegExp(r'https?://[^\s]+'), '<url>')
+        .replaceAll(RegExp(r'(?:(?:/|[A-Za-z]:\\)[^\s]+)'), '<path>')
+        .trim();
+  }
+
+  void _logRuntimeCapabilities() {
+    if (!Platform.isAndroid) return;
+    final encoderList = _readProperty('encoder-list');
+    final configuration = _readProperty('mpv-configuration');
+    final configFlags = const [
+      '--disable-gpl',
+      '--disable-nonfree',
+      '--enable-muxer=gif',
+      '--enable-encoder=gif',
+    ].where(configuration.contains).join(',');
+    debugPrint(
+      'GifConvert: capabilities mpv=${_readProperty('mpv-version')} '
+      'ffmpeg=${_readProperty('ffmpeg-version')} '
+      'gifEncoder=${_hasEntry(encoderList, 'gif')} '
+      'configuredFlags=$configFlags '
+      'outputFormat=${_readProperty('of')} '
+      'videoCodec=${_readProperty('ovc')}',
+    );
+  }
+
+  String _readProperty(String property) {
+    final name = property.toNativeUtf8();
+    final value = _mpv.mpv_get_property_string(_ctx, name.cast());
+    calloc.free(name);
+    if (value == nullptr) return '<unavailable>';
+    final result = value.toDartString();
+    _mpv.mpv_free(value.cast());
+    return result;
+  }
+
+  bool _hasEntry(String list, String expected) {
+    return list
+        .split(RegExp(r'[\r\n, ]+'))
+        .any((entry) => entry == expected || entry.startsWith('$expected '));
   }
 }

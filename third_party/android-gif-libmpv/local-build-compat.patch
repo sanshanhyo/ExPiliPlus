@@ -1,0 +1,34 @@
+--- a/buildscripts/bundle_default.sh
++++ b/buildscripts/bundle_default.sh
+@@ -1,9 +1,9 @@
+ # --------------------------------------------------
+ 
+-if [ ! -f "deps" ]; then
++if [ ! -d "deps" ]; then
+   sudo rm -r deps
+ fi
+-if [ ! -f "prefix" ]; then
++if [ ! -d "prefix" ]; then
+   sudo rm -r prefix
+ fi
+ 
+@@ -26,7 +26,7 @@
+ echo "chdir media-kit-android-helpe"
+ cd deps/media-kit-android-helper || exit 1
+ 
+-sudo chmod +x gradlew
++chmod +x gradlew
+ ./gradlew assembleRelease
+ 
+ unzip -q -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
+--- a/buildscripts/build.sh
++++ b/buildscripts/build.sh
+@@ -111,7 +111,7 @@
+ 	printf >&2 '\e[1;34m%s\e[m\n' "Building $1..."
+ 	pushd deps/$1
+ 	BUILDSCRIPT=../../scripts/$1.sh
+- 	sudo chmod +x $BUILDSCRIPT
++ 	chmod +x $BUILDSCRIPT
+ 	[ $cleanbuild -eq 1 ] && $BUILDSCRIPT clean
+     $BUILDSCRIPT build || exit 1
+     popd

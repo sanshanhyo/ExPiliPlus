@@ -1881,7 +1881,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (PlatformUtils.isDarwin) ...[
+                          if (PlatformUtils.isDarwin || Platform.isAndroid) ...[
                             DecoratedBox(
                               decoration: const BoxDecoration(
                                 color: Color(0x45000000),
@@ -2121,16 +2121,23 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
     final videoCandidates = videoInfo.dash?.video
         ?.where((video) => video.baseUrl?.isNotEmpty == true)
         .toList();
+    debugPrint(
+      'GifExport: sourceCandidates=${videoCandidates?.length ?? 0} '
+      'dashPresent=${videoInfo.dash != null}',
+    );
     if (videoCandidates == null || videoCandidates.isEmpty) {
       SmartDialog.showToast(l10n.playerGifSourceUnavailable);
       return;
     }
     var availableVideos = videoCandidates;
 
-    if (PlatformUtils.isDarwin) {
+    if (PlatformUtils.isDarwin || Platform.isAndroid) {
       availableVideos = availableVideos
           .where((video) => video.codecs?.startsWith('avc1') == true)
           .toList();
+      debugPrint(
+        'GifExport: avc1Candidates=${availableVideos.length}',
+      );
       if (availableVideos.isEmpty) {
         SmartDialog.showToast(l10n.playerGifSourceUnavailable);
         return;
