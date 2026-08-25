@@ -116,7 +116,7 @@ jobs:
             - name: Upload artifacts and audit metadata
               uses: actions/upload-artifact@v7
               with:
-                  archive: false
+                  archive: true
                   name: ExPiliPlus_android_gif_libmpv
                   path: |
                       build/android-gif-libmpv/default-*.jar
