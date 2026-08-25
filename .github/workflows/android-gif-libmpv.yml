@@ -52,16 +52,26 @@ jobs:
               run: |
                   for abi in arm64-v8a armeabi-v7a x86_64; do
                       jar="build/android-gif-libmpv/default-${abi}.jar"
-                      unzip -p "$jar" "lib/${abi}/libmpv.so" | strings > "$RUNNER_TEMP/${abi}.jar.strings"
-                      if ! grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
-                          echo "missing ff_gif_encoder in $jar"
+                      so_file="$RUNNER_TEMP/${abi}.jar.libmpv.so"
+                      strings_file="$RUNNER_TEMP/${abi}.jar.strings"
+                      unzip -p "$jar" "lib/${abi}/libmpv.so" > "$so_file"
+                      if [ ! -s "$so_file" ]; then
+                          echo "missing libmpv.so in $jar"
+                          unzip -l "$jar"
                           exit 1
                       fi
-                      if ! grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
+                      strings -a "$so_file" > "$strings_file"
+                      if ! grep -F 'ff_gif_encoder' "$strings_file" >/dev/null; then
+                          echo "missing ff_gif_encoder in $jar"
+                          file "$so_file"
+                          wc -c "$so_file"
+                          exit 1
+                      fi
+                      if ! grep -F 'ff_gif_muxer' "$strings_file" >/dev/null; then
                           echo "missing ff_gif_muxer in $jar"
                           exit 1
                       fi
-                      if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
+                      if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$strings_file" >/dev/null; then
                           echo "GIF-only JAR contains x264 symbols: $jar"
                           exit 1
                       fi
@@ -83,12 +93,20 @@ jobs:
               run: |
                   apk="build/app/outputs/flutter-apk/app-debug.apk"
                   for abi in arm64-v8a armeabi-v7a x86_64; do
-                      unzip -p "$apk" "lib/${abi}/libmpv.so" | strings > "$RUNNER_TEMP/${abi}.apk.strings"
-                      if ! grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null; then
+                      so_file="$RUNNER_TEMP/${abi}.apk.libmpv.so"
+                      strings_file="$RUNNER_TEMP/${abi}.apk.strings"
+                      unzip -p "$apk" "lib/${abi}/libmpv.so" > "$so_file"
+                      if [ ! -s "$so_file" ]; then
+                          echo "missing libmpv.so in APK ABI $abi"
+                          unzip -l "$apk" | grep "lib/${abi}/"
+                          exit 1
+                      fi
+                      strings -a "$so_file" > "$strings_file"
+                      if ! grep -F 'ff_gif_encoder' "$strings_file" >/dev/null; then
                           echo "missing ff_gif_encoder in APK ABI $abi"
                           exit 1
                       fi
-                      if ! grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null; then
+                      if ! grep -F 'ff_gif_muxer' "$strings_file" >/dev/null; then
                           echo "missing ff_gif_muxer in APK ABI $abi"
                           exit 1
                       fi
