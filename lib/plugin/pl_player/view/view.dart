@@ -1374,6 +1374,18 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
         (PlatformUtils.isDarwin || Platform.isAndroid);
     final showScreenshotButton = plPlayerController.showFsScreenshotBtn;
     final showCaptureActions = showGifButton || showScreenshotButton;
+    final captureButtonCount =
+        (showGifButton ? 1 : 0) + (showScreenshotButton ? 1 : 0);
+    const captureButtonSize = 34.0;
+    const captureButtonGap = 8.0;
+    final captureActionsHeight =
+        captureButtonCount * captureButtonSize +
+        (captureButtonCount - 1) * captureButtonGap;
+    // Keep the capture stack's center aligned with the lock button regardless
+    // of whether one or both capture actions are enabled.
+    final captureActionsTranslationY = captureButtonCount == 0
+        ? 0.0
+        : -(captureButtonSize * 0.4) / captureActionsHeight;
 
     final child = Stack(
       fit: StackFit.passthrough,
@@ -1880,10 +1892,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                 () => Align(
                   alignment: Alignment.centerRight,
                   child: FractionalTranslation(
-                    translation: Offset(
-                      -1,
-                      showGifButton && showScreenshotButton ? -0.18 : -0.4,
-                    ),
+                    translation: Offset(-1, captureActionsTranslationY),
                     child: Offstage(
                       offstage: !plPlayerController.showControls.value,
                       child: Column(
@@ -2182,12 +2191,21 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
 
     final options = await showDialog<GifRecordOptions>(
       context: context,
-      builder: (context) => GifRecordDialog(
-        videoController: ctr.videoController!,
-        duration: ctr.durationInMilliseconds / 1000,
-        initialPosition: ctr.positionInMilliseconds / 1000,
-        sourceUrls: sourceUrls,
-      ),
+      builder: (context) {
+        final state = ctr.videoPlayerController?.state;
+        final width = ctr.width ?? state?.width ?? 16;
+        final height = ctr.height ?? state?.height ?? 9;
+        final aspectRatio = width > 0 && height > 0
+            ? width / height
+            : (ctr.isVertical ? 9 / 16 : 16 / 9);
+        return GifRecordDialog(
+          videoController: ctr.videoController!,
+          duration: ctr.durationInMilliseconds / 1000,
+          initialPosition: ctr.positionInMilliseconds / 1000,
+          sourceUrls: sourceUrls,
+          videoAspectRatio: aspectRatio,
+        );
+      },
     );
     if (options == null) {
       if (wasPlaying) ctr.play();

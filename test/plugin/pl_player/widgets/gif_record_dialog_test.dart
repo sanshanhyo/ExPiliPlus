@@ -27,7 +27,10 @@ void main() {
     videoController = _FakeVideoController(_FakePlayer());
   });
 
-  Widget host({required Size size}) {
+  Widget host({
+    required Size size,
+    double videoAspectRatio = 16 / 9,
+  }) {
     return MaterialApp(
       locale: const Locale('zh'),
       supportedLocales: AppLocalizations.supportedLocales,
@@ -43,6 +46,7 @@ void main() {
               GifResolution.p480: 'https://example.com/480.m4s',
               GifResolution.p720: 'https://example.com/720.m4s',
             },
+            videoAspectRatio: videoAspectRatio,
             videoPreview: const ColoredBox(color: Colors.black),
           ),
         ),
@@ -53,17 +57,43 @@ void main() {
   testWidgets('uses the wide three-column layout without removed copy', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(1024, 720));
-    await tester.pumpWidget(host(size: const Size(1024, 720)));
+    await tester.binding.setSurfaceSize(const Size(800, 720));
+    await tester.pumpWidget(host(size: const Size(800, 720)));
     await tester.pump();
 
     expect(find.byKey(const ValueKey('gif-preview')), findsOneWidget);
+    expect(find.byKey(const ValueKey('gif-wide-layout')), findsOneWidget);
     expect(find.byKey(const ValueKey('gif-options')), findsOneWidget);
     expect(find.byKey(const ValueKey('gif-actions')), findsOneWidget);
     expect(find.byKey(const ValueKey('gif-export-button')), findsOneWidget);
     expect(find.byKey(const ValueKey('gif-cancel-button')), findsOneWidget);
     expect(find.text('截取 GIF'), findsNothing);
     expect(find.textContaining('不包含音频'), findsNothing);
+
+    final exportButton = tester.widget<IconButton>(
+      find.byKey(const ValueKey('gif-export-button')),
+    );
+    final exportBackground = exportButton.style?.backgroundColor?.resolve({});
+    expect(
+      exportBackground,
+      Theme.of(tester.element(find.byType(Dialog))).colorScheme.primary,
+    );
+
+    final cancelButton = tester.widget<IconButton>(
+      find.byKey(const ValueKey('gif-cancel-button')),
+    );
+    expect(cancelButton.style?.backgroundColor?.resolve({}), isNull);
+  });
+
+  testWidgets('keeps portrait videos on the narrow layout', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1024, 720));
+    await tester.pumpWidget(
+      host(size: const Size(1024, 720), videoAspectRatio: 9 / 16),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('gif-narrow-layout')), findsOneWidget);
+    expect(find.byKey(const ValueKey('gif-wide-layout')), findsNothing);
   });
 
   testWidgets('keeps the preview and options usable on a narrow surface', (

@@ -37,6 +37,7 @@ class GifRecordDialog extends StatefulWidget {
     required this.duration,
     required this.initialPosition,
     required this.sourceUrls,
+    this.videoAspectRatio = 16 / 9,
     this.videoPreview,
     super.key,
   });
@@ -45,6 +46,7 @@ class GifRecordDialog extends StatefulWidget {
   final double duration;
   final double initialPosition;
   final Map<GifResolution, String> sourceUrls;
+  final double videoAspectRatio;
   final Widget? videoPreview;
 
   @override
@@ -54,6 +56,7 @@ class GifRecordDialog extends StatefulWidget {
 class _GifRecordDialogState extends State<GifRecordDialog> {
   static const _maxLength = 10.0;
   static const _defaultLength = 5.0;
+  static const _wideLayoutMinWidth = 680.0;
 
   late RangeValues _range;
   GifResolution _resolution = GifResolution.p720;
@@ -115,7 +118,10 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
           padding: const EdgeInsets.fromLTRB(20, 28, 20, 16),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              if (constraints.maxWidth < 760) {
+              final useWideLayout =
+                  widget.videoAspectRatio > 1 &&
+                  constraints.maxWidth >= _wideLayoutMinWidth;
+              if (!useWideLayout) {
                 return SingleChildScrollView(
                   child: _buildNarrowLayout(theme, l10n),
                 );
@@ -130,6 +136,7 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
 
   Widget _buildWideLayout(ThemeData theme, AppLocalizations l10n) {
     return Row(
+      key: const ValueKey('gif-wide-layout'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
@@ -144,8 +151,7 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
         const SizedBox(width: 16),
         SizedBox(
           width: 56,
-          height: 360,
-          child: _buildActions(l10n),
+          child: _buildActions(theme, l10n, emphasizeExport: true),
         ),
       ],
     );
@@ -153,6 +159,7 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
 
   Widget _buildNarrowLayout(ThemeData theme, AppLocalizations l10n) {
     return Column(
+      key: const ValueKey('gif-narrow-layout'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildPreview(theme),
@@ -165,7 +172,7 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
             SizedBox(
               width: 56,
               height: 280,
-              child: _buildActions(l10n),
+              child: _buildActions(theme, l10n, emphasizeExport: false),
             ),
           ],
         ),
@@ -266,8 +273,25 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
     );
   }
 
-  Widget _buildActions(AppLocalizations l10n) {
+  Widget _buildActions(
+    ThemeData theme,
+    AppLocalizations l10n, {
+    required bool emphasizeExport,
+  }) {
     final canExport = _range.end > _range.start;
+    void export() {
+      Navigator.of(context).pop(
+        GifRecordOptions(
+          start: _range.start,
+          end: _range.end,
+          resolution: _resolution,
+          fps: _fps,
+          url: widget.sourceUrls[_resolution]!,
+        ),
+      );
+    }
+
+    final VoidCallback? onExport = canExport ? export : null;
     return Column(
       key: const ValueKey('gif-actions'),
       children: [
@@ -275,22 +299,23 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
         Semantics(
           button: true,
           label: l10n.playerGifExport,
-          child: IconButton(
-            key: const ValueKey('gif-export-button'),
-            tooltip: l10n.playerGifExport,
-            onPressed: canExport
-                ? () => Navigator.of(context).pop(
-                    GifRecordOptions(
-                      start: _range.start,
-                      end: _range.end,
-                      resolution: _resolution,
-                      fps: _fps,
-                      url: widget.sourceUrls[_resolution]!,
-                    ),
-                  )
-                : null,
-            icon: const Icon(Icons.file_download_outlined),
-          ),
+          child: emphasizeExport
+              ? IconButton.filled(
+                  key: const ValueKey('gif-export-button'),
+                  tooltip: l10n.playerGifExport,
+                  style: IconButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: theme.colorScheme.onPrimary,
+                  ),
+                  onPressed: onExport,
+                  icon: const Icon(Icons.file_download_outlined),
+                )
+              : IconButton(
+                  key: const ValueKey('gif-export-button'),
+                  tooltip: l10n.playerGifExport,
+                  onPressed: onExport,
+                  icon: const Icon(Icons.file_download_outlined),
+                ),
         ),
         const Spacer(),
         Semantics(
