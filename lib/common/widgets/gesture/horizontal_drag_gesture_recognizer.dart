@@ -39,9 +39,6 @@ class CustomHorizontalDragGestureRecognizer
       lastPosition.global,
     );
   }
-
-  @override
-  Type get runtimeType => HorizontalDragGestureRecognizer;
 }
 
 double touchSlopH = Pref.touchSlopH;
