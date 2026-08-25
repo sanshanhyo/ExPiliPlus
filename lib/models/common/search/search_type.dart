@@ -22,6 +22,7 @@ enum SearchType {
   // 专栏：article
   article,
   ;
+
   // 相簿：photo
   // photo
 

@@ -155,3 +155,5 @@ test*
 # Local development documents
 docs/
 docs/engineering/
+Agents.md
+Agent.md
