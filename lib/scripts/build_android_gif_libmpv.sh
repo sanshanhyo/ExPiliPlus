@@ -8,6 +8,9 @@ readonly SOURCE_TAG="vnext"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OUTPUT_DIR="${1:-$ROOT_DIR/build/android-gif-libmpv}"
+if [[ "$OUTPUT_DIR" != /* ]]; then
+  OUTPUT_DIR="$ROOT_DIR/$OUTPUT_DIR"
+fi
 RUN_ROOT="${RUNNER_TEMP:-$(mktemp -d /tmp/expiliplus-android-gif-build.XXXXXX)}"
 SOURCE_DIR="$RUN_ROOT/libmpv-android-video-build"
 
