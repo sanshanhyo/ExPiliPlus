@@ -606,84 +606,86 @@ class HeaderControlState extends State<HeaderControl>
                 ),
               ),
             ),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final capacity = PlayerQuickActionConfig.capacityForWidth(
-                  constraints.maxWidth,
-                  actionCount: actions.length,
-                );
-                final displayIds = selected.take(capacity).toList();
-                if (displayIds.isEmpty) return const SizedBox.shrink();
-
-                final itemWidth = constraints.maxWidth / displayIds.length;
-                final iconSize = (itemWidth * 0.22)
-                    .clamp(26.0, 32.0)
-                    .toDouble();
-                final labelFontSize = (itemWidth * 0.08)
-                    .clamp(12.0, 14.0)
-                    .toDouble();
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: displayIds.map((id) {
-                    final action = actions.firstWhere(
-                      (item) => item.id == id,
-                    );
-                    final active = _isQuickActionActive(id);
-                    return Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              iconSize: iconSize,
-                              constraints: BoxConstraints.tightFor(
-                                width: iconSize + 16,
-                                height: iconSize + 16,
-                              ),
-                              padding: const EdgeInsets.all(8),
-                              onPressed: action.available
-                                  ? () {
-                                      _runQuickAction(id);
-                                      (context as Element).markNeedsBuild();
-                                    }
-                                  : null,
-                              icon: Icon(action.icon),
-                              style: IconButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor: active
-                                    ? theme.colorScheme.secondaryContainer
-                                    : theme.colorScheme.surfaceContainerHighest,
-                                foregroundColor: active
-                                    ? theme.colorScheme.onSecondaryContainer
-                                    : theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Flexible(
-                              child: Text(
-                                action.title,
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.labelMedium?.copyWith(
-                                  fontSize: labelFontSize,
-                                  height: 1.15,
-                                  color: action.available
-                                      ? null
-                                      : theme.colorScheme.outline,
+            if (selected.isNotEmpty) ...[
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final capacity = PlayerQuickActionConfig.capacityForWidth(
+                    constraints.maxWidth,
+                    actionCount: actions.length,
+                  );
+                  final displayIds = selected.take(capacity).toList();
+                  final itemWidth = constraints.maxWidth / displayIds.length;
+                  final iconSize = (itemWidth * 0.22)
+                      .clamp(26.0, 32.0)
+                      .toDouble();
+                  final labelFontSize = (itemWidth * 0.08)
+                      .clamp(12.0, 14.0)
+                      .toDouble();
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: displayIds.map((id) {
+                      final action = actions.firstWhere(
+                        (item) => item.id == id,
+                      );
+                      final active = _isQuickActionActive(id);
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                iconSize: iconSize,
+                                constraints: BoxConstraints.tightFor(
+                                  width: iconSize + 16,
+                                  height: iconSize + 16,
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                onPressed: action.available
+                                    ? () {
+                                        _runQuickAction(id);
+                                        (context as Element).markNeedsBuild();
+                                      }
+                                    : null,
+                                icon: Icon(action.icon),
+                                style: IconButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  backgroundColor: active
+                                      ? theme.colorScheme.secondaryContainer
+                                      : theme
+                                            .colorScheme
+                                            .surfaceContainerHighest,
+                                  foregroundColor: active
+                                      ? theme.colorScheme.onSecondaryContainer
+                                      : theme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 8),
+                              Flexible(
+                                child: Text(
+                                  action.title,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    fontSize: labelFontSize,
+                                    height: 1.15,
+                                    color: action.available
+                                        ? null
+                                        : theme.colorScheme.outline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
-            const SizedBox(height: 12),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+            ],
           ],
         );
       },
@@ -777,7 +779,7 @@ class HeaderControlState extends State<HeaderControl>
                         await Pref.setPlayerQuickActionIds(selected);
                         Get.back();
                       },
-                      saveEnabled: selected.isNotEmpty,
+                      saveEnabled: true,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -839,9 +841,7 @@ class HeaderControlState extends State<HeaderControl>
                                   ),
                             onChanged: (_) {
                               if (selected.contains(action.id)) {
-                                if (selected.length > 1) {
-                                  selected.remove(action.id);
-                                }
+                                selected.remove(action.id);
                               } else if (selected.length < capacity) {
                                 selected.add(action.id);
                               }

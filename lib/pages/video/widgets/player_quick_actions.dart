@@ -64,12 +64,15 @@ abstract final class PlayerQuickActionConfig {
   ];
 
   static List<String> normalize(Iterable<dynamic>? raw) {
+    if (raw == null) return defaults.toList();
+
+    final values = raw.toList(growable: false);
+    if (values.isEmpty) return <String>[];
+
     final result = <String>[];
-    if (raw != null) {
-      for (final value in raw) {
-        if (value is String && all.contains(value) && !result.contains(value)) {
-          result.add(value);
-        }
+    for (final value in values) {
+      if (value is String && all.contains(value) && !result.contains(value)) {
+        result.add(value);
       }
     }
     return result.isEmpty ? defaults.toList() : result;

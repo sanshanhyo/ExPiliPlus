@@ -41,6 +41,10 @@ void main() {
       );
     });
 
+    test('preserves an explicitly empty selection', () {
+      expect(PlayerQuickActionConfig.normalize(const []), isEmpty);
+    });
+
     test('calculates the display capacity from the available width', () {
       expect(
         PlayerQuickActionConfig.capacityForWidth(
