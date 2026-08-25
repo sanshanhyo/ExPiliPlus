@@ -53,25 +53,46 @@ jobs:
                   for abi in arm64-v8a armeabi-v7a x86_64; do
                       jar="build/android-gif-libmpv/default-${abi}.jar"
                       unzip -p "$jar" "lib/${abi}/libmpv.so" | strings > "$RUNNER_TEMP/${abi}.jar.strings"
-                      grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null
-                      grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null
+                      if ! grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
+                          echo "missing ff_gif_encoder in $jar"
+                          exit 1
+                      fi
+                      if ! grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
+                          echo "missing ff_gif_muxer in $jar"
+                          exit 1
+                      fi
                       if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
                           echo "GIF-only JAR contains x264 symbols: $jar"
                           exit 1
                       fi
+                      echo "jar_symbols_verified=$abi"
                   done
-                  test -s build/android-gif-libmpv/source-license.txt
-                  test -s build/android-gif-libmpv/licenses.txt
+                  if [ ! -s build/android-gif-libmpv/source-license.txt ] || [ ! -s build/android-gif-libmpv/licenses.txt ]; then
+                      echo "license metadata is missing or empty"
+                      ls -la build/android-gif-libmpv
+                      exit 1
+                  fi
+                  echo "license_metadata_verified"
+                  echo "validation_phase=flutter_pub_get"
                   flutter pub get
+                  echo "validation_phase=flutter_build_apk"
                   flutter build apk --debug --target-platform android-arm64,android-arm,android-x64
+                  echo "validation_phase=flutter_build_apk_complete"
 
             - name: Validate GIF symbols in APK
               run: |
                   apk="build/app/outputs/flutter-apk/app-debug.apk"
                   for abi in arm64-v8a armeabi-v7a x86_64; do
                       unzip -p "$apk" "lib/${abi}/libmpv.so" | strings > "$RUNNER_TEMP/${abi}.apk.strings"
-                      grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null
-                      grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null
+                      if ! grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null; then
+                          echo "missing ff_gif_encoder in APK ABI $abi"
+                          exit 1
+                      fi
+                      if ! grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null; then
+                          echo "missing ff_gif_muxer in APK ABI $abi"
+                          exit 1
+                      fi
+                      echo "apk_symbols_verified=$abi"
                   done
 
             - name: Upload artifacts and audit metadata
