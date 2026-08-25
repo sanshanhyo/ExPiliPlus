@@ -83,9 +83,9 @@ for abi in arm64-v8a armeabi-v7a x86_64; do
   artifact="default-${abi}.jar"
   test -s "$SOURCE_DIR/output/$artifact"
   jar_contents="$(unzip -p "$SOURCE_DIR/output/$artifact" "lib/$abi/libmpv.so" | strings)"
-  printf '%s\n' "$jar_contents" | grep -q 'ff_gif_encoder'
-  printf '%s\n' "$jar_contents" | grep -q 'ff_gif_muxer'
-  if printf '%s\n' "$jar_contents" | grep -Eiq 'ff_libx264|--enable-libx264|libx264-lossless'; then
+  grep -Fq 'ff_gif_encoder' <<<"$jar_contents"
+  grep -Fq 'ff_gif_muxer' <<<"$jar_contents"
+  if grep -Eiq 'ff_libx264|--enable-libx264|libx264-lossless' <<<"$jar_contents"; then
     echo "GIF-only artifact contains x264 symbols: $artifact" >&2
     exit 1
   fi
