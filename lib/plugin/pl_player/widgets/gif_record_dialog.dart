@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
@@ -56,9 +57,15 @@ class GifRecordDialog extends StatefulWidget {
 class _GifRecordDialogState extends State<GifRecordDialog> {
   static const _maxLength = 10.0;
   static const _defaultLength = 5.0;
+  static const _longVideoThreshold = 120.0;
+  static const _fineTuneWindowRadius = 60.0;
   static const _wideLayoutMinWidth = 680.0;
 
   late RangeValues _range;
+  late final TextEditingController _startTextController;
+  late final TextEditingController _endTextController;
+  late double _selectionMin;
+  late double _selectionMax;
   GifResolution _resolution = GifResolution.p720;
   int _fps = 12;
 
@@ -68,12 +75,82 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
   @override
   void initState() {
     super.initState();
-    final length = math.min(_defaultLength, _maxGifLength);
-    final start = widget.initialPosition.clamp(0, math.max(0, _max - length));
+    _startTextController = TextEditingController();
+    _endTextController = TextEditingController();
+    final current = widget.initialPosition.clamp(0, _max).toDouble();
+    if (_max > _longVideoThreshold) {
+      _selectionMin = math.max(0, current - _fineTuneWindowRadius);
+      _selectionMax = math.min(_max, current + _fineTuneWindowRadius);
+    } else {
+      _selectionMin = 0;
+      _selectionMax = _max;
+    }
+    final length = math.min(
+      _defaultLength,
+      math.min(_maxGifLength, _selectionMax - _selectionMin),
+    );
+    final start = current.clamp(
+      _selectionMin,
+      math.max(_selectionMin, _selectionMax - length),
+    );
     _range = RangeValues(start.toDouble(), start.toDouble() + length);
+    _syncTimestampControllers();
     if (!widget.sourceUrls.containsKey(_resolution)) {
       _resolution = widget.sourceUrls.keys.first;
     }
+  }
+
+  @override
+  void dispose() {
+    _startTextController.dispose();
+    _endTextController.dispose();
+    super.dispose();
+  }
+
+  void _syncTimestampControllers() {
+    _startTextController.text = _format(_range.start);
+    _endTextController.text = _format(_range.end);
+  }
+
+  double? _parseTimestamp(String value) {
+    final parts = value.trim().replaceAll('：', ':').split(':');
+    if (parts.isEmpty ||
+        parts.length > 3 ||
+        parts.any((part) => part.isEmpty)) {
+      return null;
+    }
+    final seconds = double.tryParse(parts.last);
+    if (seconds == null || !seconds.isFinite || seconds < 0 || seconds >= 60) {
+      if (parts.length > 1) return null;
+      return seconds != null && seconds.isFinite && seconds >= 0
+          ? seconds
+          : null;
+    }
+    var total = seconds;
+    for (var index = parts.length - 2; index >= 0; index--) {
+      final value = int.tryParse(parts[index]);
+      if (value == null || value < 0 || value >= 60) return null;
+      total += value * math.pow(60, parts.length - index - 1);
+    }
+    return total.toDouble();
+  }
+
+  void _applyTimestampInput() {
+    final start = _parseTimestamp(_startTextController.text);
+    final end = _parseTimestamp(_endTextController.text);
+    if (start == null || end == null || end <= start) {
+      setState(_syncTimestampControllers);
+      return;
+    }
+    final clampedStart = start.clamp(_selectionMin, _selectionMax).toDouble();
+    final clampedEnd = end.clamp(_selectionMin, _selectionMax).toDouble();
+    if (clampedEnd <= clampedStart) {
+      setState(_syncTimestampControllers);
+      return;
+    }
+    _updateRange(
+      RangeValues(clampedStart, clampedEnd),
+    );
   }
 
   void _updateRange(RangeValues value) {
@@ -91,11 +168,22 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
       start = math.max(0, end - _maxGifLength);
     }
     if (start < 0) {
-      start = 0;
-      end = math.min(_max, start + _maxGifLength);
+      start = _selectionMin;
+      end = math.min(_selectionMax, start + _maxGifLength);
+    }
+    if (start < _selectionMin) {
+      start = _selectionMin;
+      end = math.min(_selectionMax, start + _maxGifLength);
+    }
+    if (end > _selectionMax) {
+      end = _selectionMax;
+      start = math.max(_selectionMin, end - _maxGifLength);
     }
     final shouldSeek = (value.start - _range.start).abs() > 0.01;
-    setState(() => _range = RangeValues(start, end));
+    setState(() {
+      _range = RangeValues(start, end);
+      _syncTimestampControllers();
+    });
     if (shouldSeek) {
       widget.videoController.player.seek(
         Duration(milliseconds: (start * 1000).round()),
@@ -109,7 +197,11 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
-    final maxWidth = math.min(MediaQuery.sizeOf(context).width - 32, 1040.0);
+    final isMacOS = Platform.isMacOS;
+    final maxWidth = math.min(
+      MediaQuery.sizeOf(context).width - (isMacOS ? 64 : 32),
+      isMacOS ? 900.0 : 1040.0,
+    );
     final wantsWideDialog = widget.videoAspectRatio > 1;
     return Dialog(
       insetPadding: const EdgeInsets.all(16),
@@ -119,9 +211,9 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
       child: SizedBox(
         width: wantsWideDialog ? maxWidth : null,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 680),
+          constraints: BoxConstraints(maxHeight: isMacOS ? 560 : 680),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 28, 20, 16),
+            padding: EdgeInsets.fromLTRB(20, isMacOS ? 20 : 28, 20, 16),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final useWideLayout =
@@ -188,6 +280,7 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
   }
 
   Widget _buildPreview(ThemeData theme) {
+    final l10n = context.l10n;
     return Column(
       key: const ValueKey('gif-preview'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -209,13 +302,38 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
         ),
         const SizedBox(height: 14),
         Text(
-          '${_format(_range.start)} - ${_format(_range.end)}  ·  ${(_range.end - _range.start).toStringAsFixed(1)}s',
+          '${(_range.end - _range.start).toStringAsFixed(1)}s',
           textAlign: TextAlign.center,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Expanded(
+              child: _TimestampField(
+                key: const ValueKey('gif-start-time'),
+                controller: _startTextController,
+                label: l10n.videoSegmentStart(''),
+                onCommit: _applyTimestampInput,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: Text('-'),
+            ),
+            Expanded(
+              child: _TimestampField(
+                key: const ValueKey('gif-end-time'),
+                controller: _endTextController,
+                label: l10n.videoSegmentEnd(''),
+                onCommit: _applyTimestampInput,
+              ),
+            ),
+          ],
         ),
         RangeSlider(
-          min: 0,
-          max: _max,
+          min: _selectionMin,
+          max: _selectionMax,
           values: _range,
           labels: RangeLabels(
             _format(_range.start),
@@ -248,13 +366,18 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
                 onSelected: length > _max
                     ? null
                     : (_) {
-                        final end = math.min(_max, _range.start + length);
-                        final start = math.max(0, end - length).toDouble();
-                        setState(
-                          () => _range = RangeValues(start, end.toDouble()),
+                        final end = math.min(
+                          _selectionMax,
+                          _range.start + length,
                         );
-                        widget.videoController.player.seek(
-                          Duration(milliseconds: (start * 1000).round()),
+                        final start = math
+                            .max(
+                              _selectionMin,
+                              end - length,
+                            )
+                            .toDouble();
+                        _updateRange(
+                          RangeValues(start, end.toDouble()),
                         );
                       },
               ),
@@ -336,6 +459,39 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _TimestampField extends StatelessWidget {
+  const _TimestampField({
+    required this.controller,
+    required this.label,
+    required this.onCommit,
+    super.key,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final VoidCallback onCommit;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      textAlign: TextAlign.center,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      textInputAction: TextInputAction.done,
+      onSubmitted: (_) => onCommit(),
+      onTapOutside: (_) => onCommit(),
+      decoration: InputDecoration(
+        labelText: label,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 8,
+        ),
+      ),
     );
   }
 }

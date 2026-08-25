@@ -7,6 +7,9 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 class _FakePlayer implements NativePlayer {
   @override
+  Future<void> seek(Duration position, {bool synchronized = true}) async {}
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => null;
 }
 
@@ -29,6 +32,8 @@ void main() {
 
   Widget host({
     required Size size,
+    double duration = 20,
+    double initialPosition = 4,
     double videoAspectRatio = 16 / 9,
     double? dialogMaxWidth,
   }) {
@@ -51,8 +56,8 @@ void main() {
         child: Scaffold(
           body: GifRecordDialog(
             videoController: videoController,
-            duration: 20,
-            initialPosition: 4,
+            duration: duration,
+            initialPosition: initialPosition,
             sourceUrls: const {
               GifResolution.p480: 'https://example.com/480.m4s',
               GifResolution.p720: 'https://example.com/720.m4s',
@@ -107,6 +112,55 @@ void main() {
 
     expect(find.byKey(const ValueKey('gif-narrow-layout')), findsOneWidget);
     expect(find.byKey(const ValueKey('gif-wide-layout')), findsNothing);
+  });
+
+  testWidgets('accepts direct timestamp input', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 720));
+    await tester.pumpWidget(
+      host(
+        size: const Size(800, 720),
+        duration: 200,
+        initialPosition: 60,
+      ),
+    );
+    await tester.pump();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('gif-start-time')),
+      '01:02.345',
+    );
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    await tester.enterText(
+      find.byKey(const ValueKey('gif-end-time')),
+      '01:07.890',
+    );
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+
+    final slider = tester.widget<RangeSlider>(find.byType(RangeSlider));
+    expect(slider.values.start, closeTo(62.345, 0.001));
+    expect(slider.values.end, closeTo(67.890, 0.001));
+  });
+
+  testWidgets('limits long videos to a one-minute window around current time', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(800, 720));
+    await tester.pumpWidget(
+      host(
+        size: const Size(800, 720),
+        duration: 600,
+        initialPosition: 300,
+      ),
+    );
+    await tester.pump();
+
+    final slider = tester.widget<RangeSlider>(find.byType(RangeSlider));
+    expect(slider.min, 240);
+    expect(slider.max, 360);
+    expect(slider.values.start, 300);
+    expect(slider.values.end, 305);
   });
 
   testWidgets('keeps the preview and options usable on a narrow surface', (
