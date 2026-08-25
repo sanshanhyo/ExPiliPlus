@@ -5082,7 +5082,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFullscreenNetworkTypeDescription.
   ///
   /// In zh, this message translates to:
-  /// **'在移动设备全屏播放器的电量附近显示 Wi‑Fi、4G、5G 或未知。'**
+  /// **'在移动设备播放器中显示网络制式，Android 平台需要同意相关权限'**
   String get settingsFullscreenNetworkTypeDescription;
 
   /// No description provided for @settingsDoubleTapSeek.

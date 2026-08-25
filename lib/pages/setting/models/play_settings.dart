@@ -86,8 +86,10 @@ List<SettingsModel> playSettings(BuildContext context) {
         subtitle: l10n.settingsFullscreenNetworkTypeDescription,
         leading: const Icon(Icons.network_check_outlined),
         setKey: SettingBoxKey.showNetworkType,
-        defaultVal: true,
+        defaultVal: Platform.isIOS,
         onChanged: (value) => NetworkTypeService.setEnabled(value),
+        isEnabled: () => NetworkTypeService.phonePermissionGranted.value,
+        onDisabledTap: NetworkTypeService.requestPhonePermission,
       ),
     SwitchModel(
       title: l10n.settingsDoubleTapSeek,

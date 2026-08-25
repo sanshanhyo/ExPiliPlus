@@ -46,7 +46,6 @@ abstract final class SettingBoxKey {
       fullScreenGestureReverse = 'fullScreenGestureReverse',
       enableBackgroundPlay = 'enableBackgroundPlay',
       showNetworkType = 'showNetworkType',
-      networkTypePermissionPromptVersion = 'networkTypePermissionPromptVersion',
       playerQuickActionIds = 'playerQuickActionIds',
       continuePlayInBackground = 'continuePlayInBackground',
       appRcmd = 'appRcmd',

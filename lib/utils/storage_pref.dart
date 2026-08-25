@@ -1094,7 +1094,7 @@ abstract final class Pref {
 
   static bool get showNetworkType => _setting.get(
     SettingBoxKey.showNetworkType,
-    defaultValue: PlatformUtils.isMobile,
+    defaultValue: Platform.isIOS,
   );
 
   static List<String> get playerQuickActionIds {

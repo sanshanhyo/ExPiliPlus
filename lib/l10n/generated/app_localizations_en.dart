@@ -2931,7 +2931,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFullscreenNetworkTypeDescription =>
-      'Show Wi‑Fi, 4G, 5G, or Unknown beside the battery on mobile devices.';
+      'Show the network type in the mobile player; Android requires the relevant permission.';
 
   @override
   String get settingsDoubleTapSeek => 'Double-tap to seek';

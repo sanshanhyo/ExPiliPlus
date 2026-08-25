@@ -16,6 +16,8 @@ class SetSwitchItem extends StatefulWidget {
   final bool needReboot;
   final Widget? leading;
   final void Function(BuildContext context)? onTap;
+  final bool enabled;
+  final Future<bool> Function()? onDisabledTap;
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? titleStyle;
   final bool isSplit;
@@ -30,6 +32,8 @@ class SetSwitchItem extends StatefulWidget {
     this.needReboot = false,
     this.leading,
     this.onTap,
+    this.enabled = true,
+    this.onDisabledTap,
     this.contentPadding,
     this.titleStyle,
     this.isSplit = false,
@@ -93,38 +97,69 @@ class _SetSwitchItemState extends State<SetSwitchItem> {
     }
   }
 
+  Future<void> disabledTap() async {
+    final enabled = await widget.onDisabledTap?.call() ?? false;
+    if (!mounted || !enabled) return;
+    await switchChange(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final titleStyle =
         widget.titleStyle ??
         theme.textTheme.titleMedium!.copyWith(
-          color: widget.onTap != null && !val
+          color: !widget.enabled || widget.onTap != null && !val
               ? theme.colorScheme.outline
               : null,
         );
     final subTitleStyle = theme.textTheme.labelMedium!.copyWith(
       color: theme.colorScheme.outline,
     );
+    final leading = widget.enabled || widget.leading == null
+        ? widget.leading
+        : IconTheme.merge(
+            data: IconThemeData(color: theme.colorScheme.outline),
+            child: widget.leading!,
+          );
 
     final switchBtn = Transform.scale(
       scale: 0.8,
       alignment: .centerRight,
       child: Switch(
         value: val,
-        onChanged: switchChange,
+        onChanged: widget.enabled
+            ? switchChange
+            : (_) {
+                disabledTap();
+              },
+        thumbColor: widget.enabled
+            ? null
+            : WidgetStatePropertyAll(theme.colorScheme.outline),
+        trackColor: widget.enabled
+            ? null
+            : WidgetStatePropertyAll(theme.colorScheme.outlineVariant),
       ),
     );
 
     Widget child(Widget? trailing) => ListTile(
       contentPadding: widget.contentPadding,
-      enabled: widget.onTap == null ? true : val,
-      onTap: widget.onTap == null ? switchChange : () => widget.onTap!(context),
+      enabled: widget.enabled || widget.onDisabledTap != null,
+      onTap: !widget.enabled && widget.onDisabledTap != null
+          ? disabledTap
+          : widget.onTap == null
+          ? switchChange
+          : () => widget.onTap!(context),
       title: Text(widget.title, style: titleStyle),
       subtitle: widget.subtitle != null
-          ? Text(widget.subtitle!, style: subTitleStyle)
+          ? Text(
+              widget.subtitle!,
+              style: !widget.enabled
+                  ? subTitleStyle.copyWith(color: theme.colorScheme.outline)
+                  : subTitleStyle,
+            )
           : null,
-      leading: widget.leading,
+      leading: leading,
       trailing: trailing,
     );
 

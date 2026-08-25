@@ -27,7 +27,7 @@ abstract final class PlayerQuickActionId {
 }
 
 abstract final class PlayerQuickActionConfig {
-  static const minDisplayItemWidth = 120.0;
+  static const minDisplayItemWidth = 100.0;
 
   static const defaults = <String>[
     PlayerQuickActionId.sleepTimer,

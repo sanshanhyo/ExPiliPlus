@@ -56,6 +56,13 @@ void main() {
         ),
         3,
       );
+      expect(
+        PlayerQuickActionConfig.capacityForWidth(
+          300,
+          actionCount: 3,
+        ),
+        3,
+      );
     });
   });
 }

@@ -60,7 +60,6 @@ class _MainAppState extends PopScopeState<MainApp>
     if (PlatformUtils.isMobile) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await NetworkTypeService.start();
-        if (mounted) await NetworkTypeService.preparePermission(context);
       });
     }
     addObserverMobile(this);

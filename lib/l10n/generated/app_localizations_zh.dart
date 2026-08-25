@@ -2860,7 +2860,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsFullscreenNetworkTypeDescription =>
-      '在移动设备全屏播放器的电量附近显示 Wi‑Fi、4G、5G 或未知。';
+      '在移动设备播放器中显示网络制式，Android 平台需要同意相关权限';
 
   @override
   String get settingsDoubleTapSeek => '双击快退／快进';
@@ -10273,7 +10273,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsFullscreenNetworkTypeDescription =>
-      '在行動裝置全螢幕播放器的電池附近顯示 Wi‑Fi、4G、5G 或未知。';
+      '在行動裝置播放器中顯示網路制式，Android 平台需要同意相關權限';
 
   @override
   String get settingsDoubleTapSeek => '雙擊倒退／快進';

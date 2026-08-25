@@ -835,7 +835,7 @@
   "settingsFullscreenScreenshotButton": "Show screenshot button in full screen",
   "settingsFullscreenBattery": "Show battery level in full screen",
   "settingsFullscreenNetworkType": "Show network type in full screen",
-  "settingsFullscreenNetworkTypeDescription": "Show Wi‑Fi, 4G, 5G, or Unknown beside the battery on mobile devices.",
+  "settingsFullscreenNetworkTypeDescription": "Show the network type in the mobile player; Android requires the relevant permission.",
   "settingsDoubleTapSeek": "Double-tap to seek",
   "settingsDoubleTapSeekDescription": "Double-tap left to rewind and right to fast-forward; when off, double-tap pauses or plays",
   "settingsSlideBrightnessVolume": "Swipe sides for brightness and volume",

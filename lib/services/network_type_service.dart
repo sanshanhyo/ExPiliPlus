@@ -7,8 +7,6 @@ import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
-import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -18,8 +16,8 @@ abstract final class NetworkTypeService {
   static const _channel = MethodChannel(
     'io.github.sanshanhyo.expiliplus/network_type',
   );
-  static const _permissionPromptVersion = 1;
   static final Rx<NetworkType> current = NetworkType.unknown.obs;
+  static final RxBool phonePermissionGranted = (!Platform.isAndroid).obs;
   static StreamSubscription<List<ConnectivityResult>>?
   _connectivitySubscription;
   static bool _started = false;
@@ -45,6 +43,7 @@ abstract final class NetworkTypeService {
       onError: (_, __) => current.value = NetworkType.unknown,
     );
     if (Platform.isAndroid) {
+      await refreshPhonePermission();
       try {
         await _channel.invokeMethod<void>('startCellularNetworkListener');
       } on MissingPluginException {
@@ -54,6 +53,19 @@ abstract final class NetworkTypeService {
       }
     }
     await refresh();
+  }
+
+  static Future<bool> refreshPhonePermission() async {
+    if (!Platform.isAndroid) {
+      phonePermissionGranted.value = true;
+      return true;
+    }
+    final granted = await Permission.phone.isGranted;
+    phonePermissionGranted.value = granted;
+    if (!granted && Pref.showNetworkType) {
+      await GStorage.setting.put(SettingBoxKey.showNetworkType, false);
+    }
+    return granted;
   }
 
   static Future<void> stop() async {
@@ -67,6 +79,7 @@ abstract final class NetworkTypeService {
       current.value = NetworkType.unknown;
       return;
     }
+    if (Platform.isAndroid) await refreshPhonePermission();
     try {
       final results = await Connectivity().checkConnectivity();
       if (results.contains(ConnectivityResult.wifi)) {
@@ -97,75 +110,34 @@ abstract final class NetworkTypeService {
     }
   }
 
-  static Future<void> preparePermission(BuildContext context) async {
-    if (!Platform.isAndroid || !Pref.showNetworkType) return;
-    if (GStorage.setting.get(
-          SettingBoxKey.networkTypePermissionPromptVersion,
-        ) ==
-        _permissionPromptVersion) {
-      return;
-    }
-    await GStorage.setting.put(
-      SettingBoxKey.networkTypePermissionPromptVersion,
-      _permissionPromptVersion,
-    );
-    if (await Permission.phone.isGranted) {
-      await _startNativeListener();
-      await refresh();
-      return;
-    }
-    if (!context.mounted) return;
-    final shouldRequest =
-        await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(context.l10n.settingsFullscreenNetworkType),
-            content: Text(
-              context.l10n.settingsFullscreenNetworkTypeDescription,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(context.l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(context.l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-    if (!shouldRequest) {
-      await setEnabled(false);
-      return;
+  static Future<bool> requestPhonePermission() async {
+    if (!Platform.isAndroid) return true;
+    if (await Permission.phone.isPermanentlyDenied) {
+      await openAppSettings();
+      await refreshPhonePermission();
+      return phonePermissionGranted.value;
     }
     final status = await Permission.phone.request();
+    phonePermissionGranted.value = status.isGranted;
     if (!status.isGranted) {
-      await setEnabled(false);
+      await GStorage.setting.put(SettingBoxKey.showNetworkType, false);
+      if (status.isPermanentlyDenied) await openAppSettings();
+      return false;
     }
     await _startNativeListener();
     await refresh();
+    return true;
   }
 
   static Future<void> setEnabled(bool value) async {
-    await GStorage.setting.put(SettingBoxKey.showNetworkType, value);
     if (value) {
-      if (Platform.isAndroid) {
-        if (await Permission.phone.isPermanentlyDenied) {
-          await openAppSettings();
-          return;
-        }
-        final status = await Permission.phone.request();
-        if (!status.isGranted) {
-          await GStorage.setting.put(SettingBoxKey.showNetworkType, false);
-          if (status.isPermanentlyDenied) await openAppSettings();
-          return;
-        }
-        await _startNativeListener();
+      if (Platform.isAndroid && !await requestPhonePermission()) {
+        return;
       }
+      await GStorage.setting.put(SettingBoxKey.showNetworkType, true);
       await refresh();
     } else {
+      await GStorage.setting.put(SettingBoxKey.showNetworkType, false);
       current.value = NetworkType.unknown;
     }
   }

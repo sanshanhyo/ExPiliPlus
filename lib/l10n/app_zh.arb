@@ -1091,7 +1091,7 @@
   "settingsFullscreenScreenshotButton": "全屏显示截图按钮",
   "settingsFullscreenBattery": "全屏显示电池电量",
   "settingsFullscreenNetworkType": "全屏显示网络制式",
-  "settingsFullscreenNetworkTypeDescription": "在移动设备全屏播放器的电量附近显示 Wi‑Fi、4G、5G 或未知。",
+  "settingsFullscreenNetworkTypeDescription": "在移动设备播放器中显示网络制式，Android 平台需要同意相关权限",
   "settingsDoubleTapSeek": "双击快退／快进",
   "settingsDoubleTapSeekDescription": "左侧双击快退，右侧双击快进；关闭后双击均为暂停／播放",
   "settingsSlideBrightnessVolume": "左右侧滑动调节亮度／音量",

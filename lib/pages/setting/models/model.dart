@@ -176,6 +176,8 @@ class SwitchModel extends SettingsModel {
   final ValueChanged<bool>? onChanged;
   final bool needReboot;
   final void Function(BuildContext context)? onTap;
+  final ValueGetter<bool>? isEnabled;
+  final Future<bool> Function()? onDisabledTap;
 
   const SwitchModel({
     super.subtitle,
@@ -190,6 +192,8 @@ class SwitchModel extends SettingsModel {
     this.onChanged,
     this.needReboot = false,
     this.onTap,
+    this.isEnabled,
+    this.onDisabledTap,
   }) : assert(title != null || getTitle != null);
 
   const SwitchModel.split({
@@ -198,6 +202,8 @@ class SwitchModel extends SettingsModel {
     this.needReboot = false,
     this.onChanged,
     this.onTap,
+    this.isEnabled,
+    this.onDisabledTap,
   }) : title = null,
        getTitle = null,
        getSubtitle = null;
@@ -208,18 +214,25 @@ class SwitchModel extends SettingsModel {
   String? get effectiveSubtitle => subtitle ?? getSubtitle?.call();
 
   @override
-  Widget get widget => SetSwitchItem(
-    title: effectiveTitle,
-    subtitle: effectiveSubtitle,
-    setKey: setKey,
-    defaultVal: defaultVal,
-    onChanged: onChanged,
-    needReboot: needReboot,
-    leading: leading,
-    onTap: onTap,
-    contentPadding: contentPadding,
-    titleStyle: titleStyle,
-  );
+  Widget get widget {
+    SetSwitchItem build(bool enabled) => SetSwitchItem(
+      title: effectiveTitle,
+      subtitle: effectiveSubtitle,
+      setKey: setKey,
+      defaultVal: defaultVal,
+      onChanged: onChanged,
+      needReboot: needReboot,
+      leading: leading,
+      onTap: onTap,
+      enabled: enabled,
+      onDisabledTap: onDisabledTap,
+      contentPadding: contentPadding,
+      titleStyle: titleStyle,
+    );
+
+    final getEnabled = isEnabled;
+    return getEnabled == null ? build(true) : Obx(() => build(getEnabled()));
+  }
 }
 
 SettingsModel getBanWordModel({
