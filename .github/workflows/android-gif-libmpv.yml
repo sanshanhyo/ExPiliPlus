@@ -43,7 +43,8 @@ jobs:
             - name: Build pinned GIF libmpv artifacts
               run: |
                   chmod +x lib/scripts/build_android_gif_libmpv.sh
-                  lib/scripts/build_android_gif_libmpv.sh build/android-gif-libmpv
+                  timeout --foreground --signal=TERM --kill-after=60s 1800s \
+                    lib/scripts/build_android_gif_libmpv.sh build/android-gif-libmpv
 
             - name: Validate APK native integration
               env:
@@ -51,10 +52,10 @@ jobs:
               run: |
                   for abi in arm64-v8a armeabi-v7a x86_64; do
                       jar="build/android-gif-libmpv/default-${abi}.jar"
-                      jar_strings="$(unzip -p "$jar" "lib/${abi}/libmpv.so" | strings)"
-                      grep -Fq 'ff_gif_encoder' <<<"$jar_strings"
-                      grep -Fq 'ff_gif_muxer' <<<"$jar_strings"
-                      if grep -Eiq 'ff_libx264|--enable-libx264|libx264-lossless' <<<"$jar_strings"; then
+                      unzip -p "$jar" "lib/${abi}/libmpv.so" | strings > "$RUNNER_TEMP/${abi}.jar.strings"
+                      grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null
+                      grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null
+                      if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$RUNNER_TEMP/${abi}.jar.strings" >/dev/null; then
                           echo "GIF-only JAR contains x264 symbols: $jar"
                           exit 1
                       fi
@@ -68,9 +69,9 @@ jobs:
               run: |
                   apk="build/app/outputs/flutter-apk/app-debug.apk"
                   for abi in arm64-v8a armeabi-v7a x86_64; do
-                      abi_strings="$(unzip -p "$apk" "lib/${abi}/libmpv.so" | strings)"
-                      grep -Fq 'ff_gif_encoder' <<<"$abi_strings"
-                      grep -Fq 'ff_gif_muxer' <<<"$abi_strings"
+                      unzip -p "$apk" "lib/${abi}/libmpv.so" | strings > "$RUNNER_TEMP/${abi}.apk.strings"
+                      grep -F 'ff_gif_encoder' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null
+                      grep -F 'ff_gif_muxer' "$RUNNER_TEMP/${abi}.apk.strings" >/dev/null
                   done
 
             - name: Upload artifacts and audit metadata
