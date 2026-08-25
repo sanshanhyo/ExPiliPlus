@@ -63,8 +63,18 @@ for abi in arm64-v8a armeabi-v7a x86_64; do
   test -s "$SOURCE_DIR/output/default-${abi}.jar"
 done
 
-gif_encoder_config="$(grep -RIlE 'CONFIG_GIF_ENCODER[[:space:]]+1' "$SOURCE_DIR/buildscripts/deps/ffmpeg" | head -1 || true)"
-gif_muxer_config="$(grep -RIlE 'CONFIG_GIF_MUXER[[:space:]]+1' "$SOURCE_DIR/buildscripts/deps/ffmpeg" | head -1 || true)"
+gif_config_files=("$SOURCE_DIR"/buildscripts/deps/ffmpeg/_build-*/ffbuild/config.mak)
+gif_encoder_config=""
+gif_muxer_config=""
+for config_file in "${gif_config_files[@]}"; do
+  [ -f "$config_file" ] || continue
+  if grep -qE 'CONFIG_GIF_ENCODER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
+    gif_encoder_config="${config_file#"$SOURCE_DIR/"}"
+  fi
+  if grep -qE 'CONFIG_GIF_MUXER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
+    gif_muxer_config="${config_file#"$SOURCE_DIR/"}"
+  fi
+done
 test -n "$gif_encoder_config"
 test -n "$gif_muxer_config"
 
