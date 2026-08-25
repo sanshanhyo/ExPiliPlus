@@ -2193,8 +2193,12 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       context: context,
       builder: (context) {
         final state = ctr.videoPlayerController?.state;
-        final width = ctr.width ?? state?.width ?? 16;
-        final height = ctr.height ?? state?.height ?? 9;
+        final width = (state?.width ?? 0) > 0
+            ? state!.width
+            : ((ctr.width ?? 0) > 0 ? ctr.width! : 16);
+        final height = (state?.height ?? 0) > 0
+            ? state!.height
+            : ((ctr.height ?? 0) > 0 ? ctr.height! : 9);
         final aspectRatio = width > 0 && height > 0
             ? width / height
             : (ctr.isVertical ? 9 / 16 : 16 / 9);

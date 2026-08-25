@@ -110,24 +110,31 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
     final theme = Theme.of(context);
     final l10n = context.l10n;
     final maxWidth = math.min(MediaQuery.sizeOf(context).width - 32, 1040.0);
+    final wantsWideDialog = widget.videoAspectRatio > 1;
     return Dialog(
       insetPadding: const EdgeInsets.all(16),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: 680),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 28, 20, 16),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final useWideLayout =
-                  widget.videoAspectRatio > 1 &&
-                  constraints.maxWidth >= _wideLayoutMinWidth;
-              if (!useWideLayout) {
-                return SingleChildScrollView(
-                  child: _buildNarrowLayout(theme, l10n),
-                );
-              }
-              return _buildWideLayout(theme, l10n);
-            },
+      constraints: wantsWideDialog
+          ? BoxConstraints(minWidth: maxWidth, maxWidth: maxWidth)
+          : null,
+      child: SizedBox(
+        width: wantsWideDialog ? maxWidth : null,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 680),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 16),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final useWideLayout =
+                    widget.videoAspectRatio > 1 &&
+                    constraints.maxWidth >= _wideLayoutMinWidth;
+                if (!useWideLayout) {
+                  return SingleChildScrollView(
+                    child: _buildNarrowLayout(theme, l10n),
+                  );
+                }
+                return _buildWideLayout(theme, l10n);
+              },
+            ),
           ),
         ),
       ),

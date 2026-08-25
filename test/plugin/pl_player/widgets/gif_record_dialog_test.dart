@@ -30,11 +30,22 @@ void main() {
   Widget host({
     required Size size,
     double videoAspectRatio = 16 / 9,
+    double? dialogMaxWidth,
   }) {
     return MaterialApp(
       locale: const Locale('zh'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
+      theme: dialogMaxWidth == null
+          ? null
+          : ThemeData(
+              dialogTheme: DialogThemeData(
+                constraints: BoxConstraints(
+                  minWidth: 280,
+                  maxWidth: dialogMaxWidth,
+                ),
+              ),
+            ),
       home: MediaQuery(
         data: MediaQueryData(size: size),
         child: Scaffold(
@@ -58,7 +69,9 @@ void main() {
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(800, 720));
-    await tester.pumpWidget(host(size: const Size(800, 720)));
+    await tester.pumpWidget(
+      host(size: const Size(800, 720), dialogMaxWidth: 420),
+    );
     await tester.pump();
 
     expect(find.byKey(const ValueKey('gif-preview')), findsOneWidget);
