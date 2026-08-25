@@ -1139,6 +1139,8 @@
   "@settingsCurrentBottomProgressBar": {"placeholders": {"value": {"type": "String"}}},
   "settingsBackgroundAudioService": "后台音频服务",
   "settingsBackgroundAudioServiceDescription": "避免画中画没有播放暂停功能",
+  "settingsMixAudioWithOtherApps": "与其他应用同时播放声音",
+  "settingsMixAudioWithOtherAppsDescription": "允许视频声音与其他应用混音。开启后来电、导航等可能不再自动暂停或降低视频声音，部分设备可能不支持。",
   "settingsPlaybackOrder": "播放顺序",
   "settingsTemporaryPlayerSettings": "播放器设置仅对当前生效",
   "settingsTemporaryPlayerSettingsDescription": "弹幕、字幕及部分设置中没有的设置除外",

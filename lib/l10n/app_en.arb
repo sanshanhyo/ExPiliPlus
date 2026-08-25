@@ -880,6 +880,8 @@
   "settingsCurrentBottomProgressBar": "Current display: {value}",
   "settingsBackgroundAudioService": "Background audio service",
   "settingsBackgroundAudioServiceDescription": "Keeps play and pause controls available in picture-in-picture",
+  "settingsMixAudioWithOtherApps": "Mix audio with other apps",
+  "settingsMixAudioWithOtherAppsDescription": "Let video audio play together with other apps. Calls and navigation may no longer pause or lower video audio, and some devices may not support mixing.",
   "settingsPlaybackOrder": "Playback order",
   "settingsTemporaryPlayerSettings": "Apply player settings only to the current video",
   "settingsTemporaryPlayerSettingsDescription": "Except danmaku, subtitles, and options not available in Settings",

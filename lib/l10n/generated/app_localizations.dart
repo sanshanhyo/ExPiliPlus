@@ -5349,6 +5349,18 @@ abstract class AppLocalizations {
   /// **'避免画中画没有播放暂停功能'**
   String get settingsBackgroundAudioServiceDescription;
 
+  /// No description provided for @settingsMixAudioWithOtherApps.
+  ///
+  /// In zh, this message translates to:
+  /// **'与其他应用同时播放声音'**
+  String get settingsMixAudioWithOtherApps;
+
+  /// No description provided for @settingsMixAudioWithOtherAppsDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许视频声音与其他应用混音。开启后来电、导航等可能不再自动暂停或降低视频声音，部分设备可能不支持。'**
+  String get settingsMixAudioWithOtherAppsDescription;
+
   /// No description provided for @settingsPlaybackOrder.
   ///
   /// In zh, this message translates to:

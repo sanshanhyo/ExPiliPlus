@@ -47,6 +47,7 @@ abstract final class SettingBoxKey {
       enableBackgroundPlay = 'enableBackgroundPlay',
       showNetworkType = 'showNetworkType',
       playerQuickActionIds = 'playerQuickActionIds',
+      mixAudioWithOtherApps = 'mixAudioWithOtherApps',
       continuePlayInBackground = 'continuePlayInBackground',
       appRcmd = 'appRcmd',
       enableSaveLastData = 'enableSaveLastData',

@@ -73,6 +73,7 @@ typedef PlayCallback = Future<void>? Function();
 class PlPlayerController with BlockConfigMixin {
   Player? _videoPlayerController;
   VideoController? _videoController;
+  double _audioFocusVolumeMultiplier = 1.0;
 
   static PlPlayerController? _instance;
 
@@ -476,6 +477,12 @@ class PlPlayerController with BlockConfigMixin {
     return _instance?.setVolume(volumeNew, showIndicator: showIndicator);
   }
 
+  static Future<void> setAudioFocusVolumeMultiplierIfExists(
+    double multiplier,
+  ) async {
+    await _instance?._setAudioFocusVolumeMultiplier(multiplier);
+  }
+
   Box video = GStorage.video;
 
   bool visible = true;
@@ -734,9 +741,7 @@ class PlPlayerController with BlockConfigMixin {
     final opt = {
       'video-sync': Pref.videoSync,
       if (Platform.isAndroid) 'ao': Pref.audioOutput,
-      'volume':
-          (PlatformUtils.isMobile ? Pref.playerVolume : volume.value * 100)
-              .toString(),
+      'volume': (_basePlayerVolume * _audioFocusVolumeMultiplier).toString(),
       'volume-max': kMaxVolume.toString(),
     };
     final autosync = Pref.autosync;
@@ -1197,13 +1202,25 @@ class PlPlayerController with BlockConfigMixin {
   Timer? volumeTimer;
   bool volumeInterceptEventStream = false;
 
+  double get _basePlayerVolume =>
+      PlatformUtils.isMobile ? Pref.playerVolume : volume.value * 100;
+
+  Future<void> _setAudioFocusVolumeMultiplier(double multiplier) async {
+    final value = multiplier.clamp(0.0, 1.0).toDouble();
+    if (_audioFocusVolumeMultiplier == value) return;
+    _audioFocusVolumeMultiplier = value;
+    await _videoPlayerController?.setVolume(_basePlayerVolume * value);
+  }
+
   final double maxVolume = PlatformUtils.isDesktop ? Pref.maxVolume : 1.0;
   Future<void> setVolume(double volume, {bool showIndicator = true}) async {
     if (this.volume.value != volume) {
       this.volume.value = volume;
       try {
         if (PlatformUtils.isDesktop) {
-          await _videoPlayerController!.setVolume(volume * 100);
+          await _videoPlayerController!.setVolume(
+            volume * 100 * _audioFocusVolumeMultiplier,
+          );
         } else {
           FlutterVolumeController.updateShowSystemUI(false);
           await FlutterVolumeController.setVolume(volume);

@@ -880,6 +880,8 @@
   "settingsCurrentBottomProgressBar": "目前顯示方式：{value}",
   "settingsBackgroundAudioService": "背景音訊服務",
   "settingsBackgroundAudioServiceDescription": "避免子母畫面沒有播放暫停功能",
+  "settingsMixAudioWithOtherApps": "與其他應用程式同時播放聲音",
+  "settingsMixAudioWithOtherAppsDescription": "允許影片聲音與其他應用程式混音。開啟後來電、導航等可能不再自動暫停或降低影片聲音，部分裝置可能不支援。",
   "settingsPlaybackOrder": "播放順序",
   "settingsTemporaryPlayerSettings": "播放器設定僅對目前影片生效",
   "settingsTemporaryPlayerSettingsDescription": "彈幕、字幕及部分設定中沒有的選項除外",

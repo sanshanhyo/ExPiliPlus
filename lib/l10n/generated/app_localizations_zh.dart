@@ -3007,6 +3007,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsBackgroundAudioServiceDescription => '避免画中画没有播放暂停功能';
 
   @override
+  String get settingsMixAudioWithOtherApps => '与其他应用同时播放声音';
+
+  @override
+  String get settingsMixAudioWithOtherAppsDescription =>
+      '允许视频声音与其他应用混音。开启后来电、导航等可能不再自动暂停或降低视频声音，部分设备可能不支持。';
+
+  @override
   String get settingsPlaybackOrder => '播放顺序';
 
   @override
@@ -10418,6 +10425,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsBackgroundAudioServiceDescription => '避免子母畫面沒有播放暫停功能';
+
+  @override
+  String get settingsMixAudioWithOtherApps => '與其他應用程式同時播放聲音';
+
+  @override
+  String get settingsMixAudioWithOtherAppsDescription =>
+      '允許影片聲音與其他應用程式混音。開啟後來電、導航等可能不再自動暫停或降低影片聲音，部分裝置可能不支援。';
 
   @override
   String get settingsPlaybackOrder => '播放順序';

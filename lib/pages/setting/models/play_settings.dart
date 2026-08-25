@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:io' show Platform;
 
 import 'package:ex_piliplus/common/widgets/custom_icon.dart';
@@ -302,6 +303,19 @@ List<SettingsModel> playSettings(BuildContext context) {
         defaultVal: true,
         onChanged: (value) =>
             videoPlayerServiceHandler!.enableBackgroundPlay = value,
+      ),
+    if (Platform.isAndroid)
+      SwitchModel(
+        title: l10n.settingsMixAudioWithOtherApps,
+        subtitle: l10n.settingsMixAudioWithOtherAppsDescription,
+        leading: const Icon(Icons.library_music_outlined),
+        setKey: SettingBoxKey.mixAudioWithOtherApps,
+        defaultVal: false,
+        onChanged: (value) {
+          if (audioSessionHandler case final handler?) {
+            unawaited(handler.updateMixWithOthers(value));
+          }
+        },
       ),
     PopupModel(
       title: l10n.settingsPlaybackOrder,

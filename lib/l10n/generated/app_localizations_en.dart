@@ -3094,6 +3094,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keeps play and pause controls available in picture-in-picture';
 
   @override
+  String get settingsMixAudioWithOtherApps => 'Mix audio with other apps';
+
+  @override
+  String get settingsMixAudioWithOtherAppsDescription =>
+      'Let video audio play together with other apps. Calls and navigation may no longer pause or lower video audio, and some devices may not support mixing.';
+
+  @override
   String get settingsPlaybackOrder => 'Playback order';
 
   @override
