@@ -38,6 +38,10 @@ class MainApp extends StatefulWidget {
   State<MainApp> createState() => _MainAppState();
 }
 
+class _RefreshRecommendationsIntent extends Intent {
+  const _RefreshRecommendationsIntent();
+}
+
 class _MainAppState extends PopScopeState<MainApp>
     with
         RouteAware,
@@ -63,9 +67,6 @@ class _MainAppState extends PopScopeState<MainApp>
       });
     }
     addObserverMobile(this);
-    if (Platform.isMacOS) {
-      HardwareKeyboard.instance.addHandler(_handleKeyEvent);
-    }
     if (PlatformUtils.isDesktop) {
       windowManager
         ..addListener(this)
@@ -130,9 +131,6 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   void dispose() {
-    if (Platform.isMacOS) {
-      HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
-    }
     if (PlatformUtils.isDesktop) {
       trayManager.removeListener(this);
       windowManager.removeListener(this);
@@ -141,13 +139,6 @@ class _MainAppState extends PopScopeState<MainApp>
     PiliScheme.listener?.cancel();
     GStorage.close();
     super.dispose();
-  }
-
-  bool _handleKeyEvent(KeyEvent event) {
-    return event is KeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.keyR &&
-        HardwareKeyboard.instance.isMetaPressed &&
-        _mainController.refreshRecommendations();
   }
 
   @override
@@ -521,6 +512,27 @@ class _MainAppState extends PopScopeState<MainApp>
           systemNavigationBarIconBrightness: theme.brightness.reverse,
         ),
         child: child,
+      );
+    }
+
+    if (Platform.isMacOS) {
+      child = Shortcuts(
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.keyR, meta: true):
+              _RefreshRecommendationsIntent(),
+        },
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            _RefreshRecommendationsIntent:
+                CallbackAction<_RefreshRecommendationsIntent>(
+                  onInvoke: (_) {
+                    _mainController.refreshRecommendations();
+                    return null;
+                  },
+                ),
+          },
+          child: child,
+        ),
       );
     }
 
