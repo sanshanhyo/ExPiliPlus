@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/utils/bili_colors.dart';
+import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:flutter/material.dart'
     show ThemeData, Color, ColorScheme, Brightness, Colors;
 
@@ -33,9 +34,14 @@ extension ColorExtension on Color {
   }
 
   ColorScheme asColorSchemeSeed([
-    Object? _variant,
+    FlexSchemeVariant variant = .material,
     Brightness brightness = .light,
-  ]) => ColorScheme.fromSeed(seedColor: this, brightness: brightness);
+  ]) => SeedColorScheme.fromSeeds(
+    primaryKey: this,
+    variant: variant,
+    brightness: brightness,
+    useExpressiveOnContainerColors: false,
+  );
 }
 
 extension BrightnessExt on Brightness {

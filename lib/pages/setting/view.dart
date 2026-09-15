@@ -91,6 +91,11 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
+      // Keep the desktop split view opaque all the way to the bottom. The
+      // right-hand settings page is another scaffold, so relying on a
+      // transparent/default canvas can expose the native window background
+      // after the list content ends on macOS.
+      backgroundColor: theme.scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(

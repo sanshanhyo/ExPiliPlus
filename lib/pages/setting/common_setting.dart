@@ -44,6 +44,7 @@ class _CommonSettingState extends State<CommonSetting> {
   Widget build(BuildContext context) {
     final showAppBar = widget.showAppBar;
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: showAppBar
           ? AppBar(
