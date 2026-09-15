@@ -118,22 +118,28 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   Expanded(
                     flex: 6,
-                    child: switch (_type) {
-                      .privacySetting ||
-                      .recommendSetting ||
-                      .videoSetting ||
-                      .playSetting ||
-                      .styleSetting ||
-                      .extraSetting ||
-                      .exPiliPlusSetting => CommonSetting(
-                        settingType: _type,
-                        showAppBar: false,
-                      ),
-                      .webdavSetting => const WebDavSettingPage(
-                        showAppBar: false,
-                      ),
-                      .about => const AboutPage(showAppBar: false),
-                    },
+                    child: ColoredBox(
+                      // Keep the right panel opaque even when its nested
+                      // settings list is shorter than the window.
+                      color: theme.scaffoldBackgroundColor,
+                      key: const ValueKey('settings-body-background'),
+                      child: switch (_type) {
+                        .privacySetting ||
+                        .recommendSetting ||
+                        .videoSetting ||
+                        .playSetting ||
+                        .styleSetting ||
+                        .extraSetting ||
+                        .exPiliPlusSetting => CommonSetting(
+                          settingType: _type,
+                          showAppBar: false,
+                        ),
+                        .webdavSetting => const WebDavSettingPage(
+                          showAppBar: false,
+                        ),
+                        .about => const AboutPage(showAppBar: false),
+                      },
+                    ),
                   ),
                 ],
               ),
