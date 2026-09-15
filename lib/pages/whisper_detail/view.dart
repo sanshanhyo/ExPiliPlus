@@ -10,6 +10,7 @@ import 'package:ex_piliplus/common/widgets/loading_widget/loading_widget.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
     show platformAlwaysClampingPhysics;
 import 'package:ex_piliplus/grpc/bilibili/im/type.pb.dart' show Msg;
+import 'package:ex_piliplus/grpc/bilibili/im/type.pbenum.dart' show MsgType;
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/msg.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
@@ -141,10 +142,7 @@ class _WhisperDetailPageState
             ),
             if (_whisperDetailController.mid != null) ...[
               _buildInputView(theme, containerColor),
-              buildPanelContainer(
-                theme,
-                containerColor,
-              ),
+              buildPanelContainer(containerColor),
             ] else
               SizedBox(height: padding.bottom),
           ],
@@ -159,6 +157,7 @@ class _WhisperDetailPageState
       Success(:final response) =>
         response != null && response.isNotEmpty
             ? ChatListView.separated(
+                maxExtent: 640,
                 itemCount: response.length,
                 padding: const .all(kChatListPadding),
                 physics: platformAlwaysClampingPhysics,
@@ -204,7 +203,7 @@ class _WhisperDetailPageState
             onTap: () => _whisperDetailController.sendMsg(
               message: '${item.msgKey}',
               onClearText: editController.clear,
-              msgType: 5,
+              msgType: MsgType.EN_MSG_TYPE_DRAW_BACK,
               index: index,
             ),
             child: Text(
@@ -251,7 +250,7 @@ class _WhisperDetailPageState
                   _whisperDetailController.sendMsg(
                     message: '${item.msgKey}',
                     onClearText: editController.clear,
-                    msgType: 5,
+                    msgType: MsgType.EN_MSG_TYPE_DRAW_BACK,
                     index: index,
                   );
                 },

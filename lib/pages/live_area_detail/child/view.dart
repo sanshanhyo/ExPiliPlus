@@ -10,6 +10,7 @@ import 'package:ex_piliplus/pages/live_area_detail/child/controller.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';
 
 class LiveAreaChildPage extends StatefulWidget {
@@ -80,10 +81,12 @@ class _LiveAreaChildPageState extends State<LiveAreaChildPage>
     LoadingState<List<CardLiveItem>?> loadingState,
   ) {
     return switch (loadingState) {
-      Loading() => SliverGrid.builder(
+      Loading() => SliverGrid(
         gridDelegate: gridDelegate,
-        itemBuilder: (context, index) => const VideoCardVSkeleton(),
-        itemCount: 10,
+        delegate: const SliverSingleChildDelegate(
+          count: 10,
+          child: VideoCardVSkeleton(),
+        ),
       ),
       Success(:final response) => SliverMainAxisGroup(
         slivers: [

@@ -55,6 +55,7 @@ import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:canvas_danmaku/danmaku_screen.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' hide PageView;
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
@@ -751,18 +752,7 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     Widget chat() => LiveRoomChatPanel(
       key: chatKey,
       isPP: isPP,
-      roomId: _liveRoomController.roomId,
       liveRoomController: _liveRoomController,
-      onAtUser: (item) => _liveRoomController
-        ..savedDanmaku = [
-          RichTextItem.fromStart(
-            '@${item.name} ',
-            rawText: item.extra.mid.toString(),
-            type: .at,
-            id: item.extra.id.toString(),
-          ),
-        ]
-        ..onSendDanmaku(),
     );
     return Padding(
       padding: .only(bottom: 12, top: isPortrait ? 12 : 0),
@@ -848,18 +838,28 @@ class _LiveRoomPageState extends State<LiveRoomPage>
                 ),
                 Builder(
                   builder: (context) {
-                    final colorScheme = Theme.of(context).colorScheme;
+                    final isLogin = kDebugMode || _liveRoomController.isLogin;
+                    final colorScheme = ColorScheme.of(context);
                     return Material(
                       type: MaterialType.transparency,
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
                           InkWell(
-                            overlayColor: overlayColor(colorScheme),
+                            overlayColor: _overlayColor(colorScheme),
                             customBorder: const CircleBorder(),
-                            onTapDown: _liveRoomController.onLikeTapDown,
-                            onTapUp: _liveRoomController.onLikeTapUp,
-                            onTapCancel: _liveRoomController.onLikeTapUp,
+                            onTap: isLogin
+                                ? null
+                                : _liveRoomController.toastNotLogin,
+                            onTapDown: isLogin
+                                ? _liveRoomController.onLikeTapDown
+                                : null,
+                            onTapUp: isLogin
+                                ? _liveRoomController.onLikeTapUp
+                                : null,
+                            onTapCancel: isLogin
+                                ? _liveRoomController.onLikeTapUp
+                                : null,
                             child: const SizedBox.square(
                               dimension: 34,
                               child: Icon(
@@ -944,29 +944,20 @@ class _LiveRoomPageState extends State<LiveRoomPage>
     return child;
   }
 
-  WidgetStateProperty<Color?>? overlayColor(ColorScheme theme) =>
+  WidgetStateProperty<Color?>? _overlayColor(ColorScheme colorScheme) =>
       WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-        if (states.contains(WidgetState.selected)) {
-          if (states.contains(WidgetState.pressed)) {
-            return theme.primary.withValues(alpha: 0.1);
-          }
-          if (states.contains(WidgetState.hovered)) {
-            return theme.primary.withValues(alpha: 0.08);
-          }
-          if (states.contains(WidgetState.focused)) {
-            return theme.primary.withValues(alpha: 0.1);
-          }
-        }
+        final color = states.contains(WidgetState.selected)
+            ? colorScheme.primary
+            : colorScheme.onSurfaceVariant;
         if (states.contains(WidgetState.pressed)) {
-          return theme.onSurfaceVariant.withValues(alpha: 0.1);
+          return color.withValues(alpha: 0.1);
+        } else if (states.contains(WidgetState.hovered)) {
+          return color.withValues(alpha: 0.08);
+        } else if (states.contains(WidgetState.focused)) {
+          return color.withValues(alpha: 0.1);
+        } else {
+          return Colors.transparent;
         }
-        if (states.contains(WidgetState.hovered)) {
-          return theme.onSurfaceVariant.withValues(alpha: 0.08);
-        }
-        if (states.contains(WidgetState.focused)) {
-          return theme.onSurfaceVariant.withValues(alpha: 0.1);
-        }
-        return Colors.transparent;
       });
 }
 

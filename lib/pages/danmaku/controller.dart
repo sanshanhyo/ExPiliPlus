@@ -9,6 +9,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/utils/danmaku_utils.dart';
 import 'package:path/path.dart' as path;
 
 class PlDanmakuController {
@@ -29,15 +30,9 @@ class PlDanmakuController {
   // 已请求的段落标记
   late final Set<int> _requestedSeg = HashSet();
 
-  static const int segmentLength = 60 * 6 * 1000;
-
   void dispose() {
     _dmSegMap.clear();
     _requestedSeg.clear();
-  }
-
-  static int calcSegment(int progress) {
-    return progress ~/ segmentLength;
   }
 
   Future<void> queryDanmaku(int segmentIndex) async {
@@ -99,7 +94,7 @@ class PlDanmakuController {
     if (_isFileSource) {
       initFileDmIfNeeded();
     } else {
-      final int segmentIndex = calcSegment(progress);
+      final int segmentIndex = DmUtils.calcSegment(progress);
       if (!_requestedSeg.contains(segmentIndex)) {
         queryDanmaku(segmentIndex);
         return null;

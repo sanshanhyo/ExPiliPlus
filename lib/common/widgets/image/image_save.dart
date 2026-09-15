@@ -6,6 +6,7 @@ import 'package:ex_piliplus/http/user.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -99,6 +100,16 @@ void imageSaveDialog({
                           ImageUtils.onShareImg(cover);
                         },
                         icon: const Icon(Icons.share),
+                      )
+                    else
+                      iconButton(
+                        iconSize: iconSize,
+                        tooltip: context.l10n.commonCopyLink,
+                        onPressed: () {
+                          SmartDialog.dismiss();
+                          Utils.copyText(cover);
+                        },
+                        icon: const Icon(Icons.copy),
                       ),
                     iconButton(
                       iconSize: iconSize,

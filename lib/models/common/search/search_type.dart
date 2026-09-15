@@ -1,32 +1,36 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 
 // ignore_for_file: constant_identifier_names
-enum SearchType {
-  // all('综合'),
+import 'package:ex_piliplus/http/api.dart';
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
+
+enum SearchType implements EnumWithLabel {
+  all('综合', api: Api.searchAll),
   // 视频：video
-  video,
+  video('视频'),
   // 番剧：media_bangumi,
-  media_bangumi,
+  media_bangumi('番剧'),
   // 影视：media_ft
-  media_ft,
+  media_ft('影视'),
   // 直播间及主播：live
   // live,
   // 直播间：live_room
-  live_room,
+  live_room('直播间'),
   // 主播：live_user
   // live_user,
   // 话题：topic
   // topic,
   // 用户：bili_user
-  bili_user,
+  bili_user('用户'),
   // 专栏：article
-  article,
+  article('专栏'),
   ;
 
   // 相簿：photo
   // photo
 
   String localizedLabel(AppLocalizations l10n) => switch (this) {
+    .all => label,
     .video => l10n.commonVideos,
     .media_bangumi => l10n.navigationAnime,
     .media_ft => l10n.navigationMoviesAndTv,
@@ -34,4 +38,8 @@ enum SearchType {
     .bili_user => l10n.commonUsers,
     .article => l10n.commonArticles,
   };
+  @override
+  final String label;
+  final String api;
+  const SearchType(this.label, {this.api = Api.searchByType});
 }

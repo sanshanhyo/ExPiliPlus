@@ -79,7 +79,7 @@ abstract final class SearchHttp {
       'gaia_vtoken': ?gaiaVtoken,
     });
     final res = await Request().get(
-      Api.searchByType,
+      searchType.api,
       queryParameters: params,
       options: Options(
         headers: {
@@ -101,28 +101,17 @@ abstract final class SearchHttp {
             AppLocalizations.of(Get.context!).searchSecurityCheckTriggered,
           );
         }
-        dynamic data;
         try {
-          switch (searchType) {
-            case SearchType.video:
-              data = SearchVideoData.fromJson(dataData);
-              break;
-            case SearchType.live_room:
-              data = SearchLiveData.fromJson(dataData);
-              break;
-            case SearchType.bili_user:
-              data = SearchUserData.fromJson(dataData);
-              break;
-            case SearchType.media_bangumi || SearchType.media_ft:
-              data = SearchPgcData.fromJson(dataData);
-              break;
-            case SearchType.article:
-              data = SearchArticleData.fromJson(dataData);
-              break;
-            // default:
-            //   break;
-          }
-          return Success(data);
+          return Success(
+            switch (searchType) {
+              .all => SearchVideoData.fromSearchAll(dataData),
+              .video => SearchVideoData.fromJson(dataData),
+              .media_bangumi || .media_ft => SearchPgcData.fromJson(dataData),
+              .live_room => SearchLiveData.fromJson(dataData),
+              .bili_user => SearchUserData.fromJson(dataData),
+              .article => SearchArticleData.fromJson(dataData),
+            } as R,
+          );
         } catch (e, s) {
           return Error('$e\n\n$s');
         }
@@ -135,7 +124,7 @@ abstract final class SearchHttp {
   }
 
   @pragma('vm:notify-debugger-on-exception')
-  static Future<LoadingState<SearchAllData>> searchAll({
+  static Future<LoadingState<SearchVideoData>> searchAll({
     required String keyword,
     required page,
     String? order,
@@ -168,7 +157,7 @@ abstract final class SearchHttp {
     }
     if (res.data['code'] == 0) {
       try {
-        return Success(SearchAllData.fromJson(res.data['data']));
+        return Success(SearchVideoData.fromSearchAll(res.data['data']));
       } catch (e, s) {
         return Error('$e\n\n$s');
       }

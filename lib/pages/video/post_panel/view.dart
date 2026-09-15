@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/common/widgets/extended_visibility_detector.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -16,6 +17,10 @@ import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/view_insets_safe_area.dart';
+import 'package:ex_piliplus/utils/extension/context_ext.dart';
+import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;

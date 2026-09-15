@@ -158,7 +158,7 @@ class _SendDanmakuPanelState extends CommonTextPubPageState<SendDanmakuPanel> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildInputView(),
-              buildPanelContainer(themeData, Colors.transparent),
+              buildPanelContainer(Colors.transparent),
             ],
           ),
         ),

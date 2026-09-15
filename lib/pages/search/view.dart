@@ -16,6 +16,8 @@ import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/view_insets_safe_area.dart';
 import 'package:get/get.dart';
 
 class SearchPage extends StatefulWidget {
@@ -35,10 +37,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    _searchController = Get.put(
-      SSearchController(_tag),
-      tag: _tag,
-    );
+    _searchController = Get.put(SSearchController(_tag), tag: _tag);
   }
 
   @override
@@ -62,25 +61,27 @@ class _SearchPageState extends State<SearchPage> {
       appBar: _buildAppBar,
       body: Padding(
         padding: .only(left: padding.left, right: padding.right),
-        child: CustomScrollView(
-          slivers: [
-            if (_searchController.searchSuggestion) _buildSearchSuggest(),
-            if (isPortrait) ...[
-              ?trending,
-              _buildHistory,
-              ?rcmd,
-            ] else if (_searchController.enableTrending ||
-                _searchController.enableSearchRcmd)
-              SliverCrossAxisGroup(
-                slivers: [
-                  SliverMainAxisGroup(slivers: [?trending, ?rcmd]),
-                  _buildHistory,
-                ],
-              )
-            else
-              _buildHistory,
-            SliverPadding(padding: .only(bottom: padding.bottom)),
-          ],
+        child: ViewInsetsSafeArea(
+          child: CustomScrollView(
+            slivers: [
+              if (_searchController.searchSuggestion) _buildSearchSuggest(),
+              if (isPortrait) ...[
+                ?trending,
+                _buildHistory,
+                ?rcmd,
+              ] else if (_searchController.enableTrending ||
+                  _searchController.enableSearchRcmd)
+                SliverCrossAxisGroup(
+                  slivers: [
+                    SliverMainAxisGroup(slivers: [?trending, ?rcmd]),
+                    _buildHistory,
+                  ],
+                )
+              else
+                _buildHistory,
+              SliverPadding(padding: .only(bottom: padding.bottom)),
+            ],
+          ),
         ),
       ),
     );
@@ -155,9 +156,7 @@ class _SearchPageState extends State<SearchPage> {
                                     style: e.isEm
                                         ? TextStyle(
                                             fontWeight: .bold,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                            color: theme.colorScheme.primary,
                                           )
                                         : null,
                                   ),

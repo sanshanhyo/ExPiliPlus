@@ -4,6 +4,8 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/member/contribute_type.dart';
 import 'package:ex_piliplus/models_new/space/space_season_series/season.dart'
     show SpaceSsModel;
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
 import 'package:ex_piliplus/pages/member_season_series/controller.dart';
 import 'package:ex_piliplus/pages/member_season_series/widget/season_series_card.dart';
 import 'package:ex_piliplus/pages/member_video/view.dart';
@@ -45,6 +47,7 @@ class _SeasonSeriesPageState extends State<SeasonSeriesPage>
   Widget build(BuildContext context) {
     super.build(context);
     return CustomScrollView(
+      physics: platformAlwaysClampingPhysics,
       slivers: [
         SliverPadding(
           padding: EdgeInsets.only(

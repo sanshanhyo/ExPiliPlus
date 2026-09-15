@@ -15,6 +15,7 @@ import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
 class ContributionRankPanel extends StatefulWidget {

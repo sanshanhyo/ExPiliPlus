@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
-enum BtmProgressBehavior {
+enum BtmProgressBehavior implements EnumWithLabel {
   alwaysShow('始终展示'),
   alwaysHide('始终隐藏'),
   onlyShowFullScreen('仅全屏时展示'),
@@ -16,4 +17,6 @@ enum BtmProgressBehavior {
     .onlyShowFullScreen => l10n.settingsProgressFullscreenOnly,
     .onlyHideFullScreen => l10n.settingsProgressHideFullscreen,
   };
+  @override
+  String get label => desc;
 }

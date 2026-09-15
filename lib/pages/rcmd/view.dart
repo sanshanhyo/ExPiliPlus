@@ -9,6 +9,7 @@ import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';
 
 class RcmdPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class RcmdPage extends StatefulWidget {
 
 class _RcmdPageState extends State<RcmdPage>
     with AutomaticKeepAliveClientMixin {
-  final RcmdController controller = Get.put(RcmdController());
+  final controller = Get.put(RcmdController());
 
   @override
   bool get wantKeepAlive => true;
@@ -131,9 +132,11 @@ class _RcmdPageState extends State<RcmdPage>
     };
   }
 
-  Widget get _buildSkeleton => SliverGrid.builder(
+  Widget get _buildSkeleton => SliverGrid(
     gridDelegate: gridDelegate,
-    itemBuilder: (context, index) => const VideoCardVSkeleton(),
-    itemCount: 10,
+    delegate: const SliverSingleChildDelegate(
+      count: 10,
+      child: VideoCardVSkeleton(),
+    ),
   );
 }

@@ -28,6 +28,7 @@ import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

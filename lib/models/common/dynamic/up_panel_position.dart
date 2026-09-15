@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
-enum UpPanelPosition {
+enum UpPanelPosition implements EnumWithLabel {
   top('顶部'),
   leftFixed('左侧常驻'),
   rightFixed('右侧常驻'),
@@ -8,6 +9,7 @@ enum UpPanelPosition {
   rightDrawer('右侧抽屉'),
   ;
 
+  @override
   final String label;
   const UpPanelPosition(this.label);
 

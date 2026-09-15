@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/common/widgets/extended_visibility_detector.dart';
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/button/icon_button.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';

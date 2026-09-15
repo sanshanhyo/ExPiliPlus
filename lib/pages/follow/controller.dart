@@ -4,10 +4,18 @@ import 'package:ex_piliplus/models/member/tags.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/models/common/follow_order_type.dart';
+import 'package:ex_piliplus/pages/follow/child/child_controller.dart';
+import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class FollowController extends GetxController with GetTickerProviderStateMixin {
+  final String tag;
+  FollowController(this.tag);
+
   late final int mid;
   late final RxnString name;
   late final bool isOwner;
@@ -15,6 +23,19 @@ class FollowController extends GetxController with GetTickerProviderStateMixin {
   late final Rx<LoadingState> followState = LoadingState.loading().obs;
   late final RxList<MemberTagItemModel> tabs = <MemberTagItemModel>[].obs;
   TabController? tabController;
+
+  late final Rx<FollowOrderType> orderType = Pref.followOrderType.obs;
+
+  void toggleOrderType() {
+    final FollowOrderType type = orderType.value == .def ? .attention : .def;
+    orderType.value = type;
+    for (var e in tabs) {
+      try {
+        Get.find<FollowChildController>(tag: '$tag${e.tagid}').onReload();
+      } catch (_) {}
+    }
+    GStorage.setting.put(SettingBoxKey.followOrderType, type.index);
+  }
 
   @override
   void onInit() {

@@ -48,7 +48,7 @@ class PlayerFocus extends StatelessWidget {
     return Focus(
       autofocus: true,
       onKeyEvent: (node, event) {
-        final handled = _handleKey(event);
+        final handled = _handleKey(event, context);
         if (handled || _shouldHandle(event.logicalKey)) {
           return KeyEventResult.handled;
         }
@@ -87,7 +87,7 @@ class PlayerFocus extends StatelessWidget {
     }
   }
 
-  bool _handleKey(KeyEvent event) {
+  bool _handleKey(KeyEvent event, BuildContext context) {
     final key = event.logicalKey;
 
     final isKeyQ = key == LogicalKeyboardKey.keyQ;
@@ -246,6 +246,18 @@ class PlayerFocus extends StatelessWidget {
       }
 
       if (!plPlayerController.isLive) {
+        final isDigit1 = key == LogicalKeyboardKey.digit1;
+        if (isDigit1 || key == LogicalKeyboardKey.digit2) {
+          if (HardwareKeyboard.instance.isShiftPressed && hasPlayer) {
+            final speed = isDigit1 ? 1.0 : 2.0;
+            if (speed != plPlayerController.playbackSpeed) {
+              plPlayerController.setPlaybackSpeed(speed);
+            }
+            SmartDialog.showToast(context.l10n.playerSpeedActive('$speed'));
+          }
+          return true;
+        }
+
         switch (key) {
           case LogicalKeyboardKey.arrowLeft:
             if (hasPlayer) {

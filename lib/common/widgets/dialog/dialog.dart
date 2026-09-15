@@ -37,6 +37,26 @@ Future<bool> showConfirmDialog({
       false;
 }
 
+Widget _statusItem({
+  required bool enabled,
+  required String text,
+  required VoidCallback onTap,
+}) {
+  return ListTile(
+    dense: true,
+    enabled: enabled,
+    title: Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 14),
+      ),
+    ),
+    trailing: !enabled ? const Icon(size: 22, Icons.check) : null,
+    onTap: onTap,
+  );
+}
+
 void showPgcFollowDialog({
   required BuildContext context,
   required String type,
@@ -44,26 +64,6 @@ void showPgcFollowDialog({
   required ValueChanged<int> onUpdateStatus,
 }) {
   final l10n = context.l10n;
-  Widget statusItem({
-    required bool enabled,
-    required String text,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      dense: true,
-      enabled: enabled,
-      title: Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: Text(
-          l10n.videoMarkAs(text),
-          style: const TextStyle(fontSize: 14),
-        ),
-      ),
-      trailing: !enabled ? const Icon(size: 22, Icons.check) : null,
-      onTap: onTap,
-    );
-  }
-
   showDialog(
     context: context,
     builder: (context) => SimpleDialog(
@@ -75,9 +75,9 @@ void showPgcFollowDialog({
           (followStatus: 2, title: l10n.videoStatusWatching),
           (followStatus: 1, title: l10n.videoStatusWantToWatch),
         ].map(
-          (item) => statusItem(
+          (item) => _statusItem(
             enabled: followStatus != item.followStatus,
-            text: item.title,
+            text: l10n.videoMarkAs(item.title),
             onTap: () {
               Get.back();
               onUpdateStatus(item.followStatus);

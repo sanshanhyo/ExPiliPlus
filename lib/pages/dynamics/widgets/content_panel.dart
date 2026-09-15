@@ -2,8 +2,7 @@
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/common/widgets/emote_span.dart';
-import 'package:ex_piliplus/common/widgets/flutter/text/text.dart'
-    as custom_text;
+import 'package:ex_piliplus/common/widgets/text_more/text_more.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
 import 'package:ex_piliplus/common/widgets/selection_text.dart';
@@ -15,6 +14,7 @@ import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
 part 'package:ex_piliplus/common/widgets/context_menu/dyn_menu_helper.dart';
@@ -30,6 +30,9 @@ Widget content(
   TextSpan? richNodes = richNode(
     context,
     theme: theme,
+    floor: floor,
+    isDetail: isDetail,
+    isSave: isSave,
     item: item,
   );
   final moduleDynamic = item.modules.moduleDynamic;
@@ -94,7 +97,7 @@ Widget content(
                           item.modules.moduleDynamic,
                         ),
                 )
-              : custom_text.Text.rich(
+              : TextMore.rich(
                   style: floor == 1
                       ? const TextStyle(fontSize: 15)
                       : const TextStyle(fontSize: 14),

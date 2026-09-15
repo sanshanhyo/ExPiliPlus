@@ -9,6 +9,7 @@ import 'package:ex_piliplus/pages/member_favorite/widget/item.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';
 
 class MemberFavorite extends StatefulWidget {
@@ -46,6 +47,7 @@ class _MemberFavoriteState extends State<MemberFavorite>
     super.build(context);
     final theme = Theme.of(context);
     return refreshIndicator(
+      isClampingScrollPhysics: true,
       onRefresh: _controller.onRefresh,
       child: CustomScrollView(
         physics: _FavScrollPhysics(controller: _controller),
@@ -70,10 +72,12 @@ class _MemberFavoriteState extends State<MemberFavorite>
     return switch (loadingState) {
       Loading() => SliverPadding(
         padding: const EdgeInsets.only(top: 7),
-        sliver: SliverGrid.builder(
+        sliver: SliverGrid(
           gridDelegate: gridDelegate,
-          itemBuilder: (context, index) => const VideoCardHSkeleton(),
-          itemCount: 10,
+          delegate: const SliverSingleChildDelegate(
+            count: 10,
+            child: VideoCardHSkeleton(),
+          ),
         ),
       ),
       Success(:final response) =>

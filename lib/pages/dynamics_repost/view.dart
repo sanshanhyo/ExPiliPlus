@@ -92,7 +92,6 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
     Widget page([ScrollController? scrollController]) => Column(
       key: _isMax ? _key : null,
       mainAxisSize: _isMax ? MainAxisSize.max : MainAxisSize.min,
@@ -106,14 +105,14 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
               padding: EdgeInsets.zero,
               controller: scrollController,
               physics: platformClampingPhysics,
-              children: _buildEditPanel(theme),
+              children: _buildEditPanel(),
             ),
           ),
           _buildToolbar,
-          buildPanelContainer(theme, Colors.transparent),
+          buildPanelContainer(Colors.transparent),
         ] else ...[
-          ..._buildEditPanel(theme),
-          ..._buildDismiss(theme),
+          ..._buildEditPanel(),
+          ..._buildDismiss(),
         ],
       ],
     );
@@ -140,7 +139,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
           );
   }
 
-  List<Widget> _buildEditPanel(ThemeData theme) => [
+  List<Widget> _buildEditPanel() => [
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: _isMax
@@ -154,14 +153,14 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                   ),
                 ),
               ),
-              child: _buildEditPlaceHolder(theme),
+              child: _buildEditPlaceHolder(),
             ),
     ),
     const SizedBox(height: 10),
-    _buildRefWidget(theme),
+    _buildRefWidget(),
   ];
 
-  Widget _buildRefWidget(ThemeData theme) => Card(
+  Widget _buildRefWidget() => Card(
     margin: const EdgeInsets.symmetric(horizontal: 16),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -207,7 +206,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     ),
   );
 
-  Widget _buildEditPlaceHolder(ThemeData theme) => GestureDetector(
+  Widget _buildEditPlaceHolder() => GestureDetector(
     behavior: HitTestBehavior.opaque,
     onTap: () {
       setState(() => _isMax = true);
@@ -255,8 +254,8 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
           ),
           contentPadding: EdgeInsets.zero,
         ),
-        // inputFormatters: [LengthLimitingTextInputFormatter(1000)],
       ),
+      // inputFormatters: [LengthLimitingTextInputFormatter(1000)],
     ),
   );
 
@@ -362,7 +361,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     ),
   );
 
-  List<Widget> _buildDismiss(ThemeData theme) => [
+  List<Widget> _buildDismiss() => [
     const SizedBox(height: 10),
     Divider(
       height: 1,

@@ -9,6 +9,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/models/video/play/url.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/video_utils.dart';
+import 'package:ex_piliplus/models/common/video/video_quality.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -132,6 +133,7 @@ class _CdnSelectDialogState extends State<CdnSelectDialog> {
     final result = await VideoHttp.videoUrl(
       cid: 196018899,
       bvid: 'BV1fK4y1t7hj',
+      qn: VideoQuality.high1080.code,
       tryLook: false,
       videoType: VideoType.ugc,
     );
@@ -192,7 +194,7 @@ class _CdnSelectDialogState extends State<CdnSelectDialog> {
 
         final duration = DateTime.now().microsecondsSinceEpoch - start;
 
-        downloaded += count;
+        downloaded = count;
 
         if (duration > 15000000) {
           onClose();

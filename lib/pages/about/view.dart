@@ -28,6 +28,8 @@ import 'package:ex_piliplus/utils/update.dart';
 import 'package:ex_piliplus/utils/update_policy.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart' hide ListTile;
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -76,7 +78,7 @@ class _AboutPageState extends State<AboutPage> {
         onSubmitted: (value) {
           Get.back();
           if (value.isNotEmpty) {
-            PageUtils.handleWebview(value, inApp: true);
+            PiliScheme.routePushFromUrl(value);
           }
         },
       ),

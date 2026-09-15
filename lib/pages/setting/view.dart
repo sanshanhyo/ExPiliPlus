@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/common/widgets/flutter/list_tile.dart';
 import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
 import 'package:ex_piliplus/http/login.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/setting_type.dart';
 import 'package:ex_piliplus/pages/about/view.dart';
 import 'package:ex_piliplus/pages/login/controller.dart';
@@ -276,14 +277,17 @@ class _SettingPageState extends State<SettingPage> {
             TextButton(
               onPressed: () async {
                 SmartDialog.showLoading();
-                final res = await LoginHttp.logout(Accounts.main);
-                if (res['status']) {
+                final account = Accounts.main;
+                final LoadingState<void> res = account is LoginAccount
+                    ? await LoginHttp.logout(account)
+                    : Error(context.l10n.accountPleaseSignIn);
+                if (res.isSuccess) {
                   SmartDialog.dismiss();
                   logout();
                   Get.back();
                 } else {
                   SmartDialog.dismiss();
-                  SmartDialog.showToast(res['msg'].toString());
+                  res.toast();
                 }
               },
               child: Text(context.l10n.commonConfirm),

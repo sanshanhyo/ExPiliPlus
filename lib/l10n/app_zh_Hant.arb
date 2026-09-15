@@ -2276,5 +2276,11 @@
   "shareTicketDanmaku": "彈幕",
   "shareTicketLikes": "按讚",
   "shareTicketSharer": "分享者",
-  "shareTicketFrom": "分享來自 ExPiliPlus"
+  "shareTicketFrom": "分享來自 ExPiliPlus",
+  "videoNoteWindowPinned": "筆記視窗已置頂",
+  "videoNoteWindowOpened": "已在新視窗開啟筆記",
+  "settingsEnableDocProvider": "允許第三方 APP 存取私有儲存空間",
+  "settingsEnableDocProviderDescription": "允許第三方 APP 透過外部儲存空間存取應用程式私有檔案",
+  "settingsEnableEmoteTooltip": "點擊表情顯示 Tooltip",
+  "settingsEnableEmoteTooltipDescription": "長按或懸停表情時顯示預覽"
 }

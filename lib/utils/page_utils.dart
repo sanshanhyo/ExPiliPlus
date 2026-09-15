@@ -472,8 +472,8 @@ abstract final class PageUtils {
 
   static Future<void> handleWebview(
     String url, {
-    bool off = false,
     bool inApp = false,
+    bool off = false,
     Map? parameters,
   }) async {
     if (!inApp && Pref.openInBrowser) {

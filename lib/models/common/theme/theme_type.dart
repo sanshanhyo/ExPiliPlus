@@ -1,15 +1,18 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-enum ThemeType {
+enum ThemeType implements EnumWithLabel {
   light('浅色'),
   dark('深色'),
   system('跟随系统'),
   ;
 
-  final String desc;
-  const ThemeType(this.desc);
+  @override
+  final String label;
+  String get desc => label;
+  const ThemeType(this.label);
 
   String localizedLabel(AppLocalizations l10n) => switch (this) {
     .light => l10n.themeLight,

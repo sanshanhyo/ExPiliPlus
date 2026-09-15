@@ -20,6 +20,9 @@ import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
+    show platformAlwaysClampingPhysics;
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -73,6 +76,7 @@ class _MemberHomeState extends State<MemberHome>
       Success(response: final res) =>
         res != null
             ? CustomScrollView(
+                physics: platformAlwaysClampingPhysics,
                 slivers: [
                   if (res.archive?.item?.isNotEmpty == true) ...[
                     _header(

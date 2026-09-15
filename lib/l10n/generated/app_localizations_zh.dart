@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -7421,6 +7422,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareTicketFrom => '分享来自 ExPiliPlus';
+
+  @override
+  String get videoNoteWindowPinned => '已置顶笔记窗口';
+
+  @override
+  String get videoNoteWindowOpened => '已在新窗口打开';
+
+  @override
+  String get settingsEnableDocProvider => '允许三方 APP 访问私有存储';
+
+  @override
+  String get settingsEnableDocProviderDescription => '允许三方 APP 通过外部存储访问应用私有文件';
+
+  @override
+  String get settingsEnableEmoteTooltip => '点击表情显示 Tooltip';
+
+  @override
+  String get settingsEnableEmoteTooltipDescription => '长按或悬停表情时显示预览';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -14841,4 +14860,23 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get shareTicketFrom => '分享來自 ExPiliPlus';
+
+  @override
+  String get videoNoteWindowPinned => '筆記視窗已置頂';
+
+  @override
+  String get videoNoteWindowOpened => '已在新視窗開啟筆記';
+
+  @override
+  String get settingsEnableDocProvider => '允許第三方 APP 存取私有儲存空間';
+
+  @override
+  String get settingsEnableDocProviderDescription =>
+      '允許第三方 APP 透過外部儲存空間存取應用程式私有檔案';
+
+  @override
+  String get settingsEnableEmoteTooltip => '點擊表情顯示 Tooltip';
+
+  @override
+  String get settingsEnableEmoteTooltipDescription => '長按或懸停表情時顯示預覽';
 }

@@ -6,6 +6,8 @@ import 'package:ex_piliplus/pages/member_search/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show tabBarView;
 import 'package:get/get.dart';
 
 class MemberSearchPage extends StatefulWidget {

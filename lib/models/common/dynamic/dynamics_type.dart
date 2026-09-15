@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
-enum DynamicsTabType {
+enum DynamicsTabType implements EnumWithLabel {
   all('全部'),
   video('投稿'),
   pgc('番剧'),
@@ -8,6 +9,7 @@ enum DynamicsTabType {
   up('UP'),
   ;
 
+  @override
   final String label;
   const DynamicsTabType(this.label);
 

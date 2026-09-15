@@ -36,6 +36,7 @@ import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide TabBarView;
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -490,14 +491,36 @@ class _EpisodePanelState extends State<EpisodePanel>
                             text: DurationUtils.formatDuration(duration),
                             right: 6.0,
                             bottom: 6.0,
-                            type: PBadgeType.gray,
+                            type: .gray,
                           ),
-                        if (isCharging == true)
+                        if (widget.type == .part)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const .symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondaryContainer,
+                                borderRadius: const .only(
+                                  bottomLeft: .circular(4),
+                                  topRight: Style.imgRadius,
+                                ),
+                              ),
+                              child: Text(
+                                (index + 1).toString(),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.onSecondaryContainer,
+                                ),
+                              ),
+                            ),
+                          )
+                        else if (isCharging == true)
                           PBadge(
                             text: context.l10n.videoChargingOnly,
                             top: 6,
                             right: 6,
-                            type: PBadgeType.error,
+                            type: .error,
                           )
                         else if (episode.badge != null)
                           PBadge(
@@ -507,9 +530,9 @@ class _EpisodePanelState extends State<EpisodePanel>
                             top: 6,
                             right: 6,
                             type: switch (episode.badge) {
-                              '预告' => PBadgeType.gray,
-                              '限免' => PBadgeType.free,
-                              _ => PBadgeType.primary,
+                              '预告' => .gray,
+                              '限免' => .free,
+                              _ => .primary,
                             },
                           ),
                       ],

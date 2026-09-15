@@ -4,6 +4,8 @@ import 'package:ex_piliplus/common/widgets/flutter/refresh_indicator.dart';
 import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:ex_piliplus/http/loading_state.dart';
@@ -110,10 +112,12 @@ class _MainReplyPageState extends State<MainReplyPage>
     LoadingState<List<ReplyInfo>?> loadingState,
   ) {
     return switch (loadingState) {
-      Loading() => SliverPrototypeExtentList.builder(
-        itemCount: 10,
-        itemBuilder: (_, _) => const VideoReplySkeleton(),
-        prototypeItem: const VideoReplySkeleton(),
+      Loading() => const SliverPrototypeExtentList(
+        prototypeItem: VideoReplySkeleton(),
+        delegate: SliverSingleChildDelegate(
+          count: 10,
+          child: VideoReplySkeleton(),
+        ),
       ),
       Success(:final response) =>
         response != null && response.isNotEmpty
@@ -146,8 +150,7 @@ class _MainReplyPageState extends State<MainReplyPage>
                       onDelete: (item, subIndex) =>
                           _controller.onRemove(index, item, subIndex),
                       upMid: _controller.upMid,
-                      onCheckReply: (item) =>
-                          _controller.onCheckReply(item, isManual: true),
+                      onCheckReply: _controller.onCheckReply,
                       onToggleTop: (item) => _controller.onToggleTop(
                         item,
                         index,
@@ -194,7 +197,7 @@ class _MainReplyPageState extends State<MainReplyPage>
               icon: Icon(Icons.sort, size: 16, color: secondary),
               label: Obx(
                 () => Text(
-                  _controller.sortType.value.localizedTitle(context.l10n),
+                  _controller.sortType.value.localizedLabel(context.l10n),
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),

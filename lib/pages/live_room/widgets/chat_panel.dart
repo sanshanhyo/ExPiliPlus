@@ -3,6 +3,7 @@ import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
     show platformClampingPhysics;
+import 'package:ex_piliplus/common/widgets/flutter/live_list_view.dart';
 import 'package:ex_piliplus/http/live.dart';
 import 'package:ex_piliplus/models_new/live/live_danmaku/danmaku_msg.dart';
 import 'package:ex_piliplus/models_new/live/live_superchat/item.dart';
@@ -15,22 +16,19 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class LiveRoomChatPanel extends StatelessWidget {
   const LiveRoomChatPanel({
     super.key,
-    required this.roomId,
     required this.liveRoomController,
     required this.isPP,
-    required this.onAtUser,
   });
 
-  final int roomId;
   final LiveRoomController liveRoomController;
   final bool isPP;
-  final ValueChanged<DanmakuMsg> onAtUser;
 
   bool get disableAutoScroll => liveRoomController.disableAutoScroll.value;
 
@@ -50,15 +48,18 @@ class LiveRoomChatPanel extends StatelessWidget {
     return Stack(
       children: [
         Obx(
-          () => ListView.separated(
+          () => LiveListView.separated(
             key: const PageStorageKey(LiveRoomChatPanel),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            // multiply by 2 to account for separators
+            initialIndex: liveRoomController.trimDmIndex * 2,
+            padding: const .symmetric(horizontal: 12),
             controller: liveRoomController.scrollController,
             separatorBuilder: (_, _) => const SizedBox(height: 8),
             itemCount: liveRoomController.builtLength =
                 liveRoomController.messages.length,
             physics: platformClampingPhysics,
             itemBuilder: (_, index) {
+              liveRoomController.chatSimpleIndex = index;
               final item = liveRoomController.messages[index];
               if (item is DanmakuMsg) {
                 WidgetSpan? medal;
@@ -136,7 +137,7 @@ class LiveRoomChatPanel extends StatelessWidget {
                   onReport: () => liveRoomController.reportSC(item),
                 );
               }
-              throw item.runtimeType;
+              return null;
             },
           ),
         ),
@@ -325,10 +326,7 @@ class LiveRoomChatPanel extends StatelessWidget {
       items: <PopupMenuEntry<Never>>[
         CustomPopupMenuItem(
           height: 38,
-          child: Text(
-            item.name,
-            style: const TextStyle(fontSize: 13),
-          ),
+          child: Text(item.name, style: const TextStyle(fontSize: 13)),
         ),
         const CustomPopupMenuDivider(height: 1),
         PopupMenuItem(
@@ -347,48 +345,47 @@ class LiveRoomChatPanel extends StatelessWidget {
             style: const TextStyle(fontSize: 13),
           ),
         ),
-        PopupMenuItem(
-          height: 38,
-          onTap: () => onAtUser(item),
-          child: const Text(
-            '@TA',
-            style: TextStyle(fontSize: 13),
+        if (liveRoomController.isLogin) ...[
+          PopupMenuItem(
+            height: 38,
+            onTap: () => liveRoomController.onAtUser(item),
+            child: const Text('@TA', style: TextStyle(fontSize: 13)),
           ),
-        ),
-        PopupMenuItem(
-          height: 38,
-          onTap: () async {
-            if (!liveRoomController.isLogin) return;
-            final blockedMessage = context.l10n.liveBlocked;
-            final res = await LiveHttp.liveShieldUser(
-              uid: item.extra.mid,
-              roomid: roomId,
-              type: 1,
-            );
-            if (res.isSuccess) {
-              SmartDialog.showToast(blockedMessage);
-            } else {
-              res.toast();
-            }
-          },
-          child: Text(
-            context.l10n.liveBlockSender,
-            style: const TextStyle(fontSize: 13),
+          PopupMenuItem(
+            height: 38,
+            onTap: () async {
+              if (!liveRoomController.isLogin) return;
+              final blockedMessage = context.l10n.liveBlocked;
+              final res = await LiveHttp.liveShieldUser(
+                uid: item.extra.mid,
+                roomid: liveRoomController.roomId,
+                type: 1,
+              );
+              if (res.isSuccess) {
+                SmartDialog.showToast(blockedMessage);
+              } else {
+                res.toast();
+              }
+            },
+            child: Text(
+              context.l10n.liveBlockSender,
+              style: const TextStyle(fontSize: 13),
+            ),
           ),
-        ),
-        PopupMenuItem(
-          height: 38,
-          onTap: () => HeaderControl.reportLiveDanmaku(
-            context,
-            roomId: roomId,
-            msg: item.text,
-            extra: item.extra,
+          PopupMenuItem(
+            height: 38,
+            onTap: () => HeaderControl.reportLiveDanmaku(
+              context,
+              roomId: liveRoomController.roomId,
+              msg: item.text,
+              extra: item.extra,
+            ),
+            child: Text(
+              context.l10n.liveReportSelectedDanmaku,
+              style: const TextStyle(fontSize: 13),
+            ),
           ),
-          child: Text(
-            context.l10n.liveReportSelectedDanmaku,
-            style: const TextStyle(fontSize: 13),
-          ),
-        ),
+        ],
       ],
     ).whenComplete(() {
       if (autoScroll && context.mounted) {

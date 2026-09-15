@@ -10,6 +10,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 
@@ -22,8 +23,8 @@ class GeetestWebviewDialog extends StatefulWidget {
   @override
   State<GeetestWebviewDialog> createState() => _GeetestWebviewDialogState();
 
-  static Future geetest(String gt, String challenge) {
-    return showDialog(
+  static Future<Map<String, dynamic>?> geetest(String gt, String challenge) {
+    return showDialog<Map<String, dynamic>>(
       context: Get.context!,
       builder: (context) => GeetestWebviewDialog(gt, challenge),
     );
@@ -66,7 +67,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
       if (data.startsWith('(') && data.endsWith(')')) {
         final Map<String, dynamic> config;
         try {
-          config = jsonDecode(data.substring(1, data.length - 1));
+          config = jsonDecode(data.substring1);
         } catch (e) {
           return Error(e.toString());
         }
@@ -211,7 +212,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
             clearCache: true,
             javaScriptEnabled: true,
             forceDark: ForceDark.AUTO,
-            useHybridComposition: false,
+            useHybridComposition: true,
             algorithmicDarkeningAllowed: true,
             useShouldOverrideUrlLoading: true,
             userAgent: BrowserUa.mob,

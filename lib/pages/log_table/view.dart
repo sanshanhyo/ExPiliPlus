@@ -4,6 +4,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/log_table/controller.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 
 class LogPage<T> extends StatefulWidget {

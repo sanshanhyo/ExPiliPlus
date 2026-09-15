@@ -14,11 +14,14 @@ import 'package:ex_piliplus/utils/reply_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
-  final RxInt count = (-1).obs;
+  ReplyController({int count = -1}) : count = RxInt(count);
+
+  late final RxInt count;
 
   late final Rx<ReplySortType> sortType;
   late Mode mode;
@@ -69,7 +72,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
       if (hasUpTop = data.hasUpTop()) {
         data.replies.insert(0, data.upTop);
       }
-      if (subjectControl?.title == ReplySortType.select.title) {
+      if (subjectControl?.title == ReplySortType.select.desc) {
         sortType.value = .select;
       }
     }
@@ -214,7 +217,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
     loadingState.refresh();
   }
 
-  void onCheckReply(ReplyInfo replyInfo, {required bool isManual}) {
+  void onCheckReply(ReplyInfo replyInfo, {bool isManual = true}) {
     ReplyUtils.onCheckReply(
       replyInfo: replyInfo,
       biliSendCommAntifraud: _biliSendCommAntifraud,

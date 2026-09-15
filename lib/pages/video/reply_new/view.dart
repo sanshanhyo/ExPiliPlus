@@ -101,7 +101,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
               ...buildInputView(),
               buildImagePreview(),
               Flexible(
-                child: buildPanelContainer(themeData, Colors.transparent),
+                child: buildPanelContainer(Colors.transparent),
               ),
             ],
           ),
@@ -234,7 +234,7 @@ class _ReplyPageState extends CommonRichTextPubPageState<ReplyPage> {
   }
 
   @override
-  Widget buildMorePanel(ThemeData theme) {
+  Widget buildMorePanel() {
     double height = context.isTablet ? 300 : 170;
     final keyboardHeight = controller.keyboardHeight;
     if (keyboardHeight != 0) {

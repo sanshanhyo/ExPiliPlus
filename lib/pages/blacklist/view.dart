@@ -11,6 +11,8 @@ import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 
 class BlackListPage extends StatefulWidget {
@@ -73,9 +75,12 @@ class _BlackListPageState extends State<BlackListPage> {
   Widget _buildBody(LoadingState<List<BlackListItem>?> loadingState) {
     late final style = TextStyle(color: Theme.of(context).colorScheme.outline);
     return switch (loadingState) {
-      Loading() => SliverList.builder(
-        itemCount: 12,
-        itemBuilder: (context, index) => const MsgFeedTopSkeleton(),
+      Loading() => const SliverPrototypeExtentList(
+        prototypeItem: MsgFeedTopSkeleton(),
+        delegate: SliverSingleChildDelegate(
+          count: 12,
+          child: MsgFeedTopSkeleton(),
+        ),
       ),
       Success(:final response) =>
         response != null && response.isNotEmpty

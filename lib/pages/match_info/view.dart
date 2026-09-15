@@ -19,6 +19,7 @@ import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -120,7 +121,8 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
                                 : '${response.homeScore} : ${response.awayScore}',
                             style: const TextStyle(
                               fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: .bold,
+                              letterSpacing: 1.5,
                             ),
                           )
                         else if (response.season?.logo != null)

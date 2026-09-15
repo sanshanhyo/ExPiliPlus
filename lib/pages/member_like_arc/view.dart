@@ -11,6 +11,8 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 
 class MemberLikeArcPage extends StatefulWidget {
@@ -82,10 +84,12 @@ class _MemberLikeArcPageState extends State<MemberLikeArcPage> {
 
   Widget _buildBody(LoadingState<List<CoinLikeArcItem>?> loadingState) {
     return switch (loadingState) {
-      Loading() => SliverGrid.builder(
+      Loading() => SliverGrid(
         gridDelegate: gridDelegate,
-        itemCount: 16,
-        itemBuilder: (context, index) => const VideoCardVSkeleton(),
+        delegate: const SliverSingleChildDelegate(
+          count: 16,
+          child: VideoCardVSkeleton(),
+        ),
       ),
       Success(:final response) =>
         response != null && response.isNotEmpty

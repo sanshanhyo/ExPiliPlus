@@ -4,6 +4,7 @@ import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/rendering.dart'
     show
         ContainerRenderObjectMixin,
@@ -46,14 +47,14 @@ class SliverHotKeyword extends StatelessWidget {
                   child: Padding(
                     padding: const .only(left: 2, right: 10),
                     child: Tooltip(
-                      message: i.keyword,
+                      message: i.showName,
                       child: Row(
                         children: [
                           Flexible(
                             child: Padding(
                               padding: const .fromLTRB(6, 5, 0, 5),
                               child: Text(
-                                i.keyword!,
+                                i.showName,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: const TextStyle(fontSize: 14),

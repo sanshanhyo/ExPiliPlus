@@ -29,7 +29,7 @@ import 'package:flutter/rendering.dart'
 class PlayerBar extends MultiChildRenderObjectWidget {
   const PlayerBar({
     super.key,
-    super.children,
+    required super.children,
   });
 
   @override

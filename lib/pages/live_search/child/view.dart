@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/live_search/widgets/live_search_user.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';
 
 class LiveSearchChildPage extends StatefulWidget {
@@ -57,15 +58,19 @@ class _LiveSearchChildPageState extends State<LiveSearchChildPage>
 
   Widget get _buildLoading {
     return switch (widget.searchType) {
-      LiveSearchType.room => SliverGrid.builder(
+      LiveSearchType.room => SliverGrid(
         gridDelegate: roomDelegate,
-        itemBuilder: (context, index) => const VideoCardVSkeleton(),
-        itemCount: 10,
+        delegate: const SliverSingleChildDelegate(
+          count: 10,
+          child: VideoCardVSkeleton(),
+        ),
       ),
-      LiveSearchType.user => SliverGrid.builder(
+      LiveSearchType.user => SliverGrid(
         gridDelegate: userDelegate,
-        itemBuilder: (context, index) => const MsgFeedTopSkeleton(),
-        itemCount: 12,
+        delegate: const SliverSingleChildDelegate(
+          count: 12,
+          child: MsgFeedTopSkeleton(),
+        ),
       ),
     };
   }

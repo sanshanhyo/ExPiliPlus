@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
@@ -18,6 +19,10 @@ import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/common_intro_controller.dart'
     show FavMixin;
+import 'package:ex_piliplus/models/common/audio_normalization.dart';
+import 'package:ex_piliplus/models/video/play/url.dart'
+    as http_model
+    show Volume;
 import 'package:ex_piliplus/pages/dynamics_repost/view.dart';
 import 'package:ex_piliplus/pages/main_reply/view.dart';
 import 'package:ex_piliplus/pages/setting/models/play_settings.dart'
@@ -45,6 +50,7 @@ import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/video_utils.dart';
+import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -57,7 +63,8 @@ class AudioController extends GetxController
         TripleMixin,
         FavMixin,
         BlockConfigMixin,
-        BlockMixin {
+        BlockMixin,
+        AudioNormalizationMixin {
   late Int64 id;
   late Int64 oid;
   late List<Int64> subId;
@@ -156,7 +163,12 @@ class AudioController extends GetxController
     final hasAudioUrl = audioUrl != null;
     if (hasAudioUrl) {
       _querySponsorBlock();
-      _onOpenMedia(audioUrl, ua: BrowserUa.pc, referer: HttpString.baseUrl);
+      _onOpenMedia(
+        audioUrl,
+        ua: BrowserUa.pc,
+        referer: HttpString.baseUrl,
+        volume: _videoDetailController?.volume,
+      );
     }
     ConnectivityUtils.isWiFi.then((isWiFi) {
       cacheAudioQa = isWiFi ? Pref.defaultAudioQa : Pref.defaultAudioQaCellular;
@@ -286,6 +298,19 @@ class AudioController extends GetxController
   void _onPlay(PlayURLResp data) {
     final PlayInfo? playInfo = data.playerInfo.values.firstOrNull;
     if (playInfo != null) {
+      http_model.Volume? volume;
+      if (playInfo.hasVolume()) {
+        final volumeInfo = playInfo.volume;
+        volume = http_model.Volume(
+          measuredI: volumeInfo.measuredI,
+          measuredLra: volumeInfo.measuredLra,
+          measuredTp: volumeInfo.measuredTp,
+          measuredThreshold: volumeInfo.measuredThreshold,
+          targetOffset: volumeInfo.targetOffset,
+          targetI: volumeInfo.targetI,
+          targetTp: volumeInfo.targetTp,
+        );
+      }
       if (playInfo.hasPlayDash()) {
         final playDash = playInfo.playDash;
         final audios = playDash.audio;
@@ -297,7 +322,7 @@ class AudioController extends GetxController
           (e) => e.id <= cacheAudioQa,
           (a, b) => a.id > b.id ? a : b,
         );
-        _onOpenMedia(VideoUtils.getCdnUrl(audio.playUrls));
+        _onOpenMedia(VideoUtils.getCdnUrl(audio.playUrls), volume: volume);
       } else if (playInfo.hasPlayUrl()) {
         final playUrl = playInfo.playUrl;
         final durls = playUrl.durl;
@@ -306,7 +331,7 @@ class AudioController extends GetxController
         }
         final durl = durls.first;
         position.value = 0;
-        _onOpenMedia(VideoUtils.getCdnUrl(durl.playUrls));
+        _onOpenMedia(VideoUtils.getCdnUrl(durl.playUrls), volume: volume);
       }
     }
   }
@@ -315,15 +340,17 @@ class AudioController extends GetxController
     String url, {
     String ua = Constants.userAgentApp,
     String? referer,
+    http_model.Volume? volume,
   }) async {
     await _initPlayerIfNeeded();
+    final extras = audioFilterExtras(volume);
     player
       ?..setMediaHeader(
         userAgent: ua,
         // mpv cannot clear referer option
         headers: {'Referer': ?referer},
       )
-      ..open(Media(url, start: _start));
+      ..open(Media(url, start: _start, extras: extras));
     _start = null;
   }
 
@@ -334,6 +361,7 @@ class AudioController extends GetxController
     player = await Player.create(
       configuration: PlayerConfiguration(
         options: {
+          if (Platform.isAndroid) 'ao': Pref.audioOutput,
           'volume': PlatformUtils.isDesktop
               ? (desktopVolume.value * 100).toString()
               : Pref.playerVolume.toString(),
@@ -560,7 +588,7 @@ class AudioController extends GetxController
             ),
             onPressed: () {
               Get.back();
-              PageUtils.launchURL(audioUrl);
+              PiliAndroidHelper.openUrl(audioUrl);
             },
           ),
           if (PlatformUtils.isMobile)

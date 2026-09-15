@@ -8,10 +8,16 @@ import 'package:ex_piliplus/models_new/dynamic/dyn_reaction/item.dart';
 import 'package:ex_piliplus/pages/common/dyn/common_dyn_page.dart';
 import 'package:ex_piliplus/pages/common/dyn/reaction/controller.dart';
 import 'package:flutter/material.dart' hide ListTile;
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
+    show platformAlwaysClampingPhysics;
+import 'package:ex_piliplus/grpc/bilibili/app/dynamic/v2.pb.dart' show DynamicItem;
+import 'package:ex_piliplus/pages/common/dyn/repost_list/controller.dart';
+import 'package:ex_piliplus/pages/common/dyn/repost_list/widgets/item.dart';
+
 import 'package:get/get.dart';
 
-class DynReactPage extends StatelessWidget {
-  const DynReactPage({
+class DynRepostPage extends StatelessWidget {
+  const DynRepostPage({
     super.key,
     required this.id,
     this.isPortrait = true,
@@ -20,18 +26,14 @@ class DynReactPage extends StatelessWidget {
 
   final Object id;
   final bool isPortrait;
-  final DynReactController controller;
+  final DynRepostController controller;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     if (controller.loadingState.value == .loading()) {
       controller.queryData();
     }
-    Widget buildBody(
-      ThemeData theme,
-      LoadingState<List<DynReactionItem>?> state,
-    ) {
+    Widget buildBody(LoadingState<List<DynamicItem>?> state) {
       return switch (state) {
         Loading() => const SliverFillRemaining(child: m3eLoading),
         Success(:final response) =>
@@ -43,29 +45,7 @@ class DynReactPage extends StatelessWidget {
                       controller.onLoadMore();
                     }
 
-                    final item = response[index];
-                    return ListTile(
-                      dense: true,
-                      safeArea: false,
-                      visualDensity: .standard,
-                      onTap: () => Get.toNamed('/member?mid=${item.mid}'),
-                      leading: PendantAvatar(item.face!, size: 36),
-                      title: Text.rich(
-                        TextSpan(
-                          text: item.name,
-                          style: const TextStyle(fontSize: 14),
-                          children: [
-                            TextSpan(
-                              text: ' ${item.action}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: theme.colorScheme.outline,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                    return DynRepostItem(item: response[index]);
                   },
                 )
               : HttpError(onReload: controller.onReload),
@@ -77,13 +57,16 @@ class DynReactPage extends StatelessWidget {
     }
 
     final child = CustomScrollView(
-      key: const PageStorageKey(DynType.reaction),
+      key: const PageStorageKey(DynType.repost),
+      physics: isPortrait
+          ? platformAlwaysClampingPhysics
+          : const AlwaysScrollableScrollPhysics(),
       slivers: [
         SliverPadding(
           padding: .only(
             bottom: MediaQuery.viewPaddingOf(context).bottom + 100,
           ),
-          sliver: Obx(() => buildBody(theme, controller.loadingState.value)),
+          sliver: Obx(() => buildBody(controller.loadingState.value)),
         ),
       ],
     );

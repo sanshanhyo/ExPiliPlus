@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/common/widgets/extended_visibility_detector.dart';
 import 'package:ex_piliplus/common/skeleton/video_reply.dart';
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/flutter/refresh_indicator.dart';
@@ -5,6 +6,9 @@ import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/sliver/sliver_floating_header.dart';
 import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/mini_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/fab_mixin.dart';
 import 'package:ex_piliplus/pages/video/reply/controller.dart';
@@ -162,9 +166,12 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
   Widget _buildBody(LoadingState<List<ReplyInfo>?> loadingState) {
     switch (loadingState) {
       case Loading():
-        return SliverList.builder(
-          itemBuilder: (context, index) => const VideoReplySkeleton(),
-          itemCount: 5,
+        return const SliverPrototypeExtentList(
+          prototypeItem: VideoReplySkeleton(),
+          delegate: SliverSingleChildDelegate(
+            count: 5,
+            child: VideoReplySkeleton(),
+          ),
         );
       case Success(:final response):
         if (response != null && response.isNotEmpty) {
@@ -207,8 +214,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
                       _videoReplyController.onRemove(index, item, subIndex),
                   upMid: _videoReplyController.upMid,
                   getTag: () => heroTag,
-                  onCheckReply: (item) =>
-                      _videoReplyController.onCheckReply(item, isManual: true),
+                  onCheckReply: _videoReplyController.onCheckReply,
                   onToggleTop: (item) => _videoReplyController.onToggleTop(
                     item,
                     index,

@@ -6,6 +6,7 @@ import 'package:ex_piliplus/pages/search_panel/live/widgets/item.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';
 
 class SearchLivePanel extends CommonSearchPanel {
@@ -53,7 +54,7 @@ class _SearchLivePanelState
   );
 
   @override
-  Widget buildList(ThemeData theme, List<SearchLiveItemModel> list) {
+  Widget buildList(List<SearchLiveItemModel> list) {
     return SliverPadding(
       padding: const EdgeInsets.only(
         left: Style.safeSpace,
@@ -73,9 +74,11 @@ class _SearchLivePanelState
   }
 
   @override
-  Widget get buildLoading => SliverGrid.builder(
+  Widget get buildLoading => SliverGrid(
     gridDelegate: gridDelegate,
-    itemBuilder: (context, index) => const VideoCardVSkeleton(),
-    itemCount: 10,
+    delegate: const SliverSingleChildDelegate(
+      count: 10,
+      child: VideoCardVSkeleton(),
+    ),
   );
 }

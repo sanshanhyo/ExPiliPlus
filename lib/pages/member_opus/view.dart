@@ -10,6 +10,8 @@ import 'package:ex_piliplus/pages/member_opus/widgets/space_opus_item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
@@ -142,9 +144,9 @@ class _MemberOpusState extends State<MemberOpus>
     return switch (loadingState) {
       Loading() => SliverWaterfallFlow(
         gridDelegate: gridDelegate,
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => const SpaceOpusSkeleton(),
-          childCount: 10,
+        delegate: const SliverSingleChildDelegate(
+          count: 10,
+          child: SpaceOpusSkeleton(),
         ),
       ),
       Success(:final response) =>

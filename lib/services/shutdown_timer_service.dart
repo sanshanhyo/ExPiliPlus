@@ -9,10 +9,22 @@ import 'package:ex_piliplus/plugin/pl_player/models/play_status.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
+
+import 'dart:async' show Timer;
+import 'dart:io' show exit;
+
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
+import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPicker;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+
+const _kSqueeze = 1.25;
+const _kItemExtent = 38.0;
 
 enum _ShutdownType {
   pause,
@@ -33,6 +45,8 @@ class ShutdownTimerService {
   VoidCallback? onPause;
   ValueGetter<bool>? isPlaying;
 
+  DateTime? _deadline;
+  DateTime? get deadline => _deadline;
   Timer? _shutdownTimer;
   bool get isActive => _shutdownTimer?.isActive ?? false;
   int _durationInMinutes = 0;
@@ -44,6 +58,7 @@ class ShutdownTimerService {
 
   void _stopTimer() {
     if (_shutdownTimer != null) {
+      _deadline = null;
       _shutdownTimer!.cancel();
       _shutdownTimer = null;
     }
@@ -63,8 +78,9 @@ class ShutdownTimerService {
       return;
     }
     SmartDialog.showToast(
-      l10n.shutdownScheduledAfter(_format(l10n, durationInMinutes)),
+      '设置 ${_format(l10n, durationInMinutes)} 后定时关闭',
     );
+    _deadline = DateTime.now().add(Duration(minutes: durationInMinutes));
     _shutdownTimer = Timer(
       Duration(minutes: durationInMinutes),
       _handleShutdown,
@@ -143,6 +159,93 @@ class ShutdownTimerService {
     }
   }
 
+  Widget _pickerBuider(
+    int count, {
+    required ValueChanged<int> onSelectedItemChanged,
+    required FixedExtentScrollController scrollController,
+  }) {
+    return CupertinoPicker(
+      // looping: true,
+      squeeze: _kSqueeze,
+      itemExtent: _kItemExtent,
+      scrollController: scrollController,
+      onSelectedItemChanged: onSelectedItemChanged,
+      children: List.generate(
+        count,
+        (index) => Center(
+          child: Text(
+            index.toString().padLeft(2, '0'),
+            style: const TextStyle(fontSize: 20, letterSpacing: .4),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTimePickerDialog(
+    BuildContext context,
+    VoidCallback onCountdown,
+    StateSetter setState,
+  ) {
+    final values = _parseMinutes(_durationInMinutes);
+    var hour = values.$1;
+    var minute = values.$2;
+
+    final hourController = FixedExtentScrollController(initialItem: hour);
+    final minuteController = FixedExtentScrollController(initialItem: minute);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        contentPadding: const .fromLTRB(20, 6, 20, 0),
+        actionsPadding: const .fromLTRB(20, 0, 20, 16),
+        constraints: const .tightFor(width: 320, height: 320),
+        content: Row(
+          children: [
+            Expanded(
+              child: _pickerBuider(
+                25,
+                scrollController: hourController,
+                onSelectedItemChanged: (value) => hour = value,
+              ),
+            ),
+            const Text('时'),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _pickerBuider(
+                60,
+                scrollController: minuteController,
+                onSelectedItemChanged: (value) => minute = value,
+              ),
+            ),
+            const Text('分'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              '取消',
+              style: TextStyle(color: ColorScheme.of(context).outline),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _startShutdownTimer(hour * 60 + minute);
+              onCountdown();
+              setState(() {});
+            },
+            child: const Text('确认'),
+          ),
+        ],
+      ),
+    ).whenComplete(() {
+      hourController.dispose();
+      minuteController.dispose();
+    });
+  }
+
   void showScheduleExitDialog(
     BuildContext context, {
     required bool isFullScreen,
@@ -154,9 +257,9 @@ class ShutdownTimerService {
       _waitUntilCompleted = false;
     }
 
-    final child = StatefulBuilder(
-      builder: (context, setState) {
-        final ThemeData theme = Theme.of(context);
+    final child = ShutdownPanel(
+      builder: (context, countdown, onCountdown, setState) {
+        final theme = Theme.of(context);
         return Padding(
           padding: const .all(12),
           child: Material(
@@ -166,8 +269,13 @@ class ShutdownTimerService {
             child: ListView(
               padding: const .symmetric(vertical: 14),
               children: [
-                Center(
-                  child: Text(context.l10n.shutdownTitle, style: titleStyle),
+                Stack(
+                  alignment: .center,
+                  clipBehavior: .none,
+                  children: [
+                    const Text('定时关闭', style: titleStyle),
+                    Positioned(top: 0, bottom: 0, right: 16, child: countdown),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 ...{...scheduleTimeMinutes, _durationInMinutes}
@@ -197,31 +305,9 @@ class ShutdownTimerService {
                     ),
                 ListTile(
                   dense: true,
-                  onTap: () {
-                    final (int hour, int minute) = _parseMinutes(
-                      _durationInMinutes,
-                    );
-                    showTimePicker(
-                      context: context,
-                      initialEntryMode: .inputOnly,
-                      initialTime: TimeOfDay(hour: hour, minute: minute),
-                      builder: (context, child) => MediaQuery(
-                        data: MediaQuery.of(
-                          context,
-                        ).copyWith(alwaysUse24HourFormat: true),
-                        child: child!,
-                      ),
-                    ).then((time) {
-                      if (time != null) {
-                        _startShutdownTimer(time.hour * 60 + time.minute);
-                        setState(() {});
-                      }
-                    });
-                  },
-                  title: Text(
-                    context.l10n.shutdownCustom,
-                    style: titleStyle,
-                  ),
+                  onTap: () =>
+                      _showTimePickerDialog(context, onCountdown, setState),
+                  title: const Text('自定义', style: titleStyle),
                 ),
                 if (!isLive) ...[
                   Builder(
@@ -289,5 +375,99 @@ class ShutdownTimerService {
       maxWidth: 512,
       child: isLive ? Theme(data: ThemeUtils.darkTheme, child: child) : child,
     );
+  }
+}
+
+typedef ShutdownStatefulWidgetBuilder = Widget Function(
+  BuildContext context,
+  Widget countdown,
+  VoidCallback onCountdown,
+  StateSetter setState,
+);
+
+class ShutdownPanel extends StatefulWidget {
+  const ShutdownPanel({
+    super.key,
+    required this.builder,
+    this.buildCountdownText = _kBuildCountdownText,
+  });
+
+  final ShutdownStatefulWidgetBuilder builder;
+  final Widget Function(String? text) buildCountdownText;
+
+  static Widget _kBuildCountdownText(String? text) {
+    if (text == null) {
+      return const SizedBox.shrink();
+    }
+    return Text(text);
+  }
+
+  @override
+  State<ShutdownPanel> createState() => _ShutdownPanelState();
+}
+
+class _ShutdownPanelState extends State<ShutdownPanel> with ShutdownMixin {
+  @override
+  Widget build(BuildContext context) {
+    final countdown = Obx(() => widget.buildCountdownText(countdownText.value));
+    return widget.builder(context, countdown, _startTimer, setState);
+  }
+}
+
+mixin ShutdownMixin<T extends StatefulWidget> on State<T> {
+  Timer? _countdownTimer;
+  final RxnString countdownText = RxnString(null);
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _updateCountdownTextEnd([String? value]) {
+    _stopTimer();
+    countdownText.value = value;
+  }
+
+  bool _updateCountdownText([_]) {
+    if (shutdownTimerService.isWaiting) {
+      _updateCountdownTextEnd('当前播放结束后关闭');
+      return false;
+    }
+    final deadline = shutdownTimerService.deadline;
+    if (deadline == null) {
+      _updateCountdownTextEnd();
+      return false;
+    }
+    final remaining = deadline.difference(DateTime.now());
+    if (remaining <= .zero) {
+      _updateCountdownTextEnd();
+      return false;
+    }
+    countdownText.value = DurationUtils.formatDuration(remaining.inSeconds);
+    return true;
+  }
+
+  void _startTimer() {
+    _stopTimer();
+    if (_updateCountdownText()) {
+      _countdownTimer = .periodic(
+        const Duration(seconds: 1),
+        _updateCountdownText,
+      );
+    }
+  }
+
+  void _stopTimer() {
+    if (_countdownTimer != null) {
+      _countdownTimer!.cancel();
+      _countdownTimer = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _stopTimer();
+    super.dispose();
   }
 }

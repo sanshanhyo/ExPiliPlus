@@ -290,7 +290,7 @@ abstract final class ImageUtils {
         SmartDialog.showToast(_l10n.commonSaveCanceled);
         return null;
       }
-      await File(savePath).writeAsBytes(bytes);
+      await File(savePath.toFilePath()).writeAsBytes(bytes);
       SmartDialog.showToast(_l10n.commonSaved);
       res = SaveResult(true, null);
     }
@@ -342,7 +342,7 @@ abstract final class ImageUtils {
         SmartDialog.showToast(_l10n.commonSaveCanceled);
         return;
       }
-      await file.copy(savePath);
+      await file.copy(savePath.toFilePath());
       res = SaveResult(true, null);
     }
     if (needToast) {

@@ -22,6 +22,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
+import 'package:ex_piliplus/utils/danmaku_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -33,6 +34,7 @@ import 'package:synchronized/synchronized.dart';
 class DownloadService extends GetxService {
   static const _entryFile = 'entry.json';
   static const _indexFile = 'index.json';
+  static const _maxDanmakuConcurrency = 4;
 
   final _lock = Lock();
 
@@ -314,21 +316,26 @@ class DownloadService extends GetxService {
         if (!isUpdate) {
           _updateCurStatus(DownloadStatus.getDanmaku);
         }
-        final seg = (entry.totalTimeMilli / PlDanmakuController.segmentLength)
-            .ceil();
-
-        final res = await Future.wait([
-          for (var i = 1; i <= seg; i++)
-            DmGrpc.dmSegMobile(cid: cid, segmentIndex: i),
-        ]);
-
-        final danmaku = res.removeAt(0).data;
-        for (final i in res) {
-          if (i case Success(:final response)) {
-            danmaku.elems.addAll(response.elems);
-          }
+        final seg = (entry.totalTimeMilli / DmUtils.segLength).ceil();
+        if (seg <= 0) {
+          throw StateError('Invalid danmaku segment count: $seg');
         }
-        res.clear();
+
+        final danmaku = (await DmGrpc.dmSegMobile(
+          cid: cid,
+          segmentIndex: 1,
+        )).data;
+        for (var start = 2; start <= seg; start += _maxDanmakuConcurrency) {
+          final end = start + _maxDanmakuConcurrency - 1;
+          final responses = await Future.wait([
+            for (var index = start; index <= seg && index <= end; index++)
+              DmGrpc.dmSegMobile(cid: cid, segmentIndex: index),
+          ]);
+          for (final response in responses) {
+            danmaku.elems.addAll(response.data.elems);
+          }
+          responses.clear();
+        }
         await danmakuFile.writeAsBytes(danmaku.writeToBuffer());
 
         return true;

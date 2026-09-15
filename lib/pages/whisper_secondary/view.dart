@@ -7,6 +7,8 @@ import 'package:ex_piliplus/pages/whisper/widgets/item.dart';
 import 'package:ex_piliplus/pages/whisper_secondary/controller.dart';
 import 'package:ex_piliplus/utils/extension/three_dot_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 
 class WhisperSecPage extends StatefulWidget {

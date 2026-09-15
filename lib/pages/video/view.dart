@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/common/widgets/extended_visibility_detector.dart';
 import 'dart:io' show Platform;
 import 'dart:math';
 
@@ -68,6 +69,7 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, clampDouble;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

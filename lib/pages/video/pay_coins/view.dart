@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'dart:math' show max;
 
 import 'package:ex_piliplus/common/assets.dart';
-import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
 import 'package:ex_piliplus/pages/common/publish/publish_route.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
@@ -14,6 +13,9 @@ import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
+    show clampingScrollPhysics;
+
 import 'package:get/get.dart';
 
 typedef OnPayCoin = Function(int coin, bool coinWithLike);

@@ -22,6 +22,7 @@ import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/calc_window_position.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/desktop_window_size.dart';
+import 'package:ex_piliplus/utils/extension/core_palettes_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/json_file_handler.dart';
 import 'package:ex_piliplus/utils/max_screen_size.dart';

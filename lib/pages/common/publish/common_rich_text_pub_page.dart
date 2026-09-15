@@ -287,7 +287,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
     final list = <Map<String, dynamic>>[];
     for (final e in editController.items) {
       switch (e.type) {
-        case .text || .composing || .common:
+        case .text || .composing || .common || .latex:
           list.add({
             "raw_text": e.text,
             "type": 1,
@@ -469,13 +469,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
       final isEmoji = panelType.value == PanelType.emoji;
       return ToolbarIconButton(
         tooltip: isEmoji ? context.l10n.commonInput : context.l10n.commonEmoji,
-        onPressed: () {
-          if (isEmoji) {
-            updatePanelType(PanelType.keyboard);
-          } else {
-            updatePanelType(PanelType.emoji);
-          }
-        },
+        onPressed: () => updatePanelType(isEmoji ? .keyboard : .emoji),
         icon: isEmoji
             ? const Icon(Icons.keyboard, size: 22)
             : const Icon(Icons.emoji_emotions, size: 22),
@@ -498,13 +492,7 @@ abstract class CommonRichTextPubPageState<T extends CommonRichTextPubPage>
         tooltip: isMore
             ? context.l10n.commonInput
             : context.l10n.feedMoreActions,
-        onPressed: () {
-          if (isMore) {
-            updatePanelType(PanelType.keyboard);
-          } else {
-            updatePanelType(PanelType.more);
-          }
-        },
+        onPressed: () => updatePanelType(isMore ? .keyboard : .more),
         icon: isMore
             ? const Icon(Icons.keyboard, size: 22)
             : const Icon(Icons.add_circle_outline, size: 22),

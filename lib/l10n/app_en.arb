@@ -2276,5 +2276,11 @@
   "shareTicketDanmaku": "Danmaku",
   "shareTicketLikes": "Likes",
   "shareTicketSharer": "Shared by",
-  "shareTicketFrom": "Shared from ExPiliPlus"
+  "shareTicketFrom": "Shared from ExPiliPlus",
+  "videoNoteWindowPinned": "Note window is already open",
+  "videoNoteWindowOpened": "Note opened in a new window",
+  "settingsEnableDocProvider": "Allow third-party apps to access private storage",
+  "settingsEnableDocProviderDescription": "Allow third-party apps to access app-private files through external storage",
+  "settingsEnableEmoteTooltip": "Show tooltip when tapping an emote",
+  "settingsEnableEmoteTooltipDescription": "Show an emote preview on long press or hover"
 }

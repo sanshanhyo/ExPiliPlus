@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart' as dww;
 
 class WebviewPage extends StatefulWidget {
   const WebviewPage({
@@ -31,6 +32,34 @@ class WebviewPage extends StatefulWidget {
   final int? oid;
   final String? title;
   final String? userAgent;
+
+  static Future<dww.Webview?> openLinux({
+    required String url,
+    String? title,
+    int? oid,
+    bool inApp = false,
+    bool off = false,
+    VoidCallback? onClose,
+    VoidCallback? onFinish,
+  }) async {
+    if (!Platform.isLinux) return null;
+    try {
+      final webview = await dww.WebviewWindow.create(
+        configuration: dww.CreateConfiguration(
+          windowWidth: 1080,
+          windowHeight: 760,
+          title: title ?? url,
+        ),
+      );
+      webview.onClose.whenComplete(() => onClose?.call());
+      webview.launch(url);
+      return webview;
+    } catch (e) {
+      if (kDebugMode) debugPrint('Linux Webview open error: $e');
+      SmartDialog.showToast('无法启动网页窗口: $e');
+      return null;
+    }
+  }
 
   @override
   State<WebviewPage> createState() => _WebviewPageState();

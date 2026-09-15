@@ -248,7 +248,6 @@ class _InfoCard extends StatelessWidget {
     final colorScheme = ColorScheme.of(context);
     return _card([
       Row(
-        spacing: 8,
         children: [
           Icon(
             Icons.info_outline,

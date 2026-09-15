@@ -7,6 +7,7 @@ import 'package:ex_piliplus/pages/pgc_review/post/view.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 
 class PgcReviewPage extends StatefulWidget {

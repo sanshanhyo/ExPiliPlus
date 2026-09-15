@@ -45,6 +45,8 @@ import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show ReloadMixin;
+import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -333,7 +335,7 @@ class UgcIntroController extends CommonIntroController with ReloadMixin {
             ),
             onTap: () {
               Get.back();
-              PageUtils.launchURL(videoUrl);
+              PiliAndroidHelper.openUrl(videoUrl);
             },
           ),
           ListTile(

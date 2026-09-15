@@ -957,11 +957,7 @@ Future<void> _showBarHideTypeDialog(
 NormalModel _useSSDModel(BuildContext context) {
   final file = File(path.join(appSupportDirPath, 'use_ssd'));
   void onChanged(BuildContext context, VoidCallback setState) {
-    (file.existsSync() ? file.tryDel() : file.create()).whenComplete(() {
-      if (context.mounted) {
-        setState();
-      }
-    });
+    (file.existsSync() ? file.tryDel() : file.create()).whenComplete(setState);
   }
 
   return NormalModel(

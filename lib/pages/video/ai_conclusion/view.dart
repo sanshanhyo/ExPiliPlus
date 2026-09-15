@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/common/widgets/extended_visibility_detector.dart';
 import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/models_new/video/video_ai_conclusion/model_result.dart';
 import 'package:ex_piliplus/pages/common/slide/common_slide_page.dart';

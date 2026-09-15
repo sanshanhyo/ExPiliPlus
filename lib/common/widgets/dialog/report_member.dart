@@ -1,8 +1,12 @@
+import 'package:ex_piliplus/common/widgets/button/icon_button.dart';
 import 'package:ex_piliplus/http/member.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 Future<void> showMemberReportDialog(
   BuildContext context, {
@@ -33,15 +37,34 @@ Future<void> showMemberReportDialog(
         clipBehavior: Clip.hardEdge,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         titleTextStyle: theme.textTheme.bodyMedium,
-        title: Column(
-          spacing: 4,
+        title: Row(
           crossAxisAlignment: .start,
           children: [
-            Text(
-              context.l10n.memberReportTitle(name ?? ''),
-              style: const TextStyle(fontSize: 18),
+            Expanded(
+              child: Column(
+                spacing: 4,
+                crossAxisAlignment: .start,
+                children: [
+                  Text(
+                    context.l10n.memberReportTitle(name ?? ''),
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  Text('uid: $mid'),
+                ],
+              ),
             ),
-            Text('uid: $mid'),
+            iconButton(
+              iconSize: 21,
+              tooltip: context.l10n.webOpenInBrowser,
+              onPressed: () => Get.toNamed(
+                '/webview',
+                parameters: {
+                  'url':
+                      'https://account.bilibili.com/h5/account-h5/gr/report?navhide=1&targetmid=$mid&${ThemeUtils.themeUrl(theme.isDark)}',
+                },
+              ),
+              icon: const Icon(MdiIcons.web),
+            ),
           ],
         ),
         content: SingleChildScrollView(

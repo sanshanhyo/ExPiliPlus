@@ -13378,6 +13378,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'分享来自 ExPiliPlus'**
   String get shareTicketFrom;
+
+  /// No description provided for @videoNoteWindowPinned.
+  ///
+  /// In zh, this message translates to:
+  /// **'已置顶笔记窗口'**
+  String get videoNoteWindowPinned;
+
+  /// No description provided for @videoNoteWindowOpened.
+  ///
+  /// In zh, this message translates to:
+  /// **'已在新窗口打开'**
+  String get videoNoteWindowOpened;
+
+  /// No description provided for @settingsEnableDocProvider.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许三方 APP 访问私有存储'**
+  String get settingsEnableDocProvider;
+
+  /// No description provided for @settingsEnableDocProviderDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许三方 APP 通过外部存储访问应用私有文件'**
+  String get settingsEnableDocProviderDescription;
+
+  /// No description provided for @settingsEnableEmoteTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击表情显示 Tooltip'**
+  String get settingsEnableEmoteTooltip;
+
+  /// No description provided for @settingsEnableEmoteTooltipDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'长按或悬停表情时显示预览'**
+  String get settingsEnableEmoteTooltipDescription;
 }
 
 class _AppLocalizationsDelegate

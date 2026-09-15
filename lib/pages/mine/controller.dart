@@ -196,6 +196,7 @@ class MineController extends CommonDataController<FavFolderData, FavFolderData>
                   const SizedBox(height: 10),
                   Text(
                     l10n.mineIncognitoDescription,
+
                     style: theme.textTheme.bodySmall,
                   ),
                   Row(

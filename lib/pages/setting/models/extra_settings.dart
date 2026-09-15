@@ -1,8 +1,9 @@
-import 'dart:io';
+import 'dart:io' show Platform;
 import 'dart:math' show max;
 
 import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/common/widgets/dialog/simple_dialog_option.dart';
+import 'package:ex_piliplus/common/widgets/emote_tooltip.dart';
 import 'package:ex_piliplus/common/widgets/flutter/refresh_indicator.dart';
 import 'package:ex_piliplus/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart'
     show deviceTouchSlop, touchSlopH;
@@ -30,6 +31,7 @@ import 'package:ex_piliplus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
+import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
@@ -48,6 +50,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart' hide RefreshIndicator;
 import 'package:flutter/services.dart';
+import 'package:ex_piliplus/utils/android/bindings.g.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -74,7 +78,15 @@ List<SettingsModel> extraSettings(BuildContext context) {
         leading: const Icon(Icons.storage),
         onTap: _showDownPathDialog,
       ),
-    ],
+    ] else if (Platform.isAndroid)
+      SwitchModel(
+        title: l10n.settingsEnableDocProvider,
+        subtitle: l10n.settingsEnableDocProviderDescription,
+        leading: const Icon(Icons.storage),
+        setKey: SettingBoxKey.enableDocProvider,
+        defaultVal: Pref.enableDocProvider,
+        onChanged: AndroidHelper.updateDocProvider,
+      ),
     SplitModel(
       normalModel: NormalModel.split(
         title: l10n.settingsSponsorBlock,
@@ -350,6 +362,14 @@ List<SettingsModel> extraSettings(BuildContext context) {
       setKey: SettingBoxKey.showDecorate,
       defaultVal: true,
       onChanged: (value) => PendantAvatar.showDecorate = value,
+    ),
+    SwitchModel(
+      title: l10n.settingsEnableEmoteTooltip,
+      subtitle: l10n.settingsEnableEmoteTooltipDescription,
+      leading: const Icon(Icons.emoji_emotions_outlined),
+      setKey: SettingBoxKey.enableEmoteTooltip,
+      defaultVal: false,
+      onChanged: (value) => enableEmoteTooltip = value,
     ),
     SwitchModel(
       title: l10n.settingsFanMedals,
@@ -725,7 +745,7 @@ Future<void> audioNormalization(
                 Get.back();
                 GStorage.setting.put(key, param);
                 if (!fallback &&
-                    PlPlayerController.loudnormRegExp.hasMatch(param)) {
+                    AudioNormalization.loudnormRegExp.hasMatch(param)) {
                   audioNormalization(context, setState, fallback: true);
                 }
                 setState();

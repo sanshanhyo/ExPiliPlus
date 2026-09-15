@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -7662,4 +7663,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareTicketFrom => 'Shared from ExPiliPlus';
+
+  @override
+  String get videoNoteWindowPinned => 'Note window is already open';
+
+  @override
+  String get videoNoteWindowOpened => 'Note opened in a new window';
+
+  @override
+  String get settingsEnableDocProvider =>
+      'Allow third-party apps to access private storage';
+
+  @override
+  String get settingsEnableDocProviderDescription =>
+      'Allow third-party apps to access app-private files through external storage';
+
+  @override
+  String get settingsEnableEmoteTooltip => 'Show tooltip when tapping an emote';
+
+  @override
+  String get settingsEnableEmoteTooltipDescription =>
+      'Show an emote preview on long press or hover';
 }

@@ -11,9 +11,24 @@ import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
     show BouncingScrollPhysicsExt;
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
-import 'package:extended_nested_scroll_view/src/refresh.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
 import 'package:flutter/material.dart' hide RefreshIndicator;
+
+typedef OnDrag = bool Function(double offset, double viewportDimension);
+
+mixin RefreshScrollPhysicsMixin on ScrollPhysics {
+  OnDrag get onDrag;
+
+  @override
+  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    if (offset < 0.0 && onDrag(offset, position.viewportDimension)) {
+      return 0.0;
+    }
+    return parent?.applyPhysicsToUserOffset(position, offset) ?? offset;
+  }
+}
+
+const kIndicatorSize = 49.0;
 
 /// The distance from the child's top or bottom [edgeOffset] where
 /// the refresh indicator will settle. During the drag that exposes the refresh

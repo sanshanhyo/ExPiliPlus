@@ -1,15 +1,14 @@
 import 'dart:io' show Platform;
 
-import 'package:ex_piliplus/common/widgets/emote_span.dart';
 import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
 import 'package:ex_piliplus/http/dynamics.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/search.dart';
+import 'package:ex_piliplus/common/widgets/emote_tooltip.dart';
 import 'package:ex_piliplus/models/common/image_preview_type.dart'
     show SourceModel;
-import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -25,6 +24,9 @@ const _linkFoldedText = '网页链接';
 TextSpan? richNode(
   BuildContext context, {
   required ThemeData theme,
+  required int floor,
+  required bool isDetail,
+  required bool isSave,
   required DynamicItemModel item,
 }) {
   try {
@@ -75,6 +77,32 @@ TextSpan? richNode(
                 text: i.origText == _linkFoldedText
                     ? context.l10n.feedWebLink
                     : i.origText,
+              ),
+            );
+            break;
+          // 表情
+          case 'RICH_TEXT_NODE_TYPE_EMOJI' when (i.emoji != null):
+            final size = i.emoji!.size * 20.0;
+            Widget child = NetworkImgLayer(
+              src: i.emoji!.url,
+              type: .emote,
+              width: size,
+              height: size,
+            );
+            if (floor == 1 && isDetail && !isSave) {
+              child = emoteTooltipBuilder(
+                triggerMode: .tap,
+                url: i.emoji!.url,
+                emote: i.origText,
+                jumpUrl: i.emoji!.jumpUrl,
+                colorScheme: theme.colorScheme,
+                child: child,
+              );
+            }
+            spanChildren.add(
+              WidgetSpan(
+                rawText: i.origText,
+                child: child,
               ),
             );
             break;
@@ -163,21 +191,6 @@ TextSpan? richNode(
                     },
                 ),
               );
-            break;
-          // 表情
-          case 'RICH_TEXT_NODE_TYPE_EMOJI' when (i.emoji != null):
-            final size = i.emoji!.size * 20.0;
-            spanChildren.add(
-              EmoteSpan(
-                rawText: i.origText,
-                child: NetworkImgLayer(
-                  src: i.emoji!.url,
-                  type: ImageType.emote,
-                  width: size,
-                  height: size,
-                ),
-              ),
-            );
             break;
           // 抽奖
           case 'RICH_TEXT_NODE_TYPE_LOTTERY':

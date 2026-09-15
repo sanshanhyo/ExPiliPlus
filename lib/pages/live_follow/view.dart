@@ -9,6 +9,8 @@ import 'package:ex_piliplus/pages/live_follow/widgets/live_item_follow.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 
 class LiveFollowPage extends StatefulWidget {
@@ -67,10 +69,12 @@ class _LiveFollowPageState extends State<LiveFollowPage> {
 
   Widget _buildBody(LoadingState<List<LiveFollowItem>?> loadingState) {
     return switch (loadingState) {
-      Loading() => SliverGrid.builder(
+      Loading() => SliverGrid(
         gridDelegate: gridDelegate,
-        itemBuilder: (context, index) => const VideoCardVSkeleton(),
-        itemCount: 10,
+        delegate: const SliverSingleChildDelegate(
+          count: 10,
+          child: VideoCardVSkeleton(),
+        ),
       ),
       Success(:final response) =>
         response != null && response.isNotEmpty
