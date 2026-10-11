@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:ex_piliplus/common/widgets/slotted_layout_helper.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ChildLayoutHelper;
-import 'package:material_ui/material_ui.dart';
 
 class SimpleScaffold extends StatelessWidget {
   const SimpleScaffold({
@@ -21,7 +21,7 @@ class SimpleScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: backgroundColor,
+      color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       child: ScaffoldLayout(
         fab: fab,
         appBar: appBar,

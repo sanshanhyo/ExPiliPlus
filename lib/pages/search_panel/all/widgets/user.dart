@@ -13,10 +13,10 @@ import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:material_ui/material_ui.dart';
 
 const _kItemWidth = 140.0;
 const _kItemHeight = _kItemWidth / Style.aspectRatio16x9;
