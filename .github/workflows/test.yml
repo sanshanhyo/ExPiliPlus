@@ -29,6 +29,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Apply Patch
+        shell: pwsh
+        run: lib/scripts/patch.ps1 Linux
+
       - name: Check diff whitespace
         run: git diff --check
 
