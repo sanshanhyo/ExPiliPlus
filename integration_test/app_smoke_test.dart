@@ -13,6 +13,7 @@ import 'package:ex_piliplus/pages/root/view.dart';
 import 'package:ex_piliplus/pages/setting/view.dart';
 import 'package:ex_piliplus/pages/video/view.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
+import 'package:ex_piliplus/plugin/pl_player/view/view.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/play_pause_btn.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -76,8 +77,11 @@ void main() {
       await _tapText(tester, englishLabel);
       await _waitFor(
         tester,
-        find.text(AppLocalizations.of(tester.element(find.byType(RootPage)))!
-            .settingsAppLanguage),
+        find.text(
+          AppLocalizations.of(
+            tester.element(find.byType(RootPage)),
+          ).settingsAppLanguage,
+        ),
       );
       l10n = _localizations(tester);
       expect(l10n.settingsTitle, 'Settings');
@@ -226,7 +230,7 @@ void main() {
 }
 
 AppLocalizations _localizations(WidgetTester tester) =>
-    AppLocalizations.of(tester.element(find.byType(RootPage)))!;
+    AppLocalizations.of(tester.element(find.byType(RootPage)));
 
 Future<void> _tapText(
   WidgetTester tester,
