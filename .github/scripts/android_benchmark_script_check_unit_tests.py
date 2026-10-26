@@ -98,6 +98,10 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertNotIn("lavfi-fps=", GIF_CONVERTER)
         self.assertNotIn("lavfi-scale=", GIF_CONVERTER)
         self.assertIn("_command(['vf', 'set', _videoFilters])", GIF_CONVERTER)
+        self.assertLess(
+            GIF_CONVERTER.index("mpv_request_log_messages"),
+            GIF_CONVERTER.index("_command(['vf', 'set', _videoFilters])"),
+        )
         self.assertIn("command=\"$command\" result=$result", GIF_CONVERTER)
         self.assertIn("filterFlags=$enabledFilterFlags", GIF_CONVERTER)
         self.assertIn("if (filterResult < 0)", GIF_CONVERTER)

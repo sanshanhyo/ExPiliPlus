@@ -70,6 +70,14 @@ class MpvConvertGif implements GifConverter {
       },
     );
     _initialized = true;
+    final level = (kDebugMode ? 'info' : 'error').toNativeUtf8();
+    final logResult = _mpv.mpv_request_log_messages(_ctx, level);
+    calloc.free(level);
+    if (logResult < 0) {
+      _recordError(
+        'mpv_request_log_messages failed: ${_errorText(logResult)}',
+      );
+    }
     _logRuntimeCapabilities();
     // Initializer.create ignores mpv_set_option_string return codes. Set the
     // list through mpv's filter command so invalid syntax is returned here.
@@ -93,12 +101,6 @@ class MpvConvertGif implements GifConverter {
     );
     if (progress != null) {
       _observeProperty('time-pos');
-    }
-    final level = (kDebugMode ? 'info' : 'error').toNativeUtf8();
-    final result = _mpv.mpv_request_log_messages(_ctx, level);
-    calloc.free(level);
-    if (result < 0) {
-      _recordError('mpv_request_log_messages failed: ${_errorText(result)}');
     }
 
     debugPrint(
