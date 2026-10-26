@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:ex_piliplus/common/style.dart';
@@ -38,16 +39,11 @@ import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
+
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-
-const Set<TargetPlatform> _kDesktopPlatforms = <TargetPlatform>{
-  TargetPlatform.macOS,
-  TargetPlatform.windows,
-  TargetPlatform.linux,
-};
 
 class DynamicDetailPage extends StatefulWidget {
   const DynamicDetailPage({super.key});
@@ -251,7 +247,7 @@ class _DynamicDetailPageState
         repostDynId: item.orig?.idStr,
       ),
       onSuccess: () {
-        Future.delayed(
+        Timer(
           const Duration(milliseconds: 500),
           () async {
             if (!mounted) return;
@@ -350,6 +346,7 @@ class _DynamicDetailPageState
 
   Widget _buildTabBody([bool isPortrait = true]) {
     Widget reply = CustomScrollView(
+      primary: true,
       key: const PageStorageKey(DynType.reply),
       physics: ReloadScrollPhysics(
         controller: controller,
@@ -447,6 +444,7 @@ class _DynamicDetailPageState
         Expanded(
           flex: flex,
           child: CustomScrollView(
+            primary: true,
             slivers: [
               SliverPadding(
                 padding: .only(
@@ -487,13 +485,6 @@ class _DynamicDetailPageState
         ),
       ],
     );
-    if (PlatformUtils.isDesktop) {
-      return PrimaryScrollController(
-        controller: PrimaryScrollController.of(context),
-        automaticallyInheritForPlatforms: _kDesktopPlatforms,
-        child: child,
-      );
-    }
     return child;
   }
 
@@ -547,7 +538,8 @@ class _DynamicDetailPageState
       );
     }
 
-    final moduleStat = controller.dynItem.modules.moduleStat;
+    final dynItem = controller.dynItem;
+    final moduleStat = dynItem.modules.moduleStat;
     return Padding(
       padding: .only(left: padding.left, right: padding.right),
       child: Column(
@@ -586,7 +578,7 @@ class _DynamicDetailPageState
                           isScrollControlled: true,
                           useSafeArea: true,
                           builder: (context) => RepostPanel(
-                            item: controller.dynItem,
+                            item: dynItem,
                             onSuccess: () {
                               if (forward != null) {
                                 int count = forward.count ?? 0;
@@ -596,6 +588,12 @@ class _DynamicDetailPageState
                                 }
                               }
                             },
+                            replyInfo: (
+                              oid: controller.oid,
+                              replyType: controller.replyType,
+                            ),
+                            mentionItem:
+                                dynItem.modules.moduleAuthor?.mentionItem,
                           ),
                         ),
                       );
@@ -629,7 +627,7 @@ class _DynamicDetailPageState
                         text: context.l10n.commonLike,
                         stat: moduleStat?.like,
                         onPressed: (iconColor) => RequestUtils.onLikeDynamic(
-                          controller.dynItem,
+                          dynItem,
                           iconColor == primary,
                           () {
                             if (context.mounted) {

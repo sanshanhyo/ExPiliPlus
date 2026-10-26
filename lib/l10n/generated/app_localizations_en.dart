@@ -4637,6 +4637,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberHomeAnime => 'Anime';
 
   @override
+  @override
+  String get blacklistLocal => 'Local';
+
+  @override
+  String get blacklistOnline => 'Online';
+
+  @override
+  String get blacklistAddMid => 'Block user';
+
+  @override
+  String get blacklistUid => 'UID';
+
+  @override
+  String get blacklistImportExport => 'Import / export';
+
   String blacklistTitle(Object count) {
     return 'Blocked users$count';
   }

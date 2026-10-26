@@ -23,6 +23,9 @@ import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/pages/article/widgets/sliver_list.dart';
+import 'package:ex_piliplus/utils/num_utils.dart';
+
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,6 +82,7 @@ abstract class CommonDynPageMultiState<T extends StatefulWidget>
 mixin CommonDynPageMixin<T extends StatefulWidget>
     on State<T>, TickerProvider, BaseFabMixin<T>, FabMixin<T> {
   CommonDynController get controller;
+  bool get isArticle => false;
 
   bool get horizontalPreview => !isPortrait && controller.horizontalPreview;
 
@@ -161,8 +165,9 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
           if (hasVote) {
             count++;
           }
-          return SliverList.builder(
+          return ArticleSliverList.builder(
             itemCount: count,
+            isArticle: isArticle,
             itemBuilder: (context, index) {
               if (hasVote) {
                 if (index == 0) {
@@ -226,11 +231,18 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
         }
         return child;
       case Error(:final errMsg):
-        return HttpError(
+        return httpError(
           errMsg: errMsg,
           onReload: controller.onReload,
         );
     }
+  }
+
+  Widget httpError({String? errMsg, VoidCallback? onReload}) {
+    return HttpError(
+      errMsg: errMsg,
+      onReload: controller.onReload,
+    );
   }
 
   void replyReply(BuildContext context, ReplyInfo replyItem, int? id) {
@@ -351,6 +363,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
           null,
           oid: controller.oid,
           replyType: controller.replyType,
+          mentionItem: controller.mentionItem,
         );
       } catch (_) {}
     },

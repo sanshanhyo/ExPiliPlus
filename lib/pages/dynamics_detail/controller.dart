@@ -7,6 +7,11 @@ import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/pages/common/dyn/common_dyn_controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
+import 'dart:async';
+
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show ReloadMixin;
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +23,8 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
   @override
   late int replyType;
   late DynamicItemModel dynItem;
+  @override
+  MentionItem? get mentionItem => dynItem.modules.moduleAuthor?.mentionItem;
 
   @override
   dynamic get sourceId => replyType == 1 ? IdUtils.av2bv(oid) : oid;
@@ -74,7 +81,7 @@ class DynamicDetailController extends CommonDynController with ReloadMixin {
       action: action,
     );
     if (res.isSuccess) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Timer(const Duration(milliseconds: 500), () {
         if (!isClosed) {
           onReload();
         }

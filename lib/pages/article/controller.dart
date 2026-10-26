@@ -16,6 +16,8 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/url_utils.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -31,6 +33,8 @@ class ArticleController extends CommonDynController {
   @override
   int get replyType => commentType;
   final summary = Summary();
+  @override
+  MentionItem? get mentionItem => summary.author?.mentionItem;
 
   late final RxInt topIndex = 0.obs;
 

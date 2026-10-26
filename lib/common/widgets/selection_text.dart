@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/utils/extension/selectable_region_ext.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class SelectionText extends StatelessWidget {
   const SelectionText(
@@ -6,7 +9,7 @@ class SelectionText extends StatelessWidget {
     super.key,
     this.style,
     this.textAlign,
-    this.contextMenuBuilder = _defaultContextMenuBuilder,
+    this.contextMenuBuilder = openUrlMenuBuilder,
   }) : textSpan = null;
 
   const SelectionText.rich(
@@ -14,7 +17,7 @@ class SelectionText extends StatelessWidget {
     super.key,
     this.style,
     this.textAlign,
-    this.contextMenuBuilder = _defaultContextMenuBuilder,
+    this.contextMenuBuilder = openUrlMenuBuilder,
   }) : data = null;
 
   final String? data;
@@ -22,15 +25,6 @@ class SelectionText extends StatelessWidget {
   final TextStyle? style;
   final TextAlign? textAlign;
   final SelectableRegionContextMenuBuilder? contextMenuBuilder;
-
-  static Widget _defaultContextMenuBuilder(
-    BuildContext context,
-    SelectableRegionState selectableRegionState,
-  ) {
-    return AdaptiveTextSelectionToolbar.selectableRegion(
-      selectableRegionState: selectableRegionState,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,4 +40,13 @@ class SelectionText extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget openUrlMenuBuilder(_, SelectableRegionState state) {
+  final buttonItems = state.contextMenuButtonItems;
+  state.addLaunchMenuIfNeeded(buttonItems, index: 3);
+  return AdaptiveTextSelectionToolbar.buttonItems(
+    buttonItems: buttonItems,
+    anchors: state.contextMenuAnchors,
+  );
 }

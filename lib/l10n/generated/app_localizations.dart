@@ -8073,6 +8073,21 @@ abstract class AppLocalizations {
   /// **'追番'**
   String get memberHomeAnime;
 
+  /// No description provided for @blacklistLocal.
+  String get blacklistLocal;
+
+  /// No description provided for @blacklistOnline.
+  String get blacklistOnline;
+
+  /// No description provided for @blacklistAddMid.
+  String get blacklistAddMid;
+
+  /// No description provided for @blacklistUid.
+  String get blacklistUid;
+
+  /// No description provided for @blacklistImportExport.
+  String get blacklistImportExport;
+
   /// No description provided for @blacklistTitle.
   ///
   /// In zh, this message translates to:

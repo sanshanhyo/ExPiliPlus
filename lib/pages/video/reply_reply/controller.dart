@@ -7,6 +7,8 @@ import 'package:ex_piliplus/pages/common/reply_controller.dart';
 import 'package:ex_piliplus/pages/video/reply_new/view.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
@@ -151,6 +153,7 @@ class VideoReplyReplyController extends ReplyController
     int? oid,
     int? replyType,
     int? index,
+    MentionItem? mentionItem,
   }) {
     assert(replyItem != null && index != null);
 
@@ -205,6 +208,6 @@ class VideoReplyReplyController extends ReplyController
   void onClose() {
     _controller?.dispose();
     _controller = null;
-    super.dispose();
+    super.onClose();
   }
 }

@@ -1,6 +1,5 @@
 package com.example.piliplus
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle

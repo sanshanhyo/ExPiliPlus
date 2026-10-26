@@ -92,7 +92,7 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
       ..[13] = value.dy;
   }
 
-  Offset? _scalePos;
+  Offset? _downPos;
   double? _scaleStart;
   Offset? _referenceFocalPoint;
 
@@ -103,7 +103,6 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
   _horizontalDragGestureRecognizer;
   late final ScaleGestureRecognizer _scaleGestureRecognizer;
 
-  Offset? _downPos;
   late final AnimationController _animationController;
 
   late double _scaleFrom, _scaleTo;
@@ -218,10 +217,6 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
     return _clampPosition(_position + translation * _scale, _scale);
   }
 
-  void _onDoubleTapDown(TapDownDetails details) {
-    _downPos = details.localPosition;
-  }
-
   void _onDoubleTap() {
     if (!mounted) return;
     if (_animationController.isAnimating) return;
@@ -277,9 +272,9 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
       if (widget.isLongPic) {
         final imageHeight = _scale * _imageSize.height;
         final containerHeight = widget.containerSize.height;
-        if (_scalePos != null && _calc(_scalePos!, details.focalPoint)) {
+        if (_downPos != null && _calc(_downPos!, details.focalPoint)) {
           final bool drag;
-          if (details.focalPoint.dy > _scalePos!.dy) {
+          if (details.focalPoint.dy > _downPos!.dy) {
             drag = _position.dy.equals(
               (imageHeight - _scale * containerHeight) / 2,
               1e-6,
@@ -462,7 +457,7 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
         widget.onDragEnd?.call(details);
       case null:
     }
-    _scalePos = null;
+    _downPos = null;
     _gestureType = null;
   }
 
@@ -495,6 +490,11 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
   }
 
   void _onPointerPanZoomStart(PointerPanZoomStartEvent event) {
+    _stopFling();
+    _horizontalDragGestureRecognizer.addPointerPanZoom(
+      event,
+      isPointerAllowed: _isAtEdge(event.localPosition),
+    );
     _scaleGestureRecognizer.addPointerPanZoom(event);
   }
 

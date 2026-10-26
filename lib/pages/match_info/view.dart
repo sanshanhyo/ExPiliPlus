@@ -17,11 +17,16 @@ import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/pages/match_info/widgets/match_info_item.dart';
+
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class MatchInfoPage extends StatefulWidget {
   const MatchInfoPage({super.key});
@@ -70,22 +75,6 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
   Widget _buildInfo(LoadingState<MatchContest?> infoState) {
     if (infoState case Success(:final response?)) {
       try {
-        Widget teamInfo(MatchTeam team) {
-          return Column(
-            spacing: 5,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              NetworkImgLayer(
-                width: 50,
-                height: 50,
-                src: 'https://i1.hdslb.com${team.logo}',
-                type: ImageType.emote,
-              ),
-              Text(team.title!),
-            ],
-          );
-        }
-
         return SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),

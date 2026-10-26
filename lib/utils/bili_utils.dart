@@ -13,6 +13,13 @@ abstract final class BiliUtils {
     return (attr & 1) == 0;
   }
 
+  static bool isFavFolderFull(int attr, int count) {
+    if (isDefaultFav(attr)) {
+      return count >= 50000;
+    }
+    return count >= 1000;
+  }
+
   static bool isCustomFollowTag(int? tagid) {
     return tagid != null && tagid != 0 && tagid != -10 && tagid != -2;
   }
@@ -25,4 +32,30 @@ abstract final class BiliUtils {
   }) {
     return UserLevel(level, height: height, flash: isSeniorMember);
   }
+
+  static const _liveGuard1 =
+      'https://i0.hdslb.com/bfs/live/a454275dea465ac15a03f121f0d7edaf96e30bcf.png';
+  static const _liveGuard2 =
+      'https://i0.hdslb.com/bfs/live/3b46129e796df42ec7356fcba77c8a79d47db682.png';
+  static const _liveGuard3 =
+      'https://i0.hdslb.com/bfs/live/80f732943cc3367029df65e267960d56736a82ee.png';
+
+  static String? liveGuardPendant(int guardLevel) => switch (guardLevel) {
+    1 => _liveGuard1,
+    2 => _liveGuard2,
+    3 => _liveGuard3,
+    _ => null,
+  };
+
+  static String? pgcType2Label(int? pgcType) => switch (pgcType) {
+    -1 => '课程',
+    1 => '番剧',
+    2 => '电影',
+    3 => '纪录片',
+    4 => '国创',
+    5 => '电视剧',
+    6 => '漫画',
+    7 => '综艺',
+    _ => null,
+  };
 }

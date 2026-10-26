@@ -5,6 +5,7 @@ import 'package:ex_piliplus/pages/member/controller.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
 class MemberContributeCtr extends GetxController
@@ -27,8 +28,9 @@ class MemberContributeCtr extends GetxController
     SpaceTab2 contribute = _ctr.tab2!.firstWhere(
       (item) => item.param == 'contribute',
     );
-    if (contribute.items?.isNullOrEmpty == false) {
-      items = contribute.items;
+    final items = contribute.items;
+    if (items != null && items.isNotEmpty) {
+      this.items = items;
       if (contribute.items!.length > 1) {
         // show if exist
         if (_ctr.hasSeasonOrSeries == true) {
@@ -39,10 +41,10 @@ class MemberContributeCtr extends GetxController
             ),
           );
         }
-        tabs = items!.map((item) => Tab(text: item.title)).toList();
+        tabs = items.map((item) => Tab(text: item.title)).toList();
         tabController = TabController(
           vsync: this,
-          length: items!.length,
+          length: items.length,
           initialIndex: max(0, initialIndex ?? 0),
         );
       }

@@ -4,6 +4,9 @@ import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/utils/extension/theme_ext.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 bool enableEmoteTooltip = Pref.enableEmoteTooltip;
 
@@ -20,55 +23,49 @@ Widget emoteTooltipBuilder({
   required Widget child,
 }) {
   if (enable ?? enableEmoteTooltip) {
-    final bg = colorScheme.surface;
-
-    Widget overlay = NetworkImgLayer(
-      src: url,
-      type: .emote,
-      width: size,
-      height: size,
-      fit: .contain,
-    );
-    if (emote != null) {
-      overlay = Column(
-        spacing: 8,
-        mainAxisSize: .min,
-        children: [
-          overlay,
-          Text.rich(
-            TextSpan(
-              text: emote.emote,
-              children: jumpUrl != null && jumpUrl.isNotEmpty
-                  ? [
-                      WidgetSpan(
-                        child: Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 14,
-                          color: colorScheme.outline,
-                        ),
-                      ),
-                    ]
-                  : null,
-            ),
-            style: const TextStyle(fontSize: 12, height: 1),
-          ),
-        ],
-      );
-    }
-
     return CustomTooltip(
+      color: colorScheme.isDark
+          ? colorScheme.surfaceContainerHigh
+          : colorScheme.surface,
+      shadow: Colors.black,
       triggerMode: triggerMode,
       jumpUrl: jumpUrl,
-      indicator: () => Triangle(color: bg, size: const Size(14, 8)),
-      overlayWidget: () => Container(
-        padding: const .all(8),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: const .all(.circular(8)),
-          border: const Border.fromBorderSide(BorderSide(color: borderColor)),
-        ),
-        child: overlay,
-      ),
+      overlayWidget: () {
+        Widget overlay = NetworkImgLayer(
+          src: url,
+          type: .emote,
+          width: size,
+          height: size,
+          fit: .contain,
+        );
+        if (emote != null) {
+          overlay = Column(
+            spacing: 8,
+            mainAxisSize: .min,
+            children: [
+              overlay,
+              Text.rich(
+                TextSpan(
+                  text: emote.emote,
+                  children: jumpUrl != null && jumpUrl.isNotEmpty
+                      ? [
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.keyboard_arrow_right,
+                              size: 14,
+                              color: colorScheme.outline,
+                            ),
+                          ),
+                        ]
+                      : null,
+                ),
+                style: const TextStyle(fontSize: 12, height: 1),
+              ),
+            ],
+          );
+        }
+        return Padding(padding: const .all(8.0), child: overlay);
+      },
       child: child,
     );
   }

@@ -18,6 +18,8 @@ import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/pages/common/page_order_mixin.dart';
+import 'dart:async';
+
 import 'package:flutter/widgets.dart' show Text, ValueChanged;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -128,6 +130,9 @@ class FavDetailController
       }
     } else if (response.hasMore == false) {
       isEnd = true;
+    }
+    if (pageDesc) {
+      return response.medias?.reversed.toList();
     }
     return response.medias;
   }
@@ -246,7 +251,7 @@ class FavDetailController
               'oid': item.id,
               'favTitle': folder.title,
               'count': folder.mediaCount,
-              'desc': true,
+              'desc': !pageDesc,
               if (index != null) 'isContinuePlaying': index != 0,
               'isOwner': isOwner,
             }

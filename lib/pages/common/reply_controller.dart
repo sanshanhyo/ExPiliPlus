@@ -12,6 +12,8 @@ import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/reply_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
@@ -131,6 +133,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
     ReplyInfo? replyItem, {
     int? oid,
     int? replyType,
+    MentionItem? mentionItem,
   }) {
     if (loadingState.value case Error(:final errMsg, :final code)) {
       if (errMsg != null && (code == 12061 || code == 12002)) {
@@ -158,6 +161,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
                 parent: oid != null ? 0 : replyItem!.id.toInt(),
                 replyType: replyItem?.type.toInt() ?? replyType!,
                 replyItem: replyItem,
+                mentionItem: mentionItem,
                 items: savedReplies[key],
 
                 /// hd api deprecated

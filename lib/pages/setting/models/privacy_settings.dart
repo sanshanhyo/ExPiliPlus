@@ -5,6 +5,7 @@ import 'package:ex_piliplus/utils/accounts/api_type.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
 import 'package:get/get.dart';
 
 List<SettingsModel> privacySettings(BuildContext context) => [

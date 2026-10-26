@@ -14,6 +14,8 @@ import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/utils/screenshot.dart';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -64,7 +66,7 @@ class _SuperChatCardState extends State<SuperChatCard> {
 
   void _remove() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 1), _onRemove);
+      Timer(const Duration(seconds: 1), _onRemove);
     });
   }
 
@@ -126,6 +128,17 @@ class _SuperChatCardState extends State<SuperChatCard> {
         ),
         PopupMenuItem(
           height: 38,
+          onTap: () {
+            if (!mounted) return;
+            _screenShot(context, item);
+          },
+          child: const Text(
+            '保存为图片',
+            style: TextStyle(fontSize: 13),
+          ),
+        ),
+        PopupMenuItem(
+          height: 38,
           onTap: widget.onReport,
           child: Text(
             context.l10n.commonReport,
@@ -142,67 +155,58 @@ class _SuperChatCardState extends State<SuperChatCard> {
 
   @override
   Widget build(BuildContext context) {
-    final item = widget.item;
-    final bottomColor = ColourUtils.parseColor(item.backgroundBottomColor);
-    final border = BorderSide(color: bottomColor);
-    void showMenu(TapUpDetails e) => _showMenu(e.globalPosition, item);
+    return _build(item: widget.item, remains: _remains, showMenu: _showMenu);
+  }
+}
 
-    Widget name = Text(
-      item.userInfo.uname,
-      maxLines: 1,
-      overflow: .ellipsis,
-      style: TextStyle(
-        color: ColourUtils.parseColor(item.userInfo.nameColor),
-      ),
-    );
-    if (item.medalInfo case final medal?) {
-      try {
-        name = Row(
-          spacing: 5,
-          children: [
-            MedalWidget.fromMedalInfo(
-              medal: medal,
-              padding: MedalWidget.mediumPadding,
-            ),
-            Flexible(child: name),
-          ],
-        );
-      } catch (e, s) {
-        if (kDebugMode) {
-          Utils.reportError(e, s);
-        }
-      }
-    }
+Widget _build({
+  required SuperChatItem item,
+  Function(Offset, SuperChatItem)? showMenu,
+  RxInt? remains,
+}) {
+  final bottomColor = ColourUtils.parseColor(item.backgroundBottomColor);
+  final border = BorderSide(color: bottomColor);
 
-    Widget price = Text("￥${item.price}", style: TextStyle(color: bottomColor));
-    Widget? remains;
-    if (_remains != null) {
-      remains = Obx(
-        () => Text(
-          _remains.toString(),
-          style: const TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-      );
-    } else {
-      price = Row(
-        crossAxisAlignment: .end,
-        mainAxisAlignment: .spaceBetween,
+  Widget name = Text(
+    item.userInfo.uname,
+    maxLines: 1,
+    overflow: .ellipsis,
+    style: TextStyle(
+      color: ColourUtils.parseColor(item.userInfo.nameColor),
+    ),
+  );
+  if (item.medalInfo case final medal?) {
+    try {
+      name = Row(
+        spacing: 5,
         children: [
-          price,
-          Text(
-            DateFormatUtils.format(
-              item.startSime,
-              format: DateFormatUtils.longFormatDs,
-            ),
-            style: TextStyle(color: bottomColor, fontSize: 13.5),
+          MedalWidget.fromMedalInfo(
+            medal: medal,
+            padding: MedalWidget.mediumPadding,
           ),
+          Flexible(child: name),
         ],
       );
+    } catch (e, s) {
+      if (kDebugMode) {
+        Utils.reportError(e, s);
+      }
     }
+  }
 
-    return Column(
-      mainAxisSize: .min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget price = Text("￥${item.price}", style: TextStyle(color: bottomColor));
+  Widget? remains_;
+  if (remains != null) {
+    remains_ = Obx(
+      () => Text(
+        remains.toString(),
+        style: const TextStyle(fontSize: 14, color: Colors.grey),
+      ),
+    );
+  } else {
+    price = Row(
+      crossAxisAlignment: .end,
+      mainAxisAlignment: .spaceBetween,
       children: [
         GestureDetector(
           onTapUp: showMenu,
@@ -268,6 +272,7 @@ class _SuperChatCardState extends State<SuperChatCard> {
               ),
             ),
           ),
+          style: TextStyle(color: bottomColor, fontSize: 13.5),
         ),
       ],
     );

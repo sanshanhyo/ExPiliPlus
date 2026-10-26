@@ -2,8 +2,10 @@ import 'package:ex_piliplus/common/widgets/flutter/popup_menu.dart';
 import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
-    show platformClampingPhysics;
+import 'package:ex_piliplus/common/widgets/badge.dart';
 import 'package:ex_piliplus/common/widgets/flutter/live_list_view.dart';
+
+    show platformClampingPhysics;
 import 'package:ex_piliplus/http/live.dart';
 import 'package:ex_piliplus/models_new/live/live_danmaku/danmaku_msg.dart';
 import 'package:ex_piliplus/models_new/live/live_superchat/item.dart';
@@ -93,6 +95,17 @@ class LiveRoomChatPanel extends StatelessWidget {
                         child: Text.rich(
                           TextSpan(
                             children: [
+                              if (item.extra.mid == liveRoomController.ruid)
+                                const WidgetSpan(
+                                  child: Padding(
+                                    padding: .only(right: 4),
+                                    child: PBadge(
+                                      text: '主播',
+                                      isStack: false,
+                                      type: .line_primary,
+                                    ),
+                                  ),
+                                ),
                               ?medal,
                               TextSpan(
                                 text: '${item.name}: ',

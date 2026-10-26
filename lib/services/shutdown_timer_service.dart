@@ -11,10 +11,11 @@ import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 
 import 'dart:async' show Timer;
-import 'dart:io' show exit;
 
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
+import 'package:ex_piliplus/utils/device_utils.dart';
+
 import 'package:collection/collection.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPicker;
 import 'package:flutter/material.dart';
@@ -138,11 +139,11 @@ class ShutdownTimerService {
         isManual: true,
       );
       if (res != null) {
-        res.whenComplete(() => exit(0));
+        res.whenComplete(DeviceUtils.exitApp);
         return;
       }
     }
-    exit(0);
+    DeviceUtils.exitApp();
   }
 
   static (int hour, int minute) _parseMinutes(int minutes) =>

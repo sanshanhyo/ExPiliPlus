@@ -17,11 +17,11 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:io' show Platform;
-
 import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/mini_scaffold.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart' as dww;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
 import 'package:get/get.dart';
 
 class NoteListPage extends CommonSlidePage {
@@ -45,17 +45,6 @@ class NoteListPage extends CommonSlidePage {
 
 class _NoteListPageState extends State<NoteListPage>
     with SingleTickerProviderStateMixin, CommonSlideMixin {
-  static dww.Webview? _activeNoteWebview;
-  static bool _isOpeningNote = false;
-  static Object? _dwwOwner;
-
-  void _closeLinuxWebview({bool close = false}) {
-    if (close) _activeNoteWebview?.close();
-    _activeNoteWebview = null;
-    _isOpeningNote = false;
-    _dwwOwner = null;
-  }
-
   late final NoteListPageCtr _controller;
 
   @override
@@ -70,9 +59,6 @@ class _NoteListPageState extends State<NoteListPage>
   @override
   void dispose() {
     Get.delete<NoteListPageCtr>(tag: widget.heroTag);
-    if (_dwwOwner == this) {
-      _closeLinuxWebview(close: true);
-    }
     super.dispose();
   }
 
@@ -364,10 +350,6 @@ class _NoteListPageState extends State<NoteListPage>
   void _onTakeNote() {
     final url =
         'https://www.bilibili.com/h5/note-app?oid=${widget.oid}&pagefrom=ugcvideo&is_stein_gate=${widget.isStein ? 1 : 0}';
-    if (Platform.isLinux) {
-      _onTakeNoteLinux(url);
-      return;
-    }
     MiniScaffold.of(context).showBottomSheet(
       constraints: const BoxConstraints(),
       (context) => WebviewPage(oid: widget.oid, title: widget.title, url: url),

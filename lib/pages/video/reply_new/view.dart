@@ -31,18 +31,13 @@ import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart' hide TextField;
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+import 'package:ex_piliplus/utils/latex_to_unicode.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 class ReplyPage extends CommonRichTextPubPage {
-  final int oid;
-  final int root;
-  final int parent;
-  final int replyType;
-  final ReplyInfo? replyItem;
-  final String? hint;
-  final bool canUploadPic;
-
   const ReplyPage({
     super.key,
     super.items,
@@ -55,7 +50,18 @@ class ReplyPage extends CommonRichTextPubPage {
     this.replyItem,
     this.hint,
     this.canUploadPic = true,
+    this.mentionItem,
   });
+
+  final int oid;
+  final int root;
+  final int parent;
+  final int replyType;
+  final ReplyInfo? replyItem;
+  final String? hint;
+  final bool canUploadPic;
+  // mention
+  final MentionItem? mentionItem;
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();

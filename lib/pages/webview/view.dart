@@ -10,6 +10,14 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/common/widgets/route_aware_mixin.dart'
+    show routeObserver;
+import 'package:ex_piliplus/main.dart' show webViewEnvironment;
+import 'package:ex_piliplus/plugin/linux_webview.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/string_ext.dart';
+import 'package:ex_piliplus/utils/linux_cookie_manager.dart';
+
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -25,8 +33,6 @@ class WebviewPage extends StatefulWidget {
     this.title,
     this.userAgent,
   });
-
-  final String? url;
 
   // note
   final int? oid;

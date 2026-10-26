@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:ex_piliplus/common/style.dart';
@@ -24,6 +25,8 @@ import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/models/common/sponsor_block/segment_type.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
@@ -53,6 +56,27 @@ class DetailItem extends StatelessWidget {
   final MultiSelectBase controller;
   final bool? checked;
   final ValueChanged<BiliDownloadEntryInfo>? onSelect;
+
+  void showSegmentsDetail(BuildContext context) => showDialog(
+    context: context,
+    builder: (context) => SimpleDialog(
+      clipBehavior: .hardEdge,
+      contentPadding: const .symmetric(vertical: 10),
+      children: entry.segments!
+          .map(
+            (item) => ListTile(
+              dense: true,
+              title: Text(SegmentType.values.byName(item.category).title),
+              contentPadding: const .only(left: 16, right: 8),
+              subtitle: Text(
+                '${DurationUtils.formatDuration(item.segment.first / 1000)} 至 ${DurationUtils.formatDuration(item.segment[1] / 1000)}',
+                style: const TextStyle(fontSize: 13),
+              ),
+            ),
+          )
+          .toList(),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +125,27 @@ class DetailItem extends StatelessWidget {
                     style: const TextStyle(fontSize: 14),
                   ),
                 ),
+                if (entry.segments != null)
+                  DialogOption(
+                    onPressed: () {
+                      Get.back();
+                      showSegmentsDetail(context);
+                    },
+                    child: const Text('空降片段'),
+                  ),
+                if (entry.isCompleted)
+                  DialogOption(
+                    onPressed: () async {
+                      Get.back();
+                      final res = await downloadService.updateSegments(entry);
+                      if (res) {
+                        SmartDialog.showToast('更新成功');
+                      } else {
+                        SmartDialog.showToast('更新失败');
+                      }
+                    },
+                    child: const Text('更新空降片段'),
+                  ),
               ],
             ),
           )
@@ -132,7 +177,7 @@ class DetailItem extends StatelessWidget {
               },
             );
             if (context.mounted) {
-              Future.delayed(const Duration(milliseconds: 400), () {
+              Timer(const Duration(milliseconds: 400), () {
                 if (context.mounted) {
                   // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
                   progress?.notifyListeners();
@@ -337,7 +382,7 @@ class DetailItem extends StatelessWidget {
                         left: 0,
                         bottom: 0,
                         child: Text(
-                          '${CacheManager.formatSize(entry.totalBytes)}${entry.ownerName != null ? '  ${entry.ownerName}' : ''}',
+                          '${entry.totalBytes.formatSize}${entry.ownerName != null ? '  ${entry.ownerName}' : ''}',
                           style: TextStyle(
                             fontSize: 12,
                             height: 1.6,
@@ -376,7 +421,7 @@ class DetailItem extends StatelessWidget {
                                                     DownloadStatus
                                                         .downloading ||
                                                 status == DownloadStatus.pause
-                                            ? '${CacheManager.formatSize(curDownload.downloadedBytes)}/${CacheManager.formatSize(curDownload.totalBytes)}'
+                                            ? '${curDownload.downloadedBytes.formatSize}/${curDownload.totalBytes.formatSize}'
                                             : '',
                                         progress: curDownload.totalBytes == 0
                                             ? 0
@@ -406,7 +451,7 @@ class DetailItem extends StatelessWidget {
     statusMsg: entry.status.localizedMessage(Get.context!.l10n),
     progressStr: entry.totalBytes == 0
         ? ''
-        : '${CacheManager.formatSize(entry.downloadedBytes)}/${CacheManager.formatSize(entry.totalBytes)}',
+        : '${entry.downloadedBytes.formatSize}/${entry.totalBytes.formatSize}',
     progress: entry.totalBytes == 0
         ? 0
         : entry.downloadedBytes / entry.totalBytes,

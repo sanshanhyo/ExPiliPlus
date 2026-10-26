@@ -1,10 +1,11 @@
 import 'package:ex_piliplus/models_new/download/bili_download_entry_info.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/stat_detail.dart';
 import 'package:ex_piliplus/pages/common/common_intro_controller.dart';
-import 'package:ex_piliplus/pages/download/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
+import 'package:ex_piliplus/pages/download/download/controller.dart';
+
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/scheduler.dart' show SchedulerBinding;
@@ -43,7 +44,6 @@ class LocalIntroController extends CommonIntroController {
   @override
   void onClose() {
     aidSet.clear();
-    videoPlayerServiceHandler?.onVideoDetailDispose(heroTag);
     super.onClose();
   }
 
@@ -51,14 +51,16 @@ class LocalIntroController extends CommonIntroController {
   void onInit() {
     super.onInit();
     videoDetail.value.title = videoDetailCtr.args['title'];
-    final controller = Get.find<DownloadPageController>();
+    final controller = Get.find<DownloadController>();
     final list = <BiliDownloadEntryInfo>[];
-    for (final e in controller.pages) {
-      final items = e.entries..sort((a, b) => a.sortKey.compareTo(b.sortKey));
-      final completed = items.where((e) => e.isCompleted);
-      list.addAllIf(completed.isNotEmpty, completed);
-      if (completed.length == 1) {
-        aidSet.add(e.pageId);
+    for (final seaon in controller.seasons) {
+      for (final page in seaon.pages) {
+        final items = page.entries..sort(downloadEntrySort);
+        final completed = items.where((e) => e.isCompleted);
+        list.addAllIf(completed.isNotEmpty, completed);
+        if (completed.length == 1) {
+          aidSet.add(page.pageId);
+        }
       }
     }
     this.list.value = list;
@@ -135,8 +137,8 @@ class LocalIntroController extends CommonIntroController {
       ..bvid = entry.bvid
       ..cid.value = entry.cid
       ..args['dirPath'] = entry.entryDirPath
-      ..initFileSource(entry, isInit: false)
-      ..playerInit();
+      ..initFileSource(entry)
+      ..initPlayerIfNeeded(false);
     videoDetail
       ..value.title = entry.showTitle
       ..refresh();

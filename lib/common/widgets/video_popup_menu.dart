@@ -305,6 +305,14 @@ class VideoPopupMenu extends StatelessWidget {
                           ),
                           actions: [
                             TextButton(
+                              onPressed: () {
+                                Get.back();
+                                Pref.setBlackMid(videoItem.owner.mid!);
+                                onRemove?.call();
+                              },
+                              child: const Text('本地屏蔽'),
+                            ),
+                            TextButton(
                               onPressed: Get.back,
                               child: Text(
                                 context.l10n.commonCancel,

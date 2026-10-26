@@ -50,6 +50,7 @@ import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
+import 'package:ex_piliplus/utils/ios/pip_helper.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -2765,7 +2766,8 @@ class HeaderControlState extends State<HeaderControl>
                   ),
                 ),
               ),
-              if (Platform.isAndroid ||
+              if ((Platform.isAndroid && AndroidHelper.isPipAvailable) ||
+                  (Platform.isIOS && IOSPipHelper.isAvailable) ||
                   (PlatformUtils.isDesktop && !isFullScreen))
                 SizedBox(
                   width: btnWidth,
@@ -2778,9 +2780,7 @@ class HeaderControlState extends State<HeaderControl>
                         plPlayerController.toggleDesktopPip();
                         return;
                       }
-                      if (AndroidHelper.isPipAvailable) {
-                        plPlayerController.enterPip();
-                      }
+                      plPlayerController.enterPip();
                     },
                     icon: const Icon(
                       Icons.picture_in_picture_outlined,

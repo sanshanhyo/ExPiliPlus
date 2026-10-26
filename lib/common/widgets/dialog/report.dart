@@ -6,6 +6,8 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -24,7 +26,8 @@ Future<void> autoWrapReportDialog(
   BuildContext context,
   Map<String, Map<int, String>> options,
   OnReport onReport, {
-  bool ban = true,
+  ValueGetter<int>? mid,
+  VoidCallback? onRemove,
   String? reportUrl,
   ReasonCheck withContent = _kReportCheck,
   ReasonCheck contentRequired = _kReportCheck,
@@ -144,7 +147,7 @@ Future<void> autoWrapReportDialog(
               ),
             ),
           ),
-          if (ban)
+          if (mid != null)
             Padding(
               padding: const EdgeInsets.only(left: 14, top: 6),
               child: CheckBoxText(
@@ -155,6 +158,15 @@ Future<void> autoWrapReportDialog(
         ],
       ),
       actions: [
+        if (mid != null)
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Pref.setBlackMid(mid());
+              onRemove?.call();
+            },
+            child: const Text('本地屏蔽'),
+          ),
         TextButton(
           onPressed: Get.back,
           child: Text(

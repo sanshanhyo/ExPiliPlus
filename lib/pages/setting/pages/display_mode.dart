@@ -1,6 +1,10 @@
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
+import 'dart:async';
+
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
@@ -54,7 +58,7 @@ class _SetDisplayModeState extends State<SetDisplayMode> {
     preferred ??= DisplayMode.auto;
 
     FlutterDisplayMode.setPreferredMode(preferred!).whenComplete(() {
-      Future.delayed(const Duration(milliseconds: 100), fetchAll);
+      Timer(const Duration(milliseconds: 100), fetchAll);
     });
   }
 
@@ -79,14 +83,9 @@ class _SetDisplayModeState extends State<SetDisplayMode> {
           ),
           Expanded(
             child: RadioGroup(
-              onChanged: (DisplayMode? newMode) {
-                FlutterDisplayMode.setPreferredMode(
-                  newMode!,
-                ).whenComplete(
-                  () => Future.delayed(
-                    const Duration(milliseconds: 100),
-                    fetchAll,
-                  ),
+              onChanged: (newMode) {
+                FlutterDisplayMode.setPreferredMode(newMode!).whenComplete(
+                  () => Timer(const Duration(milliseconds: 100), fetchAll),
                 );
               },
               groupValue: preferred,

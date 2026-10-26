@@ -122,4 +122,8 @@ class _SettingsSearchPageState
       ),
     );
   }
+
+  late final gridDelegate = SliverSimpleGridDelegateWithMaxCrossAxisExtent_(
+    maxCrossAxisExtent: Grid.smallCardWidth * 2,
+  );
 }

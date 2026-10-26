@@ -209,6 +209,13 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
         ),
         actions: [
           TextButton(
+            onPressed: () {
+              Get.back();
+              Pref.setBlackMid(mid);
+            },
+            child: const Text('本地屏蔽'),
+          ),
+          TextButton(
             onPressed: Get.back,
             child: Text(
               context.l10n.commonCancel,

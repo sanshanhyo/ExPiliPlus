@@ -5,7 +5,6 @@ import 'package:ex_piliplus/pages/blacklist/view.dart';
 import 'package:ex_piliplus/pages/bubble/view.dart';
 import 'package:ex_piliplus/pages/danmaku_block/view.dart';
 import 'package:ex_piliplus/pages/dlna/view.dart';
-import 'package:ex_piliplus/pages/download/view.dart';
 import 'package:ex_piliplus/pages/dynamics/view.dart';
 import 'package:ex_piliplus/pages/dynamics_create_vote/view.dart';
 import 'package:ex_piliplus/pages/dynamics_detail/view.dart';
@@ -70,6 +69,9 @@ import 'package:ex_piliplus/pages/video/view.dart';
 import 'package:ex_piliplus/pages/webview/view.dart';
 import 'package:ex_piliplus/pages/whisper/view.dart';
 import 'package:ex_piliplus/pages/whisper_detail/view.dart';
+import 'package:ex_piliplus/pages/download/download/view.dart';
+import 'package:ex_piliplus/pages/main/view.dart';
+
 import 'package:get/get.dart';
 
 class Routes {

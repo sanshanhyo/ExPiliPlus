@@ -225,6 +225,7 @@ class OpusContent extends StatelessWidget {
                 Widget child = CachedNetworkImage(
                   width: width,
                   height: height,
+                  gaplessPlayback: true,
                   memCacheWidth: width.cacheSize(context),
                   imageUrl: ImageUtils.thumbnailUrl(pic.url!, 60),
                   fadeInDuration: const Duration(milliseconds: 120),
@@ -267,6 +268,7 @@ class OpusContent extends StatelessWidget {
                   fit: .contain,
                   height: height,
                   width: maxWidth,
+                  gaplessPlayback: true,
                   memCacheWidth: maxWidth.cacheSize(context),
                   imageUrl: ImageUtils.thumbnailUrl(pic.url!),
                   placeholder: (_, _) => const SizedBox.shrink(),
@@ -773,6 +775,7 @@ Widget moduleBlockedItem(
   Widget icon(double width) {
     return CachedNetworkImage(
       width: width,
+      gaplessPlayback: true,
       memCacheWidth: width.cacheSize(context),
       fit: BoxFit.contain,
       imageUrl: ImageUtils.thumbnailUrl(

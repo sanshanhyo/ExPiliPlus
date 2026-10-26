@@ -4,18 +4,20 @@ import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class DynMentionItem extends StatelessWidget {
   const DynMentionItem({
     super.key,
     required this.item,
     required this.onTap,
-    required this.onCheck,
+    this.onCheck,
   });
 
   final MentionItem item;
   final VoidCallback onTap;
-  final ValueChanged<bool?> onCheck;
+  final ValueChanged<bool?>? onCheck;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class DynMentionItem extends StatelessWidget {
           src: item.face,
           width: 42,
           height: 42,
-          type: ImageType.avatar,
+          type: .avatar,
         ),
         title: Text(
           item.name!,

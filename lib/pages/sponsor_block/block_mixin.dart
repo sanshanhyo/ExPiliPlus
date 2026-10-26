@@ -57,6 +57,7 @@ mixin BlockMixin on GetxController {
   bool get isFullScreen => false;
 
   bool get isUgc;
+  bool get isFileSource => false;
   late final isBlock = isUgc || !blockConfig.enablePgcSkip;
 
   Future<void> querySponsorBlock({
@@ -117,6 +118,8 @@ mixin BlockMixin on GetxController {
   }
 
   Future<void> handleSBData(List<SegmentItemModel> list) async {
+    if (isClosed) return;
+
     if (list.isNotEmpty) {
       try {
         Future<void>? future;
@@ -152,10 +155,8 @@ mixin BlockMixin on GetxController {
                         case SkipType.alwaysSkip:
                         case SkipType.skipOnce:
                           segmentModel.hasSkipped = true;
-                          if (player!.state.playing) {
-                            future = onSkip(
-                              segmentModel,
-                            );
+                          if (!isFileSource && player!.state.playing) {
+                            future = onSkip(segmentModel);
                           } else {
                             player!.stream.playing.firstWhere((e) {
                               if (e) {
@@ -532,6 +533,7 @@ mixin BlockMixin on GetxController {
           _ => false,
         }) {
           _skipToast(i);
+          i.hasSkipped = true;
           pos = math.max(pos, i.segment.$2);
         }
       } else {

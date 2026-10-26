@@ -1,5 +1,7 @@
 import 'package:ex_piliplus/models/model_video.dart';
 import 'package:ex_piliplus/utils/parse_int.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:hive_ce/hive.dart';
 
 part 'model_owner.g.dart';
@@ -31,4 +33,10 @@ class Owner implements BaseOwner {
     'name': name,
     'face': face,
   };
+
+  MentionItem? get mentionItem => MentionItem(
+    face: face,
+    name: name,
+    uid: mid.toString(),
+  );
 }

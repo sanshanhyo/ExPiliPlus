@@ -18,11 +18,11 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 # ExPiliPlus follows its own semantic version. The tracked PiliPlus version is
 # stored separately in UPSTREAM_VERSION.
-version: 1.0.0-dev.2+1
+version: 1.0.0-dev.3+1
 
 environment:
   sdk: ">=3.13.0"
-  flutter: 3.47.4
+  flutter: 3.47.7
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -42,13 +42,16 @@ dependencies:
     git:
       url: https://github.com/bggRGjQaUbCoE/audio_service.git
       path: audio_service
-      ref: main
-  audio_session: ^0.2.2
+      ref: dev
+  audio_session:
+    git:
+      url: https://github.com/bggRGjQaUbCoE/audio_session.git
+      ref: dev
   battery_plus: ^7.0.0
   brotli: ^0.6.0
   cached_network_image_ce:
     git:
-      url: https://github.com/My-Responsitories/flutter_cached_network_image_ce.git
+      url: https://github.com/bggRGjQaUbCoE/flutter_cached_network_image_ce.git
       path: cached_network_image
       ref: develop
   canvas_danmaku:
@@ -69,6 +72,7 @@ dependencies:
   connectivity_plus: ^7.1.1
   cookie_jar: ^4.0.8
   crypto: ^3.0.6
+  cupertino_ui: ^1.0.0
   desktop_webview_window:
     git:
       url: https://github.com/Predidit/linux_webview_window
@@ -77,19 +81,18 @@ dependencies:
   dio: ^5.9.1
   dio_http2_adapter: ^2.7.1
   dlna_dart: ^0.1.0
-  dynamic_color: ^1.8.1
+  dynamic_color: ^2.1.0
   easy_debounce: ^2.0.3
   encrypt: ^5.0.3
   extended_nested_scroll_view:
     git:
       url: https://github.com/bggRGjQaUbCoE/extended_nested_scroll_view.git
       ref: dev
-  file_picker: ^12.0.0-beta.7
+  ffi: ^2.2.0
+  file_picker: ^13.1.0
   fixnum: ^1.1.1
   fl_chart: ^1.0.0
-  # Keep the Flutter-backed implementation so ExPiliPlus retains its
-  # existing ColorScheme type and palette semantics. Version 5 migrates to
-  # material_ui's parallel types and changes the generated surface tones.
+  # Preserve ExPiliPlus custom ColorScheme behavior.
   flex_seed_scheme: 4.0.1
   flutter_displaymode: ^0.7.0
   flutter_html:
@@ -105,6 +108,7 @@ dependencies:
     git:
       url: https://github.com/bggRGjQaUbCoE/flutter_sortable_wrap.git
       ref: master
+  flutter_staggered_grid_view: ^0.7.0
   flutter_svg: ^2.0.14
   flutter_volume_controller: ^2.0.0
   font_awesome_flutter:
@@ -114,7 +118,7 @@ dependencies:
   get:
     git:
       url: https://github.com/bggRGjQaUbCoE/getx.git
-      ref: version_4.7.2
+      ref: dev
   hive_ce: ^2.19.3
   html: ^0.15.4
   http2: ^2.3.1
@@ -143,7 +147,7 @@ dependencies:
   package_info_plus: ^10.1.0
   path: ^1.9.1
   path_provider: ^2.1.5
-  permission_handler_android: ^13.0.1
+  permission_handler_android: ^14.0.0
   permission_handler_apple: ^9.4.7
   permission_handler_platform_interface: ^4.3.0
   pretty_qr_code: ^3.3.0
@@ -160,7 +164,7 @@ dependencies:
       url: https://github.com/bggRGjQaUbCoE/super_sliver_list.git
       ref: mod
   synchronized: ^3.3.0
-  tray_manager: ^0.5.1
+  tray_manager: ^0.8.0
   url_launcher: ^6.3.1
   uuid: ^4.5.1
   vector_math: ^2.2.0
@@ -179,8 +183,7 @@ dependencies:
       ref: main
 
 dependency_overrides:
-  # Flutter 3.47.4's bundled native-assets API does not expose arm64e yet.
-  # objective_c 9.6.0 retains the same API without the newer hook target.
+  # Keep compatibility with the pinned Flutter native-assets API.
   objective_c: 9.6.0
   flutter_inappwebview_android:
     git:
@@ -197,6 +200,7 @@ dependency_overrides:
       url: https://github.com/My-Responsitories/media-kit.git
       path: media_kit
       ref: native
+  # The local Android build enables ExPiliPlus GIF recording.
   media_kit_libs_android_video:
     path: third_party/media_kit_libs_android_video
   media_kit_libs_ios_video:
@@ -221,14 +225,9 @@ dependency_overrides:
       ref: native
   media_kit_video:
     git:
-      url: https://github.com/My-Responsitories/media-kit.git
+      url: https://github.com/bggRGjQaUbCoE/media-kit.git
       path: media_kit_video
       ref: native
-  cached_network_image_ce:
-    git:
-      url: https://github.com/My-Responsitories/flutter_cached_network_image_ce.git
-      path: cached_network_image
-      ref: develop
 
 dev_dependencies:
   flutter_test:
@@ -237,11 +236,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.6
-  jnigen:
-    git:
-      url: https://github.com/dart-lang/native.git
-      path: pkgs/jnigen
-      ref: 55520836d363aac7f1ebae47387d03a30302be7b
+  jnigen: ^1.0.0
 
 flutter_launcher_icons:
   android: true

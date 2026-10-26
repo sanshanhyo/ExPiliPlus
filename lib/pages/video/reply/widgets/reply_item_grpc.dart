@@ -53,7 +53,6 @@ import 'package:ex_piliplus/utils/url_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/common/widgets/emote_tooltip.dart';
 import 'package:ex_piliplus/common/widgets/text_ellipsis/text_ellipsis.dart';
-import 'package:ex_piliplus/common/widgets/text_more/text_more.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 
@@ -1173,7 +1172,23 @@ class ReplyItemGrpc extends StatelessWidget {
                 style: style.copyWith(color: errorColor),
               ),
             ),
-          if (ownerMid != Int64.ZERO)
+          if (ownerMid == Int64.ZERO)
+            ListTile(
+              onTap: () {
+                Get.back();
+                Pref.setBlackMid(item.mid.toInt());
+                onDelete();
+                SmartDialog.showToast('屏蔽成功');
+                return;
+              },
+              minLeadingWidth: 0,
+              leading: Icon(Icons.error_outline, color: errorColor, size: 19),
+              title: Text(
+                '屏蔽',
+                style: TextStyle(fontSize: 14, color: errorColor),
+              ),
+            )
+          else
             ListTile(
               onTap: () {
                 Get.back();
@@ -1183,6 +1198,8 @@ class ReplyItemGrpc extends StatelessWidget {
 
                 autoWrapReportDialog(
                   context,
+                  onRemove: onDelete,
+                  mid: () => item.mid.toInt(),
                   ReportOptions.commentReport,
                   withContent: ReportOptions.withContentReply,
                   contentRequired: ReportOptions.contentRequiredReply,

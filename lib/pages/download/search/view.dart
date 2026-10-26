@@ -10,6 +10,9 @@ import 'package:ex_piliplus/utils/grid.dart';
 import 'package:flutter/material.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:ex_piliplus/pages/common/multi_select/base.dart';
+import 'package:ex_piliplus/pages/download/download_action_mixin.dart';
+
 import 'package:get/get.dart';
 
 class DownloadSearchPage extends StatefulWidget {
@@ -31,10 +34,18 @@ class _DownloadSearchPageState
           List<BiliDownloadEntryInfo>,
           BiliDownloadEntryInfo
         >
-    with GridMixin {
+    with
+        GridMixin,
+        BaseDownloadActionMixin<DownloadSearchPage, BiliDownloadEntryInfo>,
+        CommonDownloadActionMixin<DownloadSearchPage> {
   @override
   DownloadSearchController controller = Get.put(DownloadSearchController());
-  final _downloadService = Get.find<DownloadService>();
+
+  @override
+  final downloadService = Get.find<DownloadService>();
+
+  @override
+  BaseMultiSelectMixin<BiliDownloadEntryInfo> get multiSelectCtr => controller;
 
   @override
   List<Widget>? get extraActions => [
@@ -95,7 +106,7 @@ class _DownloadSearchPageState
           return DetailItem(
             entry: entry,
             progress: widget.progress,
-            downloadService: _downloadService,
+            downloadService: downloadService,
             showTitle: true,
             onDelete: () => controller.onRemoveSingle(index, entry),
             controller: controller,
