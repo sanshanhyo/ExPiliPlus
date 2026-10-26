@@ -8080,18 +8080,33 @@ abstract class AppLocalizations {
   String get memberHomeAnime;
 
   /// No description provided for @blacklistLocal.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地'**
   String get blacklistLocal;
 
   /// No description provided for @blacklistOnline.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线'**
   String get blacklistOnline;
 
   /// No description provided for @blacklistAddMid.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽用户'**
   String get blacklistAddMid;
 
   /// No description provided for @blacklistUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'UID'**
   String get blacklistUid;
 
   /// No description provided for @blacklistImportExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入/导出'**
   String get blacklistImportExport;
 
   /// No description provided for @blacklistTitle.

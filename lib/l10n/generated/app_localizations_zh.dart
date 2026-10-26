@@ -4475,7 +4475,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get memberHomeAnime => '追番';
 
   @override
-  @override
   String get blacklistLocal => '本地';
 
   @override
@@ -4490,6 +4489,7 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get blacklistImportExport => '导入/导出';
 
+  @override
   String blacklistTitle(Object count) {
     return '黑名单管理$count';
   }
@@ -11937,7 +11937,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get memberHomeAnime => '追番';
 
   @override
-  @override
   String get blacklistLocal => '本機';
 
   @override
@@ -11952,6 +11951,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String get blacklistImportExport => '匯入/匯出';
 
+  @override
   String blacklistTitle(Object count) {
     return '黑名單管理$count';
   }

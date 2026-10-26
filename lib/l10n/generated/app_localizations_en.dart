@@ -4640,7 +4640,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberHomeAnime => 'Anime';
 
   @override
-  @override
   String get blacklistLocal => 'Local';
 
   @override
@@ -4655,6 +4654,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get blacklistImportExport => 'Import / export';
 
+  @override
   String blacklistTitle(Object count) {
     return 'Blocked users$count';
   }
