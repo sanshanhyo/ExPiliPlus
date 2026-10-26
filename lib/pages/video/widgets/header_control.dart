@@ -41,7 +41,7 @@ import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart'
-    show shutdownTimerService;
+    show ShutdownTimerDialogExtension, shutdownTimerService;
 import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';

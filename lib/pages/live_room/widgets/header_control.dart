@@ -12,7 +12,7 @@ import 'package:ex_piliplus/pages/video/widgets/header_control.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/common_btn.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart'
-    show shutdownTimerService;
+    show ShutdownTimerDialogExtension, shutdownTimerService;
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
