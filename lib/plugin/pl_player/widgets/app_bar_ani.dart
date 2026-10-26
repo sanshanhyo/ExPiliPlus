@@ -66,3 +66,22 @@ class AppBarAni extends StatelessWidget {
     );
   }
 }
+
+class PlayerControlBars extends StatelessWidget {
+  const PlayerControlBars({
+    required this.top,
+    required this.bottom,
+    super.key,
+  });
+
+  final Widget top;
+  final Widget bottom;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    children: [
+      Positioned(top: 0, left: 0, right: 0, child: top),
+      Positioned(bottom: 0, left: 0, right: 0, child: bottom),
+    ],
+  );
+}

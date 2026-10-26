@@ -1647,41 +1647,40 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
           bottom: -1,
           child: ClipRect(
             child: RepaintBoundary(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppBarAni(
-                    isTop: true,
-                    controller: _animationController,
-                    isFullScreen: isFullScreen,
-                    removeSafeArea: plPlayerController.removeSafeArea,
-                    child: plPlayerController.isDesktopPip
-                        ? GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onPanStart: (_) => windowManager.startDragging(),
-                            child: widget.headerControl,
-                          )
-                        : widget.headerControl,
-                  ),
-                  AppBarAni(
-                    isTop: false,
-                    controller: _animationController,
-                    isFullScreen: isFullScreen,
-                    removeSafeArea: plPlayerController.removeSafeArea,
-                    child:
-                        widget.bottomControl ??
-                        BottomControl(
-                          maxWidth: maxWidth,
-                          isFullScreen: isFullScreen,
-                          controller: plPlayerController,
-                          videoDetailController: videoDetailController,
-                          buildBottomControl: () => buildBottomControl(
-                            videoDetailController,
-                            maxWidth > maxHeight,
-                          ),
+              // The detail header can temporarily shrink below the combined
+              // height of these bars while it expands or collapses.
+              child: PlayerControlBars(
+                top: AppBarAni(
+                  isTop: true,
+                  controller: _animationController,
+                  isFullScreen: isFullScreen,
+                  removeSafeArea: plPlayerController.removeSafeArea,
+                  child: plPlayerController.isDesktopPip
+                      ? GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onPanStart: (_) => windowManager.startDragging(),
+                          child: widget.headerControl,
+                        )
+                      : widget.headerControl,
+                ),
+                bottom: AppBarAni(
+                  isTop: false,
+                  controller: _animationController,
+                  isFullScreen: isFullScreen,
+                  removeSafeArea: plPlayerController.removeSafeArea,
+                  child:
+                      widget.bottomControl ??
+                      BottomControl(
+                        maxWidth: maxWidth,
+                        isFullScreen: isFullScreen,
+                        controller: plPlayerController,
+                        videoDetailController: videoDetailController,
+                        buildBottomControl: () => buildBottomControl(
+                          videoDetailController,
+                          maxWidth > maxHeight,
                         ),
-                  ),
-                ],
+                      ),
+                ),
               ),
             ),
           ),
@@ -1968,49 +1967,59 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
               (plPlayerController.isBuffering.value &&
                   plPlayerController.playerStatus.isPlaying)) {
             return Center(
-              child: GestureDetector(
-                onTap: plPlayerController.refreshPlayer,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [Colors.black26, Colors.transparent],
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        Assets.buffering,
-                        height: 25,
-                        cacheHeight: 25.cacheSize(context),
-                        semanticLabel: l10n.commonLoading,
-                        color: Colors.white,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxHeight < 32) {
+                    return const SizedBox.shrink();
+                  }
+                  final compact = constraints.maxHeight < 80;
+                  final iconSize = compact ? 18.0 : 25.0;
+                  return GestureDetector(
+                    onTap: plPlayerController.refreshPlayer,
+                    child: Container(
+                      padding: EdgeInsets.all(compact ? 4 : 20),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [Colors.black26, Colors.transparent],
+                        ),
                       ),
-                      if (plPlayerController.isBuffering.value)
-                        Obx(() {
-                          final buffered = plPlayerController.buffered.value;
-                          if (buffered == 0) {
-                            return Text(
-                              l10n.commonLoading,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            );
-                          }
-                          return Text(
-                            DurationUtils.formatDuration(buffered),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          );
-                        }),
-                    ],
-                  ),
-                ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            Assets.buffering,
+                            height: iconSize,
+                            cacheHeight: iconSize.cacheSize(context),
+                            semanticLabel: l10n.commonLoading,
+                            color: Colors.white,
+                          ),
+                          if (!compact &&
+                              plPlayerController.isBuffering.value)
+                            Obx(() {
+                              final buffered = plPlayerController.buffered.value;
+                              if (buffered == 0) {
+                                return Text(
+                                  l10n.commonLoading,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                );
+                              }
+                              return Text(
+                                DurationUtils.formatDuration(buffered),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              );
+                            }),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             );
           } else {

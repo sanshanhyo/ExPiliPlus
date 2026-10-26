@@ -267,6 +267,28 @@ void main() {
               'native Android player opens and decodes the public video',
           timeout: const Duration(seconds: 150),
         );
+        final visiblePlayer = find.byType(PLVideoPlayer);
+        final minimumPlayerHeight =
+            tester.view.physicalSize.shortestSide /
+            tester.view.devicePixelRatio /
+            (16 / 9);
+        await _waitForCondition(
+          tester,
+          () => visiblePlayer.evaluate().length == 1 &&
+              tester.getRect(visiblePlayer).height >= minimumPlayerHeight * 0.9,
+          description: 'video player expands to its portrait control area',
+          timeout: const Duration(seconds: 15),
+        );
+        final state = nativePlayer.state;
+        debugPrint(
+          'ANDROID_PLAYER_READY_STATE '
+          'playing=${state.playing} '
+          'duration_ms=${state.duration.inMilliseconds} '
+          'position_ms=${state.position.inMilliseconds} '
+          'width=${state.width} height=${state.height} '
+          'buffering_events=${bufferingEvents.join("|")} '
+          'errors=${playerErrors.join(" | ")}',
+        );
       } catch (_) {
         final state = nativePlayer.state;
         debugPrint(
@@ -682,14 +704,18 @@ Future<void> _showPlayerControls(WidgetTester tester) async {
   await _waitFor(tester, player);
   expect(player, findsOneWidget, reason: 'one active PLVideoPlayer');
   final playPauseButton = _playerControls(find.byType(PlayOrPauseButton));
-  if (playPauseButton.evaluate().isEmpty) {
+  if (playPauseButton.hitTestable().evaluate().isEmpty) {
     final rect = tester.getRect(player);
     await tester.tapAt(rect.center);
     await tester.pump();
     await Future<void>.delayed(const Duration(milliseconds: 300));
     await tester.pump();
-    await _waitFor(tester, playPauseButton);
   }
+  await _waitForCondition(
+    tester,
+    () => playPauseButton.hitTestable().evaluate().length == 1,
+    description: 'play/pause control is visible and hit-testable',
+  );
   expect(playPauseButton, findsOneWidget, reason: 'one active play/pause control');
 }
 
