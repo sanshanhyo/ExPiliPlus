@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 _OPTION = re.compile(r"(?<![\w-])(--[a-z][a-z0-9-]*|-[a-z])(?=[,=\s]|$)")
+_BOOLEAN_OPTION = re.compile(r"--\[no-\]([a-z][a-z0-9-]*)(?=[,=\s]|$)")
 _DRIVE_START = re.compile(r"^\s+flutter drive\b", re.MULTILINE)
 
 
@@ -26,6 +27,9 @@ def drive_options(script: str) -> set[str]:
 
 def validate_drive_options(help_text: str, script: str) -> set[str]:
     supported = set(_OPTION.findall(help_text))
+    for option in _BOOLEAN_OPTION.findall(help_text):
+        supported.add(f"--{option}")
+        supported.add(f"--no-{option}")
     used = drive_options(script)
     unsupported = used - supported
     if unsupported:

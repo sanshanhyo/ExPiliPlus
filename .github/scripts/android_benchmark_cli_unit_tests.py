@@ -32,7 +32,7 @@ class AndroidBenchmarkCliTest(unittest.TestCase):
   -d, --device-id=<DEVICE_ID>
       --dart-define-from-file=<DART_DEFINES>
       --driver=<DRIVER>
-      --no-pub
+      --[no-]pub
       --profile
       --target=<TARGET>
 """
@@ -45,6 +45,19 @@ class AndroidBenchmarkCliTest(unittest.TestCase):
   ) > "$output_dir/profile-benchmark.log" 2>&1 &
 '''
         self.assertEqual(len(validate_drive_options(help_text, script)), 6)
+
+    def test_flutter_boolean_option_notation_supports_both_forms(self) -> None:
+        help_text = """
+  --[no-]pub
+  --profile
+      Whether to run `flutter pub get` before running the app.
+"""
+        for pub_option in ("--pub", "--no-pub"):
+            script = f"""
+    flutter drive --profile {pub_option}
+  ) > "$output_dir/profile-benchmark.log" 2>&1 &
+"""
+            self.assertIn(pub_option, validate_drive_options(help_text, script))
 
     def test_rejects_an_unsupported_build_name_flag(self) -> None:
         help_text = "--profile --no-pub --driver --target -d --dart-define-from-file"
