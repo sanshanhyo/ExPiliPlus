@@ -35,9 +35,9 @@ def function_body(name: str, next_marker: str) -> str:
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
     def test_injected_benchmark_targets_are_analyzed_before_emulator_and_release(self) -> None:
         self.assertEqual(BENCHMARK_WORKFLOW.count("for attempt in 1 2"), 2)
-        self.assertIn("timeout --signal=TERM --kill-after=30s 5m sudo apt-get update", BENCHMARK_WORKFLOW)
-        self.assertIn("timeout --signal=TERM --kill-after=30s 8m \\", BENCHMARK_WORKFLOW)
-        self.assertIn("sudo apt-get install --no-install-recommends -y ffmpeg", BENCHMARK_WORKFLOW)
+        self.assertIn("sudo timeout --signal=TERM --kill-after=30s 5m apt-get update", BENCHMARK_WORKFLOW)
+        self.assertIn("sudo timeout --signal=TERM --kill-after=30s 8m \\", BENCHMARK_WORKFLOW)
+        self.assertIn("apt-get install --no-install-recommends -y ffmpeg", BENCHMARK_WORKFLOW)
         self.assertIn("apt-get install ffmpeg attempt ${attempt}/2 failed", BENCHMARK_WORKFLOW)
         preflight = BENCHMARK_WORKFLOW.index(
             "Compile injected GIF benchmark targets before APK builds"
