@@ -106,8 +106,6 @@ jobs:
 
       - name: Run isolated app integration test
         uses: reactivecircus/android-emulator-runner@v2
-        env:
-          ANDROID_INTEGRATION_EVIDENCE_DIR: ${{ runner.temp }}/android-integration-evidence
         with:
           api-level: 35
           target: google_apis
@@ -116,7 +114,7 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
-            evidence_dir="${ANDROID_INTEGRATION_EVIDENCE_DIR:?Missing integration evidence directory}"
+            evidence_dir="${{ runner.temp }}/android-integration-evidence"
             mkdir -p "$evidence_dir"
             capture_emulator_evidence() {
               adb exec-out screencap -p > "$evidence_dir/emulator-screen.png" 2>/dev/null || true
