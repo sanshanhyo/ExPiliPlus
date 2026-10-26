@@ -90,14 +90,6 @@ jobs:
       - name: Check diff whitespace
         run: git diff --check
 
-      - name: Install GIF inspection tools
-        run: |
-          if ! command -v ffprobe >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install --no-install-recommends -y ffmpeg
-          fi
-          ffprobe -version
-
       - name: Enable KVM for Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -130,8 +122,35 @@ jobs:
           path: |
             ${{ runner.temp }}/android-integration-evidence/emulator-screen.png
             ${{ runner.temp }}/android-integration-evidence/android-logcat.txt
-            ${{ runner.temp }}/android-integration-evidence/gif-probe.json
             ${{ runner.temp }}/android-integration-evidence/countdown_quick_bar.png
             ${{ runner.temp }}/android-integration-evidence/countdown_outside_tile.png
+          if-no-files-found: ignore
+          retention-days: 5
+
+      - name: Install GIF inspection tools
+        if: success()
+        run: |
+          if ! command -v ffprobe >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
+            if ! timeout --signal=TERM --kill-after=30s 5m sudo apt-get update; then
+              echo "GIF inspection dependency setup failed or timed out during apt-get update" >&2
+              exit 1
+            fi
+            if ! timeout --signal=TERM --kill-after=30s 5m sudo apt-get install --no-install-recommends -y ffmpeg; then
+              echo "GIF inspection dependency setup failed or timed out while installing ffmpeg" >&2
+              exit 1
+            fi
+          fi
+          ffprobe -version
+
+      - name: Validate exported GIF
+        if: success()
+        run: bash .github/scripts/validate_android_gif.sh "${{ runner.temp }}/android-integration-evidence"
+
+      - name: Upload GIF validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-gif-validation-${{ github.run_id }}
+          path: ${{ runner.temp }}/android-integration-evidence/gif-probe.json
           if-no-files-found: ignore
           retention-days: 5
