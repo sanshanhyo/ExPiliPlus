@@ -103,6 +103,12 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle
+          if [ ! -e /dev/kvm ]; then
+            echo "KVM device /dev/kvm is unavailable"
+            exit 1
+          fi
+          ls -l /dev/kvm
           test -r /dev/kvm && test -w /dev/kvm
 
       - name: Run isolated app integration test
