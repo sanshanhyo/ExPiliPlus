@@ -2,7 +2,7 @@ import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart';
 import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
 import 'package:flutter/foundation.dart' show ValueListenable, ValueNotifier;
-import 'package:flutter/widgets.dart' show Locale;
+import 'package:flutter/widgets.dart' show Builder, Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:material_ui/material_ui.dart' as mui;
