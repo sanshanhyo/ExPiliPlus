@@ -1,26 +1,27 @@
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:jnigen/jnigen.dart';
 
-Future<void> main(List<String> args) async {
+void main(List<String> args) async {
   final packageRoot = Platform.script.resolve('../');
-  await generateJniBindings(
-    Config(
+  final generator = JniGenerator(
+    input: Input(
       sourcePath: [packageRoot.resolve('android/app/src/main/java')],
       classes: [
         'com.example.piliplus.AndroidHelper',
         'java.lang.Runnable',
       ],
-      androidSdkConfig: AndroidSdkConfig(
+      androidSdk: AndroidSdk(
         addGradleDeps: true,
-        androidExample: packageRoot.toFilePath(),
+        androidExample: packageRoot,
       ),
-      outputConfig: OutputConfig(
-        dartConfig: DartCodeOutputConfig(
-          path: packageRoot.resolve('lib/utils/android/bindings.g.dart'),
-          structure: OutputStructure.singleFile,
-        ),
+    ),
+    output: Output(
+      dart: DartOutput(
+        path: packageRoot.resolve('lib/utils/android/bindings.g.dart'),
+        structure: .singleFile,
       ),
     ),
   );
+  await generator.generate();
 }

@@ -11,7 +11,6 @@ import 'package:ex_piliplus/pages/dynamics_tab/controller.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;

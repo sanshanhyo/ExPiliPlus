@@ -18,7 +18,7 @@ import 'package:ex_piliplus/utils/screenshot.dart';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 part 'package:ex_piliplus/common/widgets/context_menu/live_menu_helper.dart';
@@ -208,73 +208,154 @@ Widget _build({
       crossAxisAlignment: .end,
       mainAxisAlignment: .spaceBetween,
       children: [
-        GestureDetector(
-          onTapUp: showMenu,
-          onSecondaryTapUp: PlatformUtils.isDesktop ? showMenu : null,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: const .vertical(top: .circular(8)),
-              color: ColourUtils.parseColor(item.backgroundColor),
-              border: Border(top: border, left: border, right: border),
-              image: item.backgroundImage == null
-                  ? null
-                  : DecorationImage(
-                      alignment: .topRight,
-                      image: CachedNetworkImageProvider(
-                        ImageUtils.safeThumbnailUrl(item.backgroundImage),
-                      ),
-                    ),
-            ),
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              spacing: 12,
-              children: [
-                NetworkImgLayer(
-                  src: item.userInfo.face,
-                  width: 45,
-                  height: 45,
-                  type: .avatar,
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: .min,
-                    crossAxisAlignment: .start,
-                    children: [name, price],
-                  ),
-                ),
-                ?remains,
-              ],
-            ),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: const .vertical(bottom: .circular(8)),
-            color: bottomColor,
-          ),
-          padding: const .all(8),
-          child: TextSelectionTheme(
-            data: TextSelectionThemeData(
-              selectionColor: Color.lerp(bottomColor, Colors.black, .26),
-              selectionHandleColor: Color.lerp(bottomColor, Colors.white, .26),
-            ),
-            child: SelectionText(
-              item.message,
-              contextMenuBuilder: scMenuBuilder,
-              style: TextStyle(
-                color: ColourUtils.parseColor(item.messageFontColor),
-                // decoration: widget.persistentSC && item.deleted
-                //     ? .lineThrough
-                //     : null,
-                // decorationThickness: 1.5,
-                // decorationStyle: .double,
-                // decorationColor: Colors.white,
-              ),
-            ),
+        price,
+        Text(
+          DateFormatUtils.format(
+            item.startSime,
+            format: DateFormatUtils.longFormatDs,
           ),
           style: TextStyle(color: bottomColor, fontSize: 13.5),
         ),
       ],
     );
   }
+
+  Widget top = Container(
+    decoration: BoxDecoration(
+      borderRadius: const .vertical(top: .circular(8)),
+      color: ColourUtils.parseColor(item.backgroundColor),
+      border: Border(top: border, left: border, right: border),
+      image: item.backgroundImage == null
+          ? null
+          : DecorationImage(
+              alignment: .topRight,
+              image: CachedNetworkImageProvider(
+                ImageUtils.safeThumbnailUrl(item.backgroundImage),
+              ),
+            ),
+    ),
+    padding: const EdgeInsets.all(8),
+    child: Row(
+      spacing: 12,
+      children: [
+        _avatar(item.userInfo.face, item.userInfo.faceFrame),
+        Expanded(
+          child: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
+            children: [name, price],
+          ),
+        ),
+        ?remains_,
+      ],
+    ),
+  );
+
+  final Widget msg;
+
+  final style = TextStyle(
+    color: ColourUtils.parseColor(item.messageFontColor),
+    // decoration: widget.persistentSC && item.deleted
+    //     ? .lineThrough
+    //     : null,
+    // decorationThickness: 1.5,
+    // decorationStyle: .double,
+    // decorationColor: Colors.white,
+  );
+
+  if (showMenu != null) {
+    void showMenu_(TapUpDetails e) => showMenu(e.globalPosition, item);
+    top = GestureDetector(
+      onTapUp: showMenu_,
+      onSecondaryTapUp: PlatformUtils.isDesktop ? showMenu_ : null,
+      child: top,
+    );
+    msg = TextSelectionTheme(
+      data: TextSelectionThemeData(
+        selectionColor: Color.lerp(bottomColor, Colors.black, .26),
+        selectionHandleColor: Color.lerp(
+          bottomColor,
+          Colors.white,
+          .26,
+        ),
+      ),
+      child: SelectionText(
+        item.message,
+        contextMenuBuilder: scMenuBuilder,
+        style: style,
+      ),
+    );
+  } else {
+    msg = Text(item.message, style: style);
+  }
+
+  return Column(
+    mainAxisSize: .min,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      top,
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: const .vertical(bottom: .circular(8)),
+          color: bottomColor,
+        ),
+        padding: const .all(8),
+        child: msg,
+      ),
+    ],
+  );
+}
+
+Widget _avatar(String face, String? faceFrame) {
+  const size = 45.0;
+  final avatar = NetworkImgLayer(
+    src: face,
+    width: size,
+    height: size,
+    type: .avatar,
+  );
+  if (faceFrame != null && faceFrame.isNotEmpty) {
+    const ratio = 1.16;
+    const pendantSize = size * ratio;
+    const offset = ((1 - ratio) * size) / 2;
+    return Stack(
+      clipBehavior: .none,
+      alignment: .center,
+      children: [
+        avatar,
+        Positioned(
+          top: offset,
+          child: NetworkImgLayer(
+            type: .emote,
+            width: pendantSize,
+            height: pendantSize,
+            src: faceFrame,
+            getPlaceHolder: () => const SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
+  }
+  return avatar;
+}
+
+Future<void> _screenShot(BuildContext context, SuperChatItem item) async {
+  final image = await Screenshot.screenshot(
+    context,
+    Material(
+      type: .transparency,
+      child: _build(item: item),
+    ),
+    constraints: const BoxConstraints(maxWidth: 400),
+    pixelRatio: 3,
+    future: Future.pause, // wait for asset async loaded
+  );
+  final bytes = await image.toByteData(format: .png);
+  image.dispose();
+  final picName =
+      'Bili_SuperChat_${item.roomid}_${item.userInfo.uname}_￥${item.price}_${item.id}';
+  ImageUtils.saveByteImg(
+    bytes: bytes!.buffer.asUint8List(),
+    fileName: picName,
+  );
 }

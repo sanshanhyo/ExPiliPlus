@@ -5,7 +5,7 @@ import 'package:ex_piliplus/pages/common/common_intro_controller.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 
 import 'package:get/get.dart';
@@ -106,13 +106,6 @@ class _FavPanelState extends State<FavPanel> {
                             : context.l10n.favoritePrivate,
                       ),
                     ),
-                    trailing: Transform.scale(
-                      scale: 0.9,
-                      child: Checkbox(
-                        value: isChecked,
-                        onChanged: (bool? checkValue) => onTap(),
-                      ),
-                    ),
                     trailing: isFull
                         ? Padding(
                             padding: const .only(right: 8),
@@ -171,7 +164,7 @@ class _FavPanelState extends State<FavPanel> {
                   setState(() {});
                 }
               }),
-              icon: Icon(Icons.add, color: theme.primary),
+              icon: Icon(Icons.add, color: colorScheme.primary),
               label: Text(context.l10n.favoriteNewFolder),
               style: const ButtonStyle(
                 visualDensity: .compact,

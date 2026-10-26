@@ -5,7 +5,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search_panel/all/widgets/user.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';

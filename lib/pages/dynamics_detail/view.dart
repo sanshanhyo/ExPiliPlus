@@ -41,7 +41,7 @@ import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
 
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 

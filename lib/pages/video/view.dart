@@ -51,14 +51,13 @@ import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
 import 'package:ex_piliplus/plugin/pl_player/view/view.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart'
+    show shutdownTimerService;
 import 'package:ex_piliplus/common/widgets/simple_app_bar.dart';
 import 'package:ex_piliplus/pages/video/introduction/pgc/widgets/season.dart'
     as pgc;
 import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/season.dart'
     as ugc;
 import 'package:ex_piliplus/pages/video/widgets/intro_layout.dart';
-
-    show shutdownTimerService;
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
@@ -74,7 +73,7 @@ import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, clampDouble;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -1721,11 +1720,10 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
             PgcIntroPage(
               key: videoIntroKey,
               heroTag: heroTag,
-              cid: videoDetailController.cid.value,
               showEpisodes: showEpisodes,
               showIntroDetail: showIntroDetail,
               maxWidth: width ?? maxWidth,
-              isLandscape: !isPortrait,
+              isPortrait: isPortrait,
             ),
           SliverToBoxAdapter(
             child: SizedBox(
@@ -2119,7 +2117,6 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     videoDetailController.childKey.currentState?.showBottomSheet(
       shape: const RoundedRectangleBorder(),
       constraints: const BoxConstraints(),
-      dragHeight: 100,
       (context) {
         return HorizontalMemberPage(
           mid: mid,

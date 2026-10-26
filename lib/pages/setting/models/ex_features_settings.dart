@@ -1,16 +1,15 @@
-import 'package:ex_piliplus/models/common/app_font_selection.dart';
+import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/pages/dynamic_banned_up_list/view.dart';
 import 'package:ex_piliplus/pages/dynamics/controller.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
-import 'package:ex_piliplus/pages/setting/widgets/app_font_selection_dialog.dart';
+import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/slider_dialog.dart';
 import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
-import 'package:ex_piliplus/services/app_font_selection_store.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -105,10 +104,10 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
     NormalModel(
       getTitle: () => l10n.settingsAppFont,
       getSubtitle: () => l10n.settingsCurrentValue(
-        Pref.appFontSelection.localizedLabel(l10n),
+        Pref.appFontFamily.localizedLabel(l10n),
       ),
       leading: const Icon(Icons.font_download_outlined),
-      onTap: _showAppFontSelectionDialog,
+      onTap: _showAppFontFamilyDialog,
     ),
     SplitModel(
       normalModel: NormalModel.split(
@@ -221,21 +220,21 @@ Future<void> _showFontWeightDialog(BuildContext context) async {
   }
 }
 
-Future<void> _showAppFontSelectionDialog(
+Future<void> _showAppFontFamilyDialog(
   BuildContext context,
   VoidCallback setState,
 ) async {
   final l10n = context.l10n;
-  final current = Pref.appFontSelection;
-  final res = await showDialog<AppFontSelection>(
+  final current = Pref.appFontFamily;
+  final res = await showDialog<AppFontFamily>(
     context: context,
-    builder: (context) => AppFontSelectionDialog(value: current),
+    builder: (context) => AppFontFamilyDialog(value: current),
   );
   if (res != null && res != current) {
-    if (res.isCatalog && !res.catalogFont.isSystem) {
+    if (!res.isSystem) {
       SmartDialog.showLoading(msg: l10n.settingsLoadingFont);
       try {
-        await AppFontManager.load(res.catalogFont);
+        await AppFontManager.load(res);
       } catch (error) {
         SmartDialog.showToast(error.toString());
         return;
@@ -243,7 +242,7 @@ Future<void> _showAppFontSelectionDialog(
         SmartDialog.dismiss(status: SmartStatus.loading);
       }
     }
-    await AppFontSelectionStore.save(res);
+    await GStorage.setting.put(SettingBoxKey.appFontFamily, res.name);
     if (context.mounted) setState();
     Get.updateMyAppTheme();
   }

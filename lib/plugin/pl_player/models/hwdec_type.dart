@@ -92,4 +92,10 @@ enum HwDecType {
     HwDecType.mediacodec.hwdec,
     HwDecType.autoSafe.hwdec,
   ].join(',');
+
+  static final String kHwdec = Platform.isAndroid
+      ? kDebugMode
+            ? autoSafe.hwdec
+            : [mediacodec.hwdec, autoSafe.hwdec].join(',')
+      : auto.hwdec;
 }

@@ -14,11 +14,10 @@ import 'package:ex_piliplus/pages/emote/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
-import 'package:flutter/material.dart' hide TextField;
+import 'package:material_ui/material_ui.dart' hide TextField;
 import 'dart:async';
 
 import 'package:ex_piliplus/common/widgets/animated_height.dart';
-import 'package:ex_piliplus/common/widgets/draggable_sheet/dyn.dart';
 import 'package:ex_piliplus/http/video.dart';
 import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
 
@@ -37,6 +36,10 @@ class RepostPanel extends CommonRichTextPubPage {
     this.pic,
     this.title,
     this.uname,
+    // reply
+    this.replyInfo,
+    // mention
+    this.mentionItem,
   });
 
   // video
@@ -61,6 +64,7 @@ class RepostPanel extends CommonRichTextPubPage {
 }
 
 class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
+  late final RxBool _reply = false.obs;
   late bool _isMax = false;
   late bool _isExpanded = false;
 

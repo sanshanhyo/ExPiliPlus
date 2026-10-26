@@ -4,15 +4,13 @@ import 'package:ex_piliplus/common/constants.dart';
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/common/widgets/scale_app.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
-import 'package:ex_piliplus/models/common/app_font_selection.dart';
+import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/theme/theme_type.dart';
 import 'package:ex_piliplus/pages/login/controller.dart';
 import 'package:ex_piliplus/pages/mine/controller.dart';
-import 'package:ex_piliplus/pages/setting/widgets/app_font_selection_dialog.dart';
+import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
 import 'package:ex_piliplus/pages/webdav/webdav.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
-import 'package:ex_piliplus/services/app_font_selection_store.dart';
-import 'package:ex_piliplus/services/local_app_font_manager.dart';
 import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
@@ -25,7 +23,7 @@ import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +52,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   String? _accountStatus;
 
   late ThemeType _themeType;
-  late AppFontSelection _appFontSelection;
+  late AppFontFamily _appFontFamily;
   late double _fontWeightValue;
   late double _textScale;
   late bool _optTabletNav;
@@ -78,7 +76,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   void _syncAppearanceFromPref() {
     _themeType = Pref.themeType;
-    _appFontSelection = Pref.appFontSelection;
+    _appFontFamily = Pref.appFontFamily;
     _fontWeightValue = (Pref.appFontWeight + 1)
         .clamp(0, FontWeight.values.length)
         .toDouble();
@@ -273,7 +271,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         _ActionTile(
           icon: Icons.font_download_outlined,
           title: l10n.settingsAppFont,
-          subtitle: _appFontSelection.localizedLabel(l10n),
+          subtitle: _appFontFamily.isSystem
+              ? l10n.settingsSystemDefaultFont
+              : _appFontFamily.label,
           onTap: _busy ? null : _selectAppFontFamily,
         ),
         _SliderPanel(
@@ -567,13 +567,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _refreshRuntimeSettings() async {
-    final font = Pref.appFontSelection;
-    if (font.isCatalog && !font.catalogFont.isSystem) {
-      if (AppFontManager.isDownloaded(font.catalogFont)) {
-        await AppFontManager.load(font.catalogFont);
+    final font = Pref.appFontFamily;
+    if (!font.isSystem) {
+      if (AppFontManager.isDownloaded(font)) {
+        await AppFontManager.load(font);
+      } else {
+        await GStorage.setting.delete(SettingBoxKey.appFontFamily);
       }
-    } else if (font.isLocal) {
-      await LocalAppFontManager.loadSelection(font);
     }
     ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
     Get.changeThemeMode(ThemeUtils.themeMode = Pref.themeMode);
@@ -644,26 +644,24 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _selectAppFontFamily() async {
-    final current = Pref.appFontSelection;
-    final res = await showDialog<AppFontSelection>(
+    final current = Pref.appFontFamily;
+    final res = await showDialog<AppFontFamily>(
       context: context,
-      builder: (context) => AppFontSelectionDialog(value: current),
+      builder: (context) => AppFontFamilyDialog(value: current),
     );
     if (res == null || res == current) return;
     await _runBusy(() async {
-      if (res.isCatalog && !res.catalogFont.isSystem) {
+      if (!res.isSystem) {
         try {
-          await AppFontManager.load(res.catalogFont);
+          await AppFontManager.load(res);
         } catch (e) {
           SmartDialog.showToast(e.toString());
           return;
         }
-      } else if (res.isLocal) {
-        await LocalAppFontManager.loadSelection(res);
       }
-      await AppFontSelectionStore.save(res);
+      await GStorage.setting.put(SettingBoxKey.appFontFamily, res.name);
       if (!mounted) return;
-      setState(() => _appFontSelection = res);
+      setState(() => _appFontFamily = res);
       Get.updateMyAppTheme();
     });
   }
@@ -1296,11 +1294,6 @@ final class _SettingsImportDraft {
         SettingBoxKey.defaultTextScale,
         SettingBoxKey.appFontFamily,
         SettingBoxKey.appFontWeight,
-        SettingBoxKey.appFontSource,
-        SettingBoxKey.appFontSystemFamily,
-        SettingBoxKey.appFontLocalFileName,
-        SettingBoxKey.appFontLocalDisplayName,
-        SettingBoxKey.appFontLocalFamily,
         SettingBoxKey.customColor,
         SettingBoxKey.customThemeColor,
       }))

@@ -28,7 +28,7 @@ import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart' hide TextField;
+import 'package:material_ui/material_ui.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -216,7 +216,6 @@ class _WhisperDetailPageState
             height: 42,
             onTap: () => autoWrapReportDialog(
               context,
-              ban: false,
               ReportOptions.imMsgReport,
               (reasonType, reasonDesc, banUid) =>
                   _whisperDetailController.onReport(
@@ -265,7 +264,6 @@ class _WhisperDetailPageState
                   Get.back();
                   autoWrapReportDialog(
                     context,
-                    ban: false,
                     ReportOptions.imMsgReport,
                     (reasonType, reasonDesc, banUid) =>
                         _whisperDetailController.onReport(

@@ -6,7 +6,6 @@ import 'package:ex_piliplus/models_new/blacklist/data.dart';
 import 'package:ex_piliplus/models_new/blacklist/list.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
@@ -19,6 +18,7 @@ import 'package:material_ui/material_ui.dart';
 class BlackListController
     extends CommonListController<BlackListData, BlackListItem> {
   int? _total;
+  final RxInt total = (-1).obs;
   final blackMids = GlobalData().blackMids;
 
   @override
@@ -34,6 +34,7 @@ class BlackListController
   @override
   List<BlackListItem>? getDataList(BlackListData response) {
     _total = response.total;
+    total.value = _total ?? -1;
     return response.list;
   }
 
@@ -48,29 +49,24 @@ class BlackListController
     final confirm = await showConfirmDialog(
       context: context,
       title: Text(context.l10n.blacklistRemoveConfirm('$name')),
-      onConfirm: () async {
-        final result = await VideoHttp.relationMod(mid: mid, act: 6, reSrc: 11);
-        if (result.isSuccess) {
-          loadingState
-            ..value.data!.removeAt(index)
-            ..refresh();
-          total.value -= 1;
-          SmartDialog.showToast(context.l10n.blacklistRemoved);
-        }
-      },
     );
-    if (confirm) {
-      final result = await VideoHttp.relationMod(mid: mid, act: 6, reSrc: 11);
-      if (result.isSuccess) {
-        loadingState
-          ..value.data!.removeAt(index)
-          ..refresh();
-        _total -= 1;
-        SmartDialog.showToast('移除成功');
-        return true;
-      }
+    if (!confirm) return false;
+
+    final result = await VideoHttp.relationMod(mid: mid, act: 6, reSrc: 11);
+    if (!result.isSuccess) {
+      result.toast();
+      return false;
     }
-    return false;
+
+    loadingState
+      ..value.data!.removeAt(index)
+      ..refresh();
+    if (_total != null) {
+      _total = _total! - 1;
+      total.value = _total!;
+    }
+    SmartDialog.showToast(context.l10n.blacklistRemoved);
+    return true;
   }
 
   @override

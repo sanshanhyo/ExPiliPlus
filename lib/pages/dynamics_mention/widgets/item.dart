@@ -3,7 +3,6 @@ import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:material_ui/material_ui.dart';
 
 
@@ -47,7 +46,7 @@ class DynMentionItem extends StatelessWidget {
           onChanged: (value) {
             item.checked = value!;
             (context as Element).markNeedsBuild();
-            onCheck(value);
+            onCheck?.call(value);
           },
         ),
       ),

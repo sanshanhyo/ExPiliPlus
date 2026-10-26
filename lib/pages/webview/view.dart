@@ -19,7 +19,7 @@ import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/linux_cookie_manager.dart';
 
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -35,6 +35,7 @@ class WebviewPage extends StatefulWidget {
   });
 
   // note
+  final String? url;
   final int? oid;
   final String? title;
   final String? userAgent;
@@ -293,9 +294,7 @@ class _WebviewPageState extends State<WebviewPage> {
                     builder: (context) {
                       String suggestedFilename = request.suggestedFilename
                           .toString();
-                      String fileSize = CacheManager.formatSize(
-                        request.contentLength.toDouble(),
-                      );
+                      final fileSize = request.contentLength.formatSize;
                       try {
                         suggestedFilename = Uri.decodeComponent(
                           suggestedFilename,

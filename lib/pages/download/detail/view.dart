@@ -14,7 +14,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:ex_piliplus/pages/download/download/controller.dart';
 import 'package:ex_piliplus/pages/download/download_action_mixin.dart';
@@ -121,7 +121,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                   final l10n = context.l10n;
                   final futures = allChecked
                       .map(
-                        (e) => _downloadService.downloadDanmaku(
+                        (e) => downloadService.downloadDanmaku(
                           entry: e,
                           isUpdate: true,
                         ),

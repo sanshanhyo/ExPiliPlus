@@ -7,7 +7,7 @@ import 'package:ex_piliplus/pages/download/search/controller.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:ex_piliplus/pages/common/multi_select/base.dart';
@@ -74,7 +74,7 @@ class _DownloadSearchPageState
         onPressed: () async {
           final future = controller.allChecked
               .map(
-                (e) => _downloadService.downloadDanmaku(
+                (e) => downloadService.downloadDanmaku(
                   entry: e,
                   isUpdate: true,
                 ),

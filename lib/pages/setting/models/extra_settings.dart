@@ -50,7 +50,7 @@ import 'package:ex_piliplus/utils/android/bindings.g.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart' hide RefreshIndicator;
+import 'package:material_ui/material_ui.dart' hide RefreshIndicator;
 import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -643,7 +643,7 @@ List<SettingsModel> extraSettings(BuildContext context) {
     NormalModel(
       title: l10n.settingsMaximumCacheSize,
       getSubtitle: () => l10n.settingsCurrentMaximumCacheSize(
-        CacheManager.formatSize(Pref.maxCacheSize),
+        Pref.maxCacheSize.formatSize,
       ),
       leading: const Icon(Icons.delete_outlined),
       onTap: _showCacheDialog,

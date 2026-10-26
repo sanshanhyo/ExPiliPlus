@@ -8,7 +8,6 @@ import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'

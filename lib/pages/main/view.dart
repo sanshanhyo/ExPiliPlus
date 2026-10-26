@@ -24,7 +24,6 @@ import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ex_piliplus/common/widgets/main_layout.dart';

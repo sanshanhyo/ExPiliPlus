@@ -24,7 +24,7 @@ import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/physics.dart' show FrictionSimulation;
 import 'package:flutter/scheduler.dart' show SchedulerBinding;
 import 'package:flutter/services.dart' show HardwareKeyboard;
@@ -478,10 +478,9 @@ class _ViewerState extends State<Viewer> with SingleTickerProviderStateMixin {
   }
 
   void _onPointerDown(PointerDownEvent event) {
-    _scalePos = event.position;
-    _doubleTapGestureRecognizer
-      ..onDoubleTapDown = _onDoubleTapDown
-      ..onDoubleTap = _onDoubleTap;
+    _stopFling();
+    _downPos = event.localPosition;
+    _doubleTapGestureRecognizer.onDoubleTap = _onDoubleTap;
     _horizontalDragGestureRecognizer.addPointer(
       event,
       isPointerAllowed: _isAtEdge(event.localPosition),

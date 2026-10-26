@@ -11,6 +11,7 @@ import 'package:ex_piliplus/pages/common/dyn/common_dyn_page.dart';
 import 'package:ex_piliplus/pages/common/fab_mixin.dart'
     show NoBottomPaddingFabLocation;
 import 'package:ex_piliplus/pages/match_info/controller.dart';
+import 'package:ex_piliplus/pages/match_info/widgets/match_info_item.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
@@ -21,7 +22,6 @@ import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/pages/match_info/widgets/match_info_item.dart';
 
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -92,18 +92,18 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (response.homeId != 0)
+                    if (response.homeTeam != null)
                       Expanded(
                         child: Align(
                           alignment: const Alignment(0.8, 1),
-                          child: teamInfo(response.homeTeam!),
+                          child: buildTeamInfo(response.homeTeam!),
                         ),
                       ),
                     Column(
                       spacing: 10,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (response.homeId != 0)
+                        if (response.homeTeam != null)
                           Text(
                             response.contestStatus == 1
                                 ? 'VS'
@@ -160,11 +160,11 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
                           ),
                       ],
                     ),
-                    if (response.awayId != 0)
+                    if (response.awayTeam != null)
                       Expanded(
                         child: Align(
                           alignment: const Alignment(-0.8, -1),
-                          child: teamInfo(response.awayTeam!),
+                          child: buildTeamInfo(response.awayTeam!),
                         ),
                       ),
                   ],

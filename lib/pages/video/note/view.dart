@@ -14,7 +14,7 @@ import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'dart:io' show Platform;
 import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
@@ -45,6 +45,10 @@ class NoteListPage extends CommonSlidePage {
 
 class _NoteListPageState extends State<NoteListPage>
     with SingleTickerProviderStateMixin, CommonSlideMixin {
+  static dww.Webview? _activeNoteWebview;
+  static _NoteListPageState? _dwwOwner;
+
+  bool _isOpeningNote = false;
   late final NoteListPageCtr _controller;
 
   @override
@@ -58,8 +62,14 @@ class _NoteListPageState extends State<NoteListPage>
 
   @override
   void dispose() {
+    if (identical(_dwwOwner, this)) _dwwOwner = null;
     Get.delete<NoteListPageCtr>(tag: widget.heroTag);
     super.dispose();
+  }
+
+  void _closeLinuxWebview() {
+    _activeNoteWebview = null;
+    if (identical(_dwwOwner, this)) _dwwOwner = null;
   }
 
   @override
@@ -347,9 +357,13 @@ class _NoteListPageState extends State<NoteListPage>
     }
   }
 
-  void _onTakeNote() {
+  Future<void> _onTakeNote() async {
     final url =
         'https://www.bilibili.com/h5/note-app?oid=${widget.oid}&pagefrom=ugcvideo&is_stein_gate=${widget.isStein ? 1 : 0}';
+    if (Platform.isLinux) {
+      await _onTakeNoteLinux(url);
+      return;
+    }
     MiniScaffold.of(context).showBottomSheet(
       constraints: const BoxConstraints(),
       (context) => WebviewPage(oid: widget.oid, title: widget.title, url: url),

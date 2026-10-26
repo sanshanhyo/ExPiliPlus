@@ -15,7 +15,6 @@ import 'package:ex_piliplus/router/app_pages.dart';
 import 'package:ex_piliplus/services/account_service.dart';
 import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
-import 'package:ex_piliplus/services/local_app_font_manager.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/services/logger.dart';
 import 'package:ex_piliplus/services/service_locator.dart';
@@ -42,7 +41,7 @@ import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -119,9 +118,7 @@ void main() async {
     await Utils.copyText(e.toString(), needToast: false);
     exit(0);
   }
-  final fontSelection = Pref.appFontSelection;
-  await AppFontManager.init(selection: fontSelection);
-  await LocalAppFontManager.loadSelection(fontSelection);
+  await AppFontManager.init();
   ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
   await Future.wait([
     _initDownPath(),

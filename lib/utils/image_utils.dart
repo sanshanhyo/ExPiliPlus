@@ -20,7 +20,6 @@ import 'package:ex_piliplus/utils/utils.dart';
 import 'package:dio/dio.dart';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:live_photo_maker/live_photo_maker.dart';
@@ -157,6 +156,8 @@ abstract final class ImageUtils {
     if (PlatformUtils.isMobile && !await checkPermissionDependOnSdkInt()) {
       return false;
     }
+    CancelToken? cancelToken;
+    bool success = true;
     if (!silentDownImg) {
       cancelToken = CancelToken();
       SmartDialog.showLoading(

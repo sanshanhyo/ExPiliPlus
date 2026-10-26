@@ -22,7 +22,7 @@ import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -238,9 +238,9 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
     );
   }
 
-  Widget _buildColorPanel() {
+  Widget _buildColorPanel(BuildContext context) {
     final currentColor = ctr.currentColor.value;
-    return AnimatedHeightWidgetExt(
+    return AnimatedHeight(
       expand: !ctr.dynamicColor.value,
       duration: const Duration(milliseconds: 200),
       child: Wrap(
@@ -325,7 +325,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                       selected: isCurr,
                     ),
                     Text(
-                      e.label,
+                      e.localizedLabel(context.l10n),
                       style: TextStyle(
                         fontSize: 12,
                         color: isCurr ? null : theme.colorScheme.outline,
