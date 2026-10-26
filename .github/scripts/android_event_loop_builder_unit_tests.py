@@ -47,6 +47,7 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         self.assertIn("c4c95d9821b2ed414bc44b034c4477c2786d07b8", self.script)
         self.assertIn('"$runner_temp"/*', self.script)
         self.assertIn('"$evidence_dir/native-libs"', self.script)
+        self.assertIn('"$android_sdk"/cmdline-tools/*/bin/sdkmanager', self.script)
 
     def test_both_android_workflows_stage_before_the_emulator_and_use_staged_jars(self) -> None:
         test_workflow = (ROOT / ".github/workflows/test.yml").read_text(encoding="utf-8")

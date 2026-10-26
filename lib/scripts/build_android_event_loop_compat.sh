@@ -91,6 +91,14 @@ for candidate in \
     break
   fi
 done
+if [ -z "$sdkmanager" ]; then
+  for candidate in "$android_sdk"/cmdline-tools/*/bin/sdkmanager; do
+    if [ -x "$candidate" ]; then
+      sdkmanager="$candidate"
+      break
+    fi
+  done
+fi
 if [ -z "$sdkmanager" ] && command -v sdkmanager >/dev/null 2>&1; then
   sdkmanager="$(command -v sdkmanager)"
 fi
