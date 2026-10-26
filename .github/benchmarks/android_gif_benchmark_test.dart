@@ -18,6 +18,9 @@ const _measuredRuns = 5;
 const _gifDurationSeconds = 3.0;
 const _gifWidth = 480;
 const _gifFps = 10;
+const _expectedGifHeight = 270;
+const _expectedFrameCount = _gifDurationSeconds * _gifFps;
+const _frameCountTolerance = 2;
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -57,10 +60,26 @@ void main() {
         final bytes = await outputFile.readAsBytes();
         final validation = GifFileValidation.fromBytes(bytes);
         expect(validation.isValid, isTrue);
-        expect(validation.frameCount, greaterThan(1));
+        expect(
+          validation.frameCount,
+          inInclusiveRange(
+            _expectedFrameCount - _frameCountTolerance,
+            _expectedFrameCount + _frameCountTolerance,
+          ),
+          reason: '3 seconds at $_gifFps fps should produce about '
+              '$_expectedFrameCount frames, not preserve the source 30 fps.',
+        );
         final dimensions = ByteData.sublistView(bytes);
-        expect(dimensions.getUint16(6, Endian.little), _gifWidth);
-        expect(dimensions.getUint16(8, Endian.little), greaterThan(0));
+        expect(
+          dimensions.getUint16(6, Endian.little),
+          _gifWidth,
+          reason: 'The production converter parameter is output width.',
+        );
+        expect(
+          dimensions.getUint16(8, Endian.little),
+          _expectedGifHeight,
+          reason: 'The fixed 16:9 test clip should keep its aspect ratio.',
+        );
 
         if (run >= _warmupRuns) {
           measuredTimes.add(stopwatch.elapsedMilliseconds);

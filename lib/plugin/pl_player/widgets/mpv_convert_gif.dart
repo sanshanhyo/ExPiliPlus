@@ -60,7 +60,10 @@ class MpvConvertGif implements GifConverter {
         'of': 'gif',
         'ofopts': 'loop=0',
         'ovc': 'gif',
-        'vf': 'fps=$fps,scale=$width:-2:flags=lanczos',
+        // Force mpv to run these filters through libavfilter. Bare `fps` and
+        // `scale` names can resolve to mpv's legacy built-ins, which may leave
+        // GIF exports at the source frame rate and dimensions.
+        'vf': 'lavfi=[fps=$fps,scale=$width:-2:flags=lanczos]',
         'audio': 'no',
         // GIF encoding runs in a headless mpv instance. Do not inherit the
         // player's GPU renderer or hardware decoder configuration here.

@@ -606,10 +606,11 @@ if len(streams) != 1:
 stream = streams[0]
 if stream.get("codec_name") != "gif":
     raise SystemExit(f"Expected GIF codec, got {stream.get('codec_name')!r}")
-if int(stream.get("width", 0)) != 480 or int(stream.get("height", 0)) <= 0:
+if int(stream.get("width", 0)) != 480 or int(stream.get("height", 0)) != 270:
     raise SystemExit(f"Invalid GIF dimensions: {stream.get('width')}x{stream.get('height')}")
-if int(stream.get("nb_read_frames", 0)) < 2:
-    raise SystemExit(f"GIF decoded fewer than two frames: {stream.get('nb_read_frames')}")
+frames = int(stream.get("nb_read_frames", 0))
+if not 28 <= frames <= 32:
+    raise SystemExit(f"Expected about 30 decoded frames at 10 fps, got {frames}")
 if report.get("fixture_sha256") == "" or not report.get("measured_runs"):
     raise SystemExit("GIF benchmark metadata is incomplete")
 print(

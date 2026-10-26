@@ -21,6 +21,9 @@ BENCHMARK_PREFLIGHT = Path(__file__).with_name(
 GIF_BENCHMARK_TEST = Path(__file__).parents[1].joinpath(
     "benchmarks", "android_gif_benchmark_test.dart"
 ).read_text(encoding="utf-8")
+GIF_CONVERTER = Path(__file__).parents[2].joinpath(
+    "lib", "plugin", "pl_player", "widgets", "mpv_convert_gif.dart"
+).read_text(encoding="utf-8")
 
 
 def function_body(name: str, next_marker: str) -> str:
@@ -61,6 +64,19 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         )
         self.assertIn("GifFileValidation.fromBytes(bytes)", GIF_BENCHMARK_TEST)
         self.assertNotIn("GifFileValidator", GIF_BENCHMARK_TEST)
+
+    def test_gif_benchmark_checks_requested_filters_and_output_contract(self) -> None:
+        self.assertIn(
+            "'vf': 'lavfi=[fps=$fps,scale=$width:-2:flags=lanczos]'",
+            GIF_CONVERTER,
+        )
+        self.assertIn("const _expectedGifHeight = 270;", GIF_BENCHMARK_TEST)
+        self.assertIn(
+            "_expectedFrameCount - _frameCountTolerance",
+            GIF_BENCHMARK_TEST,
+        )
+        self.assertIn("_expectedFrameCount + _frameCountTolerance", GIF_BENCHMARK_TEST)
+        self.assertIn("not 28 <= frames <= 32", BENCHMARK_SCRIPT)
 
     def test_manifest_hash_comparison_ignores_sha256sum_output_paths(self) -> None:
         digest = "35b1de752a9cdf894c67eee838538f616d6d72654f7e4aa2cf80409749a43cc2"
