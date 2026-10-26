@@ -9,20 +9,16 @@ import 'package:ex_piliplus/plugin/pl_player/models/play_status.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
-
-import 'dart:async' show Timer;
-
 import 'package:ex_piliplus/models/common/enum_with_label.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/device_utils.dart';
+import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
 
 import 'package:collection/collection.dart';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoPicker;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 const _kSqueeze = 1.25;
 const _kItemExtent = 38.0;
@@ -40,7 +36,7 @@ enum _ShutdownType {
 
 final shutdownTimerService = ShutdownTimerService._internal();
 
-class ShutdownTimerService {
+class ShutdownTimerService with WidgetsBindingObserver {
   ShutdownTimerService._internal();
 
   VoidCallback? onPause;
@@ -49,6 +45,7 @@ class ShutdownTimerService {
   DateTime? _deadline;
   DateTime? get deadline => _deadline;
   Timer? _shutdownTimer;
+  Timer? _countdownRefreshTimer;
   bool get isActive => _shutdownTimer?.isActive ?? false;
   int _durationInMinutes = 0;
   _ShutdownType _shutdownType = .pause;
@@ -56,19 +53,81 @@ class ShutdownTimerService {
   bool _isWaiting = false;
   bool get isWaiting => _isWaiting;
   bool _waitUntilCompleted = false;
+  bool _isObservingLifecycle = false;
+
+  final ValueNotifier<ShutdownTimerSnapshot> _countdown = ValueNotifier(
+    ShutdownTimerSnapshot(updatedAt: DateTime.now()),
+  );
+
+  ValueListenable<ShutdownTimerSnapshot> get countdown => _countdown;
+
+  void _publishCountdown() {
+    _countdown.value = ShutdownTimerSnapshot(
+      updatedAt: DateTime.now(),
+      deadline: _deadline,
+      totalDuration: Duration(minutes: _durationInMinutes),
+      isWaiting: _isWaiting,
+    );
+  }
+
+  void refreshCountdown() {
+    _publishCountdown();
+  }
+
+  void _startCountdownRefresh() {
+    _countdownRefreshTimer?.cancel();
+    _publishCountdown();
+    // This is only a UI refresh tick; every snapshot is derived from _deadline.
+    _countdownRefreshTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _publishCountdown();
+      if (!_countdown.value.isScheduled) {
+        _stopCountdownRefresh();
+      }
+    });
+  }
+
+  void _stopCountdownRefresh() {
+    _countdownRefreshTimer?.cancel();
+    _countdownRefreshTimer = null;
+  }
+
+  void _observeLifecycle() {
+    if (_isObservingLifecycle) return;
+    WidgetsBinding.instance.addObserver(this);
+    _isObservingLifecycle = true;
+  }
+
+  void _stopObservingLifecycle() {
+    if (!_isObservingLifecycle) return;
+    WidgetsBinding.instance.removeObserver(this);
+    _isObservingLifecycle = false;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _publishCountdown();
+      if (_deadline != null && !_isWaiting && _countdown.value.isScheduled) {
+        _startCountdownRefresh();
+      }
+    } else {
+      _stopCountdownRefresh();
+    }
+  }
 
   void _stopTimer() {
-    if (_shutdownTimer != null) {
-      _deadline = null;
-      _shutdownTimer!.cancel();
-      _shutdownTimer = null;
-    }
+    _deadline = null;
+    _shutdownTimer?.cancel();
+    _shutdownTimer = null;
   }
 
   void reset([int durationInMinutes = 0]) {
     _stopTimer();
+    _stopCountdownRefresh();
+    _stopObservingLifecycle();
     _isWaiting = false;
     _durationInMinutes = durationInMinutes;
+    _publishCountdown();
   }
 
   void _startShutdownTimer(int durationInMinutes) {
@@ -86,48 +145,62 @@ class ShutdownTimerService {
       Duration(minutes: durationInMinutes),
       _handleShutdown,
     );
+    _observeLifecycle();
+    _startCountdownRefresh();
   }
 
   void _handleShutdown() {
-    switch (_shutdownType) {
-      case _ShutdownType.pause:
-        late final player = PlPlayerController.instance;
-        final isPlaying =
-            this.isPlaying?.call() ?? player?.playerStatus.isPlaying ?? false;
-        if (isPlaying) {
-          if (_waitUntilCompleted) {
-            _isWaiting = true;
-          } else {
-            _durationInMinutes = 0;
-            (onPause ?? player?.pause)?.call();
-            SmartDialog.showToast(
-              Get.context!.l10n.shutdownTimeReachedPaused,
-            );
-          }
-        }
-      case _ShutdownType.exit:
-        if (_waitUntilCompleted) {
+    try {
+      switch (_shutdownType) {
+        case _ShutdownType.pause:
+          late final player = PlPlayerController.instance;
           final isPlaying =
-              this.isPlaying?.call() ??
-              PlPlayerController.instance?.playerStatus.isPlaying ??
-              false;
+              this.isPlaying?.call() ?? player?.playerStatus.isPlaying ?? false;
           if (isPlaying) {
-            _isWaiting = true;
-            return;
+            if (_waitUntilCompleted) {
+              _isWaiting = true;
+            } else {
+              _durationInMinutes = 0;
+              (onPause ?? player?.pause)?.call();
+              SmartDialog.showToast(
+                Get.context!.l10n.shutdownTimeReachedPaused,
+              );
+            }
           }
-        }
-        _syncProgressAndExit();
+        case _ShutdownType.exit:
+          if (_waitUntilCompleted) {
+            final isPlaying =
+                this.isPlaying?.call() ??
+                PlPlayerController.instance?.playerStatus.isPlaying ??
+                false;
+            if (isPlaying) {
+              _isWaiting = true;
+              return;
+            }
+          }
+          _syncProgressAndExit();
+      }
+    } finally {
+      _stopCountdownRefresh();
+      _stopObservingLifecycle();
+      _publishCountdown();
     }
   }
 
   void handleWaiting() {
-    switch (_shutdownType) {
-      case _ShutdownType.pause:
-        _isWaiting = false;
-        _durationInMinutes = 0;
-        SmartDialog.showToast(Get.context!.l10n.shutdownTimeReachedPaused);
-      case _ShutdownType.exit:
-        _syncProgressAndExit();
+    try {
+      switch (_shutdownType) {
+        case _ShutdownType.pause:
+          _isWaiting = false;
+          _durationInMinutes = 0;
+          SmartDialog.showToast(Get.context!.l10n.shutdownTimeReachedPaused);
+        case _ShutdownType.exit:
+          _syncProgressAndExit();
+      }
+    } finally {
+      _stopCountdownRefresh();
+      _stopObservingLifecycle();
+      _publishCountdown();
     }
   }
 
@@ -407,68 +480,23 @@ class ShutdownPanel extends StatefulWidget {
   State<ShutdownPanel> createState() => _ShutdownPanelState();
 }
 
-class _ShutdownPanelState extends State<ShutdownPanel> with ShutdownMixin {
+class _ShutdownPanelState extends State<ShutdownPanel> {
   @override
   Widget build(BuildContext context) {
-    final countdown = Obx(() => widget.buildCountdownText(countdownText.value));
+    final countdown = ValueListenableBuilder<ShutdownTimerSnapshot>(
+      valueListenable: shutdownTimerService.countdown,
+      builder: (context, snapshot, _) {
+        if (snapshot.isWaiting) {
+          return widget.buildCountdownText('当前播放结束后关闭');
+        }
+        final text = snapshot.isScheduled
+            ? DurationUtils.formatDuration(snapshot.remaining.inSeconds)
+            : null;
+        return widget.buildCountdownText(text);
+      },
+    );
     return widget.builder(context, countdown, _startTimer, setState);
   }
-}
 
-mixin ShutdownMixin<T extends StatefulWidget> on State<T> {
-  Timer? _countdownTimer;
-  final RxnString countdownText = RxnString(null);
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
-
-  void _updateCountdownTextEnd([String? value]) {
-    _stopTimer();
-    countdownText.value = value;
-  }
-
-  bool _updateCountdownText([_]) {
-    if (shutdownTimerService.isWaiting) {
-      _updateCountdownTextEnd('当前播放结束后关闭');
-      return false;
-    }
-    final deadline = shutdownTimerService.deadline;
-    if (deadline == null) {
-      _updateCountdownTextEnd();
-      return false;
-    }
-    final remaining = deadline.difference(DateTime.now());
-    if (remaining <= .zero) {
-      _updateCountdownTextEnd();
-      return false;
-    }
-    countdownText.value = DurationUtils.formatDuration(remaining.inSeconds);
-    return true;
-  }
-
-  void _startTimer() {
-    _stopTimer();
-    if (_updateCountdownText()) {
-      _countdownTimer = .periodic(
-        const Duration(seconds: 1),
-        _updateCountdownText,
-      );
-    }
-  }
-
-  void _stopTimer() {
-    if (_countdownTimer != null) {
-      _countdownTimer!.cancel();
-      _countdownTimer = null;
-    }
-  }
-
-  @override
-  void dispose() {
-    _stopTimer();
-    super.dispose();
-  }
+  void _startTimer() => shutdownTimerService.refreshCountdown();
 }
