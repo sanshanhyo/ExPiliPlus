@@ -1,0 +1,87 @@
+name: Android package and GIF benchmark
+
+on:
+  push:
+    branches:
+      - refactor/shutdown-timer-ui
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-benchmark-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  compare-android:
+    name: Compare Android APK size and native GIF conversion
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout candidate and baseline history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.7"
+          cache: true
+
+      - name: Install synthetic-media validation tools
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            timeout --signal=TERM --kill-after=30s 5m sudo apt-get update
+            timeout --signal=TERM --kill-after=30s 5m sudo apt-get install --no-install-recommends -y ffmpeg
+          fi
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
+
+      - name: Verify KVM for the ephemeral Android runner
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle
+          if [ ! -e /dev/kvm ]; then
+            echo "KVM device /dev/kvm is unavailable" >&2
+            exit 1
+          fi
+          ls -l /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
+
+      - name: Build matched APKs and benchmark native GIF conversion
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            bash .github/scripts/run_android_benchmark.sh \
+              6da1b7711b02dbec0b8825caf6bc08e9791abfbd \
+              "${{ github.sha }}" \
+              "${{ runner.temp }}/android-benchmark"
+
+      - name: Upload benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-benchmark-${{ github.run_id }}
+          path: ${{ runner.temp }}/android-benchmark/
+          if-no-files-found: ignore
+          retention-days: 14
