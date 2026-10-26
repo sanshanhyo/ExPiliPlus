@@ -55,7 +55,7 @@ void main() {
         expect(succeeded, isTrue, reason: 'native GIF conversion $run failed');
 
         final bytes = await outputFile.readAsBytes();
-        final validation = GifFileValidator.fromBytes(bytes);
+        final validation = GifFileValidation.fromBytes(bytes);
         expect(validation.isValid, isTrue);
         expect(validation.frameCount, greaterThan(1));
         final dimensions = ByteData.sublistView(bytes);

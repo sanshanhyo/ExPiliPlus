@@ -11,6 +11,9 @@ from compare_android_manifest_hashes import compare_manifest_hashes
 BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_text(
     encoding="utf-8"
 )
+GIF_BENCHMARK_TEST = Path(__file__).parents[1].joinpath(
+    "benchmarks", "android_gif_benchmark_test.dart"
+).read_text(encoding="utf-8")
 
 
 def function_body(name: str, next_marker: str) -> str:
@@ -20,6 +23,14 @@ def function_body(name: str, next_marker: str) -> str:
 
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
+    def test_gif_benchmark_uses_the_production_file_validator_api(self) -> None:
+        self.assertIn(
+            "package:ex_piliplus/plugin/pl_player/widgets/gif_file_validator.dart",
+            GIF_BENCHMARK_TEST,
+        )
+        self.assertIn("GifFileValidation.fromBytes(bytes)", GIF_BENCHMARK_TEST)
+        self.assertNotIn("GifFileValidator", GIF_BENCHMARK_TEST)
+
     def test_manifest_hash_comparison_ignores_sha256sum_output_paths(self) -> None:
         digest = "35b1de752a9cdf894c67eee838538f616d6d72654f7e4aa2cf80409749a43cc2"
         with tempfile.TemporaryDirectory() as temporary_directory:
