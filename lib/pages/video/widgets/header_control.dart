@@ -42,7 +42,6 @@ import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart'
     show shutdownTimerService;
-import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
 import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
@@ -1104,32 +1103,15 @@ class HeaderControlState extends State<HeaderControl>
                     leading: const Icon(Icons.image_outlined, size: 20),
                     title: Text(l10n.videoSaveCover, style: titleStyle),
                   ),
-                ValueListenableBuilder<ShutdownTimerSnapshot>(
-                  valueListenable: shutdownTimerService.countdown,
-                  builder: (context, countdown, _) {
-                    final rowTheme = Theme.of(context);
-                    return ListTile(
-                      dense: true,
-                      onTap: () {
-                        Get.back();
-                        shutdownTimerService.showScheduleExitDialog(
-                          this.context,
-                          isFullScreen: isFullScreen,
-                        );
-                      },
-                      leading: const Icon(
-                        Icons.hourglass_top_outlined,
-                        size: 20,
-                      ),
-                      title: Text(l10n.playerSleepTimer, style: titleStyle),
-                      subtitle: countdown.isScheduled
-                          ? Text(
-                              shutdownTimerRemainingLabel(context, countdown),
-                              style: rowTheme.textTheme.bodySmall?.copyWith(
-                                color: rowTheme.colorScheme.outline,
-                              ),
-                            )
-                          : null,
+                ShutdownTimerListTile(
+                  countdown: shutdownTimerService.countdown,
+                  title: l10n.playerSleepTimer,
+                  titleStyle: titleStyle,
+                  onTap: () {
+                    Get.back();
+                    shutdownTimerService.showScheduleExitDialog(
+                      this.context,
+                      isFullScreen: isFullScreen,
                     );
                   },
                 ),

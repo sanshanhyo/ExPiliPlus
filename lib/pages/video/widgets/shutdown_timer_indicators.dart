@@ -10,6 +10,45 @@ String shutdownTimerRemainingLabel(
   context.l10n.shutdownMinutes(snapshot.remainingMinutes),
 );
 
+class ShutdownTimerListTile extends StatelessWidget {
+  const ShutdownTimerListTile({
+    super.key,
+    required this.countdown,
+    required this.title,
+    required this.titleStyle,
+    required this.onTap,
+  });
+
+  final ValueListenable<ShutdownTimerSnapshot> countdown;
+  final String title;
+  final TextStyle? titleStyle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ShutdownTimerSnapshot>(
+      valueListenable: countdown,
+      builder: (context, snapshot, _) {
+        final theme = Theme.of(context);
+        return ListTile(
+          dense: true,
+          onTap: onTap,
+          leading: const Icon(Icons.hourglass_top_outlined, size: 20),
+          title: Text(title, style: titleStyle),
+          subtitle: snapshot.isScheduled
+              ? Text(
+                  shutdownTimerRemainingLabel(context, snapshot),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                )
+              : null,
+        );
+      },
+    );
+  }
+}
+
 class ShutdownTimerQuickActionContent extends StatelessWidget {
   const ShutdownTimerQuickActionContent({
     super.key,

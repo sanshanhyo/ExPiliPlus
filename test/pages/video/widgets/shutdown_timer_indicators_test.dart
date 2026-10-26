@@ -3,7 +3,8 @@ import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' as mui show CircularProgressIndicator;
+import 'package:material_ui/material_ui.dart' as mui
+    show CircularProgressIndicator, ListTile;
 
 void main() {
   testWidgets('quick timer indicator reacts to updates', (tester) async {
@@ -11,6 +12,7 @@ void main() {
     final countdown = ValueNotifier(
       ShutdownTimerSnapshot(
         updatedAt: now,
+        isTimerActive: true,
         deadline: now.add(const Duration(minutes: 5)),
         totalDuration: const Duration(minutes: 10),
       ),
@@ -61,6 +63,7 @@ void main() {
 
     countdown.value = ShutdownTimerSnapshot(
       updatedAt: now,
+      isTimerActive: true,
       deadline: now.add(const Duration(minutes: 3)),
       totalDuration: const Duration(minutes: 12),
     );
@@ -75,11 +78,65 @@ void main() {
     await pumpIndicator(updatedTheme, const Locale('en'));
     expect(find.text('3 min remaining'), findsOneWidget);
 
-    countdown.value = ShutdownTimerSnapshot(updatedAt: now);
+    countdown.value = ShutdownTimerSnapshot(
+      updatedAt: now,
+      isTimerActive: false,
+    );
     await tester.pump();
 
     expect(find.text('Sleep timer'), findsOneWidget);
     expect(find.byType(mui.CircularProgressIndicator), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    countdown.dispose();
+  });
+
+  testWidgets('outside timer row shows a gray remaining subtitle', (
+    tester,
+  ) async {
+    final now = DateTime.utc(2026, 10, 26, 12);
+    final countdown = ValueNotifier(
+      ShutdownTimerSnapshot(
+        updatedAt: now,
+        isTimerActive: true,
+        deadline: now.add(const Duration(minutes: 5)),
+        totalDuration: const Duration(minutes: 10),
+      ),
+    );
+    final theme = ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('zh'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: theme,
+        home: Scaffold(
+          body: ShutdownTimerListTile(
+            countdown: countdown,
+            title: '定时关闭',
+            titleStyle: theme.textTheme.bodyLarge,
+            onTap: () {},
+          ),
+        ),
+      ),
+    );
+
+    var tile = tester.widget<mui.ListTile>(find.byType(mui.ListTile));
+    final subtitle = tile.subtitle! as Text;
+    expect(subtitle.data, '还剩 5分钟');
+    expect(subtitle.style?.color, theme.colorScheme.outline);
+
+    countdown.value = ShutdownTimerSnapshot(
+      updatedAt: now,
+      isTimerActive: false,
+    );
+    await tester.pump();
+
+    tile = tester.widget<mui.ListTile>(find.byType(mui.ListTile));
+    expect(tile.subtitle, isNull);
 
     await tester.pumpWidget(const SizedBox.shrink());
     countdown.dispose();

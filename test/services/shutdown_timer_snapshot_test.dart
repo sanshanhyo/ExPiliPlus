@@ -8,6 +8,7 @@ void main() {
     test('rounds remaining minutes up', () {
       final snapshot = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: true,
         deadline: start.add(const Duration(minutes: 2, microseconds: 1)),
         totalDuration: const Duration(minutes: 10),
       );
@@ -18,6 +19,7 @@ void main() {
     test('calculates progress from the deadline and scheduled duration', () {
       final snapshot = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: true,
         deadline: start.add(const Duration(minutes: 15)),
         totalDuration: const Duration(minutes: 30),
       );
@@ -29,6 +31,7 @@ void main() {
     test('clamps progress when remaining time exceeds the new duration', () {
       final snapshot = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: true,
         deadline: start.add(const Duration(minutes: 20)),
         totalDuration: const Duration(minutes: 10),
       );
@@ -39,11 +42,13 @@ void main() {
     test('expires and waits without exposing a scheduled countdown', () {
       final expired = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: true,
         deadline: start.subtract(const Duration(microseconds: 1)),
         totalDuration: const Duration(minutes: 10),
       );
       final waiting = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: false,
         deadline: start.add(const Duration(minutes: 10)),
         totalDuration: const Duration(minutes: 10),
         isWaiting: true,
@@ -60,6 +65,7 @@ void main() {
     test('treats a cleared deadline as an unscheduled timer', () {
       final snapshot = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: false,
         totalDuration: const Duration(minutes: 10),
       );
 
@@ -73,17 +79,36 @@ void main() {
       final deadline = start.add(const Duration(minutes: 5));
       final firstSchedule = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: true,
         deadline: deadline,
         totalDuration: const Duration(minutes: 10),
       );
       final rescheduled = ShutdownTimerSnapshot(
         updatedAt: start,
+        isTimerActive: true,
         deadline: deadline,
         totalDuration: const Duration(minutes: 20),
       );
 
       expect(firstSchedule.progress, 0.5);
       expect(rescheduled.progress, 0.25);
+    });
+
+    test('does not revive an expired timer after the wall clock moves back', () {
+      final deadline = start.add(const Duration(minutes: 15));
+      final clockAfterOneHourAdjustment = start.subtract(
+        const Duration(minutes: 45),
+      );
+      final snapshot = ShutdownTimerSnapshot(
+        updatedAt: clockAfterOneHourAdjustment,
+        isTimerActive: false,
+        deadline: deadline,
+        totalDuration: const Duration(minutes: 15),
+      );
+
+      expect(snapshot.remaining, const Duration(minutes: 60));
+      expect(snapshot.isScheduled, isFalse);
+      expect(snapshot.progress, 0);
     });
   });
 }

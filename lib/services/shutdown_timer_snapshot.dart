@@ -1,17 +1,20 @@
-/// A point-in-time view of the active shutdown timer.
+/// A point-in-time view of the shutdown timer and its actual Timer state.
 ///
 /// Remaining time is always derived from the original deadline. UI refreshes
 /// can therefore be delayed by app lifecycle changes without changing when the
-/// shutdown action runs.
+/// shutdown action runs. [isTimerActive] prevents wall-clock changes from
+/// reviving a countdown after its one-shot shutdown timer has fired.
 class ShutdownTimerSnapshot {
   const ShutdownTimerSnapshot({
     required this.updatedAt,
+    required this.isTimerActive,
     this.deadline,
     this.totalDuration = Duration.zero,
     this.isWaiting = false,
   });
 
   final DateTime updatedAt;
+  final bool isTimerActive;
   final DateTime? deadline;
   final Duration totalDuration;
   final bool isWaiting;
@@ -24,7 +27,10 @@ class ShutdownTimerSnapshot {
   }
 
   bool get isScheduled =>
-      deadline != null && !isWaiting && remaining > Duration.zero;
+      isTimerActive &&
+      deadline != null &&
+      !isWaiting &&
+      remaining > Duration.zero;
 
   int get remainingMinutes {
     final microseconds = remaining.inMicroseconds;

@@ -57,7 +57,7 @@ class ShutdownTimerService with WidgetsBindingObserver {
   bool _isObservingLifecycle = false;
 
   final ValueNotifier<ShutdownTimerSnapshot> _countdown = ValueNotifier(
-    ShutdownTimerSnapshot(updatedAt: DateTime.now()),
+    ShutdownTimerSnapshot(updatedAt: DateTime.now(), isTimerActive: false),
   );
 
   ValueListenable<ShutdownTimerSnapshot> get countdown => _countdown;
@@ -65,6 +65,7 @@ class ShutdownTimerService with WidgetsBindingObserver {
   void _publishCountdown() {
     _countdown.value = ShutdownTimerSnapshot(
       updatedAt: DateTime.now(),
+      isTimerActive: isActive,
       deadline: _deadline,
       totalDuration: Duration(minutes: _durationInMinutes),
       isWaiting: _isWaiting,
@@ -182,6 +183,7 @@ class ShutdownTimerService with WidgetsBindingObserver {
           _syncProgressAndExit();
       }
     } finally {
+      _stopTimer();
       _stopCountdownRefresh();
       _stopObservingLifecycle();
       _publishCountdown();
@@ -190,15 +192,16 @@ class ShutdownTimerService with WidgetsBindingObserver {
 
   void handleWaiting() {
     try {
+      _isWaiting = false;
       switch (_shutdownType) {
         case _ShutdownType.pause:
-          _isWaiting = false;
           _durationInMinutes = 0;
           SmartDialog.showToast(Get.context!.l10n.shutdownTimeReachedPaused);
         case _ShutdownType.exit:
           _syncProgressAndExit();
       }
     } finally {
+      _stopTimer();
       _stopCountdownRefresh();
       _stopObservingLifecycle();
       _publishCountdown();
