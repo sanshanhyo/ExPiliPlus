@@ -38,7 +38,7 @@ import 'package:ex_piliplus/pages/article/widgets/sliver_to_box_adapter.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:material_ui/material_ui.dart' hide PageView;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

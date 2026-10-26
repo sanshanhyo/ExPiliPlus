@@ -6,7 +6,7 @@ import 'package:ex_piliplus/models/common/badge_type.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_index_result/list.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // 视频卡片 - 垂直布局
 class PgcCardVPgcIndex extends StatelessWidget {

@@ -20,7 +20,7 @@ import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';

@@ -9,7 +9,7 @@ import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 Widget? addWidget(

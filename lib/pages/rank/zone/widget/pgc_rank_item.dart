@@ -6,7 +6,7 @@ import 'package:ex_piliplus/models/common/stat_type.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_rank/pgc_rank_item_model.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PgcRankItem extends StatelessWidget {
   const PgcRankItem({super.key, required this.item});

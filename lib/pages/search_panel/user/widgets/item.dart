@@ -3,7 +3,7 @@ import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 

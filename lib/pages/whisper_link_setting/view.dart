@@ -7,7 +7,7 @@ import 'package:ex_piliplus/pages/whisper_link_setting/controller.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class WhisperLinkSettingPage extends StatefulWidget {

@@ -11,7 +11,7 @@ import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
 
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';

@@ -5,7 +5,7 @@ import 'package:ex_piliplus/pages/common/slide/common_slide_page.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class AiConclusionPanel extends CommonSlidePage {

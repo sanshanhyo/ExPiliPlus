@@ -6,7 +6,7 @@ import 'package:ex_piliplus/models_new/member/search_archive/vlist.dart';
 import 'package:ex_piliplus/pages/member_video_web/archive/controller.dart';
 import 'package:ex_piliplus/pages/member_video_web/base/view.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MemberVideoWeb extends StatefulWidget {

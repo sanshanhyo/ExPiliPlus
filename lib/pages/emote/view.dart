@@ -12,7 +12,7 @@ import 'package:ex_piliplus/pages/emote/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/emote_tooltip.dart';
 
 import 'package:get/get.dart';

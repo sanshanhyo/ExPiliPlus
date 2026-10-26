@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:ex_piliplus/models/common/rank_type.dart';
 import 'package:ex_piliplus/pages/common/common_controller.dart';
 import 'package:ex_piliplus/pages/rank/zone/controller.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class RankController extends GetxController

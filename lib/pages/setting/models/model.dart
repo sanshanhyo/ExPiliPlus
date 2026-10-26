@@ -6,7 +6,7 @@ import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/switch_item.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart' hide PopupMenuItemSelected;
+import 'package:material_ui/material_ui.dart' hide PopupMenuItemSelected;
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';

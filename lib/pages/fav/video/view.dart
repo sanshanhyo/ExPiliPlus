@@ -6,7 +6,7 @@ import 'package:ex_piliplus/pages/fav/video/controller.dart';
 import 'package:ex_piliplus/pages/fav/video/widgets/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class FavVideoPage extends StatefulWidget {

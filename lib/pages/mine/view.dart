@@ -22,7 +22,7 @@ import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart' hide ListTile;
+import 'package:material_ui/material_ui.dart' hide ListTile;
 import 'package:ex_piliplus/common/widgets/player_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';

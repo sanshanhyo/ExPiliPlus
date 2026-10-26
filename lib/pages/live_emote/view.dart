@@ -12,7 +12,7 @@ import 'package:ex_piliplus/models_new/live/live_emote/datum.dart';
 import 'package:ex_piliplus/models_new/live/live_emote/emoticon.dart';
 import 'package:ex_piliplus/pages/live_emote/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class LiveEmotePanel extends StatefulWidget {

@@ -9,7 +9,7 @@ import 'package:ex_piliplus/pages/live_emote/controller.dart';
 import 'package:ex_piliplus/pages/live_emote/view.dart';
 import 'package:ex_piliplus/pages/live_room/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart' hide TextField;
+import 'package:material_ui/material_ui.dart' hide TextField;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 

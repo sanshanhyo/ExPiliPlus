@@ -9,8 +9,7 @@ import 'package:ex_piliplus/pages/search_panel/user/widgets/item.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart'
-    hide SliverGridDelegateWithMaxCrossAxisExtent;
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/models/search/search_esports.dart';
 import 'package:ex_piliplus/pages/search_panel/all/widgets/activity.dart';
 import 'package:ex_piliplus/pages/search_panel/all/widgets/esports.dart';

@@ -1,7 +1,7 @@
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/models_new/live/live_medal_wall/uinfo_medal.dart';
 import 'package:ex_piliplus/utils/color_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const _kFontSize = 10.0;
 const _kStrutStyle = StrutStyle(height: 1, leading: 0, fontSize: _kFontSize);

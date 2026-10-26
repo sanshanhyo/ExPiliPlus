@@ -5,7 +5,7 @@ import 'package:ex_piliplus/models_new/space/space_article/item.dart';
 import 'package:ex_piliplus/pages/member_article/controller.dart';
 import 'package:ex_piliplus/pages/member_article/widget/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MemberArticle extends StatefulWidget {

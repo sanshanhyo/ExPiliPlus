@@ -1,5 +1,5 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
-import 'package:flutter/material.dart' show Alignment;
+import 'package:material_ui/material_ui.dart' show Alignment;
 
 enum UserInfoType {
   fan(.centerLeft),

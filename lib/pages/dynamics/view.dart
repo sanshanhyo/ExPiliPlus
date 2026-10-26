@@ -11,7 +11,7 @@ import 'package:ex_piliplus/pages/dynamics_tab/view.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart' hide DraggableScrollableSheet;
+import 'package:material_ui/material_ui.dart' hide DraggableScrollableSheet;
 import 'package:get/get.dart';
 
 class DynamicsPage extends StatefulWidget {

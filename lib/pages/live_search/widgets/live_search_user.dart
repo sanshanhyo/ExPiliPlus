@@ -6,7 +6,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LiveSearchUserItem extends StatelessWidget {
   const LiveSearchUserItem({

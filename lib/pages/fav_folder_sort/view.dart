@@ -5,7 +5,7 @@ import 'package:ex_piliplus/models_new/fav/fav_folder/list.dart';
 import 'package:ex_piliplus/pages/fav/video/controller.dart';
 import 'package:ex_piliplus/pages/fav/video/widgets/item.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';

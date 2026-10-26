@@ -8,7 +8,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 

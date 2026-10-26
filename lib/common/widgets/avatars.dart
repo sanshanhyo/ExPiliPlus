@@ -1,7 +1,7 @@
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/model_owner.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 Widget avatars({
   required ColorScheme colorScheme,

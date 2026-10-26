@@ -20,7 +20,7 @@ import 'dart:math';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 ///

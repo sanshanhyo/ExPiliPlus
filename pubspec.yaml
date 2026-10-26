@@ -92,8 +92,8 @@ dependencies:
   file_picker: ^13.1.0
   fixnum: ^1.1.1
   fl_chart: ^1.0.0
-  # Preserve ExPiliPlus custom ColorScheme behavior.
-  flex_seed_scheme: 4.0.1
+  # Material UI compatibility requires flex_seed_scheme 5.
+  flex_seed_scheme: ^5.0.0
   flutter_displaymode: ^0.7.0
   flutter_html:
     git:

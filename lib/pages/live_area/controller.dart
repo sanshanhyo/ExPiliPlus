@@ -5,7 +5,7 @@ import 'package:ex_piliplus/models_new/live/live_area_list/area_list.dart';
 import 'package:ex_piliplus/pages/common/common_list_controller.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart' show TabController;
+import 'package:material_ui/material_ui.dart' show TabController;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 

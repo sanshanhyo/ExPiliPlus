@@ -22,7 +22,7 @@ import 'package:ex_piliplus/pages/pgc_index/widgets/pgc_card_v_pgc_index.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show tabBarView;
 

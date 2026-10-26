@@ -7,7 +7,7 @@ import 'package:ex_piliplus/models_new/follow/list.dart';
 import 'package:ex_piliplus/pages/follow/widgets/follow_item.dart';
 import 'package:ex_piliplus/pages/follow_type/controller.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';

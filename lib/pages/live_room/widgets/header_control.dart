@@ -25,7 +25,7 @@ import 'package:ex_piliplus/utils/android/android_helper.dart';
 import 'package:ex_piliplus/utils/ios/pip_helper.dart';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

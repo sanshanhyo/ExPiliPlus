@@ -6,7 +6,7 @@ import 'package:ex_piliplus/pages/search_panel/user/widgets/item.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';

@@ -8,7 +8,7 @@ import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 // TODO refa

@@ -1,6 +1,6 @@
 import 'package:ex_piliplus/common/skeleton/skeleton.dart';
 import 'package:ex_piliplus/common/style.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MediaPgcSkeleton extends StatefulWidget {
   const MediaPgcSkeleton({super.key});

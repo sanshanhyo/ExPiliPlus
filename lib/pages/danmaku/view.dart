@@ -8,7 +8,7 @@ import 'package:ex_piliplus/plugin/pl_player/models/play_status.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/danmaku_options.dart';
 import 'package:ex_piliplus/utils/danmaku_utils.dart';
 import 'package:canvas_danmaku/canvas_danmaku.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:get/get.dart';
 

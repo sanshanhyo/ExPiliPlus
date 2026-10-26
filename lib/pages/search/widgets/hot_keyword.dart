@@ -3,7 +3,7 @@ import 'package:ex_piliplus/models_new/search/search_trending/list.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:flutter/rendering.dart'
     show

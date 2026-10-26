@@ -22,7 +22,7 @@ import 'package:ex_piliplus/common/widgets/view_insets_safe_area.dart';
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';

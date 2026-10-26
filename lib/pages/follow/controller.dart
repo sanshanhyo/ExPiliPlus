@@ -3,7 +3,7 @@ import 'package:ex_piliplus/http/member.dart';
 import 'package:ex_piliplus/models/member/tags.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/models/common/follow_order_type.dart';
 import 'package:ex_piliplus/pages/follow/child/child_controller.dart';
 import 'package:ex_piliplus/utils/storage.dart';

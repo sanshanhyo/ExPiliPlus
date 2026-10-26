@@ -27,7 +27,7 @@ import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/update.dart';
 import 'package:ex_piliplus/utils/update_policy.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart' hide ListTile;
+import 'package:material_ui/material_ui.dart' hide ListTile;
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/android/bindings.g.dart';

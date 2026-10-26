@@ -27,7 +27,7 @@ import 'package:ex_piliplus/pages/article/widgets/sliver_list.dart';
 import 'package:ex_piliplus/utils/num_utils.dart';
 
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 enum DynType implements EnumWithLabel {

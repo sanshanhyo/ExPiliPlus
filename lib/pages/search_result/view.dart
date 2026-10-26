@@ -9,7 +9,7 @@ import 'package:ex_piliplus/pages/search_panel/user/view.dart';
 import 'package:ex_piliplus/pages/search_panel/video/view.dart';
 import 'package:ex_piliplus/pages/search_result/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show tabBarView;
 import 'package:ex_piliplus/pages/search_panel/all/view.dart';

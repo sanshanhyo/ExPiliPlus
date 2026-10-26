@@ -5,7 +5,7 @@ import 'package:ex_piliplus/pages/search_panel/article/widgets/item.dart';
 import 'package:ex_piliplus/pages/search_panel/view.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class SearchArticlePanel extends CommonSearchPanel {

@@ -9,7 +9,7 @@ import 'package:ex_piliplus/pages/music/widget/music_video_card_h.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MusicRecommendPage extends StatefulWidget {

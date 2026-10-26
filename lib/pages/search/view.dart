@@ -15,7 +15,7 @@ import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/common/widgets/view_insets_safe_area.dart';
 import 'package:get/get.dart';

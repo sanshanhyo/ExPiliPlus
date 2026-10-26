@@ -1,5 +1,5 @@
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SearchText extends StatelessWidget {
   final String text;

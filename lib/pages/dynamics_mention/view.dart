@@ -15,7 +15,7 @@ import 'package:ex_piliplus/pages/search/controller.dart'
 import 'package:ex_piliplus/utils/extension/context_ext.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/common/widgets/view_insets_safe_area.dart';
 import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';

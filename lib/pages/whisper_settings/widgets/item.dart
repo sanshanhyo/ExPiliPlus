@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:ex_piliplus/grpc/bilibili/app/im/v1.pb.dart'
     show SelectItem, Setting, SettingSwitch;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ImSettingsItem extends StatelessWidget {
   const ImSettingsItem({

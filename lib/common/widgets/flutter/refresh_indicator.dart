@@ -12,7 +12,7 @@ import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
-import 'package:flutter/material.dart' hide RefreshIndicator;
+import 'package:material_ui/material_ui.dart' hide RefreshIndicator;
 
 typedef OnDrag = bool Function(double offset, double viewportDimension);
 

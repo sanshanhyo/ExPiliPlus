@@ -9,7 +9,7 @@ import 'package:ex_piliplus/pages/member_opus/view.dart';
 import 'package:ex_piliplus/pages/member_season_series/view.dart';
 import 'package:ex_piliplus/pages/member_video/view.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MemberContribute extends StatefulWidget {

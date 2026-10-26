@@ -7,7 +7,7 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/search/widgets/search_text.dart';
 import 'package:ex_piliplus/pages/whisper_block/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';

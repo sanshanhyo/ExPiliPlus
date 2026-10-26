@@ -24,7 +24,7 @@ import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ex_piliplus/models/common/sponsor_block/segment_type.dart';
 
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
