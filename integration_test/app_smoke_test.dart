@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:ex_piliplus/common/widgets/progress_bar/audio_video_progress_bar.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
@@ -169,6 +170,24 @@ void main() {
         description: 'playback speed menu changes native playback speed',
       );
 
+      await _showPlayerControls(tester);
+      await tester.tap(find.byType(PlayOrPauseButton).first);
+      await _waitForCondition(
+        tester,
+        () => !player.videoPlayerController!.state.playing,
+        description: 'native playback pauses before seek verification',
+      );
+      final playerState = player.videoPlayerController!.state;
+      final seekTarget = Duration(
+        milliseconds: (playerState.duration.inMilliseconds * 0.65).round(),
+      );
+      final previousPosition = playerState.position;
+      final seekTolerance = Duration(
+        milliseconds: math.max(
+          3000,
+          (playerState.duration.inMilliseconds * 0.1).round(),
+        ),
+      );
       await _waitFor(tester, find.byType(ProgressBar));
       final progressRect = tester.getRect(find.byType(ProgressBar));
       await tester.tapAt(
@@ -179,8 +198,20 @@ void main() {
       );
       await _waitForCondition(
         tester,
-        () => player.videoPlayerController!.state.position.inSeconds > 2,
-        description: 'progress bar seeks the native player',
+        () {
+          final position = player.videoPlayerController!.state.position;
+          return (position - seekTarget).inMilliseconds.abs() <=
+                  seekTolerance.inMilliseconds &&
+              (previousPosition - position).inMilliseconds.abs() >
+                  seekTolerance.inMilliseconds;
+        },
+        description: 'progress bar seeks near the selected 65% position',
+      );
+      await tester.tap(find.byType(PlayOrPauseButton).first);
+      await _waitForCondition(
+        tester,
+        () => player.videoPlayerController!.state.playing,
+        description: 'native playback resumes after seek verification',
       );
 
       await _showPlayerControls(tester);
@@ -197,6 +228,16 @@ void main() {
       l10n = _localizations(tester);
       final gifButton = find.byTooltip(l10n.playerGifRecord);
       await _waitFor(tester, gifButton);
+      await tester.tap(gifButton);
+      await _waitFor(tester, find.byType(GifRecordDialog));
+
+      await tester.tap(find.byKey(const ValueKey('gif-cancel-button')));
+      await _waitForCondition(
+        tester,
+        () => find.byType(GifRecordDialog).evaluate().isEmpty,
+        description: 'GIF recording dialog cancels without exporting',
+      );
+      await _showPlayerControls(tester);
       await tester.tap(gifButton);
       await _waitFor(tester, find.byType(GifRecordDialog));
 
@@ -278,9 +319,13 @@ Future<void> _waitForCondition(
 Future<void> _showPlayerControls(WidgetTester tester) async {
   final player = find.byType(PLVideoPlayer);
   await _waitFor(tester, player);
-  final rect = tester.getRect(player);
-  await tester.tapAt(rect.center);
-  await tester.pump();
-  await Future<void>.delayed(const Duration(milliseconds: 300));
-  await tester.pump();
+  final playPauseButton = find.byType(PlayOrPauseButton);
+  if (playPauseButton.evaluate().isEmpty) {
+    final rect = tester.getRect(player);
+    await tester.tapAt(rect.center);
+    await tester.pump();
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    await tester.pump();
+    await _waitFor(tester, playPauseButton);
+  }
 }

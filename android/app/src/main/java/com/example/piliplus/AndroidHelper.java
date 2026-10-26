@@ -32,6 +32,7 @@ import android.provider.Settings;
 import android.util.Rational;
 import android.view.WindowManager;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
