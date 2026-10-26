@@ -581,14 +581,15 @@ fi
 printf 'production_lock_sha256=%s\n' \
   "$(cat "$evidence_dir/baseline/production-pubspec-lock.sha256")" \
   | tee "$evidence_dir/production-lock.sha256"
-if ! cmp -s \
+if ! production_manifest_sha="$(python3 \
+  "$repo_root/.github/scripts/compare_android_manifest_hashes.py" \
   "$evidence_dir/baseline/production-pubspec.sha256" \
-  "$evidence_dir/candidate/production-pubspec.sha256"; then
-  echo "Baseline and candidate production manifests differ." >&2
-  diff -u "$evidence_dir/baseline/production-pubspec.sha256" \
-    "$evidence_dir/candidate/production-pubspec.sha256" >&2 || true
+  "$evidence_dir/candidate/production-pubspec.sha256")"; then
+  echo "Baseline and candidate production manifest content hashes differ." >&2
   exit 1
 fi
+printf 'production_manifest_sha256=%s\n' "$production_manifest_sha" \
+  | tee "$evidence_dir/production-manifest.sha256"
 
 python3 "$repo_root/.github/scripts/android_apk_report.py" \
   --baseline "$evidence_dir/baseline/expiliplus-arm64-release.apk" \

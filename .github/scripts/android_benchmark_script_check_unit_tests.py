@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import re
+import tempfile
 import unittest
 from pathlib import Path
+
+from compare_android_manifest_hashes import compare_manifest_hashes
 
 
 BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_text(
@@ -17,6 +20,36 @@ def function_body(name: str, next_marker: str) -> str:
 
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
+    def test_manifest_hash_comparison_ignores_sha256sum_output_paths(self) -> None:
+        digest = "35b1de752a9cdf894c67eee838538f616d6d72654f7e4aa2cf80409749a43cc2"
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            baseline = root / "baseline" / "production-pubspec.sha256"
+            candidate = root / "candidate" / "production-pubspec.sha256"
+            baseline.parent.mkdir()
+            candidate.parent.mkdir()
+            baseline.write_text(
+                f"{digest}  /runner/temp/baseline/production-pubspec.yaml\n",
+                encoding="utf-8",
+            )
+            candidate.write_text(
+                f"{digest}  /runner/temp/candidate/production-pubspec.yaml\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(compare_manifest_hashes(baseline, candidate), digest)
+
+    def test_manifest_hash_comparison_rejects_different_content_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            baseline = root / "baseline.sha256"
+            candidate = root / "candidate.sha256"
+            baseline.write_text(f"{'a' * 64}  baseline.yaml\n", encoding="utf-8")
+            candidate.write_text(f"{'b' * 64}  candidate.yaml\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "content hashes differ"):
+                compare_manifest_hashes(baseline, candidate)
+
     def test_release_build_uses_separate_validated_production_dependencies(self) -> None:
         release = function_body("build_release_revision", "run_profile_revision() {")
         enforce_full_lock = release.index("flutter pub get --enforce-lockfile")
