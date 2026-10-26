@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -168,6 +169,72 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertNotIn("android_gif_benchmark_test.dart", release)
         self.assertIn("android_gif_benchmark_test.dart", profile)
         self.assertIn("android_benchmark_video_data.dart", profile)
+
+    def test_android_revisions_share_one_locked_event_loop_artifact_set(self) -> None:
+        self.assertIn(
+            "':(exclude)third_party/android-gif-libmpv/media_kit_native_event_loop'",
+            BENCHMARK_SCRIPT,
+        )
+        self.assertIn("MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR", BENCHMARK_SCRIPT)
+        self.assertIn("media_kit_native_event_loop_source_commit=73771ec", BENCHMARK_SCRIPT)
+        self.assertIn('"identical_staged_jar_sha256": {}', BENCHMARK_SCRIPT)
+        self.assertIn("hashlib.sha256(path.read_bytes()).hexdigest()", BENCHMARK_SCRIPT)
+        self.assertIn(
+            "MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts",
+            BENCHMARK_WORKFLOW,
+        )
+
+    def test_dependency_guard_excludes_only_the_shared_event_loop_builder_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+
+            def git(*arguments: str) -> str:
+                result = subprocess.run(
+                    ["git", *arguments],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                return result.stdout.strip()
+
+            git("init", "--quiet")
+            git("config", "user.name", "Test")
+            git("config", "user.email", "test@example.invalid")
+            event_source = root / "third_party/android-gif-libmpv/media_kit_native_event_loop/source.md"
+            production_input = root / "third_party/media-plugin/artifact.jar"
+            event_source.parent.mkdir(parents=True)
+            production_input.parent.mkdir(parents=True)
+            event_source.write_text("pinned callback source\n", encoding="utf-8")
+            production_input.write_text("unchanged product artifact\n", encoding="utf-8")
+            git("add", "third_party")
+            git("commit", "--quiet", "-m", "base")
+            baseline = git("rev-parse", "HEAD")
+
+            event_source.write_text("candidate callback source\n", encoding="utf-8")
+            git("add", "third_party/android-gif-libmpv/media_kit_native_event_loop/source.md")
+            git("commit", "--quiet", "-m", "event-loop builder source")
+            candidate = git("rev-parse", "HEAD")
+            guarded_paths = [
+                "third_party/",
+                ":(exclude)third_party/android-gif-libmpv/media_kit_native_event_loop",
+            ]
+            unchanged = subprocess.run(
+                ["git", "diff", "--quiet", baseline, candidate, "--", *guarded_paths],
+                cwd=root,
+                check=False,
+            )
+            self.assertEqual(unchanged.returncode, 0)
+
+            production_input.write_text("changed product artifact\n", encoding="utf-8")
+            git("add", "third_party/media-plugin/artifact.jar")
+            git("commit", "--quiet", "-m", "product artifact change")
+            changed = subprocess.run(
+                ["git", "diff", "--quiet", baseline, "HEAD", "--", *guarded_paths],
+                cwd=root,
+                check=False,
+            )
+            self.assertEqual(changed.returncode, 1)
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ repo_root="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
 runner_temp="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 source_dir="$runner_temp/expiliplus-benchmark-harness-preflight"
 patch_log="$evidence_dir/android-patch.log"
+event_loop_log="$evidence_dir/event-loop-build.log"
 analyze_log="$evidence_dir/dart-analyze.log"
 
 case "$source_dir" in
@@ -67,3 +68,17 @@ else
 fi
 
 echo "Android GIF benchmark injection passed Dart analysis for $candidate_sha."
+
+if (
+  cd "$source_dir"
+  bash lib/scripts/build_android_event_loop_compat.sh \
+    "$runner_temp/android-gif-event-loop-artifacts" \
+    "$evidence_dir/event-loop-build"
+) > "$event_loop_log" 2>&1; then
+  cat "$event_loop_log"
+else
+  status=$?
+  echo "Benchmark event-loop compatibility build failed with status $status." >&2
+  tail -n 120 "$event_loop_log" >&2 || true
+  exit "$status"
+fi

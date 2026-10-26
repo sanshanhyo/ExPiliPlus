@@ -61,6 +61,9 @@ jobs:
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_lock_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_script_check_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_cli_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'media_kit_event_loop_contract_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_event_loop_artifact_stage_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_event_loop_builder_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Compile injected GIF benchmark targets before APK builds
@@ -93,6 +96,8 @@ jobs:
 
       - name: Build matched APKs and benchmark native GIF conversion
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts
         with:
           api-level: 35
           target: google_apis

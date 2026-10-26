@@ -1,0 +1,12 @@
+--- a/src/media_kit_native_event_loop.cc
++++ b/src/media_kit_native_event_loop.cc
+@@ -9,7 +9,8 @@
+ #if defined(_WIN32)
+ #include <client.h>
+ #elif defined(ANDROID) || defined(__ANDROID__)
+-#include "include/client.h"
++// This callback only forwards the opaque handle address to Dart.
++typedef struct mpv_handle mpv_handle;
+ #elif defined(__linux__)
+ #include <mpv/client.h>
+ #elif defined(__APPLE__)

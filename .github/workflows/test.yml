@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Verify locked media_kit event-loop contract
+        run: python3 .github/scripts/check_media_kit_event_loop_contract.py .
+
       - name: Apply Patch
         shell: pwsh
         run: lib/scripts/patch.ps1 Linux
@@ -51,6 +54,9 @@ jobs:
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_lock_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_script_check_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_cli_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'media_kit_event_loop_contract_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_event_loop_artifact_stage_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_event_loop_builder_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Analyze
@@ -99,6 +105,26 @@ jobs:
       - name: Check diff whitespace
         run: git diff --check
 
+      - name: Build locked media_kit Android event-loop compatibility artifact
+        run: |
+          bash lib/scripts/build_android_event_loop_compat.sh \
+            "$RUNNER_TEMP/android-gif-event-loop-artifacts" \
+            "$RUNNER_TEMP/android-event-loop-evidence"
+
+      - name: Upload Android event-loop build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-event-loop-build-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/android-event-loop-evidence/
+            ${{ runner.temp }}/android-gif-event-loop-artifacts/*.jar
+            ${{ runner.temp }}/android-gif-event-loop-artifacts/build-metadata.txt
+            ${{ runner.temp }}/android-gif-event-loop-artifacts/licenses.txt
+            ${{ runner.temp }}/android-gif-event-loop-artifacts/licenses/media_kit_native_event_loop-source-LICENSE
+          if-no-files-found: ignore
+          retention-days: 5
+
       - name: Enable KVM for Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -114,6 +140,8 @@ jobs:
 
       - name: Run isolated app integration test
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts
         with:
           api-level: 35
           target: google_apis

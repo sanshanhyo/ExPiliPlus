@@ -16,6 +16,11 @@ fixture="$runner_temp/expiliplus-android-benchmark-source.mp4"
 defines_file="$runner_temp/expiliplus-android-benchmark-defines.json"
 package_name="io.github.sanshanhyo.expiliplus"
 start_epoch="$(date +%s)"
+event_loop_artifact_dir="${MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR:-}"
+event_loop_metadata=""
+if [ -n "$event_loop_artifact_dir" ]; then
+  event_loop_metadata="$event_loop_artifact_dir/build-metadata.txt"
+fi
 
 case "$source_dir" in
   "$runner_temp"/*) ;;
@@ -28,14 +33,46 @@ git -C "$repo_root" cat-file -e "${candidate_sha}^{commit}"
 
 if ! git -C "$repo_root" diff --quiet "$baseline_sha" "$candidate_sha" -- \
   pubspec.yaml pubspec.lock pubspec_overrides.yaml UPSTREAM_VERSION android/ third_party/ \
+  ':(exclude)third_party/android-gif-libmpv/media_kit_native_event_loop' \
   lib/scripts/patch.ps1; then
   echo "Baseline and candidate have different dependency or Android build inputs." >&2
   echo "This benchmark requires a reviewed matched toolchain/configuration pair." >&2
   git -C "$repo_root" diff --stat "$baseline_sha" "$candidate_sha" -- \
     pubspec.yaml pubspec.lock pubspec_overrides.yaml UPSTREAM_VERSION android/ third_party/ \
+    ':(exclude)third_party/android-gif-libmpv/media_kit_native_event_loop' \
     lib/scripts/patch.ps1 >&2
   exit 1
 fi
+
+if [ -z "$event_loop_artifact_dir" ] || [ ! -s "$event_loop_metadata" ]; then
+  echo "The same staged media_kit event-loop artifacts must be provided to both Android revision builds." >&2
+  exit 1
+fi
+if ! grep -Fxq \
+  "media_kit_native_event_loop_source_commit=73771ec38176be2d984a3049c28177bce23b54a0" \
+  "$event_loop_metadata" ||
+  ! grep -Fxq "media_kit_native_event_loop_api=legacy-wakeup-callback-v1" \
+    "$event_loop_metadata" ||
+  ! grep -Fxq "media_kit_native_event_loop_ndk_version=28.2.13676358" \
+    "$event_loop_metadata"; then
+  echo "Staged event-loop artifacts are not the validated locked-source Android callback build." >&2
+  exit 1
+fi
+for artifact in default-arm64-v8a.jar default-armeabi-v7a.jar default-x86_64.jar; do
+  if [ ! -s "$event_loop_artifact_dir/$artifact" ]; then
+    echo "Staged Android artifact is missing: $event_loop_artifact_dir/$artifact" >&2
+    exit 1
+  fi
+done
+mkdir -p "$evidence_dir/toolchain/android-event-loop"
+cp "$event_loop_metadata" "$evidence_dir/toolchain/android-event-loop/build-metadata.txt"
+cp "$event_loop_artifact_dir"/default-*.jar "$evidence_dir/toolchain/android-event-loop/"
+cp "$event_loop_artifact_dir/licenses.txt" \
+  "$evidence_dir/toolchain/android-event-loop/licenses.txt"
+cp "$event_loop_artifact_dir/licenses/media_kit_native_event_loop-source-LICENSE" \
+  "$evidence_dir/toolchain/android-event-loop/LICENSE"
+sha256sum "$evidence_dir/toolchain/android-event-loop"/*.jar \
+  > "$evidence_dir/toolchain/android-event-loop/staged-jar-hashes.txt"
 
 python3 -m unittest discover -s "$repo_root/.github/scripts" \
   -p 'android_apk_report_unit_tests.py' -v
@@ -84,11 +121,13 @@ adb shell getprop ro.build.version.sdk > "$evidence_dir/toolchain/android-api.tx
 sha256sum "$defines_file" > "$evidence_dir/toolchain/benchmark-defines.sha256"
 python3 - "$evidence_dir/benchmark-metadata.json" \
   "$baseline_sha" "$candidate_sha" "$baseline_lock_sha" \
-  "$build_name" "$build_number" "$upstream_version" <<'PY'
+  "$build_name" "$build_number" "$upstream_version" "$event_loop_artifact_dir" <<'PY'
 import json
+import hashlib
 import sys
+from pathlib import Path
 
-output, baseline, candidate, lock_sha, name, code, upstream = sys.argv[1:]
+output, baseline, candidate, lock_sha, name, code, upstream, event_loop_dir = sys.argv[1:]
 metadata = {
     "baseline_sha": baseline,
     "candidate_sha": candidate,
@@ -116,6 +155,12 @@ metadata = {
         "pili_hash": "0" * 40,
         "pili_time": 0,
     },
+    "android_event_loop_artifacts": {
+        "source_commit": "73771ec38176be2d984a3049c28177bce23b54a0",
+        "api": "legacy-wakeup-callback-v1",
+        "ndk_version": "28.2.13676358",
+        "identical_staged_jar_sha256": {},
+    },
     "gif_profile": {
         "warmup_runs": 1,
         "measured_runs": 5,
@@ -131,6 +176,15 @@ metadata = {
         "memory_sampling_interval_seconds": 1,
     },
 }
+for artifact in (
+    "default-arm64-v8a.jar",
+    "default-armeabi-v7a.jar",
+    "default-x86_64.jar",
+):
+    path = Path(event_loop_dir) / artifact
+    metadata["android_event_loop_artifacts"]["identical_staged_jar_sha256"][artifact] = (
+        hashlib.sha256(path.read_bytes()).hexdigest()
+    )
 with open(output, "w", encoding="utf-8") as target:
     json.dump(metadata, target, indent=2, sort_keys=True)
     target.write("\n")
