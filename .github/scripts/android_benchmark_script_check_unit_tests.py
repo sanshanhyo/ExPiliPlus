@@ -70,7 +70,12 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
             "'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos'",
             GIF_CONVERTER,
         )
-        self.assertIn("'vf': videoFilters", GIF_CONVERTER)
+        self.assertIn("_command(['vf', 'set', videoFilters])", GIF_CONVERTER)
+        self.assertIn("if (filterResult < 0)", GIF_CONVERTER)
+        self.assertIn("_readOsdProperty('vf')", GIF_CONVERTER)
+        self.assertIn("MPV_END_FILE_REASON_EOF", GIF_CONVERTER)
+        self.assertIn("eof=$reachedEof", GIF_CONVERTER)
+        self.assertIn("validation?.isValid == true", GIF_CONVERTER)
         self.assertIn("vf=$videoFilters", GIF_CONVERTER)
         self.assertIn("const _expectedGifHeight = 270;", GIF_BENCHMARK_TEST)
         self.assertIn(

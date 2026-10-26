@@ -105,7 +105,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash .github/scripts/run_android_benchmark.sh 974e08c8144ddf07e5213f95ef37d37c66d9cfb1 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
+          script: bash .github/scripts/run_android_benchmark.sh 9aa7ac0b3c68f696736afbca029c17f53b878c95 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
 
       - name: Upload benchmark evidence
         if: always()
