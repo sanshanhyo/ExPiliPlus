@@ -333,13 +333,19 @@ void main() {
         description: 'play control resumes native playback',
       );
 
+      await _showPlayerControls(tester);
       l10n = _localizations(tester);
       final speedButton = _playerControls(
         find.byTooltip(l10n.playerPlaybackSpeed),
       );
+      await _waitForCondition(
+        tester,
+        () => speedButton.hitTestable().evaluate().length == 1,
+        description: 'playback speed control is visible and hit-testable',
+      );
       await _tapUnique(
         tester,
-        speedButton,
+        speedButton.hitTestable(),
         description: 'open playback speed menu',
       );
       await _tapText(tester, '1.5X');
