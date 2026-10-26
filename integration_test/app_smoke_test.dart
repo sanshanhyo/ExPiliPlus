@@ -118,6 +118,11 @@ void main() {
         find.byType(VideoDetailPageV),
         timeout: const Duration(seconds: 120),
       );
+      l10n = _localizations(tester);
+      final manualPlay = find.byTooltip(l10n.playerPlay);
+      await _waitFor(tester, manualPlay);
+      await tester.tap(manualPlay);
+      await tester.pump();
       await _waitForCondition(
         tester,
         () {
