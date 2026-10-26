@@ -105,8 +105,15 @@ KeyEventResult _onKeyEvent(KeyEvent event) {
   return KeyEventResult.ignored;
 }
 
-void main() async {
-  ScaledWidgetsFlutterBinding.ensureInitialized();
+Future<void> main() => startApp();
+
+/// Initializes and launches the app.
+///
+/// Integration tests install [IntegrationTestWidgetsFlutterBinding] before
+/// calling this function, so they skip the production binding while sharing
+/// the same app startup path.
+Future<void> startApp({bool useScaledBinding = true}) async {
+  if (useScaledBinding) ScaledWidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   await _initAppPath();
   try {
@@ -120,7 +127,9 @@ void main() async {
     exit(0);
   }
   await AppFontManager.init();
-  ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
+  if (useScaledBinding) {
+    ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
+  }
   await Future.wait([
     _initDownPath(),
     _initTmpPath(),

@@ -56,3 +56,51 @@ jobs:
 
       - name: Test
         run: flutter test --no-pub
+
+  android-integration:
+    name: Android emulator integration
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Apply Android Flutter patches
+        shell: pwsh
+        run: lib/scripts/patch.ps1 Android
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Check generated localizations
+        run: git diff --exit-code -- lib/l10n/generated
+
+      - name: Check diff whitespace
+        run: git diff --check
+
+      - name: Run isolated app integration test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb shell settings put system volume_music 0
+            flutter test integration_test/app_smoke_test.dart -d emulator-5554
+            gif_file="$(adb shell find /sdcard/Pictures/ExPiliPlus -type f -iname '*.gif' -print -quit | tr -d '\r')"
+            test -n "$gif_file"
+            echo "verified_gif_export=$gif_file"
