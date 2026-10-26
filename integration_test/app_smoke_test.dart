@@ -226,21 +226,67 @@ void main() {
         manualPlay,
         description: 'start video playback from the detail page',
       );
+      final playerController = PlPlayerController.instance!;
       await _waitForCondition(
         tester,
-        () {
-          final player = PlPlayerController.instance?.videoPlayerController;
-          return player != null &&
-              player.state.playing &&
-              player.state.duration > const Duration(seconds: 10) &&
-              player.state.width > 0;
-        },
-        description: 'native Android player opens and decodes the public video',
-        timeout: const Duration(seconds: 150),
+        () => playerController.videoPlayerController != null,
+        description: 'native player controller initializes for public video',
       );
+      final nativePlayer = playerController.videoPlayerController!;
+      final playerErrors = <String>[];
+      final bufferingEvents = <bool>[];
+      final playerErrorSubscription = nativePlayer.stream.error.listen((event) {
+        if (playerErrors.length < 20) {
+          playerErrors.add(_redactDiagnosticUrls(event));
+        }
+      });
+      final bufferingSubscription = nativePlayer.stream.buffering.listen(
+        (event) {
+          if (bufferingEvents.length < 20) {
+            bufferingEvents.add(event);
+          }
+        },
+      );
+      final playerLogSubscription = nativePlayer.stream.log.listen((event) {
+        if ((event.level == 'error' || event.level == 'fatal') &&
+            playerErrors.length < 20) {
+          playerErrors.add(
+            _redactDiagnosticUrls(
+              '${event.level}: ${event.prefix}: ${event.text}',
+            ),
+          );
+        }
+      });
+      try {
+        await _waitForCondition(
+          tester,
+          () => nativePlayer.state.playing &&
+              nativePlayer.state.duration > const Duration(seconds: 10) &&
+              nativePlayer.state.width > 0,
+          description:
+              'native Android player opens and decodes the public video',
+          timeout: const Duration(seconds: 150),
+        );
+      } catch (_) {
+        final state = nativePlayer.state;
+        debugPrint(
+          'ANDROID_PLAYER_DIAGNOSTICS '
+          'playing=${state.playing} '
+          'duration_ms=${state.duration.inMilliseconds} '
+          'position_ms=${state.position.inMilliseconds} '
+          'width=${state.width} height=${state.height} '
+          'buffering_events=${bufferingEvents.join("|")} '
+          'errors=${playerErrors.join(" | ")}',
+        );
+        rethrow;
+      } finally {
+        await playerErrorSubscription.cancel();
+        await bufferingSubscription.cancel();
+        await playerLogSubscription.cancel();
+      }
       debugPrint('ANDROID_SMOKE_PHASE=native-player-decoded-video');
 
-      final player = PlPlayerController.instance!;
+      final player = playerController;
       await player.setVolume(0, showIndicator: false);
       expect(player.volume.value, 0);
       await _showPlayerControls(tester);
@@ -488,6 +534,9 @@ void main() {
     timeout: const Timeout(Duration(minutes: 20)),
   );
 }
+
+String _redactDiagnosticUrls(String value) =>
+    value.replaceAll(RegExp(r'https?://\S+'), '<redacted-url>');
 
 AppLocalizations _localizations(WidgetTester tester) {
   // Settings and video details can be pushed above the RootPage route, so use
