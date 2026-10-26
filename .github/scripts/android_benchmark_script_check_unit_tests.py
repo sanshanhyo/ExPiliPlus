@@ -2,11 +2,16 @@ from __future__ import annotations
 
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 from compare_android_manifest_hashes import compare_manifest_hashes
+
+GIF_FILTER_PATCHER_DIR = Path(__file__).parents[2].joinpath("lib", "scripts")
+sys.path.insert(0, str(GIF_FILTER_PATCHER_DIR))
+from enable_android_gif_filters import enable_gif_filters
 
 
 BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_text(
@@ -27,6 +32,18 @@ GIF_CONVERTER = Path(__file__).parents[2].joinpath(
 GIF_VALIDATOR = Path(__file__).with_name("validate_android_gif.py").read_text(
     encoding="utf-8"
 )
+GIF_BUILD_SCRIPT = Path(__file__).parents[2].joinpath(
+    "lib", "scripts", "build_android_gif_libmpv.sh"
+).read_text(encoding="utf-8")
+GIF_FILTER_PATCHER = GIF_FILTER_PATCHER_DIR.joinpath(
+    "enable_android_gif_filters.py"
+).read_text(encoding="utf-8")
+GIF_BUILD_PATCH = Path(__file__).parents[2].joinpath(
+    "third_party", "android-gif-libmpv", "enable-gif.patch"
+).read_text(encoding="utf-8")
+GIF_BUILD_WORKFLOW = Path(__file__).parents[1].joinpath(
+    "workflows", "android-gif-libmpv.yml"
+).read_text(encoding="utf-8")
 
 
 def function_body(name: str, next_marker: str) -> str:
@@ -75,10 +92,14 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
 
     def test_gif_benchmark_checks_requested_filters_and_output_contract(self) -> None:
         self.assertIn(
-            "'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos'",
+            "'lavfi=[fps=fps=$fps,scale=w=$width:h=-2:flags=lanczos]'",
             GIF_CONVERTER,
         )
+        self.assertNotIn("lavfi-fps=", GIF_CONVERTER)
+        self.assertNotIn("lavfi-scale=", GIF_CONVERTER)
         self.assertIn("_command(['vf', 'set', _videoFilters])", GIF_CONVERTER)
+        self.assertIn("command=\"$command\" result=$result", GIF_CONVERTER)
+        self.assertIn("filterFlags=$enabledFilterFlags", GIF_CONVERTER)
         self.assertIn("if (filterResult < 0)", GIF_CONVERTER)
         self.assertIn("_readOsdProperty('vf')", GIF_CONVERTER)
         self.assertIn("_readOsdProperty('video-out-params/w')", GIF_CONVERTER)
@@ -107,6 +128,39 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("MAX_FRAMES = 32", GIF_VALIDATOR)
         self.assertIn("MIN_DURATION_MS = 2800", GIF_VALIDATOR)
         self.assertIn("MAX_DURATION_MS = 3200", GIF_VALIDATOR)
+
+    def test_pinned_android_gif_build_enables_and_verifies_required_lavfi_filters(self) -> None:
+        self.assertIn("--enable-muxer=gif", GIF_BUILD_PATCH)
+        self.assertIn("--enable-encoder=gif", GIF_BUILD_PATCH)
+        self.assertIn("--enable-filter=fps", GIF_FILTER_PATCHER)
+        self.assertIn("--enable-filter=scale", GIF_FILTER_PATCHER)
+        self.assertIn("CONFIG_FPS_FILTER", GIF_BUILD_SCRIPT)
+        self.assertIn("CONFIG_SCALE_FILTER", GIF_BUILD_SCRIPT)
+        self.assertIn("enable_android_gif_filters.py", GIF_BUILD_SCRIPT)
+        self.assertIn("one unmodified equalizer filter", GIF_FILTER_PATCHER)
+        self.assertIn("ff_vf_fps", GIF_BUILD_SCRIPT)
+        self.assertIn("ff_vf_scale", GIF_BUILD_SCRIPT)
+        for symbol in ("ff_vf_fps", "ff_vf_scale"):
+            self.assertIn(symbol, GIF_BUILD_WORKFLOW)
+
+    def test_pinned_android_gif_filter_patch_is_precise_and_idempotent(self) -> None:
+        source = (
+            "--enable-filter=overlay \\\n"
+            "\t--enable-filter=equalizer \\\n"
+            "\t--enable-filter=aresample \\\n"
+        )
+        expected = (
+            "--enable-filter=overlay \\\n"
+            "\t--enable-filter=equalizer \\\n"
+            "\t--enable-filter=fps \\\n"
+            "\t--enable-filter=scale \\\n"
+            "\t--enable-filter=aresample \\\n"
+        )
+        patched = enable_gif_filters(source)
+        self.assertEqual(patched, expected)
+        self.assertEqual(enable_gif_filters(patched), expected)
+        with self.assertRaisesRegex(ValueError, "one unmodified equalizer filter"):
+            enable_gif_filters(source.replace("equalizer", "missing"))
 
     def test_player_controls_wait_for_state_before_repeating_surface_tap(self) -> None:
         integration_test = Path(__file__).parents[2].joinpath(

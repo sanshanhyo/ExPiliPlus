@@ -35,6 +35,8 @@ git -C "$SOURCE_DIR" apply \
   "$ROOT_DIR/third_party/android-gif-libmpv/enable-gif.patch"
 git -C "$SOURCE_DIR" apply \
   "$ROOT_DIR/third_party/android-gif-libmpv/local-build-compat.patch"
+python3 "$ROOT_DIR/lib/scripts/enable_android_gif_filters.py" \
+  "$SOURCE_DIR/buildscripts/flavors/default.sh"
 
 # Reuse a complete local Android SDK on macOS when available. The pinned
 # upstream bootstrap otherwise downloads the 137 MB command-line-tools ZIP
@@ -71,6 +73,8 @@ done
 gif_config_files=("$SOURCE_DIR"/buildscripts/deps/ffmpeg/_build-*/ffbuild/config.mak)
 gif_encoder_config=""
 gif_muxer_config=""
+fps_filter_config=""
+scale_filter_config=""
 for config_file in "${gif_config_files[@]}"; do
   [ -f "$config_file" ] || continue
   if grep -qE 'CONFIG_GIF_ENCODER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
@@ -79,10 +83,18 @@ for config_file in "${gif_config_files[@]}"; do
   if grep -qE 'CONFIG_GIF_MUXER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
     gif_muxer_config="${config_file#"$SOURCE_DIR/"}"
   fi
+  if grep -qE 'CONFIG_FPS_FILTER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
+    fps_filter_config="${config_file#"$SOURCE_DIR/"}"
+  fi
+  if grep -qE 'CONFIG_SCALE_FILTER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
+    scale_filter_config="${config_file#"$SOURCE_DIR/"}"
+  fi
 done
 test -n "$gif_encoder_config"
 test -n "$gif_muxer_config"
-echo "build_phase=gif_config_verified encoder=$gif_encoder_config muxer=$gif_muxer_config"
+test -n "$fps_filter_config"
+test -n "$scale_filter_config"
+echo "build_phase=gif_config_verified encoder=$gif_encoder_config muxer=$gif_muxer_config fps_filter=$fps_filter_config scale_filter=$scale_filter_config"
 
 mkdir -p "$OUTPUT_DIR"
 for abi in arm64-v8a armeabi-v7a x86_64; do
@@ -92,6 +104,8 @@ for abi in arm64-v8a armeabi-v7a x86_64; do
   unzip -p "$SOURCE_DIR/output/$artifact" "lib/$abi/libmpv.so" | strings > "$symbols_file"
   grep -F 'ff_gif_encoder' "$symbols_file" >/dev/null
   grep -F 'ff_gif_muxer' "$symbols_file" >/dev/null
+  grep -F 'ff_vf_fps' "$symbols_file" >/dev/null
+  grep -F 'ff_vf_scale' "$symbols_file" >/dev/null
   if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$symbols_file" >/dev/null; then
     echo "GIF-only artifact contains x264 symbols: $artifact" >&2
     exit 1
@@ -125,13 +139,18 @@ mkdir -p "$OUTPUT_DIR/licenses"
   echo "source_tag=$SOURCE_TAG"
   echo "source_commit=$actual_commit"
   echo "patch_sha256=$(shasum -a 256 "$ROOT_DIR/third_party/android-gif-libmpv/enable-gif.patch" | awk '{print $1}')"
+  echo "gif_filter_patcher_sha256=$(shasum -a 256 "$ROOT_DIR/lib/scripts/enable_android_gif_filters.py" | awk '{print $1}')"
   echo "compatibility_patch_sha256=$(shasum -a 256 "$ROOT_DIR/third_party/android-gif-libmpv/local-build-compat.patch" | awk '{print $1}')"
   echo "ffmpeg_config_gif_encoder=$gif_encoder_config"
   echo "ffmpeg_config_gif_muxer=$gif_muxer_config"
+  echo "ffmpeg_config_fps_filter=$fps_filter_config"
+  echo "ffmpeg_config_scale_filter=$scale_filter_config"
   echo "build_command=buildscripts/bundle_default.sh"
   echo "gif_only=true"
   echo "gif_encoder=enabled"
   echo "gif_muxer=enabled"
+  echo "fps_filter=enabled"
+  echo "scale_filter=enabled"
   echo "gpl_encoder_set=disabled"
   echo "x264=disabled"
   echo "license_inventory=licenses.txt"

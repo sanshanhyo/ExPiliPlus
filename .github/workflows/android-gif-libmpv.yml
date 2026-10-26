@@ -71,6 +71,14 @@ jobs:
                           echo "missing ff_gif_muxer in $jar"
                           exit 1
                       fi
+                      if ! grep -F 'ff_vf_fps' "$strings_file" >/dev/null; then
+                          echo "missing FFmpeg fps filter in $jar"
+                          exit 1
+                      fi
+                      if ! grep -F 'ff_vf_scale' "$strings_file" >/dev/null; then
+                          echo "missing FFmpeg scale filter in $jar"
+                          exit 1
+                      fi
                       if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$strings_file" >/dev/null; then
                           echo "GIF-only JAR contains x264 symbols: $jar"
                           exit 1
@@ -108,6 +116,14 @@ jobs:
                       fi
                       if ! grep -F 'ff_gif_muxer' "$strings_file" >/dev/null; then
                           echo "missing ff_gif_muxer in APK ABI $abi"
+                          exit 1
+                      fi
+                      if ! grep -F 'ff_vf_fps' "$strings_file" >/dev/null; then
+                          echo "missing FFmpeg fps filter in APK ABI $abi"
+                          exit 1
+                      fi
+                      if ! grep -F 'ff_vf_scale' "$strings_file" >/dev/null; then
+                          echo "missing FFmpeg scale filter in APK ABI $abi"
                           exit 1
                       fi
                       echo "apk_symbols_verified=$abi"

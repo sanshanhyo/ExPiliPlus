@@ -36,7 +36,7 @@ class MpvConvertGif implements GifConverter {
   final RxDouble? progress;
 
   String get _videoFilters =>
-      'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos';
+      'lavfi=[fps=fps=$fps,scale=w=$width:h=-2:flags=lanczos]';
 
   MpvConvertGif(
     this.url,
@@ -262,8 +262,12 @@ class MpvConvertGif implements GifConverter {
     calloc.free(arr);
     pointers.forEach(calloc.free);
     if (result < 0) {
+      final command = args.first == 'loadfile'
+          ? 'loadfile <media-url>'
+          : args.join(' ');
       _recordError(
-        'mpv_command failed: ${_errorText(result)}',
+        'mpv_command failed: command="$command" result=$result '
+        'error=${_errorText(result)}',
       );
     }
     return result;
@@ -351,6 +355,15 @@ class MpvConvertGif implements GifConverter {
     if (!Platform.isAndroid) return;
     final encoderList = _readProperty('encoder-list');
     final configuration = _readProperty('mpv-configuration');
+    final enabledFilterFlags = RegExp(
+      r'--disable-filters|--enable-avfilter|--enable-filter=[^\s]+',
+    ).allMatches(configuration).map((match) => match.group(0)).join(',');
+    final normalizedEncoderList = encoderList
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    final encoderListSummary = normalizedEncoderList.length > 512
+        ? '${normalizedEncoderList.substring(0, 512)}…'
+        : normalizedEncoderList;
     final configFlags = const [
       '--disable-gpl',
       '--disable-nonfree',
@@ -361,6 +374,8 @@ class MpvConvertGif implements GifConverter {
       'GifConvert: capabilities mpv=${_readProperty('mpv-version')} '
       'ffmpeg=${_readProperty('ffmpeg-version')} '
       'gifEncoder=${_hasEntry(encoderList, 'gif')} '
+      'encoderList=$encoderListSummary '
+      'filterFlags=$enabledFilterFlags '
       'configuredFlags=$configFlags '
       'outputFormat=${_readProperty('of')} '
       'videoCodec=${_readProperty('ovc')}',
