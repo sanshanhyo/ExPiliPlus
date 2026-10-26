@@ -94,6 +94,33 @@ def compare_apks(
     }
 
 
+def format_summary(report: dict[str, Any]) -> str:
+    size = report["apk_download_size"]
+    percent = size["delta_percent"]
+    percent_text = "n/a" if percent is None else f"{percent:+.2f}%"
+    lines = [
+        "## Android Release APK size",
+        "",
+        f"- Baseline `{report['baseline_sha'][:12]}`: {size['baseline_bytes']:,} bytes",
+        f"- Candidate `{report['candidate_sha'][:12]}`: {size['candidate_bytes']:,} bytes",
+        f"- Delta: {size['delta_bytes']:+,} bytes ({percent_text})",
+        "",
+        "| Component | Baseline compressed | Candidate compressed | Delta |",
+        "|---|---:|---:|---:|",
+    ]
+    for name, component in sorted(
+        report["component_compressed_bytes"].items(),
+        key=lambda item: abs(item[1]["delta_bytes"]),
+        reverse=True,
+    ):
+        lines.append(
+            f"| {name} | {component['baseline_compressed_bytes']:,} | "
+            f"{component['candidate_compressed_bytes']:,} | "
+            f"{component['delta_bytes']:+,} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--baseline", required=True, type=Path)
@@ -101,6 +128,7 @@ def main() -> None:
     parser.add_argument("--baseline-sha", required=True)
     parser.add_argument("--candidate-sha", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--summary-output", type=Path)
     args = parser.parse_args()
     report = compare_apks(
         args.baseline,
@@ -112,6 +140,11 @@ def main() -> None:
     args.output.write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
+    summary = format_summary(report)
+    if args.summary_output is not None:
+        args.summary_output.parent.mkdir(parents=True, exist_ok=True)
+        args.summary_output.write_text(summary, encoding="utf-8")
+    print(summary, end="")
 
 
 if __name__ == "__main__":

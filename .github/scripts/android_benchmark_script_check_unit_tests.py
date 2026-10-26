@@ -10,92 +10,90 @@ BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_tex
 )
 
 
+def function_body(name: str, next_marker: str) -> str:
+    start = BENCHMARK_SCRIPT.index(f"{name}() {{")
+    end = BENCHMARK_SCRIPT.index(next_marker, start)
+    return BENCHMARK_SCRIPT[start:end]
+
+
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
-    def test_release_uses_separate_validated_production_dependencies(self) -> None:
-        enforce_lock = BENCHMARK_SCRIPT.index(
-            "flutter pub get --enforce-lockfile"
-        )
-        strip_test_dependency = BENCHMARK_SCRIPT.index(
+    def test_release_build_uses_separate_validated_production_dependencies(self) -> None:
+        release = function_body("build_release_revision", "run_profile_revision() {")
+        enforce_full_lock = release.index("flutter pub get --enforce-lockfile")
+        strip_test_dependency = release.index(
             'dependency = "  integration_test:\\n    sdk: flutter\\n"'
         )
-        production_pub_get = BENCHMARK_SCRIPT.index(
+        production_pub_get = release.index(
             "benchmark stage: resolve production-only dependencies"
         )
-        verify_production_lock = BENCHMARK_SCRIPT.index(
-            "verify_android_production_lock.py"
-        )
-        enforce_production_lock = BENCHMARK_SCRIPT.index(
+        verify_production_lock = release.index("verify_android_production_lock.py")
+        enforce_production_lock = release.index(
             "benchmark stage: enforce production-only lock"
         )
-        production_config = BENCHMARK_SCRIPT.index(
-            "flutter build apk --config-only --no-pub"
-        )
-        registrant_exclusion = BENCHMARK_SCRIPT.index(
-            'grep -Fq "dev.flutter.plugins.integration_test"'
-        )
-        production_plugin_check = BENCHMARK_SCRIPT.index(
+        production_config = release.index("flutter build apk --config-only --no-pub")
+        plugin_metadata_check = release.index(
             'grep -Fq "integration_test" "$plugin_metadata"'
         )
+        registrant_check = release.index(
+            'grep -Fq "dev.flutter.plugins.integration_test" "$registrant"'
+        )
         release_build = re.search(
-            r"^\s+flutter build apk --release", BENCHMARK_SCRIPT, re.MULTILINE
+            r"^\s+flutter build apk --release", release, re.MULTILINE
         ).start()
-        restore_full_manifest = BENCHMARK_SCRIPT.index(
-            'cp "$output_dir/full-pubspec.yaml" "$source_dir/pubspec.yaml"'
-        )
-        restore_full_lock = BENCHMARK_SCRIPT.index(
-            'cp "$evidence_dir/toolchain/normalized-pubspec.lock" "$source_dir/pubspec.lock"',
-            restore_full_manifest,
-        )
-        profile_pub_get = BENCHMARK_SCRIPT.index(
-            'echo "benchmark stage: restore and enforce full test lock'
-        )
-        profile_plugin_check = BENCHMARK_SCRIPT.index(
-            'if ! grep -Fq "integration_test" "$plugin_metadata"'
-        )
-        test_harness_copy = BENCHMARK_SCRIPT.index(
-            'cp "$repo_root/.github/benchmarks/android_gif_benchmark_test.dart"'
-        )
 
-        self.assertLess(enforce_lock, strip_test_dependency)
+        self.assertLess(enforce_full_lock, strip_test_dependency)
         self.assertLess(strip_test_dependency, production_pub_get)
         self.assertLess(production_pub_get, verify_production_lock)
         self.assertLess(verify_production_lock, enforce_production_lock)
         self.assertLess(enforce_production_lock, production_config)
-        self.assertLess(enforce_production_lock, production_plugin_check)
-        self.assertLess(production_plugin_check, production_config)
-        self.assertLess(production_config, registrant_exclusion)
-        self.assertLess(registrant_exclusion, release_build)
-        self.assertLess(release_build, restore_full_manifest)
-        self.assertLess(restore_full_manifest, restore_full_lock)
-        self.assertLess(restore_full_lock, profile_pub_get)
-        self.assertLess(profile_pub_get, profile_plugin_check)
-        self.assertLess(profile_plugin_check, test_harness_copy)
+        self.assertLess(enforce_production_lock, plugin_metadata_check)
+        self.assertLess(plugin_metadata_check, registrant_check)
+        self.assertLess(registrant_check, release_build)
+        self.assertIn("--build-name=", release)
+        self.assertIn("--build-number=", release)
 
-    def test_benchmark_harness_and_fixture_are_added_after_release_apk(self) -> None:
-        release_build = re.search(
-            r"^\s+flutter build apk --release", BENCHMARK_SCRIPT, re.MULTILINE
-        ).start()
-        release_apk_copy = BENCHMARK_SCRIPT.index(
-            'cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"'
+    def test_profile_command_uses_drive_flags_without_build_identity_flags(self) -> None:
+        profile = function_body(
+            "run_profile_revision", 'build_release_revision baseline "$baseline_sha"'
         )
-        test_harness_copy = BENCHMARK_SCRIPT.index(
-            'cp "$repo_root/.github/benchmarks/android_gif_benchmark_test.dart"'
-        )
-        driver_copy = BENCHMARK_SCRIPT.index(
-            'cp "$repo_root/.github/benchmarks/android_benchmark_driver.dart"'
-        )
-        synthetic_fixture_copy = BENCHMARK_SCRIPT.index(
-            'cp "$runner_temp/android_benchmark_video_data.dart"'
-        )
-        profile_run = re.search(
-            r"^\s+flutter drive --profile --no-pub", BENCHMARK_SCRIPT, re.MULTILINE
-        ).start()
+        self.assertIn("flutter drive --profile --no-pub", profile)
+        self.assertIn("--dart-define-from-file=", profile)
+        self.assertNotIn("--build-name", profile)
+        self.assertNotIn("--build-number", profile)
 
-        self.assertLess(release_build, release_apk_copy)
-        self.assertLess(release_apk_copy, test_harness_copy)
-        self.assertLess(test_harness_copy, driver_copy)
-        self.assertLess(driver_copy, synthetic_fixture_copy)
-        self.assertLess(synthetic_fixture_copy, profile_run)
+    def test_both_release_apks_and_size_summary_precede_profile_runs(self) -> None:
+        baseline_release = BENCHMARK_SCRIPT.index(
+            'build_release_revision baseline "$baseline_sha"'
+        )
+        candidate_release = BENCHMARK_SCRIPT.index(
+            'build_release_revision candidate "$candidate_sha"'
+        )
+        size_report = BENCHMARK_SCRIPT.index(
+            'python3 "$repo_root/.github/scripts/android_apk_report.py"'
+        )
+        profile_start = BENCHMARK_SCRIPT.index(
+            'run_profile_revision baseline "$baseline_sha"'
+        )
+        profile_candidate = BENCHMARK_SCRIPT.index(
+            'run_profile_revision candidate "$candidate_sha"'
+        )
+
+        self.assertLess(baseline_release, candidate_release)
+        self.assertLess(candidate_release, size_report)
+        self.assertLess(size_report, profile_start)
+        self.assertLess(profile_start, profile_candidate)
+        self.assertIn("--summary-output", BENCHMARK_SCRIPT)
+        self.assertIn("GITHUB_STEP_SUMMARY", BENCHMARK_SCRIPT)
+
+    def test_profile_harness_is_copied_only_after_release_build_function(self) -> None:
+        release = function_body("build_release_revision", "run_profile_revision() {")
+        profile = function_body(
+            "run_profile_revision", 'build_release_revision baseline "$baseline_sha"'
+        )
+        self.assertIn('cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"', release)
+        self.assertNotIn("android_gif_benchmark_test.dart", release)
+        self.assertIn("android_gif_benchmark_test.dart", profile)
+        self.assertIn("android_benchmark_video_data.dart", profile)
 
 
 if __name__ == "__main__":

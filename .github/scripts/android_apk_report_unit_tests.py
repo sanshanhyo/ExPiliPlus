@@ -8,7 +8,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from android_apk_report import compare_apks, inspect_apk
+from android_apk_report import compare_apks, format_summary, inspect_apk
 from summarize_android_benchmark import _memory_comparison, _memory_summary
 
 
@@ -46,6 +46,9 @@ class ApkReportTest(unittest.TestCase):
                 after.stat().st_size - before.stat().st_size,
             )
             self.assertIn("native/arm64-v8a", report["component_compressed_bytes"])
+            summary = format_summary(report)
+            self.assertIn("## Android Release APK size", summary)
+            self.assertIn(f"{report['apk_download_size']['delta_bytes']:+,} bytes", summary)
 
     def test_memory_report_uses_sampled_pss_and_computes_delta(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

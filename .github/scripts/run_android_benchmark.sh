@@ -155,7 +155,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-run_one_revision() {
+build_release_revision() {
   local label="$1"
   local source_sha="$2"
   local output_dir="$evidence_dir/$label"
@@ -424,37 +424,61 @@ PY
   fi
   cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"
   printf '%s\n' "$source_sha" > "$output_dir/source-sha.txt"
+  git -C "$repo_root" worktree remove --force "$source_dir"
+}
 
-  cp "$output_dir/full-pubspec.yaml" "$source_dir/pubspec.yaml"
+run_profile_revision() {
+  local label="$1"
+  local source_sha="$2"
+  local output_dir="$evidence_dir/$label"
+  local stage_status=0
+  local profile_lock_sha
+  local plugin_metadata
+
+  git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
+  if (
+    cd "$source_dir" &&
+    echo "benchmark stage: Android patch for profile GIF ($label)" &&
+    timeout --foreground --signal=TERM --kill-after=60s 20m \
+      pwsh lib/scripts/patch.ps1 Android
+  ) > "$output_dir/profile-android-patch.log" 2>&1; then
+    :
+  else
+    stage_status=$?
+    echo "Profile Android patch failed for $label ($source_sha), status $stage_status." >&2
+    tail -n 120 "$output_dir/profile-android-patch.log" >&2 || true
+    return "$stage_status"
+  fi
+
   cp "$evidence_dir/toolchain/normalized-pubspec.lock" "$source_dir/pubspec.lock"
   if (
     cd "$source_dir" &&
-    echo "benchmark stage: restore and enforce full test lock ($label)" &&
+    echo "benchmark stage: resolve full profile-test dependencies ($label)" &&
     timeout --foreground --signal=TERM --kill-after=60s 15m \
       flutter pub get --enforce-lockfile
   ) > "$output_dir/profile-pub-get-enforce.log" 2>&1; then
     :
   else
     stage_status=$?
-    echo "Full test dependency restoration failed for $label, status $stage_status." >&2
+    echo "Full profile dependencies failed for $label, status $stage_status." >&2
     tail -n 120 "$output_dir/profile-pub-get-enforce.log" >&2 || true
     return "$stage_status"
   fi
-  local profile_lock_sha
+
   profile_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
-  if [ "$profile_lock_sha" != "$full_lock_sha" ]; then
-    echo "Restoring full test dependencies changed the normalized lock for $label." >&2
+  if [ "$profile_lock_sha" != "$(sha256sum "$evidence_dir/toolchain/normalized-pubspec.lock" | awk '{print $1}')" ]; then
+    echo "Profile dependencies changed the shared normalized lock for $label." >&2
     return 1
   fi
   printf '%s\n' "$profile_lock_sha" > "$output_dir/resolved-pubspec-lock.sha256"
+  plugin_metadata="$source_dir/.flutter-plugins-dependencies"
   if ! grep -Fq "integration_test" "$plugin_metadata"; then
-    echo "Restoring full test dependencies did not restore integration_test metadata ($label)." >&2
+    echo "Full profile dependency restore did not register integration_test ($label)." >&2
     return 1
   fi
   cp "$plugin_metadata" "$output_dir/profile-flutter-plugins-dependencies.json"
 
-  # Inject the benchmark-only integration target and its synthetic media only
-  # after the production Release APK has been built and copied for measurement.
+  # Only the profile integration build receives the test source and fixture.
   cp "$repo_root/.github/benchmarks/android_gif_benchmark_test.dart" \
     "$source_dir/integration_test/android_gif_benchmark_test.dart"
   cp "$repo_root/.github/benchmarks/android_benchmark_driver.dart" \
@@ -477,8 +501,7 @@ PY
       --driver=integration_test/android_benchmark_driver.dart \
       --target=integration_test/android_gif_benchmark_test.dart \
       -d emulator-5554 \
-      --dart-define-from-file="$defines_file" \
-      --build-name="$build_name" --build-number="$build_number"
+      --dart-define-from-file="$defines_file"
   ) > "$output_dir/profile-benchmark.log" 2>&1 &
   local drive_pid=$!
   local sample_start="$(date +%s)"
@@ -544,30 +567,8 @@ PY
   git -C "$repo_root" worktree remove --force "$source_dir"
 }
 
-run_one_revision baseline "$baseline_sha"
-run_one_revision candidate "$candidate_sha"
-
-if ! cmp -s \
-  "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \
-  "$evidence_dir/candidate/resolved-pubspec-lock.sha256"; then
-  echo "Baseline and candidate did not resolve to the same normalized lock." >&2
-  diff -u \
-    "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \
-    "$evidence_dir/candidate/resolved-pubspec-lock.sha256" >&2 || true
-  exit 1
-fi
-echo "Baseline and candidate resolved lock SHA-256 matches: $(cat "$evidence_dir/baseline/resolved-pubspec-lock.sha256")"
-
-python3 "$repo_root/.github/scripts/android_apk_report.py" \
-  --baseline "$evidence_dir/baseline/expiliplus-arm64-release.apk" \
-  --candidate "$evidence_dir/candidate/expiliplus-arm64-release.apk" \
-  --baseline-sha "$baseline_sha" --candidate-sha "$candidate_sha" \
-  --output "$evidence_dir/apk-size-comparison.json"
-
-python3 "$repo_root/.github/scripts/summarize_android_benchmark.py" \
-  --evidence-dir "$evidence_dir" \
-  --baseline-sha "$baseline_sha" --candidate-sha "$candidate_sha" \
-  --output "$evidence_dir/comparison.json"
+build_release_revision baseline "$baseline_sha"
+build_release_revision candidate "$candidate_sha"
 
 if ! cmp -s \
   "$evidence_dir/baseline/production-pubspec-lock.sha256" \
@@ -588,6 +589,75 @@ if ! cmp -s \
     "$evidence_dir/candidate/production-pubspec.sha256" >&2 || true
   exit 1
 fi
+
+python3 "$repo_root/.github/scripts/android_apk_report.py" \
+  --baseline "$evidence_dir/baseline/expiliplus-arm64-release.apk" \
+  --candidate "$evidence_dir/candidate/expiliplus-arm64-release.apk" \
+  --baseline-sha "$baseline_sha" --candidate-sha "$candidate_sha" \
+  --output "$evidence_dir/apk-size-comparison.json" \
+  --summary-output "$evidence_dir/apk-size-summary.md"
+python3 - "$evidence_dir" <<'PY'
+import json
+import os
+import sys
+from pathlib import Path
+
+evidence = Path(sys.argv[1])
+with (evidence / "toolchain/flutter.json").open(encoding="utf-8") as source:
+    flutter = json.load(source)
+full_lock_sha = __import__("hashlib").sha256(
+    (evidence / "toolchain/normalized-pubspec.lock").read_bytes()
+).hexdigest()
+production_lock_sha = (evidence / "production-lock.sha256").read_text().strip().split("=", 1)[1]
+production_manifest_sha = (
+    evidence / "baseline/production-pubspec.sha256"
+).read_text().split()[0]
+java_version = (evidence / "toolchain/java-version.txt").read_text().strip().replace("\n", " ")
+android_release = (evidence / "toolchain/android-release.txt").read_text().strip()
+android_api = (evidence / "toolchain/android-api.txt").read_text().strip()
+lines = [
+    "",
+    "### Matched build inputs",
+    "",
+    f"- Flutter {flutter.get('frameworkVersion')} ({flutter.get('frameworkRevision')}); Dart {flutter.get('dartSdkVersion')}",
+    f"- Java: `{java_version}`",
+    f"- Android emulator: API {android_api}, Android {android_release}",
+    f"- Full profile lock SHA-256: `{full_lock_sha}`",
+    f"- Production lock SHA-256: `{production_lock_sha}`",
+    f"- Production manifest SHA-256: `{production_manifest_sha}`",
+    "- Baseline and candidate production manifest/lock were checked identical before profiling.",
+    "",
+]
+summary = "\n".join(lines)
+with (evidence / "apk-size-summary.md").open("a", encoding="utf-8") as target:
+    target.write(summary)
+print(summary, end="")
+summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+if summary_path:
+    with open(summary_path, "a", encoding="utf-8") as target:
+        target.write((evidence / "apk-size-summary.md").read_text(encoding="utf-8"))
+PY
+
+# APK bytes and dependency comparability are recorded before profile GIF work.
+# A later profile failure therefore cannot hide the completed package-size result.
+run_profile_revision baseline "$baseline_sha"
+run_profile_revision candidate "$candidate_sha"
+
+if ! cmp -s \
+  "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \
+  "$evidence_dir/candidate/resolved-pubspec-lock.sha256"; then
+  echo "Baseline and candidate did not resolve to the same normalized full lock." >&2
+  diff -u \
+    "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \
+    "$evidence_dir/candidate/resolved-pubspec-lock.sha256" >&2 || true
+  exit 1
+fi
+echo "Baseline and candidate profile full-lock SHA-256 matches: $(cat "$evidence_dir/baseline/resolved-pubspec-lock.sha256")"
+
+python3 "$repo_root/.github/scripts/summarize_android_benchmark.py" \
+  --evidence-dir "$evidence_dir" \
+  --baseline-sha "$baseline_sha" --candidate-sha "$candidate_sha" \
+  --output "$evidence_dir/comparison.json"
 
 printf 'benchmark_baseline_sha=%s\nbenchmark_candidate_sha=%s\n' \
   "$baseline_sha" "$candidate_sha" | tee "$evidence_dir/commits.txt"

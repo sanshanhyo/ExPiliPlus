@@ -41,6 +41,11 @@ jobs:
           flutter-version: "3.47.7"
           cache: true
 
+      - name: Verify flutter drive options before emulator setup
+        run: |
+          python3 .github/scripts/check_android_benchmark_cli.py \
+            --help-output "${RUNNER_TEMP}/android-benchmark/toolchain/flutter-drive-help.txt"
+
       - name: Install synthetic-media validation tools
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
@@ -55,6 +60,7 @@ jobs:
           python3 -m unittest discover -s .github/scripts -p 'android_emulator_script_check_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_lock_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_script_check_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_benchmark_cli_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Verify KVM for the ephemeral Android runner
