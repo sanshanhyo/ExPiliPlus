@@ -24,6 +24,7 @@ import 'package:ex_piliplus/utils/path_utils.dart' show tmpDirPath;
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:integration_test/integration_test.dart';
@@ -363,7 +364,8 @@ Future<void> _captureCountdownScreenshot(
   await tester.runAsync(() async {
     await File('$tmpDirPath/$name.png').writeAsBytes(screenshot, flush: true);
   });
-  await binding.revertFlutterImage();
+  await const MethodChannel('plugins.flutter.io/integration_test')
+      .invokeMethod<void>('revertFlutterImage');
   await tester.pump();
 }
 
