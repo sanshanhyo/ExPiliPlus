@@ -27,18 +27,20 @@ git -C "$repo_root" cat-file -e "${baseline_sha}^{commit}"
 git -C "$repo_root" cat-file -e "${candidate_sha}^{commit}"
 
 if ! git -C "$repo_root" diff --quiet "$baseline_sha" "$candidate_sha" -- \
-  pubspec.yaml pubspec.lock UPSTREAM_VERSION android/ third_party/ \
+  pubspec.yaml pubspec.lock pubspec_overrides.yaml UPSTREAM_VERSION android/ third_party/ \
   lib/scripts/patch.ps1; then
   echo "Baseline and candidate have different dependency or Android build inputs." >&2
   echo "This benchmark requires a reviewed matched toolchain/configuration pair." >&2
   git -C "$repo_root" diff --stat "$baseline_sha" "$candidate_sha" -- \
-    pubspec.yaml pubspec.lock UPSTREAM_VERSION android/ third_party/ \
+    pubspec.yaml pubspec.lock pubspec_overrides.yaml UPSTREAM_VERSION android/ third_party/ \
     lib/scripts/patch.ps1 >&2
   exit 1
 fi
 
 python3 -m unittest discover -s "$repo_root/.github/scripts" \
   -p 'android_apk_report_unit_tests.py' -v
+python3 -m unittest discover -s "$repo_root/.github/scripts" \
+  -p 'android_benchmark_lock_unit_tests.py' -v
 
 baseline_lock_sha="$(git -C "$repo_root" show "$baseline_sha:pubspec.lock" | sha256sum | awk '{print $1}')"
 candidate_lock_sha="$(git -C "$repo_root" show "$candidate_sha:pubspec.lock" | sha256sum | awk '{print $1}')"
@@ -100,7 +102,7 @@ metadata = {
         "gpu": "swiftshader_indirect",
         "audio": "disabled",
     },
-    "pubspec_lock_sha256": lock_sha,
+    "pubspec_lock_input_sha256": lock_sha,
     "release_apk": {
         "mode": "release",
         "command": "flutter build apk --release --split-per-abi --no-pub --dart-define-from-file=<fixed benchmark defines> --build-name=<fixed> --build-number=<fixed>",
@@ -153,6 +155,9 @@ run_one_revision() {
   local label="$1"
   local source_sha="$2"
   local output_dir="$evidence_dir/$label"
+  local input_lock_sha
+  local normalized_lock_sha
+  local stage_status=0
   local release_apk
 
   git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
@@ -163,14 +168,115 @@ run_one_revision() {
   cp "$runner_temp/android_benchmark_video_data.dart" \
     "$source_dir/integration_test/android_benchmark_video_data.dart"
 
-  local build_status=0
+  input_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
+  printf '%s\n' "$input_lock_sha" > "$output_dir/input-pubspec-lock.sha256"
+  cp "$source_dir/pubspec.lock" "$output_dir/input-pubspec.lock"
+  if [ "$input_lock_sha" != "$baseline_lock_sha" ]; then
+    echo "Input lock hash for $label does not match the recorded baseline lock." >&2
+    return 1
+  fi
+  if [ "$label" = "baseline" ]; then
+    cp "$source_dir/pubspec.lock" "$evidence_dir/toolchain/input-pubspec.lock"
+  fi
+
   if (
     cd "$source_dir" &&
     echo "benchmark stage: Android patch ($label)" &&
-    pwsh lib/scripts/patch.ps1 Android &&
-    echo "benchmark stage: dependency resolution ($label)" &&
+    timeout --foreground --signal=TERM --kill-after=60s 20m \
+      pwsh lib/scripts/patch.ps1 Android
+  ) > "$output_dir/android-patch.log" 2>&1; then
+    :
+  else
+    stage_status=$?
+    echo "Android patch failed for $label ($source_sha), status $stage_status." >&2
+    echo "Last 120 lines of $output_dir/android-patch.log:" >&2
+    tail -n 120 "$output_dir/android-patch.log" >&2 || true
+    return "$stage_status"
+  fi
+
+  if [ "$label" = "baseline" ]; then
+    if (
+      cd "$source_dir" &&
+      echo "benchmark stage: resolve the baseline lock for pinned Flutter 3.47.7" &&
+      timeout --foreground --signal=TERM --kill-after=60s 15m \
+        flutter pub get
+    ) > "$output_dir/pub-get-normalize.log" 2>&1; then
+      :
+    else
+      stage_status=$?
+      echo "Baseline lock normalization failed, status $stage_status." >&2
+      echo "Last 120 lines of $output_dir/pub-get-normalize.log:" >&2
+      tail -n 120 "$output_dir/pub-get-normalize.log" >&2 || true
+      return "$stage_status"
+    fi
+
+    cp "$source_dir/pubspec.lock" "$evidence_dir/toolchain/normalized-pubspec.lock"
+    if diff -u \
+      "$evidence_dir/toolchain/input-pubspec.lock" \
+      "$evidence_dir/toolchain/normalized-pubspec.lock" \
+      > "$evidence_dir/toolchain/lock-normalization.diff"; then
+      :
+    else
+      stage_status=$?
+      if [ "$stage_status" -ne 1 ]; then
+        echo "Could not create the lock normalization diff (status $stage_status)." >&2
+        return "$stage_status"
+      fi
+    fi
+    python3 "$repo_root/.github/scripts/verify_android_benchmark_lock.py" \
+      --original "$evidence_dir/toolchain/input-pubspec.lock" \
+      --normalized "$evidence_dir/toolchain/normalized-pubspec.lock" \
+      --report "$evidence_dir/toolchain/lock-normalization.json"
+    normalized_lock_sha="$(sha256sum "$evidence_dir/toolchain/normalized-pubspec.lock" | awk '{print $1}')"
+    echo "Shared normalized lock SHA-256: $normalized_lock_sha"
+    python3 - "$evidence_dir/benchmark-metadata.json" "$normalized_lock_sha" <<'PY'
+import json
+import sys
+
+metadata_path, normalized_lock_sha = sys.argv[1:]
+with open(metadata_path, encoding="utf-8") as source:
+    metadata = json.load(source)
+metadata["pubspec_lock_normalized_sha256"] = normalized_lock_sha
+with open(metadata_path, "w", encoding="utf-8") as target:
+    json.dump(metadata, target, indent=2, sort_keys=True)
+    target.write("\n")
+PY
+  else
+    if [ ! -s "$evidence_dir/toolchain/normalized-pubspec.lock" ]; then
+      echo "The validated normalized lock is missing before the candidate build." >&2
+      return 1
+    fi
+    normalized_lock_sha="$(sha256sum "$evidence_dir/toolchain/normalized-pubspec.lock" | awk '{print $1}')"
+    cp "$evidence_dir/toolchain/normalized-pubspec.lock" "$source_dir/pubspec.lock"
+  fi
+
+  if (
+    cd "$source_dir" &&
+    echo "benchmark stage: enforce shared normalized lock ($label)" &&
     timeout --foreground --signal=TERM --kill-after=60s 15m \
-      flutter pub get --enforce-lockfile &&
+      flutter pub get --enforce-lockfile
+  ) > "$output_dir/pub-get-enforce.log" 2>&1; then
+    :
+  else
+    stage_status=$?
+    echo "Enforced Pub resolution failed for $label, status $stage_status." >&2
+    echo "Last 120 lines of $output_dir/pub-get-enforce.log:" >&2
+    tail -n 120 "$output_dir/pub-get-enforce.log" >&2 || true
+    return "$stage_status"
+  fi
+
+  local resolved_lock_sha
+  resolved_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
+  printf '%s\n' "$resolved_lock_sha" > "$output_dir/resolved-pubspec-lock.sha256"
+  if [ "$resolved_lock_sha" != "$normalized_lock_sha" ]; then
+    echo "Enforced Pub resolution changed the shared normalized lock for $label." >&2
+    diff -u "$evidence_dir/toolchain/normalized-pubspec.lock" \
+      "$source_dir/pubspec.lock" > "$output_dir/enforced-lock-drift.diff" || true
+    return 1
+  fi
+
+  if (
+    cd "$source_dir" &&
     echo "benchmark stage: release APK build ($label)" &&
     timeout --foreground --signal=TERM --kill-after=60s 45m \
       flutter build apk --release --split-per-abi --no-pub \
@@ -179,11 +285,11 @@ run_one_revision() {
   ) > "$output_dir/release-build.log" 2>&1; then
     :
   else
-    build_status=$?
-    echo "Android build preparation failed for $label ($source_sha), status $build_status." >&2
+    stage_status=$?
+    echo "Release APK build failed for $label ($source_sha), status $stage_status." >&2
     echo "Last 120 lines of $output_dir/release-build.log:" >&2
     tail -n 120 "$output_dir/release-build.log" >&2 || true
-    return "$build_status"
+    return "$stage_status"
   fi
 
   release_apk="$source_dir/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk"
@@ -279,6 +385,17 @@ PY
 
 run_one_revision baseline "$baseline_sha"
 run_one_revision candidate "$candidate_sha"
+
+if ! cmp -s \
+  "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \
+  "$evidence_dir/candidate/resolved-pubspec-lock.sha256"; then
+  echo "Baseline and candidate did not resolve to the same normalized lock." >&2
+  diff -u \
+    "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \
+    "$evidence_dir/candidate/resolved-pubspec-lock.sha256" >&2 || true
+  exit 1
+fi
+echo "Baseline and candidate resolved lock SHA-256 matches: $(cat "$evidence_dir/baseline/resolved-pubspec-lock.sha256")"
 
 python3 "$repo_root/.github/scripts/android_apk_report.py" \
   --baseline "$evidence_dir/baseline/expiliplus-arm64-release.apk" \

@@ -27,3 +27,19 @@ The workflow stops if the baseline and candidate differ in Flutter dependency
 locks, Android project files, native plugin artifacts, or Android patch script.
 If one of those inputs changes, update the measurement design deliberately so
 both builds still use matched dependencies and build configuration.
+
+The original committed lock is checked with `flutter pub get` under the pinned
+Flutter 3.47.7 toolchain. The benchmark only accepts the reviewed metadata
+normalization: `cupertino_ui` and `ffi` become direct dependencies, four
+Flutter-driver packages are added, and the now-unreachable `gtk`, `menu_base`,
+and `shortid` packages are removed. Existing package versions, sources, checksums,
+and Git revisions must remain unchanged. The baseline's normalized lock is
+saved with its original lock hash and unified diff, copied byte-for-byte to the
+candidate, and verified with `flutter pub get --enforce-lockfile` on both sides.
+The run records both final lock hashes and the complete resolved package graph;
+the APK and GIF comparisons stop unless the two final lock files are identical.
+The normalization is paired within one run: the newly required package pins
+are taken from that reviewed normalized lock and therefore used verbatim by
+both revisions. If a later run produces a different normalized lock hash or
+new package identities, that run represents a different dependency set and
+must be reviewed before comparing its measurements with prior runs.
