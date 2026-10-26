@@ -34,6 +34,10 @@ def function_body(name: str, next_marker: str) -> str:
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
     def test_injected_benchmark_targets_are_analyzed_before_emulator_and_release(self) -> None:
+        self.assertIn(
+            "timeout --signal=TERM --kill-after=30s 15m sudo apt-get install",
+            BENCHMARK_WORKFLOW,
+        )
         preflight = BENCHMARK_WORKFLOW.index(
             "Compile injected GIF benchmark targets before APK builds"
         )
