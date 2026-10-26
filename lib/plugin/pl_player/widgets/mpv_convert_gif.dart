@@ -50,6 +50,9 @@ class MpvConvertGif implements GifConverter {
     await output.parent.create(recursive: true);
     if (output.existsSync()) await output.delete();
 
+    final videoFilters =
+        'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos';
+
     _ctx = await Initializer.create(
       _mpv,
       _onEvent,
@@ -60,9 +63,10 @@ class MpvConvertGif implements GifConverter {
         'of': 'gif',
         'ofopts': 'loop=0',
         'ovc': 'gif',
-        // Force these filter names through libavfilter. Bare `fps` and
-        // `scale` names resolve to mpv's legacy built-ins on this build.
-        'vf': 'lavfi-fps=$fps,lavfi-scale=$width:-2:flags=lanczos',
+        // Force named fps/scale parameters through libavfilter. The previous
+        // positional arguments were accepted but did not change output size
+        // or frame rate in the Android profile benchmark.
+        'vf': videoFilters,
         'audio': 'no',
         // GIF encoding runs in a headless mpv instance. Do not inherit the
         // player's GPU renderer or hardware decoder configuration here.
@@ -95,7 +99,7 @@ class MpvConvertGif implements GifConverter {
       'GifConvert: start input=${_describeUrl(url)} '
       'output=${File(outFile).uri.pathSegments.last} '
       'range=${start.toStringAsFixed(3)}-${(start + duration).toStringAsFixed(3)} '
-      'width=$width fps=$fps',
+      'width=$width fps=$fps vf=$videoFilters',
     );
   }
 
