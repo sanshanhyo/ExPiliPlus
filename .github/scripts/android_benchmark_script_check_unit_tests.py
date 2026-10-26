@@ -128,6 +128,16 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("state.rate == 1.5", integration_test)
         self.assertIn("find.text('1.5X')", integration_test)
 
+    def test_countdown_screenshots_share_one_surface_conversion_per_test(self) -> None:
+        integration_test = Path(__file__).parents[2].joinpath(
+            "integration_test", "app_smoke_test.dart"
+        ).read_text(encoding="utf-8")
+        self.assertEqual(integration_test.count("convertFlutterSurfaceToImage()"), 1)
+        self.assertIn("_countdownScreenshotSurfaceConverted", integration_test)
+        self.assertNotIn("revertFlutterImage", integration_test)
+        self.assertIn("'countdown_quick_bar'", integration_test)
+        self.assertIn("'countdown_outside_tile'", integration_test)
+
     def test_manifest_hash_comparison_ignores_sha256sum_output_paths(self) -> None:
         digest = "35b1de752a9cdf894c67eee838538f616d6d72654f7e4aa2cf80409749a43cc2"
         with tempfile.TemporaryDirectory() as temporary_directory:
