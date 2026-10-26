@@ -123,11 +123,18 @@ void main() {
         description: 'GIF setting turns back on',
       );
 
-      await tester.pageBack();
-      await tester.pump();
-      await tester.pageBack();
-      await tester.pump();
-      await _waitFor(tester, find.byType(MainApp));
+      await _tapScopedBackButton(
+        tester,
+        currentPage: find.byType(CommonSetting),
+        previousPage: find.byType(SettingPage),
+        description: 'return from ExPiliPlus settings to settings list',
+      );
+      await _tapScopedBackButton(
+        tester,
+        currentPage: find.byType(SettingPage),
+        previousPage: find.byType(MainApp),
+        description: 'return from settings to the main app',
+      );
       l10n = _localizations(tester);
       await tester.tap(find.byIcon(Icons.search_outlined).first);
       await tester.pump();
@@ -429,7 +436,49 @@ Future<void> _waitForCondition(
     await tester.pump(const Duration(milliseconds: 250));
     await Future<void>.delayed(const Duration(milliseconds: 250));
   }
+  debugPrint(
+    'Timed out waiting for $description at GetX route ${Get.currentRoute}.',
+  );
+  debugDumpApp();
   fail('Timed out waiting for $description');
+}
+
+Future<void> _tapScopedBackButton(
+  WidgetTester tester, {
+  required Finder currentPage,
+  required Finder previousPage,
+  required String description,
+}) async {
+  await _waitForCondition(
+    tester,
+    () => _isCurrentPage(tester, currentPage),
+    description: 'active page before $description',
+  );
+  final pageContext = tester.element(currentPage.first);
+  final backTooltip = MaterialLocalizations.of(pageContext).backButtonTooltip;
+  final backButton = find.descendant(
+    of: currentPage,
+    matching: find.byTooltip(backTooltip),
+  );
+  await _waitFor(tester, backButton);
+  expect(
+    backButton,
+    findsOneWidget,
+    reason: 'one scoped back button for $description',
+  );
+  await tester.tap(backButton);
+  await tester.pump();
+  await _waitForCondition(
+    tester,
+    () => _isCurrentPage(tester, previousPage),
+    description: description,
+  );
+}
+
+bool _isCurrentPage(WidgetTester tester, Finder page) {
+  final elements = page.evaluate();
+  if (elements.length != 1) return false;
+  return ModalRoute.of(tester.element(page.first))?.isCurrent ?? false;
 }
 
 Future<void> _showPlayerControls(WidgetTester tester) async {

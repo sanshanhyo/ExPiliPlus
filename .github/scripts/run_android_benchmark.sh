@@ -163,16 +163,28 @@ run_one_revision() {
   cp "$runner_temp/android_benchmark_video_data.dart" \
     "$source_dir/integration_test/android_benchmark_video_data.dart"
 
-  (
-    cd "$source_dir"
-    pwsh lib/scripts/patch.ps1 Android
+  local build_status=0
+  if (
+    cd "$source_dir" &&
+    echo "benchmark stage: Android patch ($label)" &&
+    pwsh lib/scripts/patch.ps1 Android &&
+    echo "benchmark stage: dependency resolution ($label)" &&
     timeout --foreground --signal=TERM --kill-after=60s 15m \
-      flutter pub get --enforce-lockfile
+      flutter pub get --enforce-lockfile &&
+    echo "benchmark stage: release APK build ($label)" &&
     timeout --foreground --signal=TERM --kill-after=60s 45m \
       flutter build apk --release --split-per-abi --no-pub \
       --dart-define-from-file="$defines_file" \
       --build-name="$build_name" --build-number="$build_number"
-  ) > "$output_dir/release-build.log" 2>&1
+  ) > "$output_dir/release-build.log" 2>&1; then
+    :
+  else
+    build_status=$?
+    echo "Android build preparation failed for $label ($source_sha), status $build_status." >&2
+    echo "Last 120 lines of $output_dir/release-build.log:" >&2
+    tail -n 120 "$output_dir/release-build.log" >&2 || true
+    return "$build_status"
+  fi
 
   release_apk="$source_dir/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk"
   if [ ! -s "$release_apk" ]; then
