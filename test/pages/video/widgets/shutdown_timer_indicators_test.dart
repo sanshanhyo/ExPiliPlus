@@ -3,6 +3,7 @@ import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' as mui show CircularProgressIndicator;
 
 void main() {
   testWidgets('quick timer indicator reacts to updates', (tester) async {
@@ -43,8 +44,8 @@ void main() {
     await pumpIndicator(theme, const Locale('zh'));
 
     expect(find.text('还剩 5分钟'), findsOneWidget);
-    var ring = tester.widget<CircularProgressIndicator>(
-      find.byType(CircularProgressIndicator),
+    var ring = tester.widget<mui.CircularProgressIndicator>(
+      find.byType(mui.CircularProgressIndicator),
     );
     expect(ring.value, 0.5);
     expect(ring.color, theme.colorScheme.primary);
@@ -53,8 +54,8 @@ void main() {
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
     );
     await pumpIndicator(updatedTheme, const Locale('zh'));
-    ring = tester.widget<CircularProgressIndicator>(
-      find.byType(CircularProgressIndicator),
+    ring = tester.widget<mui.CircularProgressIndicator>(
+      find.byType(mui.CircularProgressIndicator),
     );
     expect(ring.color, updatedTheme.colorScheme.primary);
 
@@ -66,8 +67,8 @@ void main() {
     await tester.pump();
 
     expect(find.text('还剩 3分钟'), findsOneWidget);
-    ring = tester.widget<CircularProgressIndicator>(
-      find.byType(CircularProgressIndicator),
+    ring = tester.widget<mui.CircularProgressIndicator>(
+      find.byType(mui.CircularProgressIndicator),
     );
     expect(ring.value, 0.25);
 
@@ -78,7 +79,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Sleep timer'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(mui.CircularProgressIndicator), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
     countdown.dispose();
