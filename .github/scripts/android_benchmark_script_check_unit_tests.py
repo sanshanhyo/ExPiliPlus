@@ -67,9 +67,11 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
 
     def test_gif_benchmark_checks_requested_filters_and_output_contract(self) -> None:
         self.assertIn(
-            "'vf': 'lavfi-fps=$fps,lavfi-scale=$width:-2:flags=lanczos'",
+            "'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos'",
             GIF_CONVERTER,
         )
+        self.assertIn("'vf': videoFilters", GIF_CONVERTER)
+        self.assertIn("vf=$videoFilters", GIF_CONVERTER)
         self.assertIn("const _expectedGifHeight = 270;", GIF_BENCHMARK_TEST)
         self.assertIn(
             "_expectedFrameCount - _frameCountTolerance",
