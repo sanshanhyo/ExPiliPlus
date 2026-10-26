@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:ex_piliplus/utils/android/android_helper.dart';
+import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/fontconfig.g.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart'

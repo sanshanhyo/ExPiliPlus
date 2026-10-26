@@ -39,7 +39,7 @@ abstract final class LocalAppFontManager {
 
   /// Opens the platform picker only in response to an explicit user action.
   static Future<AppFontSelection?> pickAndImport() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: allowedExtensions.toList(growable: false),
     );

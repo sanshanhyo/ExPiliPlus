@@ -187,7 +187,7 @@ class _AppFontSelectionDialogState extends State<AppFontSelectionDialog>
         return ListView(
           children: [
             _systemFontTile(
-              name: l10n.settingsFontSystemDefault,
+              name: l10n.settingsSystemDefaultFont,
               family: null,
             ),
             if (fonts.isEmpty)

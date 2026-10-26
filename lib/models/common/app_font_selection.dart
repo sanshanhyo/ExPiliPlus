@@ -41,8 +41,8 @@ final class AppFontSelection {
 
   String localizedLabel(AppLocalizations l10n) => switch (source) {
     .catalog => catalogFont.localizedLabel(l10n),
-    .system => systemFamily ?? l10n.settingsFontSystemDefault,
-    .local => localDisplayName ?? l10n.settingsFontLocalSource,
+    .system => systemFamily ?? l10n.settingsSystemDefaultFont,
+    .local => localDisplayName ?? l10n.settingsFontSourceLocal,
   };
 
   /// Reads the new source keys while preserving pre-source ExP settings.
