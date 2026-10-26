@@ -34,6 +34,12 @@ jobs:
         shell: pwsh
         run: lib/scripts/patch.ps1 Linux
 
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Check generated localizations
+        run: git diff --exit-code -- lib/l10n/generated
+
       - name: Check diff whitespace
         run: git diff --check
 

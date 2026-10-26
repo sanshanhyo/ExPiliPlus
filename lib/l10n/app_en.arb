@@ -1651,6 +1651,7 @@
   "loginQrExpired": "QR code expired. Refresh it.",
   "loginQrSucceeded": "QR code scanned",
   "loginVerificationSucceeded": "Verified",
+  "loginVerificationLoadFailed": "Verification failed to load",
   "loginCookieRequired": "Enter a Cookie",
   "loginSucceeded": "Signed in",
   "loginFailedWithError": "Sign-in failed: {error}",

@@ -5815,6 +5815,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginVerificationTitle => 'Verification';
 
   @override
+  String get loginVerificationLoadFailed => 'Verification failed to load';
+
+  @override
   String get loginCompleteVerificationWindow =>
       'Complete verification in the new window';
 

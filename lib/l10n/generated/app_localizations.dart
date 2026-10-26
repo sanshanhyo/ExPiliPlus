@@ -1,14 +1,9 @@
 import 'dart:async';
 
-import 'package:cupertino_ui/cupertino_ui.dart'
-    show GlobalCupertinoLocalizations;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'
-    show GlobalWidgetsLocalizations;
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:material_ui/material_ui.dart'
-    show GlobalMaterialLocalizations;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_zh.dart';
@@ -10130,6 +10125,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'验证码'**
   String get loginVerificationTitle;
+
+  /// No description provided for @loginVerificationLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码加载失败'**
+  String get loginVerificationLoadFailed;
 
   /// No description provided for @loginCompleteVerificationWindow.
   ///

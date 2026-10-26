@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/search/result.dart';
 import 'package:ex_piliplus/pages/search_panel/all/widgets/user.dart';
@@ -70,7 +71,7 @@ void main() {
       await tester.pumpWidget(
         GetMaterialApp(
           locale: const Locale('zh'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: theme,
           themeMode: ThemeMode.light,

@@ -8,6 +8,7 @@ import 'package:ex_piliplus/common/widgets/route_aware_mixin.dart';
 import 'package:ex_piliplus/common/widgets/scale_app.dart';
 import 'package:ex_piliplus/common/widgets/scroll_behavior.dart';
 import 'package:ex_piliplus/http/init.dart';
+import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
@@ -303,7 +304,7 @@ class MyApp extends StatelessWidget {
         theme: light,
         darkTheme: dark,
         themeMode: ThemeUtils.themeMode = Pref.themeMode,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         locale: locale,
         fallbackLocale: AppLocaleController.fallbackLocale,
         supportedLocales: AppLocalizations.supportedLocales,

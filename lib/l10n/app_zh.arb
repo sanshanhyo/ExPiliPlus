@@ -2059,6 +2059,7 @@
   "@networkUnknownError": {"placeholders": {"error": {"type": "String"}}},
   "searchSecurityCheckTriggered": "触发风控校验",
   "loginVerificationTitle": "验证码",
+  "loginVerificationLoadFailed": "验证码加载失败",
   "loginCompleteVerificationWindow": "请在弹出的新窗口中完成验证",
   "memberBlockConfirm": "确定拉黑 UP 主吗？",
   "memberUnblockConfirm": "从黑名单移除该 UP 主吗？",

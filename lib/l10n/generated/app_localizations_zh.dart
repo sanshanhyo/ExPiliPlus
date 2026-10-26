@@ -5608,6 +5608,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginVerificationTitle => '验证码';
 
   @override
+  String get loginVerificationLoadFailed => '验证码加载失败';
+
+  @override
   String get loginCompleteVerificationWindow => '请在弹出的新窗口中完成验证';
 
   @override
@@ -13065,6 +13068,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get loginVerificationTitle => '驗證';
+
+  @override
+  String get loginVerificationLoadFailed => '驗證碼載入失敗';
 
   @override
   String get loginCompleteVerificationWindow => '請在彈出的新視窗中完成驗證';

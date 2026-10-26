@@ -27,7 +27,7 @@ class BlackListController
     if (Accounts.main.isLogin) {
       queryData();
     } else {
-      loadingState.value = const Error('账号未登录');
+      loadingState.value = Error(Get.context!.l10n.accountPleaseSignIn);
     }
   }
 

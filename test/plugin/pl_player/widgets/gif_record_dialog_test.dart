@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ void main() {
     return MaterialApp(
       locale: const Locale('zh'),
       supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       theme: dialogMaxWidth == null
           ? null
           : ThemeData(

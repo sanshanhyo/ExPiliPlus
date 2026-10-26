@@ -1,4 +1,4 @@
-import 'dart:convert' show jsonDecode;
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'dart:io' show Platform;
 
 import 'package:ex_piliplus/http/browser_ua.dart';
@@ -31,7 +31,11 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
       'https://static.geetest.com/static/js/fullpage.0.0.0.js';
   static const _geetestConfigUri = 'https://api.geetest.com/gettype.php';
 
-  static String _buildHtml(String gt, String challenge) {
+  static String _buildHtml(
+    String gt,
+    String challenge,
+    String loadFailedText,
+  ) {
     final ts = DateTime.now().millisecondsSinceEpoch;
     final js =
         'var C,S,T,t;'
@@ -41,7 +45,7 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
         'C=Object.assign({gt:"$gt",challenge:"$challenge",offline:false,new_captcha:true,product:"bind",width:"100%",https:true,protocol:"https://"},d.data);T()'
         '};'
         'G=()=>{S=1;T()};'
-        'E=()=>{document.getElementById("E").textContent="验证码加载失败";R("error","geetest script load failed")}';
+        'E=()=>{document.getElementById("E").textContent=${jsonEncode(loadFailedText)};R("error","geetest script load failed")}';
 
     return '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"></head>'
         '<style>#E{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:red}</style>'
@@ -56,7 +60,11 @@ class _GeetestWebviewDialogState extends State<GeetestWebviewDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final html = _buildHtml(widget.gt, widget.challenge);
+    final html = _buildHtml(
+      widget.gt,
+      widget.challenge,
+      context.l10n.loginVerificationLoadFailed,
+    );
 
     if (Platform.isLinux) {
       return AlertDialog(

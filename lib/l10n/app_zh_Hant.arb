@@ -1686,6 +1686,7 @@
   "@networkUnknownError": {"placeholders": {"error": {"type": "String"}}},
   "searchSecurityCheckTriggered": "需要進行安全驗證",
   "loginVerificationTitle": "驗證",
+  "loginVerificationLoadFailed": "驗證碼載入失敗",
   "loginCompleteVerificationWindow": "請在彈出的新視窗中完成驗證",
   "memberBlockConfirm": "確定封鎖這位 UP 主嗎？",
   "memberUnblockConfirm": "將這位 UP 主從封鎖名單移除嗎？",
