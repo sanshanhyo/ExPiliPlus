@@ -22,7 +22,7 @@ JARS = (
 )
 EVENT_LOOP_PATH_TEMPLATE = "lib/{abi}/libmedia_kit_native_event_loop.so"
 METADATA_PREFIX = "media_kit_native_event_loop_"
-LICENSE_INVENTORY_ENTRY = "media_kit_native_event_loop/LICENSE"
+LICENSE_INVENTORY_ENTRY = "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
 
 
 def sha256_file(path: Path) -> str:
@@ -216,13 +216,11 @@ def stage_artifacts(
             )
 
     license_inventory = output_dir / "licenses.txt"
-    entries = license_inventory.read_text(encoding="utf-8").splitlines()
-    if LICENSE_INVENTORY_ENTRY not in entries:
-        entries.append(LICENSE_INVENTORY_ENTRY)
-    license_inventory.write_text("\n".join(entries) + "\n", encoding="utf-8")
-    license_copy = output_dir / "licenses" / "media_kit_native_event_loop-source-LICENSE"
-    license_copy.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(source_dir / "LICENSE", license_copy)
+    if LICENSE_INVENTORY_ENTRY not in license_inventory.read_text(encoding="utf-8").splitlines():
+        raise ValueError("Base GIF artifact does not inventory the locked event-loop license")
+    packaged_license = output_dir / "licenses" / LICENSE_INVENTORY_ENTRY
+    if not packaged_license.is_file() or packaged_license.read_bytes() != (source_dir / "LICENSE").read_bytes():
+        raise ValueError("Staged JAR license inventory lost the locked event-loop MIT license")
 
     _write_metadata(
         output_dir,

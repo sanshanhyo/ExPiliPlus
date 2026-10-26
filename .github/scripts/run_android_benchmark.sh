@@ -69,7 +69,7 @@ cp "$event_loop_metadata" "$evidence_dir/toolchain/android-event-loop/build-meta
 cp "$event_loop_artifact_dir"/default-*.jar "$evidence_dir/toolchain/android-event-loop/"
 cp "$event_loop_artifact_dir/licenses.txt" \
   "$evidence_dir/toolchain/android-event-loop/licenses.txt"
-cp "$event_loop_artifact_dir/licenses/media_kit_native_event_loop-source-LICENSE" \
+cp "$event_loop_artifact_dir/licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE" \
   "$evidence_dir/toolchain/android-event-loop/LICENSE"
 sha256sum "$evidence_dir/toolchain/android-event-loop"/*.jar \
   > "$evidence_dir/toolchain/android-event-loop/staged-jar-hashes.txt"

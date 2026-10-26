@@ -121,7 +121,7 @@ jobs:
             ${{ runner.temp }}/android-gif-event-loop-artifacts/*.jar
             ${{ runner.temp }}/android-gif-event-loop-artifacts/build-metadata.txt
             ${{ runner.temp }}/android-gif-event-loop-artifacts/licenses.txt
-            ${{ runner.temp }}/android-gif-event-loop-artifacts/licenses/media_kit_native_event_loop-source-LICENSE
+            ${{ runner.temp }}/android-gif-event-loop-artifacts/licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE
           if-no-files-found: ignore
           retention-days: 5
 

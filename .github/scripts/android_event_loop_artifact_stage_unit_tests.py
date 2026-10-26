@@ -45,7 +45,10 @@ class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
         license_path.parent.mkdir(parents=True)
         license_path.write_bytes((self.source / "LICENSE").read_bytes())
         (self.base / "source-license.txt").write_text("builder license\n", encoding="utf-8")
-        (self.base / "licenses.txt").write_text("upstream/LICENSE\n", encoding="utf-8")
+        (self.base / "licenses.txt").write_text(
+            "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE\n",
+            encoding="utf-8",
+        )
 
         rows = []
         for abi, name in JARS:
@@ -109,8 +112,15 @@ class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
         for _, name in JARS:
             self.assertIn(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), metadata)
         self.assertIn(
-            "media_kit_native_event_loop/LICENSE",
+            "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE",
             (self.output / "licenses.txt").read_text(encoding="utf-8"),
+        )
+        self.assertEqual(
+            (
+                self.output
+                / "licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
+            ).read_bytes(),
+            (self.source / "LICENSE").read_bytes(),
         )
 
     def test_rejects_mismatched_event_loop_license(self) -> None:
