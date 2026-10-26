@@ -56,7 +56,6 @@ List<SettingsModel> recommendSettings(BuildContext context) => [
     key: SettingBoxKey.minLikeRatioForRecommend,
     values: [0, 1, 2, 3, 4],
     onChanged: (value) => RecommendFilter.minLikeRatioForRecommend = value,
-    filterScope: 'Web推荐、热门、分区',
   ),
   getBanWordModel(
     context: context,
@@ -66,7 +65,6 @@ List<SettingsModel> recommendSettings(BuildContext context) => [
       RecommendFilter.rcmdRegExp = value;
       RecommendFilter.enableFilter = value.pattern.isNotEmpty;
     },
-    banScope: '推荐、热门、分区、相关视频',
   ),
   getBanWordModel(
     context: context,
@@ -76,7 +74,6 @@ List<SettingsModel> recommendSettings(BuildContext context) => [
       VideoHttp.zoneRegExp = value;
       VideoHttp.enableFilter = value.pattern.isNotEmpty;
     },
-    banScope: 'App推荐、热门、分区',
   ),
   getVideoFilterSelectModel(
     context: context,
@@ -85,7 +82,6 @@ List<SettingsModel> recommendSettings(BuildContext context) => [
     key: SettingBoxKey.minDurationForRcmd,
     values: [0, 30, 60, 90, 120],
     onChanged: (value) => RecommendFilter.minDurationForRcmd = value,
-    filterScope: '推荐、相关视频',
   ),
   getVideoFilterSelectModel(
     context: context,
@@ -93,7 +89,6 @@ List<SettingsModel> recommendSettings(BuildContext context) => [
     key: SettingBoxKey.minPlayForRcmd,
     values: [0, 50, 100, 500, 1000],
     onChanged: (value) => RecommendFilter.minPlayForRcmd = value,
-    filterScope: '推荐、热门、分区、相关视频',
   ),
   SwitchModel(
     title: context.l10n.settingsExemptFollowedUploaders,

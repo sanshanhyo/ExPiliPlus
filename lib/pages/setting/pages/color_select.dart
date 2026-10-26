@@ -289,7 +289,7 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                       selected: isCurr,
                     ),
                     Text(
-                      '自定义',
+                      context.l10n.settingsCustomValue,
                       style: TextStyle(
                         fontSize: 12,
                         color: isCurr

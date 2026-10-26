@@ -15,6 +15,7 @@ import 'package:ex_piliplus/pages/download/download/widgets/page.dart';
 import 'package:ex_piliplus/pages/download/download_action_mixin.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:collection/collection.dart';
@@ -156,7 +157,7 @@ class _DownloadPagePageState extends State<DownloadPagePage>
               title: Text(widget.seasonInfo.title),
               actions: [
                 IconButton(
-                  tooltip: '多选',
+                  tooltip: context.l10n.commonMultiSelect,
                   onPressed: () {
                     if (enableMultiSelect) {
                       handleSelect();
@@ -227,7 +228,7 @@ class _DownloadPagePageState extends State<DownloadPagePage>
   void onRemove() {
     showConfirmDialog(
       context: context,
-      title: const Text('确定删除选中视频？'),
+      title: Text(context.l10n.downloadDeleteSelectedConfirm),
       onConfirm: () async {
         SmartDialog.showLoading();
         final watchProgress = GStorage.watchProgress;

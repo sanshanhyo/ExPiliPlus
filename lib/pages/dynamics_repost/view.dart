@@ -403,7 +403,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                       size: 20,
                     ),
               Text(
-                '同时评论',
+                context.l10n.feedRepostAndComment,
                 style: TextStyle(color: color, height: 1),
                 strutStyle: const StrutStyle(leading: 0, height: 1),
               ),
@@ -494,7 +494,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
       atNameToMid: atNameToMid,
     );
     if (res is! Success) {
-      SmartDialog.showToast('评论失败: $res');
+      SmartDialog.showToast(context.l10n.commonSubmitFailed(res.toString()));
     }
   }
 

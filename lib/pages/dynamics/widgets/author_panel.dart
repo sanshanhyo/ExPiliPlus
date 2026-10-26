@@ -682,7 +682,7 @@ class AuthorPanel extends StatelessWidget {
               if (!Accounts.main.isLogin)
                 ListTile(
                   title: Text(
-                    '屏蔽',
+                    context.l10n.commonBlock,
                     style: TextStyle(
                       fontSize: 14,
                       color: theme.colorScheme.error,
@@ -696,7 +696,7 @@ class AuthorPanel extends StatelessWidget {
                   onTap: () {
                     Get.back();
                     Pref.setBlackMid(moduleAuthor.mid!);
-                    SmartDialog.showToast('屏蔽成功');
+                    SmartDialog.showToast(context.l10n.commonBlockSucceeded);
                   },
                   minLeadingWidth: 0,
                 )

@@ -4475,6 +4475,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get memberHomeAnime => '追番';
 
   @override
+  String get memberNotLiveVisitRoom => 'TA现在并没有直播，前往TA的直播间';
+
+  @override
   String get blacklistLocal => '本地';
 
   @override
@@ -5116,6 +5119,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get feedRepostFeed => '转发动态';
+
+  @override
+  String get feedRepostAndComment => '同时评论';
 
   @override
   String get feedPublishNow => '立即发布';
@@ -11937,6 +11943,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get memberHomeAnime => '追番';
 
   @override
+  String get memberNotLiveVisitRoom => 'TA現在沒有直播，前往TA的直播間';
+
+  @override
   String get blacklistLocal => '本機';
 
   @override
@@ -12578,6 +12587,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get feedRepostFeed => '轉發動態';
+
+  @override
+  String get feedRepostAndComment => '同時評論';
 
   @override
   String get feedPublishNow => '立即發佈';

@@ -240,7 +240,6 @@ SettingsModel getBanWordModel({
   required String title,
   required String key,
   required ValueChanged<RegExp> onChanged,
-  String? banScope,
 }) {
   String banWord = GStorage.setting.get(key, defaultValue: '');
   return NormalModel(
@@ -305,7 +304,6 @@ SettingsModel getVideoFilterSelectModel({
   required List<int> values,
   int defaultValue = 0,
   bool isFilter = true,
-  String? filterScope,
   ValueChanged<int>? onChanged,
 }) {
   assert(!isFilter || onChanged != null);

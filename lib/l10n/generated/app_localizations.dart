@@ -8079,6 +8079,12 @@ abstract class AppLocalizations {
   /// **'追番'**
   String get memberHomeAnime;
 
+  /// No description provided for @memberNotLiveVisitRoom.
+  ///
+  /// In zh, this message translates to:
+  /// **'TA现在并没有直播，前往TA的直播间'**
+  String get memberNotLiveVisitRoom;
+
   /// No description provided for @blacklistLocal.
   ///
   /// In zh, this message translates to:
@@ -9240,6 +9246,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'转发动态'**
   String get feedRepostFeed;
+
+  /// No description provided for @feedRepostAndComment.
+  ///
+  /// In zh, this message translates to:
+  /// **'同时评论'**
+  String get feedRepostAndComment;
 
   /// No description provided for @feedPublishNow.
   ///

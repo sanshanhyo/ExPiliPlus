@@ -778,7 +778,7 @@ void _showDownPathDialog(BuildContext context, VoidCallback setState) {
             Get.back();
             PathUtils.openDir(downloadPath);
           },
-          child: const Text('打开'),
+          child: Text(context.l10n.downloadOpenLocalFolder),
         ),
         DialogOption(
           onPressed: () {

@@ -4640,6 +4640,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberHomeAnime => 'Anime';
 
   @override
+  String get memberNotLiveVisitRoom =>
+      'This user isn\'t live right now. Visit their live room.';
+
+  @override
   String get blacklistLocal => 'Local';
 
   @override
@@ -5310,6 +5314,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedRepostFeed => 'Repost';
+
+  @override
+  String get feedRepostAndComment => 'Comment too';
 
   @override
   String get feedPublishNow => 'Post now';

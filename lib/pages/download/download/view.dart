@@ -15,6 +15,7 @@ import 'package:ex_piliplus/pages/download/download_action_mixin.dart';
 import 'package:ex_piliplus/pages/download/search/view.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
+import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:collection/collection.dart';
@@ -142,10 +143,10 @@ class _DownloadPageState extends State<DownloadPage>
             ctr: _controller,
             actions: [updateBtn()],
             child: AppBar(
-              title: const Text('离线缓存'),
+              title: Text(context.l10n.downloadOfflineTitle),
               actions: [
                 IconButton(
-                  tooltip: '搜索',
+                  tooltip: context.l10n.commonSearch,
                   onPressed: () async {
                     await downloadService.waitForInitialization;
                     if (!mounted) return;
@@ -154,7 +155,7 @@ class _DownloadPageState extends State<DownloadPage>
                   icon: const Icon(Icons.search),
                 ),
                 IconButton(
-                  tooltip: '多选',
+                  tooltip: context.l10n.commonMultiSelect,
                   onPressed: () {
                     if (enableMultiSelect) {
                       _controller.handleSelect();
@@ -185,7 +186,9 @@ class _DownloadPageState extends State<DownloadPage>
                           padding: const EdgeInsets.only(left: 12, bottom: 7),
                           sliver: SliverToBoxAdapter(
                             child: Text(
-                              '正在缓存 (${downloadService.waitDownloadQueue.length})',
+                              context.l10n.downloadDownloadingCount(
+                                downloadService.waitDownloadQueue.length,
+                              ),
                             ),
                           ),
                         ),
@@ -219,8 +222,8 @@ class _DownloadPageState extends State<DownloadPage>
                                 ? 0
                                 : 7,
                           ),
-                          sliver: const SliverToBoxAdapter(
-                            child: Text('已缓存视频'),
+                          sliver: SliverToBoxAdapter(
+                            child: Text(context.l10n.downloadDownloadedVideos),
                           ),
                         ),
                         SliverGrid.builder(

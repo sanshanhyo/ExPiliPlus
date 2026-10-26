@@ -302,7 +302,7 @@ class _MemberHomeState extends State<MemberHome>
                           color: colorScheme.onSurfaceVariant,
                         ),
                       ),
-                      const TextSpan(text: ' TA现在并没有直播，去TA直播间'),
+                      TextSpan(text: context.l10n.memberNotLiveVisitRoom),
                     ],
                   ),
                   textAlign: .center,
