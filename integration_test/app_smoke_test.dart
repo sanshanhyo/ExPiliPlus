@@ -9,6 +9,7 @@ import 'package:ex_piliplus/main.dart' as app;
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/nav_bar_config.dart';
 import 'package:ex_piliplus/pages/home/view.dart';
+import 'package:ex_piliplus/pages/home/widgets/home_search_bar.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:ex_piliplus/pages/main/view.dart';
 import 'package:ex_piliplus/pages/mine/view.dart';
@@ -174,14 +175,20 @@ void main() {
         description: 'switch from Me back to Home before searching',
       );
       l10n = _localizations(tester);
+      expect(l10n.localeName, 'en', reason: 'app language remains English');
+      expect(l10n.commonSearch, 'Search', reason: 'English search label');
+      final homePage = find.byType(HomePage);
+      await _waitFor(tester, homePage);
+      expect(homePage, findsOneWidget, reason: 'one active Home page');
       final searchEntry = find.descendant(
         of: find.byType(HomePage),
-        matching: find.bySemanticsLabel(l10n.commonSearch),
+        matching: find.byType(HomeSearchBar),
       );
+      await _waitFor(tester, searchEntry);
       await _tapUnique(
         tester,
         searchEntry,
-        description: 'open search from the active Home tab',
+        description: 'tap the visible Home search bar',
       );
       await _waitFor(tester, find.byType(SearchPage));
       debugPrint('ANDROID_SMOKE_PHASE=local-search-navigation-passed');
