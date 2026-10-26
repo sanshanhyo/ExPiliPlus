@@ -115,7 +115,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(controller.scheduledMinutes, isEmpty);
 
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(controller.scheduledMinutes, isEmpty);
   });
