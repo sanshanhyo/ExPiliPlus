@@ -2232,6 +2232,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoEpisodes => 'Episodes';
 
   @override
+  String get videoNoEpisodes => 'No episodes are available';
+
+  @override
   String videoEpisodeCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -6734,6 +6737,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonBlock => 'Block';
+
+  @override
+  String get commonBlockSucceeded => 'Blocked successfully';
 
   @override
   String get commonShow => 'Show';

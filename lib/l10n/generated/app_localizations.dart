@@ -1,9 +1,14 @@
 import 'dart:async';
 
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show GlobalCupertinoLocalizations;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show GlobalWidgetsLocalizations;
 import 'package:intl/intl.dart' as intl;
+import 'package:material_ui/material_ui.dart'
+    show GlobalMaterialLocalizations;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_zh.dart';
@@ -3962,6 +3967,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'视频选集'**
   String get videoEpisodes;
+
+  /// No description provided for @videoNoEpisodes.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无可用剧集'**
+  String get videoNoEpisodes;
 
   /// No description provided for @videoEpisodeCount.
   ///
@@ -11749,6 +11760,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'屏蔽'**
   String get commonBlock;
+
+  /// No description provided for @commonBlockSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽成功'**
+  String get commonBlockSucceeded;
 
   /// No description provided for @commonShow.
   ///

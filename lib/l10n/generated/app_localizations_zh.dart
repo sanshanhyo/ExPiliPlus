@@ -2194,6 +2194,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get videoEpisodes => '视频选集';
 
   @override
+  String get videoNoEpisodes => '暂无可用剧集';
+
+  @override
   String videoEpisodeCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -6503,6 +6506,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonBlock => '屏蔽';
 
   @override
+  String get commonBlockSucceeded => '屏蔽成功';
+
+  @override
   String get commonShow => '显示';
 
   @override
@@ -9644,6 +9650,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get videoEpisodes => '影片選集';
+
+  @override
+  String get videoNoEpisodes => '目前沒有可用劇集';
 
   @override
   String videoEpisodeCount(int count) {
@@ -13954,6 +13963,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get commonBlock => '封鎖';
+
+  @override
+  String get commonBlockSucceeded => '封鎖成功';
 
   @override
   String get commonShow => '顯示';

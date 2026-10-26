@@ -545,7 +545,7 @@ class PgcIntroController extends CommonIntroController {
           _onGetPgcInfo();
           return true;
         } else {
-          SmartDialog.showToast('剧集为空');
+          SmartDialog.showToast(Get.context!.l10n.videoNoEpisodes);
         }
       } else {
         res.toast();

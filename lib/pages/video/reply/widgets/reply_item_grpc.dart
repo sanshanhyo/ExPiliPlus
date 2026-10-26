@@ -1178,13 +1178,13 @@ class ReplyItemGrpc extends StatelessWidget {
                 Get.back();
                 Pref.setBlackMid(item.mid.toInt());
                 onDelete();
-                SmartDialog.showToast('屏蔽成功');
+                SmartDialog.showToast(context.l10n.commonBlockSucceeded);
                 return;
               },
               minLeadingWidth: 0,
               leading: Icon(Icons.error_outline, color: errorColor, size: 19),
               title: Text(
-                '屏蔽',
+                context.l10n.commonBlock,
                 style: TextStyle(fontSize: 14, color: errorColor),
               ),
             )
