@@ -45,6 +45,11 @@ jobs:
       - name: Check diff whitespace
         run: git diff --check
 
+      - name: Check Android emulator action scripts
+        run: |
+          python3 -m unittest discover -s .github/scripts -p 'android_emulator_script_check_unit_tests.py' -v
+          python3 .github/scripts/check_android_emulator_scripts.py
+
       - name: Analyze
         # The synced tree currently has known warning/info diagnostics. Keep
         # them visible without preventing the test job; analyzer errors remain
