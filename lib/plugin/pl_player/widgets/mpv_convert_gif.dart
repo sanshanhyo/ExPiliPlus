@@ -63,10 +63,6 @@ class MpvConvertGif implements GifConverter {
         'of': 'gif',
         'ofopts': 'loop=0',
         'ovc': 'gif',
-        // Force named fps/scale parameters through libavfilter. The previous
-        // positional arguments were accepted but did not change output size
-        // or frame rate in the Android profile benchmark.
-        'vf': videoFilters,
         'audio': 'no',
         // GIF encoding runs in a headless mpv instance. Do not inherit the
         // player's GPU renderer or hardware decoder configuration here.
@@ -75,6 +71,12 @@ class MpvConvertGif implements GifConverter {
     );
     _initialized = true;
     _logRuntimeCapabilities();
+    // Initializer.create ignores mpv_set_option_string return codes. Set the
+    // list through mpv's filter command so invalid syntax is returned here.
+    final filterResult = _command(['vf', 'set', videoFilters]);
+    if (filterResult < 0) {
+      throw StateError('mpv rejected GIF video filters');
+    }
     if (_disposed) {
       _disposeNative();
       return;
@@ -153,7 +155,9 @@ class MpvConvertGif implements GifConverter {
         break;
       case generated.mpv_event_id.MPV_EVENT_FILE_LOADED:
         _loaded = true;
-        debugPrint('GifConvert: input loaded');
+        debugPrint(
+          'GifConvert: input loaded activeVf=${_readOsdProperty('vf')}',
+        );
         break;
       case generated.mpv_event_id.MPV_EVENT_LOG_MESSAGE:
         final log = event.ref.data.cast<generated.mpv_event_log_message>().ref;
@@ -348,6 +352,16 @@ class MpvConvertGif implements GifConverter {
     calloc.free(name);
     if (value == nullptr) return '<unavailable>';
     final result = value.toDartString();
+    _mpv.mpv_free(value.cast());
+    return result;
+  }
+
+  String _readOsdProperty(String property) {
+    final name = property.toNativeUtf8();
+    final value = _mpv.mpv_get_property_osd_string(_ctx, name.cast());
+    calloc.free(name);
+    if (value == nullptr) return '<unavailable>';
+    final result = _sanitizeDiagnostic(value.toDartString());
     _mpv.mpv_free(value.cast());
     return result;
   }
