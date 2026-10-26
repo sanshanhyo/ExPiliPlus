@@ -13,6 +13,7 @@ import 'package:ex_piliplus/pages/main/view.dart';
 import 'package:ex_piliplus/pages/mine/view.dart';
 import 'package:ex_piliplus/pages/onboarding/view.dart';
 import 'package:ex_piliplus/pages/root/view.dart';
+import 'package:ex_piliplus/pages/setting/common_setting.dart';
 import 'package:ex_piliplus/pages/setting/view.dart';
 import 'package:ex_piliplus/pages/video/view.dart';
 import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
@@ -88,6 +89,7 @@ void main() {
 
       l10n = _localizations(tester);
       await _tapText(tester, l10n.settingsExPiliPlusTitle);
+      await _waitFor(tester, find.byType(CommonSetting));
       await _waitFor(tester, find.text(l10n.settingsAppLanguage));
 
       l10n = _localizations(tester);
@@ -352,6 +354,7 @@ AppLocalizations _localizations(WidgetTester tester) {
   // the current page's context. Prefer the most specific active page first.
   final candidates = <Finder>[
     find.byType(VideoDetailPageV),
+    find.byType(CommonSetting),
     find.byType(SettingPage),
     find.byType(OnboardingPage),
     find.byType(MainApp),
@@ -362,6 +365,8 @@ AppLocalizations _localizations(WidgetTester tester) {
       return AppLocalizations.of(tester.element(finder.first));
     }
   }
+  debugPrint('No localization context at GetX route ${Get.currentRoute}.');
+  debugDumpApp();
   throw TestFailure(
     'No active app page provides a localization context. '
     'Page counts: ${candidates.map((finder) => finder.evaluate().length)}',
