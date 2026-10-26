@@ -47,7 +47,12 @@ void main() {
       await tester.tap(searchEntry);
       await tester.pumpAndSettle();
 
-      expect(Get.currentRoute, '/search');
+      final currentRoute = Uri.parse(Get.currentRoute);
+      expect(currentRoute.path, '/search');
+      expect(
+        currentRoute.queryParameters['hintText'],
+        'fixed search query',
+      );
       expect(find.text('fixed search query'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
