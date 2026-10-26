@@ -30,6 +30,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:material_ui/material_ui.dart' as mui;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -96,15 +97,13 @@ void main() {
       await _tapText(tester, l10n.settingsAppLanguage);
       final englishLabel = AppLanguage.english.localizedName(l10n);
       await _tapText(tester, englishLabel);
-      await _waitFor(
+      await _waitForCondition(
         tester,
-        find.text(
-          AppLocalizations.of(
-            tester.element(find.byType(RootPage)),
-          ).settingsAppLanguage,
-        ),
+        () => _localizations(tester).localeName == 'en',
+        description: 'active settings page switches to English',
       );
       l10n = _localizations(tester);
+      expect(find.text(l10n.settingsAppLanguage), findsWidgets);
       expect(l10n.settingsTitle, 'Settings');
 
       final gifSetting = find.text(l10n.settingsEnableGifRecord);
@@ -132,7 +131,7 @@ void main() {
       l10n = _localizations(tester);
       await tester.tap(find.byIcon(Icons.search_outlined).first);
       await tester.pump();
-      final searchField = find.byType(TextField).first;
+      final searchField = find.byType(mui.TextField).first;
       await _waitFor(tester, searchField);
       await tester.enterText(searchField, 'BV1gA411M7RN');
       await tester.testTextInput.receiveAction(TextInputAction.search);
