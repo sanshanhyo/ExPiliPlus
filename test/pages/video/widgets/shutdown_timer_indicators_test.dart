@@ -1,10 +1,10 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show ValueNotifier;
+import 'package:flutter/material.dart' show MaterialApp, Locale, SizedBox;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' as mui
-    show CircularProgressIndicator, ListTile, Text;
+import 'package:material_ui/material_ui.dart' as mui;
 
 void main() {
   testWidgets('quick timer indicator reacts to updates', (tester) async {
@@ -18,21 +18,23 @@ void main() {
       ),
     );
 
-    Future<void> pumpIndicator(ThemeData theme, Locale locale) {
+    Future<void> pumpIndicator(mui.ThemeData theme, Locale locale) {
       return tester.pumpWidget(
         MaterialApp(
           locale: locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: theme,
-          home: Scaffold(
-            body: Center(
-              child: ShutdownTimerQuickActionContent(
-                countdown: countdown,
-                idleLabel: 'Sleep timer',
-                iconSize: 32,
-                labelFontSize: 14,
-                onPressed: () {},
+          home: mui.Theme(
+            data: theme,
+            child: mui.Scaffold(
+              body: mui.Center(
+                child: ShutdownTimerQuickActionContent(
+                  countdown: countdown,
+                  idleLabel: 'Sleep timer',
+                  iconSize: 32,
+                  labelFontSize: 14,
+                  onPressed: () {},
+                ),
               ),
             ),
           ),
@@ -40,8 +42,8 @@ void main() {
       );
     }
 
-    final theme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+    final theme = mui.ThemeData(
+      colorScheme: mui.ColorScheme.fromSeed(seedColor: mui.Colors.teal),
     );
     await pumpIndicator(theme, const Locale('zh'));
 
@@ -52,8 +54,8 @@ void main() {
     expect(ring.value, 0.5);
     expect(ring.color, theme.colorScheme.primary);
 
-    final updatedTheme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    final updatedTheme = mui.ThemeData(
+      colorScheme: mui.ColorScheme.fromSeed(seedColor: mui.Colors.deepPurple),
     );
     await pumpIndicator(updatedTheme, const Locale('zh'));
     ring = tester.widget<mui.CircularProgressIndicator>(
@@ -105,8 +107,8 @@ void main() {
         totalDuration: const Duration(minutes: 10),
       ),
     );
-    final theme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+    final theme = mui.ThemeData(
+      colorScheme: mui.ColorScheme.fromSeed(seedColor: mui.Colors.teal),
     );
 
     await tester.pumpWidget(
@@ -114,13 +116,15 @@ void main() {
         locale: const Locale('zh'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        theme: theme,
-        home: Scaffold(
-          body: ShutdownTimerListTile(
-            countdown: countdown,
-            title: '定时关闭',
-            titleStyle: theme.textTheme.bodyLarge,
-            onTap: () {},
+        home: mui.Theme(
+          data: theme,
+          child: mui.Scaffold(
+            body: ShutdownTimerListTile(
+              countdown: countdown,
+              title: '定时关闭',
+              titleStyle: theme.textTheme.bodyLarge,
+              onTap: () {},
+            ),
           ),
         ),
       ),
