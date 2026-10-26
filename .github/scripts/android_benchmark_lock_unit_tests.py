@@ -3,8 +3,10 @@ from __future__ import annotations
 import unittest
 
 from verify_android_benchmark_lock import (
+    EXPECTED_PRODUCTION_REMOVALS,
     LockNormalizationError,
     validate_normalization,
+    validate_production_lock,
 )
 
 
@@ -56,7 +58,8 @@ def _fixture_lock(*, normalized: bool = False) -> str:
             }
         ):
             source = "sdk" if name in {"flutter_driver", "fuchsia_remote_debug_protocol"} else "hosted"
-            packages.append(_package(name, source=source, version="0.0.0" if source == "sdk" else "1.0.0"))
+            version = "0.0.0" if source == "sdk" else "1.0.0"
+            packages.append(_package(name, source=source, version=version))
     else:
         packages.extend(_package(name) for name in ("gtk", "menu_base", "shortid"))
     return (
@@ -64,6 +67,32 @@ def _fixture_lock(*, normalized: bool = False) -> str:
         + "".join(packages)
         + 'sdks:\n  dart: ">=3.0.0 <4.0.0"\n  flutter: ">=3.0.0"\n'
     )
+
+
+def _full_release_fixture_lock() -> str:
+    integration_test = _package(
+        "integration_test",
+        dependency="direct dev",
+        source="sdk",
+        version="0.0.0",
+        description="flutter",
+    )
+    return _fixture_lock(normalized=True).replace(
+        "sdks:\n", f"{integration_test}sdks:\n"
+    )
+
+
+def _without_packages(lock_text: str, names: set[str]) -> str:
+    output = []
+    current_package = None
+    for line in lock_text.splitlines(keepends=True):
+        if line.startswith("  ") and not line.startswith("    ") and line.rstrip().endswith(":"):
+            current_package = line.strip()[:-1]
+        elif not line.startswith(" "):
+            current_package = None
+        if current_package not in names:
+            output.append(line)
+    return "".join(output)
 
 
 class AndroidBenchmarkLockTest(unittest.TestCase):
@@ -119,6 +148,40 @@ class AndroidBenchmarkLockTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(LockNormalizationError, "SDK constraints changed"):
             validate_normalization(_fixture_lock(), normalized)
+
+    def test_accepts_production_lock_without_only_test_sdk_graph(self) -> None:
+        full = _full_release_fixture_lock()
+        production = _without_packages(full, EXPECTED_PRODUCTION_REMOVALS)
+
+        report = validate_production_lock(full, production)
+
+        self.assertEqual(
+            report["removed_test_only_packages"],
+            sorted(EXPECTED_PRODUCTION_REMOVALS),
+        )
+        self.assertTrue(report["retained_package_metadata_unchanged"])
+
+    def test_rejects_unexpected_production_package_removal(self) -> None:
+        full = _full_release_fixture_lock()
+        production = _without_packages(
+            full, EXPECTED_PRODUCTION_REMOVALS | {"kept_git_package"}
+        )
+
+        with self.assertRaisesRegex(
+            LockNormalizationError, "Production lock removed unexpected packages"
+        ):
+            validate_production_lock(full, production)
+
+    def test_rejects_retained_production_package_metadata_drift(self) -> None:
+        full = _full_release_fixture_lock()
+        production = _without_packages(full, EXPECTED_PRODUCTION_REMOVALS).replace(
+            'version: "2.0.0"', 'version: "2.1.0"', 1
+        )
+
+        with self.assertRaisesRegex(
+            LockNormalizationError, "changed retained package metadata"
+        ):
+            validate_production_lock(full, production)
 
 
 if __name__ == "__main__":

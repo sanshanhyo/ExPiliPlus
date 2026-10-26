@@ -106,6 +106,8 @@ metadata = {
     "release_apk": {
         "mode": "release",
         "command": "flutter build apk --release --split-per-abi --no-pub --dart-define-from-file=<fixed benchmark defines> --build-name=<fixed> --build-number=<fixed>",
+        "dependency_profile": "production pubspec with only the integration_test SDK dev dependency omitted",
+        "integration_test_and_synthetic_fixture_in_release_apk": False,
         "reported_abi": "arm64-v8a",
         "version_name": name,
         "version_code": int(code),
@@ -117,7 +119,9 @@ metadata = {
     "gif_profile": {
         "warmup_runs": 1,
         "measured_runs": 5,
-  "clip": "synthetic testsrc 854x480, 30 fps, 8 seconds, H.264, no audio",
+        "dependency_profile": "full normalized lock restored after Release APK capture",
+        "memory_samples_include_integration_test_harness": True,
+        "clip": "synthetic testsrc 854x480, 30 fps, 8 seconds, H.264, no audio",
         "start_seconds": 1,
         "duration_seconds": 3,
         "width": 480,
@@ -158,6 +162,9 @@ run_one_revision() {
   local input_lock_sha
   local normalized_lock_sha
   local config_lock_sha
+  local full_lock_sha
+  local production_lock_sha
+  local plugin_metadata
   local stage_status=0
   local release_apk
 
@@ -270,27 +277,125 @@ PY
     return 1
   fi
 
-  # Flutter 3.47 can retain a stale dev-plugin registrant after `pub get` and
-  # then omit the integration_test Android project from a release build. This
-  # config-only pass regenerates Android metadata without resolving packages.
+  full_lock_sha="$resolved_lock_sha"
+  cp "$source_dir/pubspec.yaml" "$output_dir/full-pubspec.yaml"
+  cp "$source_dir/pubspec.lock" "$output_dir/full-pubspec.lock"
+
+  # Flutter registers integration_test even for release builds although Pub
+  # strips its dev-only Android artifact. Resolve a production-only manifest
+  # for the APK measurement, then restore the full test graph for profile runs.
+  python3 - "$output_dir/full-pubspec.yaml" \
+    "$output_dir/production-pubspec.yaml" <<'PY'
+import sys
+from pathlib import Path
+
+source = Path(sys.argv[1]).read_text(encoding="utf-8")
+dependency = "  integration_test:\n    sdk: flutter\n"
+if source.count(dependency) != 1:
+    raise SystemExit("Expected exactly one integration_test SDK dev dependency")
+Path(sys.argv[2]).write_text(source.replace(dependency, "", 1), encoding="utf-8")
+PY
+  diff -u "$output_dir/full-pubspec.yaml" "$output_dir/production-pubspec.yaml" \
+    > "$output_dir/production-pubspec.diff" || [ "$?" -eq 1 ]
+  sha256sum "$output_dir/production-pubspec.yaml" \
+    > "$output_dir/production-pubspec.sha256"
+  cp "$output_dir/production-pubspec.yaml" "$source_dir/pubspec.yaml"
+
+  if [ "$label" = "baseline" ]; then
+    if (
+      cd "$source_dir" &&
+      echo "benchmark stage: resolve production-only dependencies ($label)" &&
+      timeout --foreground --signal=TERM --kill-after=60s 15m flutter pub get
+    ) > "$output_dir/production-pub-get-normalize.log" 2>&1; then
+      :
+    else
+      stage_status=$?
+      echo "Production dependency resolution failed for $label, status $stage_status." >&2
+      tail -n 120 "$output_dir/production-pub-get-normalize.log" >&2 || true
+      return "$stage_status"
+    fi
+    cp "$source_dir/pubspec.lock" "$output_dir/production-pubspec.lock"
+    cp "$output_dir/production-pubspec.lock" \
+      "$evidence_dir/toolchain/production-pubspec.lock"
+  else
+    if [ ! -s "$evidence_dir/toolchain/production-pubspec.lock" ]; then
+      echo "Validated baseline production lock is missing for candidate build." >&2
+      return 1
+    fi
+    cp "$evidence_dir/toolchain/production-pubspec.lock" "$source_dir/pubspec.lock"
+    cp "$source_dir/pubspec.lock" "$output_dir/production-pubspec.lock"
+  fi
+
+  python3 "$repo_root/.github/scripts/verify_android_production_lock.py" \
+    --full-lock "$output_dir/full-pubspec.lock" \
+    --production-lock "$output_dir/production-pubspec.lock" \
+    --report "$output_dir/production-lock-validation.json"
+
   if (
     cd "$source_dir" &&
-    echo "benchmark stage: refresh Android plugin configuration ($label)" &&
-    timeout --foreground --signal=TERM --kill-after=60s 10m \
-      flutter build apk --config-only --no-pub
-  ) > "$output_dir/flutter-config-only.log" 2>&1; then
+    echo "benchmark stage: enforce production-only lock ($label)" &&
+    timeout --foreground --signal=TERM --kill-after=60s 15m \
+      flutter pub get --enforce-lockfile
+  ) > "$output_dir/production-pub-get-enforce.log" 2>&1; then
     :
   else
     stage_status=$?
-    echo "Flutter Android config generation failed for $label, status $stage_status." >&2
-    echo "Last 120 lines of $output_dir/flutter-config-only.log:" >&2
-    tail -n 120 "$output_dir/flutter-config-only.log" >&2 || true
+    echo "Production lock enforcement failed for $label, status $stage_status." >&2
+    tail -n 120 "$output_dir/production-pub-get-enforce.log" >&2 || true
     return "$stage_status"
   fi
 
+  production_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
+  if [ "$production_lock_sha" != "$(sha256sum "$output_dir/production-pubspec.lock" | awk '{print $1}')" ]; then
+    echo "Enforced production Pub resolution changed the validated lock for $label." >&2
+    diff -u "$output_dir/production-pubspec.lock" "$source_dir/pubspec.lock" \
+      > "$output_dir/production-lock-drift.diff" || true
+    return 1
+  fi
+  printf '%s\n' "$production_lock_sha" \
+    > "$output_dir/production-pubspec-lock.sha256"
+
+  plugin_metadata="$source_dir/.flutter-plugins-dependencies"
+  if [ ! -s "$plugin_metadata" ]; then
+    echo "Pub did not generate Android plugin metadata for production dependencies ($label)." >&2
+    return 1
+  fi
+  cp "$plugin_metadata" "$output_dir/production-flutter-plugins-dependencies.json"
+  if grep -Fq "integration_test" "$plugin_metadata"; then
+    echo "Production Flutter plugin metadata still includes integration_test ($label)." >&2
+    return 1
+  fi
+
+  # Materialize and inspect the production registrant before the expensive APK
+  # task so a dev-plugin leak fails with direct evidence instead of javac output.
+  if (
+    cd "$source_dir" &&
+    echo "benchmark stage: generate production Android configuration ($label)" &&
+    timeout --foreground --signal=TERM --kill-after=60s 10m \
+      flutter build apk --config-only --no-pub
+  ) > "$output_dir/production-config.log" 2>&1; then
+    :
+  else
+    stage_status=$?
+    echo "Production Android config generation failed for $label, status $stage_status." >&2
+    echo "Last 120 lines of $output_dir/production-config.log:" >&2
+    tail -n 120 "$output_dir/production-config.log" >&2 || true
+    return "$stage_status"
+  fi
+
+  registrant="$source_dir/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java"
+  if [ ! -s "$registrant" ]; then
+    echo "Flutter did not generate the Android plugin registrant for $label." >&2
+    return 1
+  fi
+  cp "$registrant" "$output_dir/production-GeneratedPluginRegistrant.java"
+  if grep -Fq "dev.flutter.plugins.integration_test" "$registrant"; then
+    echo "Production plugin registrant still includes the test-only integration_test plugin." >&2
+    return 1
+  fi
   config_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
-  if [ "$config_lock_sha" != "$normalized_lock_sha" ]; then
-    echo "Flutter config generation changed the shared normalized lock for $label." >&2
+  if [ "$config_lock_sha" != "$production_lock_sha" ]; then
+    echo "Production Android configuration changed the production lock for $label." >&2
     return 1
   fi
 
@@ -319,6 +424,34 @@ PY
   fi
   cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"
   printf '%s\n' "$source_sha" > "$output_dir/source-sha.txt"
+
+  cp "$output_dir/full-pubspec.yaml" "$source_dir/pubspec.yaml"
+  cp "$evidence_dir/toolchain/normalized-pubspec.lock" "$source_dir/pubspec.lock"
+  if (
+    cd "$source_dir" &&
+    echo "benchmark stage: restore and enforce full test lock ($label)" &&
+    timeout --foreground --signal=TERM --kill-after=60s 15m \
+      flutter pub get --enforce-lockfile
+  ) > "$output_dir/profile-pub-get-enforce.log" 2>&1; then
+    :
+  else
+    stage_status=$?
+    echo "Full test dependency restoration failed for $label, status $stage_status." >&2
+    tail -n 120 "$output_dir/profile-pub-get-enforce.log" >&2 || true
+    return "$stage_status"
+  fi
+  local profile_lock_sha
+  profile_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
+  if [ "$profile_lock_sha" != "$full_lock_sha" ]; then
+    echo "Restoring full test dependencies changed the normalized lock for $label." >&2
+    return 1
+  fi
+  printf '%s\n' "$profile_lock_sha" > "$output_dir/resolved-pubspec-lock.sha256"
+  if ! grep -Fq "integration_test" "$plugin_metadata"; then
+    echo "Restoring full test dependencies did not restore integration_test metadata ($label)." >&2
+    return 1
+  fi
+  cp "$plugin_metadata" "$output_dir/profile-flutter-plugins-dependencies.json"
 
   # Inject the benchmark-only integration target and its synthetic media only
   # after the production Release APK has been built and copied for measurement.
@@ -435,6 +568,26 @@ python3 "$repo_root/.github/scripts/summarize_android_benchmark.py" \
   --evidence-dir "$evidence_dir" \
   --baseline-sha "$baseline_sha" --candidate-sha "$candidate_sha" \
   --output "$evidence_dir/comparison.json"
+
+if ! cmp -s \
+  "$evidence_dir/baseline/production-pubspec-lock.sha256" \
+  "$evidence_dir/candidate/production-pubspec-lock.sha256"; then
+  echo "Baseline and candidate production dependency locks differ." >&2
+  diff -u "$evidence_dir/baseline/production-pubspec-lock.sha256" \
+    "$evidence_dir/candidate/production-pubspec-lock.sha256" >&2 || true
+  exit 1
+fi
+printf 'production_lock_sha256=%s\n' \
+  "$(cat "$evidence_dir/baseline/production-pubspec-lock.sha256")" \
+  | tee "$evidence_dir/production-lock.sha256"
+if ! cmp -s \
+  "$evidence_dir/baseline/production-pubspec.sha256" \
+  "$evidence_dir/candidate/production-pubspec.sha256"; then
+  echo "Baseline and candidate production manifests differ." >&2
+  diff -u "$evidence_dir/baseline/production-pubspec.sha256" \
+    "$evidence_dir/candidate/production-pubspec.sha256" >&2 || true
+  exit 1
+fi
 
 printf 'benchmark_baseline_sha=%s\nbenchmark_candidate_sha=%s\n' \
   "$baseline_sha" "$candidate_sha" | tee "$evidence_dir/commits.txt"

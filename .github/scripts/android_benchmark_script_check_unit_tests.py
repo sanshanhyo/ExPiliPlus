@@ -11,20 +11,65 @@ BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_tex
 
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
-    def test_refreshes_flutter_android_config_after_locked_pub_get(self) -> None:
+    def test_release_uses_separate_validated_production_dependencies(self) -> None:
         enforce_lock = BENCHMARK_SCRIPT.index(
             "flutter pub get --enforce-lockfile"
         )
-        refresh_config = BENCHMARK_SCRIPT.index(
+        strip_test_dependency = BENCHMARK_SCRIPT.index(
+            'dependency = "  integration_test:\\n    sdk: flutter\\n"'
+        )
+        production_pub_get = BENCHMARK_SCRIPT.index(
+            "benchmark stage: resolve production-only dependencies"
+        )
+        verify_production_lock = BENCHMARK_SCRIPT.index(
+            "verify_android_production_lock.py"
+        )
+        enforce_production_lock = BENCHMARK_SCRIPT.index(
+            "benchmark stage: enforce production-only lock"
+        )
+        production_config = BENCHMARK_SCRIPT.index(
             "flutter build apk --config-only --no-pub"
+        )
+        registrant_exclusion = BENCHMARK_SCRIPT.index(
+            'grep -Fq "dev.flutter.plugins.integration_test"'
+        )
+        production_plugin_check = BENCHMARK_SCRIPT.index(
+            'grep -Fq "integration_test" "$plugin_metadata"'
         )
         release_build = re.search(
             r"^\s+flutter build apk --release", BENCHMARK_SCRIPT, re.MULTILINE
         ).start()
+        restore_full_manifest = BENCHMARK_SCRIPT.index(
+            'cp "$output_dir/full-pubspec.yaml" "$source_dir/pubspec.yaml"'
+        )
+        restore_full_lock = BENCHMARK_SCRIPT.index(
+            'cp "$evidence_dir/toolchain/normalized-pubspec.lock" "$source_dir/pubspec.lock"',
+            restore_full_manifest,
+        )
+        profile_pub_get = BENCHMARK_SCRIPT.index(
+            'echo "benchmark stage: restore and enforce full test lock'
+        )
+        profile_plugin_check = BENCHMARK_SCRIPT.index(
+            'if ! grep -Fq "integration_test" "$plugin_metadata"'
+        )
+        test_harness_copy = BENCHMARK_SCRIPT.index(
+            'cp "$repo_root/.github/benchmarks/android_gif_benchmark_test.dart"'
+        )
 
-        self.assertLess(enforce_lock, refresh_config)
-        self.assertLess(refresh_config, release_build)
-        self.assertIn("config_lock_sha", BENCHMARK_SCRIPT)
+        self.assertLess(enforce_lock, strip_test_dependency)
+        self.assertLess(strip_test_dependency, production_pub_get)
+        self.assertLess(production_pub_get, verify_production_lock)
+        self.assertLess(verify_production_lock, enforce_production_lock)
+        self.assertLess(enforce_production_lock, production_config)
+        self.assertLess(enforce_production_lock, production_plugin_check)
+        self.assertLess(production_plugin_check, production_config)
+        self.assertLess(production_config, registrant_exclusion)
+        self.assertLess(registrant_exclusion, release_build)
+        self.assertLess(release_build, restore_full_manifest)
+        self.assertLess(restore_full_manifest, restore_full_lock)
+        self.assertLess(restore_full_lock, profile_pub_get)
+        self.assertLess(profile_pub_get, profile_plugin_check)
+        self.assertLess(profile_plugin_check, test_harness_copy)
 
     def test_benchmark_harness_and_fixture_are_added_after_release_apk(self) -> None:
         release_build = re.search(

@@ -28,6 +28,13 @@ EXPECTED_DEPENDENCY_CHANGES = {
     "cupertino_ui": ("transitive", "direct main"),
     "ffi": ("transitive", "direct main"),
 }
+EXPECTED_PRODUCTION_REMOVALS = {
+    "integration_test",
+    "flutter_driver",
+    "fuchsia_remote_debug_protocol",
+    "sync_http",
+    "webdriver",
+}
 
 
 class LockNormalizationError(ValueError):
@@ -208,6 +215,45 @@ def validate_normalization(original_text: str, normalized_text: str) -> dict[str
             {"name": name, **_identity(package)}
             for name, package in sorted(normalized.items())
         ],
+    }
+
+
+def validate_production_lock(full_text: str, production_text: str) -> dict[str, Any]:
+    """Ensure production resolution only removes the test-only SDK graph."""
+    full_header, full_trailer = _outside_package_sections(full_text)
+    production_header, production_trailer = _outside_package_sections(production_text)
+    if full_header != production_header:
+        raise LockNormalizationError("Production lockfile header metadata changed")
+    if full_trailer != production_trailer:
+        raise LockNormalizationError("Production lockfile SDK constraints changed")
+
+    full_packages = parse_lockfile(full_text)
+    production_packages = parse_lockfile(production_text)
+    added = set(production_packages) - set(full_packages)
+    removed = set(full_packages) - set(production_packages)
+    if added:
+        raise LockNormalizationError(
+            f"Production lock added packages: {sorted(added)}"
+        )
+    if removed != EXPECTED_PRODUCTION_REMOVALS:
+        raise LockNormalizationError(
+            f"Production lock removed unexpected packages: {sorted(removed)}; "
+            f"expected {sorted(EXPECTED_PRODUCTION_REMOVALS)}"
+        )
+
+    for name in sorted(production_packages):
+        if production_packages[name] != full_packages[name]:
+            raise LockNormalizationError(
+                f"Production lock changed retained package metadata for {name!r}: "
+                f"{full_packages[name]!r} -> {production_packages[name]!r}"
+            )
+
+    return {
+        "full_lock_sha256": hashlib.sha256(full_text.encode()).hexdigest(),
+        "production_lock_sha256": hashlib.sha256(production_text.encode()).hexdigest(),
+        "removed_test_only_packages": sorted(removed),
+        "retained_packages": len(production_packages),
+        "retained_package_metadata_unchanged": True,
     }
 
 
