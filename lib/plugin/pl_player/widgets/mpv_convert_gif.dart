@@ -172,6 +172,8 @@ class MpvConvertGif implements GifConverter {
       case generated.mpv_event_id.MPV_EVENT_END_FILE:
         final end = event.ref.data.cast<generated.mpv_event_end_file>().ref;
         final reason = end.reason;
+        final reachedEof =
+            reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF;
         final error = end.error;
         final output = File(outFile);
         final exists = output.existsSync();
@@ -188,14 +190,14 @@ class MpvConvertGif implements GifConverter {
             ? ''
             : _sanitizeDiagnostic(_errorText(error));
         final success =
-            reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF &&
+            reachedEof &&
             error == 0 &&
             _lastError == null &&
             exists &&
             size > 0 &&
             validation?.isValid == true;
         debugPrint(
-          'GifConvert: end reason=$reason error=$error'
+          'GifConvert: end reason=$reason eof=$reachedEof error=$error'
           '${errorText.isEmpty ? '' : ' ($errorText)'} '
           'loaded=$_loaded output=$exists size=$size header=$header '
           'frames=${validation?.frameCount ?? 0} '
