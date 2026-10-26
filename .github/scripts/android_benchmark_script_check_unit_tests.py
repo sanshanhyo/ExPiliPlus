@@ -11,6 +11,12 @@ from compare_android_manifest_hashes import compare_manifest_hashes
 BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_text(
     encoding="utf-8"
 )
+BENCHMARK_WORKFLOW = Path(__file__).parents[1].joinpath(
+    "workflows", "android-benchmark.yml"
+).read_text(encoding="utf-8")
+BENCHMARK_PREFLIGHT = Path(__file__).with_name(
+    "check_android_benchmark_harness.sh"
+).read_text(encoding="utf-8")
 GIF_BENCHMARK_TEST = Path(__file__).parents[1].joinpath(
     "benchmarks", "android_gif_benchmark_test.dart"
 ).read_text(encoding="utf-8")
@@ -23,6 +29,30 @@ def function_body(name: str, next_marker: str) -> str:
 
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
+    def test_injected_benchmark_targets_are_analyzed_before_emulator_and_release(self) -> None:
+        preflight = BENCHMARK_WORKFLOW.index(
+            "Compile injected GIF benchmark targets before APK builds"
+        )
+        kvm = BENCHMARK_WORKFLOW.index("Verify KVM for the ephemeral Android runner")
+        emulator = BENCHMARK_WORKFLOW.index("uses: reactivecircus/android-emulator-runner@v2")
+        upload_evidence = BENCHMARK_WORKFLOW.index("Upload benchmark evidence")
+
+        self.assertIn("check_android_benchmark_harness.sh", BENCHMARK_WORKFLOW)
+        self.assertLess(preflight, kvm)
+        self.assertLess(preflight, emulator)
+        self.assertLess(emulator, upload_evidence)
+        self.assertIn("flutter analyze", BENCHMARK_PREFLIGHT)
+        self.assertIn("integration_test/android_gif_benchmark_test.dart", BENCHMARK_PREFLIGHT)
+        self.assertIn("integration_test/android_benchmark_driver.dart", BENCHMARK_PREFLIGHT)
+        self.assertLess(
+            BENCHMARK_PREFLIGHT.index('cp "$video_data_dart"'),
+            BENCHMARK_PREFLIGHT.index("flutter analyze"),
+        )
+        self.assertLess(
+            BENCHMARK_WORKFLOW.index("Compile injected GIF benchmark targets before APK builds"),
+            BENCHMARK_WORKFLOW.index("Build matched APKs and benchmark native GIF conversion"),
+        )
+
     def test_gif_benchmark_uses_the_production_file_validator_api(self) -> None:
         self.assertIn(
             "package:ex_piliplus/plugin/pl_player/widgets/gif_file_validator.dart",

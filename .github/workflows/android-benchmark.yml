@@ -63,6 +63,21 @@ jobs:
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_cli_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
+      - name: Compile injected GIF benchmark targets before APK builds
+        run: |
+          fixture="$RUNNER_TEMP/android-benchmark-preflight-source.mp4"
+          video_data="$RUNNER_TEMP/android_benchmark_video_data.dart"
+          ffmpeg -hide_banner -loglevel error -y \
+            -f lavfi -i 'testsrc=size=854x480:rate=30:duration=8' \
+            -frames:v 240 -an -c:v libx264 -preset veryfast -crf 28 -threads 1 \
+            -pix_fmt yuv420p -x264-params 'keyint=30:min-keyint=30:scenecut=0' \
+            -movflags +faststart "$fixture"
+          python3 .github/scripts/embed_android_benchmark_video.py \
+            "$fixture" "$video_data"
+          bash .github/scripts/check_android_benchmark_harness.sh \
+            "${{ github.sha }}" "$video_data" \
+            "$RUNNER_TEMP/android-benchmark-harness-preflight"
+
       - name: Verify KVM for the ephemeral Android runner
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
