@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/scroll_physics.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/common/common_page.dart';
 import 'package:ex_piliplus/pages/home/controller.dart';
+import 'package:ex_piliplus/pages/home/widgets/home_search_bar.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:ex_piliplus/pages/mine/controller.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
@@ -77,7 +78,7 @@ class _HomePageState extends CommonPageState<HomePage>
       children: [
         if (!_mainController.useSideBar &&
             MediaQuery.sizeOf(context).isPortrait)
-          customAppBar(theme),
+          customAppBar(),
         tabBar,
         Expanded(
           child: onBuild(
@@ -91,11 +92,11 @@ class _HomePageState extends CommonPageState<HomePage>
     );
   }
 
-  Widget customAppBar(ThemeData theme) {
+  Widget customAppBar() {
     const padding = EdgeInsets.fromLTRB(14, 6, 14, 0);
     final child = Row(
       children: [
-        searchBar(theme),
+        searchBar(),
         const SizedBox(width: 4),
         msgBadge(_mainController, context.l10n),
         const SizedBox(width: 8),
@@ -146,52 +147,14 @@ class _HomePageState extends CommonPageState<HomePage>
     );
   }
 
-  Widget searchBar(ThemeData theme) {
-    const borderRadius = BorderRadius.all(Radius.circular(25));
-    return Expanded(
-      child: SizedBox(
-        height: 44,
-        child: Material(
-          borderRadius: borderRadius,
-          color: theme.colorScheme.onSecondaryContainer.withValues(alpha: 0.05),
-          child: InkWell(
-            borderRadius: borderRadius,
-            splashColor: theme.colorScheme.primaryContainer.withValues(
-              alpha: 0.3,
-            ),
-            onTap: () => Get.toNamed(
-              '/search',
-              parameters: _homeController.enableSearchWord
-                  ? {'hintText': _homeController.defaultSearch.value}
-                  : null,
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 14),
-                Icon(
-                  Icons.search_outlined,
-                  color: theme.colorScheme.onSecondaryContainer,
-                  semanticLabel: context.l10n.commonSearch,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Obx(
-                    () => Text(
-                      _homeController.defaultSearch.value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: theme.colorScheme.outline),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 5),
-              ],
-            ),
-          ),
-        ),
+  Widget searchBar() => Expanded(
+    child: Obx(
+      () => HomeSearchBar(
+        searchWord: _homeController.defaultSearch.value,
+        enableSearchWord: _homeController.enableSearchWord,
       ),
-    );
-  }
+    ),
+  );
 }
 
 Widget userAvatar({

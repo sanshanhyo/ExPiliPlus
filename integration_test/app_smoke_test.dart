@@ -8,14 +8,17 @@ import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/main.dart' as app;
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/nav_bar_config.dart';
+import 'package:ex_piliplus/pages/home/view.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:ex_piliplus/pages/main/view.dart';
 import 'package:ex_piliplus/pages/mine/view.dart';
 import 'package:ex_piliplus/pages/onboarding/view.dart';
 import 'package:ex_piliplus/pages/root/view.dart';
+import 'package:ex_piliplus/pages/search/view.dart';
 import 'package:ex_piliplus/pages/setting/common_setting.dart';
 import 'package:ex_piliplus/pages/setting/view.dart';
 import 'package:ex_piliplus/pages/video/view.dart';
+import 'package:ex_piliplus/pages/video/widgets/header_control.dart';
 import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/view/view.dart';
@@ -57,11 +60,25 @@ void main() {
       var l10n = _localizations(tester);
       await _tapText(tester, l10n.onboardingGetStarted);
       l10n = _localizations(tester);
-      await _tapText(tester, l10n.onboardingStartFresh, last: true);
+      await _tapUnique(
+        tester,
+        find.ancestor(
+          of: find.text(l10n.onboardingStartFresh),
+          matching: find.byType(mui.FilledButton),
+        ),
+        description: 'onboarding start fresh action',
+      );
       l10n = _localizations(tester);
       await _tapText(tester, l10n.commonNext);
       l10n = _localizations(tester);
-      await _tapText(tester, l10n.onboardingSkipSignIn, last: true);
+      await _tapUnique(
+        tester,
+        find.ancestor(
+          of: find.text(l10n.onboardingSkipSignIn),
+          matching: find.byType(mui.FilledButton),
+        ),
+        description: 'onboarding skip sign in action',
+      );
       l10n = _localizations(tester);
       await _tapText(tester, l10n.onboardingStartUsing);
       await _waitFor(tester, find.byType(MainApp));
@@ -84,8 +101,11 @@ void main() {
         description: 'me tab navigation',
       );
       l10n = _localizations(tester);
-      await tester.tap(find.byTooltip(l10n.settingsTitle));
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        find.byTooltip(l10n.settingsTitle),
+        description: 'open settings',
+      );
       await _waitFor(tester, find.byType(SettingPage));
 
       l10n = _localizations(tester);
@@ -107,16 +127,21 @@ void main() {
       expect(l10n.settingsTitle, 'Settings');
 
       final gifSetting = find.text(l10n.settingsEnableGifRecord);
-      await tester.ensureVisible(gifSetting);
-      await tester.tap(gifSetting);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        gifSetting,
+        description: 'disable the GIF shortcut setting',
+      );
       await _waitForCondition(
         tester,
         () => GStorage.setting.get(SettingBoxKey.showFsGifBtn) == false,
         description: 'GIF setting turns off',
       );
-      await tester.tap(gifSetting);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        gifSetting,
+        description: 'restore the GIF shortcut setting',
+      );
       await _waitForCondition(
         tester,
         () => GStorage.setting.get(SettingBoxKey.showFsGifBtn) == true,
@@ -136,24 +161,64 @@ void main() {
         description: 'return from settings to the main app',
       );
       l10n = _localizations(tester);
-      await tester.tap(find.byIcon(Icons.search_outlined).first);
-      await tester.pump();
-      final searchField = find.byType(mui.TextField).first;
-      await _waitFor(tester, searchField);
-      await tester.enterText(searchField, 'BV1gA411M7RN');
-      await tester.testTextInput.receiveAction(TextInputAction.search);
-      await tester.pump();
-
-      await _waitFor(
+      expect(
+        mainController.navigationBars[mainController.selectedIndex.value],
+        NavigationBarType.mine,
+        reason: 'returning from settings should preserve the selected tab',
+      );
+      await _tapText(tester, l10n.navigationHome);
+      await _waitForCondition(
         tester,
-        find.byType(VideoDetailPageV),
-        timeout: const Duration(seconds: 120),
+        () => mainController.navigationBars[mainController.selectedIndex.value] ==
+            NavigationBarType.home,
+        description: 'switch from Me back to Home before searching',
       );
       l10n = _localizations(tester);
-      final manualPlay = find.byTooltip(l10n.playerPlay);
-      await _waitFor(tester, manualPlay);
-      await tester.tap(manualPlay);
+      final searchEntry = find.descendant(
+        of: find.byType(HomePage),
+        matching: find.bySemanticsLabel(l10n.commonSearch),
+      );
+      await _tapUnique(
+        tester,
+        searchEntry,
+        description: 'open search from the active Home tab',
+      );
+      await _waitFor(tester, find.byType(SearchPage));
+      debugPrint('ANDROID_SMOKE_PHASE=local-search-navigation-passed');
+      final searchField = find.descendant(
+        of: find.byType(SearchPage),
+        matching: find.byType(mui.TextField),
+      );
+      await _waitFor(tester, searchField);
+      expect(searchField, findsOneWidget, reason: 'one search field on search page');
+      await tester.enterText(
+        searchField,
+        'https://www.bilibili.com/video/BV1gA411M7RN',
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.search);
       await tester.pump();
+      debugPrint('ANDROID_SMOKE_PHASE=public-video-link-submitted');
+
+      final videoDetail = find.byType(VideoDetailPageV);
+      await _waitForCondition(
+        tester,
+        () => videoDetail.evaluate().isNotEmpty,
+        description:
+            'Bilibili video detail route opens for BV1gA411M7RN; public network is required',
+        timeout: const Duration(seconds: 120),
+      );
+      expect(videoDetail, findsOneWidget, reason: 'one active video detail page');
+      debugPrint('ANDROID_SMOKE_PHASE=public-video-detail-opened');
+      l10n = _localizations(tester);
+      final manualPlay = find.descendant(
+        of: videoDetail,
+        matching: find.byTooltip(l10n.playerPlay),
+      );
+      await _tapUnique(
+        tester,
+        manualPlay,
+        description: 'start video playback from the detail page',
+      );
       await _waitForCondition(
         tester,
         () {
@@ -166,18 +231,27 @@ void main() {
         description: 'native Android player opens and decodes the public video',
         timeout: const Duration(seconds: 150),
       );
+      debugPrint('ANDROID_SMOKE_PHASE=native-player-decoded-video');
 
       final player = PlPlayerController.instance!;
       await player.setVolume(0, showIndicator: false);
       expect(player.volume.value, 0);
       await _showPlayerControls(tester);
-      await tester.tap(find.byType(PlayOrPauseButton));
+      await _tapUnique(
+        tester,
+        _playerControls(find.byType(PlayOrPauseButton)),
+        description: 'pause native playback',
+      );
       await _waitForCondition(
         tester,
         () => !player.videoPlayerController!.state.playing,
         description: 'pause control pauses native playback',
       );
-      await tester.tap(find.byType(PlayOrPauseButton));
+      await _tapUnique(
+        tester,
+        _playerControls(find.byType(PlayOrPauseButton)),
+        description: 'resume native playback',
+      );
       await _waitForCondition(
         tester,
         () => player.videoPlayerController!.state.playing,
@@ -185,10 +259,14 @@ void main() {
       );
 
       l10n = _localizations(tester);
-      final speedButton = find.byTooltip(l10n.playerPlaybackSpeed);
-      await _waitFor(tester, speedButton);
-      await tester.tap(speedButton);
-      await tester.pump();
+      final speedButton = _playerControls(
+        find.byTooltip(l10n.playerPlaybackSpeed),
+      );
+      await _tapUnique(
+        tester,
+        speedButton,
+        description: 'open playback speed menu',
+      );
       await _tapText(tester, '1.5X');
       await _waitForCondition(
         tester,
@@ -197,7 +275,11 @@ void main() {
       );
 
       await _showPlayerControls(tester);
-      await tester.tap(find.byType(PlayOrPauseButton).first);
+      await _tapUnique(
+        tester,
+        _playerControls(find.byType(PlayOrPauseButton)),
+        description: 'pause before seek verification',
+      );
       await _waitForCondition(
         tester,
         () => !player.videoPlayerController!.state.playing,
@@ -214,8 +296,10 @@ void main() {
           (playerState.duration.inMilliseconds * 0.1).round(),
         ),
       );
-      await _waitFor(tester, find.byType(ProgressBar));
-      final progressRect = tester.getRect(find.byType(ProgressBar));
+      final progressBar = _playerControls(find.byType(ProgressBar));
+      await _waitFor(tester, progressBar);
+      expect(progressBar, findsOneWidget, reason: 'one active player progress bar');
+      final progressRect = tester.getRect(progressBar);
       await tester.tapAt(
         Offset(
           progressRect.left + progressRect.width * 0.65,
@@ -233,7 +317,11 @@ void main() {
         },
         description: 'progress bar seeks near the selected 65% position',
       );
-      await tester.tap(find.byType(PlayOrPauseButton).first);
+      await _tapUnique(
+        tester,
+        _playerControls(find.byType(PlayOrPauseButton)),
+        description: 'resume after seek verification',
+      );
       await _waitForCondition(
         tester,
         () => player.videoPlayerController!.state.playing,
@@ -242,18 +330,24 @@ void main() {
 
       await _showPlayerControls(tester);
       l10n = _localizations(tester);
-      await tester.tap(find.byTooltip(l10n.playerMoreSettings).first);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        _headerControlButton(l10n.playerMoreSettings),
+        description: 'open player settings for the timer list',
+      );
       final sleepTimerTile = find.byType(ShutdownTimerListTile);
-      await _waitFor(tester, sleepTimerTile);
-      await tester.ensureVisible(sleepTimerTile);
-      await tester.tap(sleepTimerTile);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        sleepTimerTile,
+        description: 'open the sleep timer picker',
+      );
 
       final fifteenMinutePreset = find.text(l10n.shutdownMinutes(15));
-      await _waitFor(tester, fifteenMinutePreset);
-      await tester.tap(fifteenMinutePreset);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        fifteenMinutePreset,
+        description: 'set a fifteen minute sleep timer',
+      );
       await _waitForCondition(
         tester,
         () => shutdownTimerService.isActive &&
@@ -261,8 +355,11 @@ void main() {
         description: 'sleep timer is scheduled from the video settings',
       );
 
-      await tester.tap(find.byTooltip(l10n.playerMoreSettings).first);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        _headerControlButton(l10n.playerMoreSettings),
+        description: 'open player settings for the timer quick action',
+      );
       final quickTimerAction = find.byType(ShutdownTimerQuickActionContent);
       await _waitFor(tester, quickTimerAction);
       final remainingLabel = l10n.statisticsRemaining(
@@ -286,12 +383,17 @@ void main() {
       await _waitFor(tester, outsideRemainingLabel);
       await _captureCountdownScreenshot(tester, 'countdown_outside_tile');
 
-      await tester.tap(sleepTimerTile);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        sleepTimerTile,
+        description: 'reopen the sleep timer picker to cancel',
+      );
       final disableTimer = find.text(l10n.commonDisabled);
-      await _waitFor(tester, disableTimer);
-      await tester.tap(disableTimer);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        disableTimer,
+        description: 'cancel the sleep timer',
+      );
       await _waitForCondition(
         tester,
         () => !shutdownTimerService.isActive &&
@@ -301,9 +403,14 @@ void main() {
 
       await _showPlayerControls(tester);
       l10n = _localizations(tester);
-      final fullScreen = find.byTooltip(l10n.playerFullScreen);
-      await _waitFor(tester, fullScreen);
-      await tester.tap(fullScreen);
+      final fullScreen = _playerControls(
+        find.byTooltip(l10n.playerFullScreen),
+      );
+      await _tapUnique(
+        tester,
+        fullScreen,
+        description: 'enter player full screen',
+      );
       await _waitForCondition(
         tester,
         () => player.isFullScreen.value,
@@ -311,34 +418,54 @@ void main() {
       );
       await _showPlayerControls(tester);
       l10n = _localizations(tester);
-      final gifButton = find.byTooltip(l10n.playerGifRecord);
-      await _waitFor(tester, gifButton);
-      await tester.tap(gifButton);
-      await _waitFor(tester, find.byType(GifRecordDialog));
+      final gifButton = _playerControls(
+        find.byTooltip(l10n.playerGifRecord),
+      );
+      await _tapUnique(
+        tester,
+        gifButton,
+        description: 'open GIF recording options',
+      );
+      final gifDialog = find.byType(GifRecordDialog);
+      await _waitFor(tester, gifDialog);
+      expect(gifDialog, findsOneWidget, reason: 'one active GIF dialog');
 
-      await tester.tap(find.byKey(const ValueKey('gif-cancel-button')));
+      await _tapUnique(
+        tester,
+        find.byKey(const ValueKey('gif-cancel-button')),
+        description: 'cancel GIF recording options',
+      );
       await _waitForCondition(
         tester,
         () => find.byType(GifRecordDialog).evaluate().isEmpty,
         description: 'GIF recording dialog cancels without exporting',
       );
       await _showPlayerControls(tester);
-      await tester.tap(gifButton);
-      await _waitFor(tester, find.byType(GifRecordDialog));
+      await _tapUnique(
+        tester,
+        gifButton,
+        description: 'reopen GIF recording options',
+      );
+      await _waitFor(tester, gifDialog);
+      expect(gifDialog, findsOneWidget, reason: 'one reopened GIF dialog');
 
       await _tapText(tester, '3s');
-      await tester.tap(find.text('720p'));
-      await tester.pump();
+      await _tapUnique(tester, find.text('720p'), description: 'select 720p GIF');
       await _tapText(tester, '480p');
-      await tester.tap(find.text('12 FPS'));
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        find.text('12 FPS'),
+        description: 'select 12 FPS GIF',
+      );
       await _tapText(tester, '10 FPS');
 
       l10n = _localizations(tester);
       final exportButton = find.byKey(const ValueKey('gif-export-button'));
-      await tester.ensureVisible(exportButton);
-      await tester.tap(exportButton);
-      await tester.pump();
+      await _tapUnique(
+        tester,
+        exportButton,
+        description: 'export GIF with selected options',
+      );
       await _waitForCondition(
         tester,
         () => find.byType(GifRecordDialog).evaluate().isEmpty,
@@ -367,8 +494,15 @@ AppLocalizations _localizations(WidgetTester tester) {
     find.byType(RootPage),
   ];
   for (final finder in candidates) {
-    if (finder.evaluate().isNotEmpty) {
-      return AppLocalizations.of(tester.element(finder.first));
+    final matches = finder.evaluate();
+    if (matches.length == 1) {
+      return AppLocalizations.of(tester.element(finder));
+    }
+    if (matches.length > 1) {
+      throw TestFailure(
+        'Ambiguous localization page ${finder.toString()} at '
+        'GetX route ${Get.currentRoute}: ${matches.length} matches',
+      );
     }
   }
   debugPrint('No localization context at GetX route ${Get.currentRoute}.');
@@ -379,16 +513,24 @@ AppLocalizations _localizations(WidgetTester tester) {
   );
 }
 
-Future<void> _tapText(
-  WidgetTester tester,
-  String value, {
-  bool last = false,
-}) async {
+Future<void> _tapText(WidgetTester tester, String value) async {
   final candidates = find.text(value);
-  expect(candidates, findsWidgets, reason: 'Expected visible text: $value');
-  final target = last ? candidates.last : candidates.first;
-  await tester.ensureVisible(target);
-  await tester.tap(target);
+  await _tapUnique(
+    tester,
+    candidates,
+    description: 'tap text "$value"',
+  );
+}
+
+Future<void> _tapUnique(
+  WidgetTester tester,
+  Finder finder, {
+  required String description,
+}) async {
+  await _waitFor(tester, finder);
+  expect(finder, findsOneWidget, reason: description);
+  await tester.ensureVisible(finder);
+  await tester.tap(finder);
   await tester.pump();
   await Future<void>.delayed(const Duration(milliseconds: 300));
   await tester.pump();
@@ -454,20 +596,18 @@ Future<void> _tapScopedBackButton(
     () => _isCurrentPage(tester, currentPage),
     description: 'active page before $description',
   );
-  final pageContext = tester.element(currentPage.first);
+  final pageContext = tester.element(currentPage);
   final backTooltip = MaterialLocalizations.of(pageContext).backButtonTooltip;
   final backButton = find.descendant(
     of: currentPage,
     matching: find.byTooltip(backTooltip),
   );
   await _waitFor(tester, backButton);
-  expect(
+  await _tapUnique(
+    tester,
     backButton,
-    findsOneWidget,
-    reason: 'one scoped back button for $description',
+    description: 'one scoped back button for $description',
   );
-  await tester.tap(backButton);
-  await tester.pump();
   await _waitForCondition(
     tester,
     () => _isCurrentPage(tester, previousPage),
@@ -478,13 +618,14 @@ Future<void> _tapScopedBackButton(
 bool _isCurrentPage(WidgetTester tester, Finder page) {
   final elements = page.evaluate();
   if (elements.length != 1) return false;
-  return ModalRoute.of(tester.element(page.first))?.isCurrent ?? false;
+  return ModalRoute.of(tester.element(page))?.isCurrent ?? false;
 }
 
 Future<void> _showPlayerControls(WidgetTester tester) async {
   final player = find.byType(PLVideoPlayer);
   await _waitFor(tester, player);
-  final playPauseButton = find.byType(PlayOrPauseButton);
+  expect(player, findsOneWidget, reason: 'one active PLVideoPlayer');
+  final playPauseButton = _playerControls(find.byType(PlayOrPauseButton));
   if (playPauseButton.evaluate().isEmpty) {
     final rect = tester.getRect(player);
     await tester.tapAt(rect.center);
@@ -493,4 +634,15 @@ Future<void> _showPlayerControls(WidgetTester tester) async {
     await tester.pump();
     await _waitFor(tester, playPauseButton);
   }
+  expect(playPauseButton, findsOneWidget, reason: 'one active play/pause control');
 }
+
+Finder _playerControls(Finder control) => find.descendant(
+  of: find.byType(PLVideoPlayer),
+  matching: control,
+);
+
+Finder _headerControlButton(String tooltip) => find.descendant(
+  of: find.byType(HeaderControl),
+  matching: find.byTooltip(tooltip),
+);
