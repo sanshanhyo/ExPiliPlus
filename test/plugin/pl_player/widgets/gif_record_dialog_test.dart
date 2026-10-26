@@ -115,6 +115,31 @@ void main() {
     expect(find.byKey(const ValueKey('gif-wide-layout')), findsNothing);
   });
 
+  testWidgets('scrolls wide GIF controls on a short landscape surface', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(914, 411));
+    await tester.pumpWidget(host(size: const Size(914, 411)));
+    await tester.pumpAndSettle();
+
+    final wideLayout = find.byKey(const ValueKey('gif-wide-layout'));
+    expect(wideLayout, findsOneWidget);
+    expect(
+      find.descendant(
+        of: wideLayout,
+        matching: find.byType(SingleChildScrollView),
+      ),
+      findsNWidgets(2),
+    );
+    expect(tester.takeException(), isNull);
+
+    final rangeSlider = find.byType(RangeSlider);
+    await tester.ensureVisible(rangeSlider);
+    await tester.pumpAndSettle();
+    expect(rangeSlider.hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('accepts direct timestamp input', (tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 720));
     await tester.pumpWidget(

@@ -240,12 +240,12 @@ class _GifRecordDialogState extends State<GifRecordDialog> {
       children: [
         Expanded(
           flex: 5,
-          child: _buildPreview(theme),
+          child: SingleChildScrollView(child: _buildPreview(theme)),
         ),
         const SizedBox(width: 24),
         Expanded(
           flex: 3,
-          child: _buildOptions(theme, l10n),
+          child: SingleChildScrollView(child: _buildOptions(theme, l10n)),
         ),
         const SizedBox(width: 16),
         SizedBox(
