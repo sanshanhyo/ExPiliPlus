@@ -16,7 +16,8 @@ jobs:
   compare-android:
     name: Compare Android APK size and native GIF conversion
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
+    # Covers the explicit per-revision pub/build/profile limits for both runs.
+    timeout-minutes: 240
     steps:
       - name: Checkout candidate and baseline history
         uses: actions/checkout@v7
