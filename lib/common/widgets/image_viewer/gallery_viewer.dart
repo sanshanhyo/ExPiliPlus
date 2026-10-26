@@ -42,7 +42,7 @@ import 'package:ex_piliplus/utils/utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/gestures.dart';
-import 'package:material_ui/material_ui.dart' hide Image;
+import 'package:material_ui/material_ui.dart' hide Image, PageView;
 import 'package:ex_piliplus/common/widgets/gesture/image_double_tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/gesture/image_tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
