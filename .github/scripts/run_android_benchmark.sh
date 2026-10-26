@@ -157,16 +157,11 @@ run_one_revision() {
   local output_dir="$evidence_dir/$label"
   local input_lock_sha
   local normalized_lock_sha
+  local config_lock_sha
   local stage_status=0
   local release_apk
 
   git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
-  cp "$repo_root/.github/benchmarks/android_gif_benchmark_test.dart" \
-    "$source_dir/integration_test/android_gif_benchmark_test.dart"
-  cp "$repo_root/.github/benchmarks/android_benchmark_driver.dart" \
-    "$source_dir/integration_test/android_benchmark_driver.dart"
-  cp "$runner_temp/android_benchmark_video_data.dart" \
-    "$source_dir/integration_test/android_benchmark_video_data.dart"
 
   input_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
   printf '%s\n' "$input_lock_sha" > "$output_dir/input-pubspec-lock.sha256"
@@ -275,6 +270,30 @@ PY
     return 1
   fi
 
+  # Flutter 3.47 can retain a stale dev-plugin registrant after `pub get` and
+  # then omit the integration_test Android project from a release build. This
+  # config-only pass regenerates Android metadata without resolving packages.
+  if (
+    cd "$source_dir" &&
+    echo "benchmark stage: refresh Android plugin configuration ($label)" &&
+    timeout --foreground --signal=TERM --kill-after=60s 10m \
+      flutter build apk --config-only --no-pub
+  ) > "$output_dir/flutter-config-only.log" 2>&1; then
+    :
+  else
+    stage_status=$?
+    echo "Flutter Android config generation failed for $label, status $stage_status." >&2
+    echo "Last 120 lines of $output_dir/flutter-config-only.log:" >&2
+    tail -n 120 "$output_dir/flutter-config-only.log" >&2 || true
+    return "$stage_status"
+  fi
+
+  config_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
+  if [ "$config_lock_sha" != "$normalized_lock_sha" ]; then
+    echo "Flutter config generation changed the shared normalized lock for $label." >&2
+    return 1
+  fi
+
   if (
     cd "$source_dir" &&
     echo "benchmark stage: release APK build ($label)" &&
@@ -300,6 +319,15 @@ PY
   fi
   cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"
   printf '%s\n' "$source_sha" > "$output_dir/source-sha.txt"
+
+  # Inject the benchmark-only integration target and its synthetic media only
+  # after the production Release APK has been built and copied for measurement.
+  cp "$repo_root/.github/benchmarks/android_gif_benchmark_test.dart" \
+    "$source_dir/integration_test/android_gif_benchmark_test.dart"
+  cp "$repo_root/.github/benchmarks/android_benchmark_driver.dart" \
+    "$source_dir/integration_test/android_benchmark_driver.dart"
+  cp "$runner_temp/android_benchmark_video_data.dart" \
+    "$source_dir/integration_test/android_benchmark_video_data.dart"
 
   adb shell settings put system volume_music 0
   adb uninstall "$package_name" >/dev/null 2>&1 || true

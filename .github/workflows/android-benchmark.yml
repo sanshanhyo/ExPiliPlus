@@ -50,10 +50,11 @@ jobs:
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
 
-      - name: Check Android emulator action script inputs
+      - name: Check Android emulator and benchmark scripts
         run: |
           python3 -m unittest discover -s .github/scripts -p 'android_emulator_script_check_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_lock_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_benchmark_script_check_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Verify KVM for the ephemeral Android runner
