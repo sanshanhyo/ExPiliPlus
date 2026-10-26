@@ -15,12 +15,23 @@ PACKAGE_NAMES = ("media_kit", "media_kit_native_event_loop")
 REQUIRED_DART_MARKERS = (
     "MediaKitEventLoopHandlerInitializeCXX",
     "MediaKitEventLoopHandlerCallback",
+    "Pointer<Dart_CObject>",
     "NativeApi.postCObject",
     "_receiver.sendPort.nativePort",
-    "Dart_CObject_kInt64",
     "mpv.mpv_set_wakeup_callback(handle, _handle, handle.cast());",
     "NativePlayer.mpv.mpv_set_wakeup_callback(handle, nullptr, nullptr);",
     "_callbacks.remove(handle.address)",
+)
+REQUIRED_NATIVE_MARKERS = (
+    "MediaKitEventLoopHandlerInitialize(Dart_PostCObject post_c_object, Dart_Port send_port)",
+    "MediaKitEventLoopHandlerCallback(void* context)",
+    "object.type = Dart_CObject_kInt64;",
+    "object.value.as_int64 = reinterpret_cast<int64_t>(ctx);",
+    "g_post_c_object(g_send_port, &object)",
+)
+REQUIRED_NATIVE_HEADER_MARKERS = (
+    "DLLEXPORT void MediaKitEventLoopHandlerInitialize(",
+    "DLLEXPORT void MediaKitEventLoopHandlerCallback(",
 )
 INCOMPATIBLE_DART_MARKERS = (
     "MediaKitEventLoopHandlerRegisterCXX",
@@ -92,6 +103,29 @@ def verify_contract(project_root: Path) -> Path:
     incompatible = [marker for marker in INCOMPATIBLE_DART_MARKERS if marker in dart_source]
     if incompatible:
         raise ValueError("Dart event-loop API does not match the callback ABI: " + ", ".join(incompatible))
+
+    native_source_path = (
+        project_root
+        / "third_party/android-gif-libmpv/media_kit_native_event_loop/src/media_kit_native_event_loop.cc"
+    )
+    native_header_path = (
+        project_root
+        / "third_party/android-gif-libmpv/media_kit_native_event_loop/src/media_kit_native_event_loop.h"
+    )
+    if not native_source_path.is_file() or not native_header_path.is_file():
+        raise ValueError("Pinned Android event-loop C++ source/header is missing")
+    native_source = native_source_path.read_text(encoding="utf-8")
+    native_header = native_header_path.read_text(encoding="utf-8")
+    missing_native = [marker for marker in REQUIRED_NATIVE_MARKERS if marker not in native_source]
+    if missing_native:
+        raise ValueError(
+            "Native callback post contract markers are missing: " + ", ".join(missing_native)
+        )
+    missing_header = [marker for marker in REQUIRED_NATIVE_HEADER_MARKERS if marker not in native_header]
+    if missing_header:
+        raise ValueError(
+            "Native callback export declarations are missing: " + ", ".join(missing_header)
+        )
 
     return dart_file
 

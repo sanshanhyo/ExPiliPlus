@@ -8,16 +8,31 @@ from pathlib import Path
 from check_media_kit_event_loop_contract import LOCKED_COMMIT, verify_contract
 
 
-CONTRACT_SOURCE = "\n".join(
+CONTRACT_DART_SOURCE = "\n".join(
     (
         "MediaKitEventLoopHandlerInitializeCXX",
         "MediaKitEventLoopHandlerCallback",
+        "Pointer<Dart_CObject>",
         "NativeApi.postCObject",
         "_receiver.sendPort.nativePort",
-        "Dart_CObject_kInt64",
         "mpv.mpv_set_wakeup_callback(handle, _handle, handle.cast());",
         "NativePlayer.mpv.mpv_set_wakeup_callback(handle, nullptr, nullptr);",
         "_callbacks.remove(handle.address)",
+    )
+)
+CONTRACT_NATIVE_SOURCE = "\n".join(
+    (
+        "MediaKitEventLoopHandlerInitialize(Dart_PostCObject post_c_object, Dart_Port send_port)",
+        "MediaKitEventLoopHandlerCallback(void* context)",
+        "object.type = Dart_CObject_kInt64;",
+        "object.value.as_int64 = reinterpret_cast<int64_t>(ctx);",
+        "g_post_c_object(g_send_port, &object)",
+    )
+)
+CONTRACT_NATIVE_HEADER = "\n".join(
+    (
+        "DLLEXPORT void MediaKitEventLoopHandlerInitialize(",
+        "DLLEXPORT void MediaKitEventLoopHandlerCallback(",
     )
 )
 
@@ -29,7 +44,15 @@ class MediaKitEventLoopContractTest(unittest.TestCase):
         package_root = self.root / "packages" / "media_kit"
         dart_file = package_root / "lib/src/player/native/core/initializer_native_event_loop.dart"
         dart_file.parent.mkdir(parents=True)
-        dart_file.write_text(CONTRACT_SOURCE, encoding="utf-8")
+        dart_file.write_text(CONTRACT_DART_SOURCE, encoding="utf-8")
+        native_dir = self.root / "third_party/android-gif-libmpv/media_kit_native_event_loop/src"
+        native_dir.mkdir(parents=True)
+        (native_dir / "media_kit_native_event_loop.cc").write_text(
+            CONTRACT_NATIVE_SOURCE, encoding="utf-8"
+        )
+        (native_dir / "media_kit_native_event_loop.h").write_text(
+            CONTRACT_NATIVE_HEADER, encoding="utf-8"
+        )
         self.config_path = self.root / ".dart_tool/package_config.json"
         self.config_path.parent.mkdir(parents=True)
         self.config_path.write_text(
@@ -80,7 +103,9 @@ class MediaKitEventLoopContractTest(unittest.TestCase):
             self.root
             / "packages/media_kit/lib/src/player/native/core/initializer_native_event_loop.dart"
         )
-        dart_file.write_text(CONTRACT_SOURCE + "\nMediaKitEventLoopHandlerRegisterCXX", encoding="utf-8")
+        dart_file.write_text(
+            CONTRACT_DART_SOURCE + "\nMediaKitEventLoopHandlerRegisterCXX", encoding="utf-8"
+        )
         with self.assertRaisesRegex(ValueError, "does not match the callback ABI"):
             verify_contract(self.root)
 
@@ -90,10 +115,22 @@ class MediaKitEventLoopContractTest(unittest.TestCase):
             / "packages/media_kit/lib/src/player/native/core/initializer_native_event_loop.dart"
         )
         dart_file.write_text(
-            CONTRACT_SOURCE.replace("_callbacks.remove(handle.address)", ""),
+            CONTRACT_DART_SOURCE.replace("_callbacks.remove(handle.address)", ""),
             encoding="utf-8",
         )
         with self.assertRaisesRegex(ValueError, "contract markers are missing"):
+            verify_contract(self.root)
+
+    def test_rejects_native_callback_without_posting_an_int64_handle(self) -> None:
+        native_source = (
+            self.root
+            / "third_party/android-gif-libmpv/media_kit_native_event_loop/src/media_kit_native_event_loop.cc"
+        )
+        native_source.write_text(
+            CONTRACT_NATIVE_SOURCE.replace("Dart_CObject_kInt64", "Dart_CObject_kNull"),
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(ValueError, "Native callback post contract markers are missing"):
             verify_contract(self.root)
 
 
