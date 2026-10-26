@@ -4,7 +4,7 @@ import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' as mui
-    show CircularProgressIndicator, ListTile;
+    show CircularProgressIndicator, ListTile, Text;
 
 void main() {
   testWidgets('quick timer indicator reacts to updates', (tester) async {
@@ -79,8 +79,10 @@ void main() {
     expect(find.text('3 min remaining'), findsOneWidget);
 
     countdown.value = ShutdownTimerSnapshot(
-      updatedAt: now,
+      updatedAt: now.subtract(const Duration(minutes: 45)),
       isTimerActive: false,
+      deadline: now.add(const Duration(minutes: 15)),
+      totalDuration: const Duration(minutes: 15),
     );
     await tester.pump();
 
@@ -125,7 +127,7 @@ void main() {
     );
 
     var tile = tester.widget<mui.ListTile>(find.byType(mui.ListTile));
-    final subtitle = tile.subtitle! as Text;
+    final subtitle = tile.subtitle! as mui.Text;
     expect(subtitle.data, '还剩 5分钟');
     expect(subtitle.style?.color, theme.colorScheme.outline);
 

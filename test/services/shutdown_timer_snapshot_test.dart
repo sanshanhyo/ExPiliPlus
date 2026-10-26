@@ -58,6 +58,8 @@ void main() {
       expect(expired.remainingMinutes, 0);
       expect(expired.isScheduled, isFalse);
       expect(expired.progress, 0);
+      expect(waiting.isWaiting, isTrue);
+      expect(waiting.isTimerActive, isFalse);
       expect(waiting.isScheduled, isFalse);
       expect(waiting.progress, 0);
     });
@@ -96,6 +98,8 @@ void main() {
 
     test('does not revive an expired timer after the wall clock moves back', () {
       final deadline = start.add(const Duration(minutes: 15));
+      // The 15-minute Timer has fired, but a one-hour clock rollback makes its
+      // original deadline appear 60 minutes in the future.
       final clockAfterOneHourAdjustment = start.subtract(
         const Duration(minutes: 45),
       );
