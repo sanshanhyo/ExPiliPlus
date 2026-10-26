@@ -6,6 +6,7 @@ on:
       - main
       - upstream-2.1.4-sync
       - sync/upstream-2.1.6.2
+      - feature/timer-countdown
   workflow_dispatch:
 
 concurrency:

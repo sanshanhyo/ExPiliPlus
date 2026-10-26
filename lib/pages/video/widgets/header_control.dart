@@ -36,6 +36,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/action_item.dar
 import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:ex_piliplus/pages/video/widgets/header_mixin.dart';
 import 'package:ex_piliplus/pages/video/widgets/player_quick_action_editor_actions.dart';
+import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -412,10 +413,7 @@ class HeaderControlState extends State<HeaderControl>
       (isFileSource && !(plPlayerController.dataSource as FileSource).isMp4) ||
       (!isFileSource && videoDetailCtr.audioUrl?.isNotEmpty == true);
 
-  List<_PlayerQuickAction> _quickActions(
-    BuildContext context, {
-    ShutdownTimerSnapshot? countdown,
-  }) {
+  List<_PlayerQuickAction> _quickActions(BuildContext context) {
     final l10n = context.l10n;
     final player = plPlayerController.videoPlayerController;
     return [
@@ -445,9 +443,7 @@ class HeaderControlState extends State<HeaderControl>
       ),
       _PlayerQuickAction(
         id: PlayerQuickActionId.sleepTimer,
-        title: countdown != null && countdown.isScheduled
-            ? _shutdownCountdownLabel(context, countdown)
-            : l10n.playerSleepTimer,
+        title: l10n.playerSleepTimer,
         icon: Icons.hourglass_top_outlined,
         available: true,
       ),
@@ -574,42 +570,6 @@ class HeaderControlState extends State<HeaderControl>
     ];
   }
 
-  String _shutdownCountdownLabel(
-    BuildContext context,
-    ShutdownTimerSnapshot countdown,
-  ) => context.l10n.statisticsRemaining(
-    context.l10n.shutdownMinutes(countdown.remainingMinutes),
-  );
-
-  Widget _buildSleepTimerQuickIcon(
-    double iconSize,
-    ShutdownTimerSnapshot countdown,
-    ThemeData theme,
-  ) {
-    return SizedBox.square(
-      dimension: iconSize,
-      child: Stack(
-        fit: StackFit.expand,
-        alignment: Alignment.center,
-        children: [
-          CircularProgressIndicator(
-            value: countdown.progress,
-            strokeWidth: 2.5,
-            color: theme.colorScheme.primary,
-            backgroundColor: theme.colorScheme.outlineVariant,
-          ),
-          Center(
-            child: Icon(
-              Icons.hourglass_top_outlined,
-              size: iconSize * 0.58,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   bool _isQuickActionActive(String id) => switch (id) {
     PlayerQuickActionId.flipHorizontal => plPlayerController.flipX.value,
     PlayerQuickActionId.flipVertical => plPlayerController.flipY.value,
@@ -623,6 +583,7 @@ class HeaderControlState extends State<HeaderControl>
     return Obx(
       () {
         final theme = Theme.of(context);
+        final actions = _quickActions(context);
         final selected = Pref.playerQuickActionIds;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -647,102 +608,91 @@ class HeaderControlState extends State<HeaderControl>
               ),
             ),
             if (selected.isNotEmpty) ...[
-              ValueListenableBuilder<ShutdownTimerSnapshot>(
-                valueListenable: shutdownTimerService.countdown,
-                builder: (context, countdown, _) {
-                  final actions = _quickActions(
-                    context,
-                    countdown: countdown,
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final capacity = PlayerQuickActionConfig.capacityForWidth(
+                    constraints.maxWidth,
+                    actionCount: actions.length,
                   );
-                  return LayoutBuilder(
-                    builder: (context, constraints) {
-                      final capacity = PlayerQuickActionConfig.capacityForWidth(
-                        constraints.maxWidth,
-                        actionCount: actions.length,
+                  final displayIds = selected.take(capacity).toList();
+                  final itemWidth = constraints.maxWidth / displayIds.length;
+                  final iconSize = (itemWidth * 0.22)
+                      .clamp(26.0, 32.0)
+                      .toDouble();
+                  final labelFontSize = (itemWidth * 0.08)
+                      .clamp(12.0, 14.0)
+                      .toDouble();
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: displayIds.map((id) {
+                      final action = actions.firstWhere(
+                        (item) => item.id == id,
                       );
-                      final displayIds = selected.take(capacity).toList();
-                      final itemWidth =
-                          constraints.maxWidth / displayIds.length;
-                      final iconSize = (itemWidth * 0.22)
-                          .clamp(26.0, 32.0)
-                          .toDouble();
-                      final labelFontSize = (itemWidth * 0.08)
-                          .clamp(12.0, 14.0)
-                          .toDouble();
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: displayIds.map((id) {
-                          final action = actions.firstWhere(
-                            (item) => item.id == id,
-                          );
-                          final active = _isQuickActionActive(id);
-                          final icon = id == PlayerQuickActionId.sleepTimer &&
-                                  countdown.isScheduled
-                              ? _buildSleepTimerQuickIcon(
-                                  iconSize,
-                                  countdown,
-                                  theme,
-                                )
-                              : Icon(action.icon);
-                          return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    iconSize: iconSize,
-                                    constraints: BoxConstraints.tightFor(
-                                      width: iconSize + 16,
-                                      height: iconSize + 16,
-                                    ),
-                                    padding: const EdgeInsets.all(8),
-                                    onPressed: action.available
-                                        ? () {
-                                            _runQuickAction(id);
-                                            (context as Element)
-                                                .markNeedsBuild();
-                                          }
-                                        : null,
-                                    icon: icon,
-                                    style: IconButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      backgroundColor: active
-                                          ? theme.colorScheme.secondaryContainer
-                                          : theme
-                                                .colorScheme
-                                                .surfaceContainerHighest,
-                                      foregroundColor: active
-                                          ? theme.colorScheme.onSecondaryContainer
-                                          : theme.colorScheme.onSurfaceVariant,
-                                    ),
+                      final active = _isQuickActionActive(id);
+                      final onPressed = action.available
+                          ? () {
+                              _runQuickAction(id);
+                              (context as Element).markNeedsBuild();
+                            }
+                          : null;
+                      final child = id == PlayerQuickActionId.sleepTimer
+                          ? ShutdownTimerQuickActionContent(
+                              countdown: shutdownTimerService.countdown,
+                              idleLabel: action.title,
+                              iconSize: iconSize,
+                              labelFontSize: labelFontSize,
+                              onPressed: onPressed,
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  iconSize: iconSize,
+                                  constraints: BoxConstraints.tightFor(
+                                    width: iconSize + 16,
+                                    height: iconSize + 16,
                                   ),
-                                  const SizedBox(height: 8),
-                                  Flexible(
-                                    child: Text(
-                                      action.title,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.labelMedium
-                                          ?.copyWith(
-                                            fontSize: labelFontSize,
-                                            height: 1.15,
-                                            color: action.available
-                                                ? null
-                                                : theme.colorScheme.outline,
-                                          ),
-                                    ),
+                                  padding: const EdgeInsets.all(8),
+                                  onPressed: onPressed,
+                                  icon: Icon(action.icon),
+                                  style: IconButton.styleFrom(
+                                    shape: const CircleBorder(),
+                                    backgroundColor: active
+                                        ? theme.colorScheme.secondaryContainer
+                                        : theme
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                    foregroundColor: active
+                                        ? theme.colorScheme.onSecondaryContainer
+                                        : theme.colorScheme.onSurfaceVariant,
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                                ),
+                                const SizedBox(height: 8),
+                                Flexible(
+                                  child: Text(
+                                    action.title,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.labelMedium
+                                        ?.copyWith(
+                                          fontSize: labelFontSize,
+                                          height: 1.15,
+                                          color: action.available
+                                              ? null
+                                              : theme.colorScheme.outline,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            );
+                      return Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: child,
+                        ),
                       );
-                    },
+                    }).toList(),
                   );
                 },
               ),
@@ -1174,7 +1124,7 @@ class HeaderControlState extends State<HeaderControl>
                       title: Text(l10n.playerSleepTimer, style: titleStyle),
                       subtitle: countdown.isScheduled
                           ? Text(
-                              _shutdownCountdownLabel(context, countdown),
+                              shutdownTimerRemainingLabel(context, countdown),
                               style: rowTheme.textTheme.bodySmall?.copyWith(
                                 color: rowTheme.colorScheme.outline,
                               ),
