@@ -13,6 +13,8 @@ repo_root="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
 runner_temp="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 source_dir="$runner_temp/expiliplus-android-benchmark-source"
 fixture="$runner_temp/expiliplus-android-benchmark-source.mp4"
+source_fixture="$repo_root/.github/benchmarks/fixtures/android-benchmark-source.mp4"
+expected_fixture_sha="7fc24f95eba9e0c4339b4a0361291b5cec79baead0254f9bed9172effa2481a3"
 defines_file="$runner_temp/expiliplus-android-benchmark-defines.json"
 package_name="io.github.sanshanhyo.expiliplus"
 start_epoch="$(date +%s)"
@@ -30,6 +32,13 @@ esac
 mkdir -p "$evidence_dir/baseline" "$evidence_dir/candidate" "$evidence_dir/toolchain"
 git -C "$repo_root" cat-file -e "${baseline_sha}^{commit}"
 git -C "$repo_root" cat-file -e "${candidate_sha}^{commit}"
+actual_fixture_sha="$(sha256sum "$source_fixture" | awk '{print $1}')"
+if [ "$actual_fixture_sha" != "$expected_fixture_sha" ]; then
+  echo "Synthetic benchmark fixture hash mismatch: $actual_fixture_sha" >&2
+  exit 1
+fi
+cp "$source_fixture" "$fixture"
+sha256sum "$fixture" > "$evidence_dir/toolchain/synthetic-video.sha256"
 
 if ! git -C "$repo_root" diff --quiet "$baseline_sha" "$candidate_sha" -- \
   pubspec.yaml pubspec.lock pubspec_overrides.yaml UPSTREAM_VERSION android/ third_party/ \
@@ -115,19 +124,24 @@ PY
 
 flutter --version --machine > "$evidence_dir/toolchain/flutter.json"
 java -version > "$evidence_dir/toolchain/java-version.txt" 2>&1
-ffmpeg -version > "$evidence_dir/toolchain/ffmpeg-version.txt" 2>&1
+python3 -c 'import PIL; print(PIL.__version__)' > "$evidence_dir/toolchain/pillow-version.txt"
+if [ "$(cat "$evidence_dir/toolchain/pillow-version.txt")" != "12.3.0" ]; then
+  echo "GIF validation requires Pillow 12.3.0." >&2
+  exit 1
+fi
 adb shell getprop ro.build.version.release > "$evidence_dir/toolchain/android-release.txt"
 adb shell getprop ro.build.version.sdk > "$evidence_dir/toolchain/android-api.txt"
 sha256sum "$defines_file" > "$evidence_dir/toolchain/benchmark-defines.sha256"
 python3 - "$evidence_dir/benchmark-metadata.json" \
   "$baseline_sha" "$candidate_sha" "$baseline_lock_sha" \
-  "$build_name" "$build_number" "$upstream_version" "$event_loop_artifact_dir" <<'PY'
+  "$build_name" "$build_number" "$upstream_version" \
+  "$expected_fixture_sha" "$event_loop_artifact_dir" <<'PY'
 import json
 import hashlib
 import sys
 from pathlib import Path
 
-output, baseline, candidate, lock_sha, name, code, upstream, event_loop_dir = sys.argv[1:]
+output, baseline, candidate, lock_sha, name, code, upstream, fixture_sha, event_loop_dir = sys.argv[1:]
 metadata = {
     "baseline_sha": baseline,
     "candidate_sha": candidate,
@@ -166,7 +180,9 @@ metadata = {
         "measured_runs": 5,
         "dependency_profile": "full normalized lock restored after Release APK capture",
         "memory_samples_include_integration_test_harness": True,
-        "clip": "synthetic testsrc 854x480, 30 fps, 8 seconds, H.264, no audio",
+        "clip": "hash-pinned synthetic testsrc 854x480, 30 fps, 8 seconds, H.264, no audio",
+        "fixture_sha256": fixture_sha,
+        "gif_decoder": "Pillow 12.3.0; every frame is decoded",
         "start_seconds": 1,
         "duration_seconds": 3,
         "width": 480,
@@ -190,13 +206,7 @@ with open(output, "w", encoding="utf-8") as target:
     target.write("\n")
 PY
 
-ffmpeg -hide_banner -loglevel error -y \
-  -f lavfi -i 'testsrc=size=854x480:rate=30:duration=8' \
-  -frames:v 240 -an -c:v libx264 -preset veryfast -crf 28 -threads 1 \
-  -pix_fmt yuv420p -x264-params 'keyint=30:min-keyint=30:scenecut=0' \
-  -movflags +faststart "$fixture"
 test -s "$fixture"
-sha256sum "$fixture" > "$evidence_dir/toolchain/synthetic-video.sha256"
 python3 "$repo_root/.github/scripts/embed_android_benchmark_video.py" \
   "$fixture" "$runner_temp/android_benchmark_video_data.dart"
 
@@ -596,37 +606,8 @@ run_profile_revision() {
     cat "$output_dir/profile-benchmark.log" >&2
     return 1
   fi
-  ffmpeg -hide_banner -v error -xerror -i "$output_dir/synthetic-output.gif" -f null -
-  ffprobe -v error -count_frames -select_streams v:0 \
-    -show_entries stream=codec_name,width,height,nb_read_frames \
-    -of json "$output_dir/synthetic-output.gif" \
-    > "$output_dir/gif-decode.json"
-  python3 - "$output_dir/gif-decode.json" "$output_dir/gif-benchmark.json" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1], encoding="utf-8") as source:
-    streams = json.load(source).get("streams", [])
-with open(sys.argv[2], encoding="utf-8") as source:
-    report = json.load(source)
-if len(streams) != 1:
-    raise SystemExit(f"Expected one GIF video stream, got {len(streams)}")
-stream = streams[0]
-if stream.get("codec_name") != "gif":
-    raise SystemExit(f"Expected GIF codec, got {stream.get('codec_name')!r}")
-if int(stream.get("width", 0)) != 480 or int(stream.get("height", 0)) != 270:
-    raise SystemExit(f"Invalid GIF dimensions: {stream.get('width')}x{stream.get('height')}")
-frames = int(stream.get("nb_read_frames", 0))
-if not 28 <= frames <= 32:
-    raise SystemExit(f"Expected about 30 decoded frames at 10 fps, got {frames}")
-if report.get("fixture_sha256") == "" or not report.get("measured_runs"):
-    raise SystemExit("GIF benchmark metadata is incomplete")
-print(
-    "verified_gif_decode=success "
-    f"width={stream['width']} height={stream['height']} "
-    f"decoded_frames={stream['nb_read_frames']}"
-)
-PY
+  python3 "$repo_root/.github/scripts/validate_android_gif.py" \
+    "$output_dir/synthetic-output.gif" "$output_dir/gif-decode.json"
   git -C "$repo_root" worktree remove --force "$source_dir"
 }
 

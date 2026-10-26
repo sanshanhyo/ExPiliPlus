@@ -46,40 +46,15 @@ jobs:
           python3 .github/scripts/check_android_benchmark_cli.py \
             --help-output "${RUNNER_TEMP}/android-benchmark/toolchain/flutter-drive-help.txt"
 
-      - name: Install synthetic-media validation tools
+      - name: Prepare pinned Pillow GIF decoder
         run: |
-          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
-            update_status=0
-            for attempt in 1 2; do
-              if sudo timeout --signal=TERM --kill-after=30s 5m apt-get update; then
-                update_status=0
-                break
-              else
-                update_status=$?
-                echo "apt-get update attempt ${attempt}/2 failed with status ${update_status}." >&2
-              fi
-            done
-            if [ "$update_status" -ne 0 ]; then
-              exit "$update_status"
-            fi
-
-            install_status=0
-            for attempt in 1 2; do
-              if sudo timeout --signal=TERM --kill-after=30s 8m \
-                apt-get install --no-install-recommends -y ffmpeg; then
-                install_status=0
-                break
-              else
-                install_status=$?
-                echo "apt-get install ffmpeg attempt ${attempt}/2 failed with status ${install_status}." >&2
-              fi
-            done
-            if [ "$install_status" -ne 0 ]; then
-              exit "$install_status"
-            fi
+          if ! python3 -c 'import PIL; assert PIL.__version__ == "12.3.0"' 2>/dev/null; then
+            timeout --signal=TERM --kill-after=15s 4m \
+              python3 -m pip install --user --no-input --disable-pip-version-check \
+                --only-binary=:all: --timeout 20 --retries 2 Pillow==12.3.0
           fi
-          ffmpeg -version | head -n 1
-          ffprobe -version | head -n 1
+          python3 -c 'import PIL; print(f"Pillow {PIL.__version__}"); assert PIL.__version__ == "12.3.0"'
+          python3 -m unittest discover -s .github/scripts -p 'android_gif_validation_unit_tests.py' -v
 
       - name: Check Android emulator and benchmark scripts
         run: |
@@ -96,11 +71,8 @@ jobs:
         run: |
           fixture="$RUNNER_TEMP/android-benchmark-preflight-source.mp4"
           video_data="$RUNNER_TEMP/android_benchmark_video_data.dart"
-          ffmpeg -hide_banner -loglevel error -y \
-            -f lavfi -i 'testsrc=size=854x480:rate=30:duration=8' \
-            -frames:v 240 -an -c:v libx264 -preset veryfast -crf 28 -threads 1 \
-            -pix_fmt yuv420p -x264-params 'keyint=30:min-keyint=30:scenecut=0' \
-            -movflags +faststart "$fixture"
+          (cd .github/benchmarks/fixtures && sha256sum --check SHA256SUMS)
+          cp .github/benchmarks/fixtures/android-benchmark-source.mp4 "$fixture"
           python3 .github/scripts/embed_android_benchmark_video.py \
             "$fixture" "$video_data"
           bash .github/scripts/check_android_benchmark_harness.sh \

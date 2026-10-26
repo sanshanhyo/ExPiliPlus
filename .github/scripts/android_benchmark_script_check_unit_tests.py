@@ -24,6 +24,9 @@ GIF_BENCHMARK_TEST = Path(__file__).parents[1].joinpath(
 GIF_CONVERTER = Path(__file__).parents[2].joinpath(
     "lib", "plugin", "pl_player", "widgets", "mpv_convert_gif.dart"
 ).read_text(encoding="utf-8")
+GIF_VALIDATOR = Path(__file__).with_name("validate_android_gif.py").read_text(
+    encoding="utf-8"
+)
 
 
 def function_body(name: str, next_marker: str) -> str:
@@ -34,11 +37,11 @@ def function_body(name: str, next_marker: str) -> str:
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
     def test_injected_benchmark_targets_are_analyzed_before_emulator_and_release(self) -> None:
-        self.assertEqual(BENCHMARK_WORKFLOW.count("for attempt in 1 2"), 2)
-        self.assertIn("sudo timeout --signal=TERM --kill-after=30s 5m apt-get update", BENCHMARK_WORKFLOW)
-        self.assertIn("sudo timeout --signal=TERM --kill-after=30s 8m \\", BENCHMARK_WORKFLOW)
-        self.assertIn("apt-get install --no-install-recommends -y ffmpeg", BENCHMARK_WORKFLOW)
-        self.assertIn("apt-get install ffmpeg attempt ${attempt}/2 failed", BENCHMARK_WORKFLOW)
+        self.assertNotIn("apt-get", BENCHMARK_WORKFLOW)
+        self.assertNotIn("ffmpeg", BENCHMARK_WORKFLOW)
+        self.assertIn("Pillow==12.3.0", BENCHMARK_WORKFLOW)
+        self.assertIn("sha256sum --check SHA256SUMS", BENCHMARK_WORKFLOW)
+        self.assertIn("android-benchmark-source.mp4", BENCHMARK_WORKFLOW)
         preflight = BENCHMARK_WORKFLOW.index(
             "Compile injected GIF benchmark targets before APK builds"
         )
@@ -87,13 +90,23 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("eof=$reachedEof", GIF_CONVERTER)
         self.assertIn("validation?.isValid == true", GIF_CONVERTER)
         self.assertIn("vf=$_videoFilters", GIF_CONVERTER)
+        self.assertIn("validate_android_gif.py", BENCHMARK_SCRIPT)
+        self.assertIn("expected_fixture_sha", BENCHMARK_SCRIPT)
+        self.assertNotIn("ffprobe", BENCHMARK_SCRIPT)
+        self.assertNotIn("ffmpeg", BENCHMARK_SCRIPT)
         self.assertIn("const _expectedGifHeight = 270;", GIF_BENCHMARK_TEST)
         self.assertIn(
             "_expectedFrameCount - _frameCountTolerance",
             GIF_BENCHMARK_TEST,
         )
         self.assertIn("_expectedFrameCount + _frameCountTolerance", GIF_BENCHMARK_TEST)
-        self.assertIn("not 28 <= frames <= 32", BENCHMARK_SCRIPT)
+        self.assertIn("image.load()", GIF_VALIDATOR)
+        self.assertIn("EXPECTED_WIDTH = 480", GIF_VALIDATOR)
+        self.assertIn("EXPECTED_HEIGHT = 270", GIF_VALIDATOR)
+        self.assertIn("MIN_FRAMES = 28", GIF_VALIDATOR)
+        self.assertIn("MAX_FRAMES = 32", GIF_VALIDATOR)
+        self.assertIn("MIN_DURATION_MS = 2800", GIF_VALIDATOR)
+        self.assertIn("MAX_DURATION_MS = 3200", GIF_VALIDATOR)
 
     def test_player_controls_wait_for_state_before_repeating_surface_tap(self) -> None:
         integration_test = Path(__file__).parents[2].joinpath(
@@ -102,12 +115,16 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         helper_start = integration_test.index("Future<void> _showPlayerControls(")
         helper_end = integration_test.index("Finder _playerControls(", helper_start)
         helper = integration_test[helper_start:helper_end]
+        tap_start = integration_test.index("Future<void> _tapUnique(")
+        tap_end = integration_test.index("Future<void> _captureCountdownScreenshot(", tap_start)
+        tap_helper = integration_test[tap_start:tap_end]
         self.assertIn("if (!controller.showControls.value)", helper)
         self.assertNotIn(
             "if (playPauseButton.hitTestable().evaluate().isEmpty)", helper
         )
         self.assertIn("controller.controlsLock.value", helper)
         self.assertIn("controller.isBuffering.value", helper)
+        self.assertIn("finder.hitTestable().evaluate().length == 1", tap_helper)
         self.assertIn("state.rate == 1.5", integration_test)
         self.assertIn("find.text('1.5X')", integration_test)
 

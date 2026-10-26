@@ -471,6 +471,7 @@ void main() {
         description: 'sleep timer is scheduled from the video settings',
       );
 
+      await _showPlayerControls(tester);
       await _tapUnique(
         tester,
         _headerControlButton(l10n.playerMoreSettings),
@@ -649,6 +650,12 @@ Future<void> _tapUnique(
   await _waitFor(tester, finder);
   expect(finder, findsOneWidget, reason: description);
   await tester.ensureVisible(finder);
+  await _waitForCondition(
+    tester,
+    () => finder.hitTestable().evaluate().length == 1,
+    description: '$description is hit-testable',
+    timeout: const Duration(seconds: 10),
+  );
   await tester.tap(finder);
   await tester.pump();
   await Future<void>.delayed(const Duration(milliseconds: 300));

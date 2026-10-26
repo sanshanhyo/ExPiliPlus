@@ -9,12 +9,14 @@ arm64 APK for byte-level and ZIP-component comparison. It uses stable build
 defines with `pili.release=false`; this is a size-measurement artifact, not a
 GitHub Release, store upload, or install package for users.
 
-For runtime timing, the job creates an eight-second H.264 clip locally with
-FFmpeg, embeds the same bytes into a temporary integration-test target, and
-invokes the production `createGifConverter` path in profile mode. It performs
-one warmup and five measured 3-second, 480-pixel-wide, 10-FPS conversions. It
-checks the in-app GIF structure and decodes the saved output with FFmpeg and
-ffprobe. Android `TOTAL PSS` is sampled once per second during the test.
+For runtime timing, the repository carries one 83 KB synthetic 8-second H.264
+clip. CI verifies its SHA-256 before embedding those exact bytes into the
+temporary integration-test target, so no media tool is installed on the runner.
+The job invokes the production `createGifConverter` path in profile mode and
+performs one warmup and five measured 3-second, 480-pixel-wide, 10-FPS
+conversions. It checks the in-app GIF structure, then Pillow 12.3.0 decodes
+every saved GIF frame and verifies dimensions, frame count, total duration, and
+loop metadata. Android `TOTAL PSS` is sampled once per second during the test.
 The conversion timing isolates the native export path; it does not claim to
 measure player-page navigation or overall app frame performance.
 
