@@ -49,8 +49,34 @@ jobs:
       - name: Install synthetic-media validation tools
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
-            timeout --signal=TERM --kill-after=30s 5m sudo apt-get update
-            timeout --signal=TERM --kill-after=30s 15m sudo apt-get install --no-install-recommends -y ffmpeg
+            update_status=0
+            for attempt in 1 2; do
+              if timeout --signal=TERM --kill-after=30s 5m sudo apt-get update; then
+                update_status=0
+                break
+              else
+                update_status=$?
+                echo "apt-get update attempt ${attempt}/2 failed with status ${update_status}." >&2
+              fi
+            done
+            if [ "$update_status" -ne 0 ]; then
+              exit "$update_status"
+            fi
+
+            install_status=0
+            for attempt in 1 2; do
+              if timeout --signal=TERM --kill-after=30s 8m \
+                sudo apt-get install --no-install-recommends -y ffmpeg; then
+                install_status=0
+                break
+              else
+                install_status=$?
+                echo "apt-get install ffmpeg attempt ${attempt}/2 failed with status ${install_status}." >&2
+              fi
+            done
+            if [ "$install_status" -ne 0 ]; then
+              exit "$install_status"
+            fi
           fi
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1

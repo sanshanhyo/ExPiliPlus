@@ -35,6 +35,9 @@ class MpvConvertGif implements GifConverter {
   final int fps;
   final RxDouble? progress;
 
+  String get _videoFilters =>
+      'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos';
+
   MpvConvertGif(
     this.url,
     this.outFile,
@@ -49,9 +52,6 @@ class MpvConvertGif implements GifConverter {
     final output = File(outFile);
     await output.parent.create(recursive: true);
     if (output.existsSync()) await output.delete();
-
-    final videoFilters =
-        'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos';
 
     _ctx = await Initializer.create(
       _mpv,
@@ -73,10 +73,14 @@ class MpvConvertGif implements GifConverter {
     _logRuntimeCapabilities();
     // Initializer.create ignores mpv_set_option_string return codes. Set the
     // list through mpv's filter command so invalid syntax is returned here.
-    final filterResult = _command(['vf', 'set', videoFilters]);
+    final filterResult = _command(['vf', 'set', _videoFilters]);
     if (filterResult < 0) {
       throw StateError('mpv rejected GIF video filters');
     }
+    debugPrint(
+      'GifConvert: vf configured result=$filterResult '
+      'requestedVf=${_readOsdProperty('vf')}',
+    );
     if (_disposed) {
       _disposeNative();
       return;
@@ -101,7 +105,7 @@ class MpvConvertGif implements GifConverter {
       'GifConvert: start input=${_describeUrl(url)} '
       'output=${File(outFile).uri.pathSegments.last} '
       'range=${start.toStringAsFixed(3)}-${(start + duration).toStringAsFixed(3)} '
-      'width=$width fps=$fps vf=$videoFilters',
+      'width=$width fps=$fps vf=$_videoFilters',
     );
   }
 
@@ -155,9 +159,17 @@ class MpvConvertGif implements GifConverter {
         break;
       case generated.mpv_event_id.MPV_EVENT_FILE_LOADED:
         _loaded = true;
+        // Initializer options are applied before a video track has been
+        // configured. Reapply the same chain now so mpv can report a filter
+        // creation failure instead of merely retaining the requested string.
+        final filterResult = _command(['vf', 'set', _videoFilters]);
         debugPrint(
-          'GifConvert: input loaded activeVf=${_readOsdProperty('vf')}',
+          'GifConvert: input loaded vfResult=$filterResult '
+          'requestedVf=${_readOsdProperty('vf')}',
         );
+        if (filterResult < 0) {
+          _recordError('mpv could not initialize GIF video filters');
+        }
         break;
       case generated.mpv_event_id.MPV_EVENT_LOG_MESSAGE:
         final log = event.ref.data.cast<generated.mpv_event_log_message>().ref;
@@ -178,6 +190,10 @@ class MpvConvertGif implements GifConverter {
         final output = File(outFile);
         final exists = output.existsSync();
         final size = exists ? output.lengthSync() : 0;
+        final requestedVf = _readOsdProperty('vf');
+        final filteredWidth = _readOsdProperty('video-out-params/w');
+        final filteredHeight = _readOsdProperty('video-out-params/h');
+        final filteredFps = _readOsdProperty('estimated-vf-fps');
         var validation = exists ? _validateOutput(output) : null;
         if (validation != null &&
             validation.frameCount >= 2 &&
@@ -200,6 +216,9 @@ class MpvConvertGif implements GifConverter {
           'GifConvert: end reason=$reason eof=$reachedEof error=$error'
           '${errorText.isEmpty ? '' : ' ($errorText)'} '
           'loaded=$_loaded output=$exists size=$size header=$header '
+          'requestedVf=$requestedVf '
+          'filteredOutput=${filteredWidth}x$filteredHeight '
+          'estimatedVfFps=$filteredFps '
           'frames=${validation?.frameCount ?? 0} '
           'loop=${validation?.hasInfiniteLoop ?? false} '
           'lastError=$_lastError success=$success',

@@ -264,7 +264,8 @@ void main() {
               nativePlayer.state.duration > const Duration(seconds: 10) &&
               nativePlayer.state.width > 0,
           description:
-              'native Android player opens and decodes the public video',
+              'native Android player reports active playback state and '
+              'video dimensions for the public video',
           timeout: const Duration(seconds: 150),
         );
         final visiblePlayer = find.byType(PLVideoPlayer);
@@ -306,11 +307,21 @@ void main() {
         await bufferingSubscription.cancel();
         await playerLogSubscription.cancel();
       }
-      debugPrint('ANDROID_SMOKE_PHASE=native-player-decoded-video');
+      // Playing + dimensions confirm the stream state, not that an actual
+      // frame reached the emulator surface. Keep that distinction explicit.
+      debugPrint('ANDROID_SMOKE_PHASE=native-player-stream-state-ready');
 
       final player = playerController;
       await player.setVolume(0, showIndicator: false);
       expect(player.volume.value, 0);
+      debugPrint(
+        'ANDROID_PLAYER_UI_STATE '
+        'controls=${player.showControls.value} '
+        'locked=${player.controlsLock.value} '
+        'buffering=${player.isBuffering.value} '
+        'data=${player.dataStatus.value} '
+        'rate=${player.videoPlayerController!.state.rate}',
+      );
       await _showPlayerControls(tester);
       await _tapUnique(
         tester,
@@ -338,6 +349,11 @@ void main() {
       final speedButton = _playerControls(
         find.byTooltip(l10n.playerPlaybackSpeed),
       );
+      expect(
+        player.speedList,
+        contains(1.5),
+        reason: 'fresh-install playback speed menu includes 1.5X',
+      );
       await _waitForCondition(
         tester,
         () => speedButton.hitTestable().evaluate().length == 1,
@@ -348,11 +364,30 @@ void main() {
         speedButton.hitTestable(),
         description: 'open playback speed menu',
       );
+      final speedMenuItems = find.byType(mui.PopupMenuItem<double>);
+      await _waitForCondition(
+        tester,
+        () => speedMenuItems.evaluate().isNotEmpty,
+        description: 'playback speed menu opens with configured options',
+        timeout: const Duration(seconds: 5),
+      );
+      debugPrint(
+        'ANDROID_SPEED_MENU_STATE '
+        'configured=${player.speedList.join(",")} '
+        'items=${speedMenuItems.evaluate().length} '
+        'onePointFiveVisible=${find.text("1.5X").evaluate().length}',
+      );
       await _tapText(tester, '1.5X');
       await _waitForCondition(
         tester,
-        () => player.playbackSpeed == 1.5,
+        () => player.playbackSpeed == 1.5 &&
+            player.videoPlayerController!.state.rate == 1.5,
         description: 'playback speed menu changes native playback speed',
+      );
+      expect(
+        _playerControls(find.text('1.5X')),
+        findsOneWidget,
+        reason: 'player control displays the selected native playback rate',
       );
 
       await _showPlayerControls(tester);
@@ -709,8 +744,24 @@ Future<void> _showPlayerControls(WidgetTester tester) async {
   final player = find.byType(PLVideoPlayer);
   await _waitFor(tester, player);
   expect(player, findsOneWidget, reason: 'one active PLVideoPlayer');
+  final controller = PlPlayerController.instance!;
   final playPauseButton = _playerControls(find.byType(PlayOrPauseButton));
-  if (playPauseButton.hitTestable().evaluate().isEmpty) {
+  if (!controller.showControls.value && controller.controlsLock.value) {
+    debugPrint(
+      'ANDROID_PLAYER_CONTROLS_DIAGNOSTIC '
+      'controls=${controller.showControls.value} '
+      'locked=${controller.controlsLock.value} '
+      'buffering=${controller.isBuffering.value} '
+      'data=${controller.dataStatus.value} '
+      'buttonCount=${playPauseButton.evaluate().length}',
+    );
+    fail('Player controls are locked and cannot be opened with a surface tap.');
+  }
+  // The slide animation can make the controls briefly non-hit-testable after
+  // showControls has already changed. Only tap the video surface when the
+  // actual control state is hidden; tapping during that animation would hide
+  // the controls again.
+  if (!controller.showControls.value) {
     final rect = tester.getRect(player);
     await tester.tapAt(rect.center);
     await tester.pump();
@@ -719,9 +770,52 @@ Future<void> _showPlayerControls(WidgetTester tester) async {
   }
   await _waitForCondition(
     tester,
-    () => playPauseButton.hitTestable().evaluate().length == 1,
-    description: 'play/pause control is visible and hit-testable',
+    () => controller.showControls.value,
+    description:
+        'a real video-surface tap shows controls '
+        '(locked=${controller.controlsLock.value}, '
+        'buffering=${controller.isBuffering.value}, '
+        'data=${controller.dataStatus.value})',
+    timeout: const Duration(seconds: 5),
   );
+  try {
+    await _waitForCondition(
+      tester,
+      () => playPauseButton.hitTestable().evaluate().length == 1,
+      description: 'play/pause control is visible and hit-testable',
+      timeout: const Duration(seconds: 10),
+    );
+  } catch (_) {
+    final buttonCount = playPauseButton.evaluate().length;
+    final hitTestableCount = playPauseButton.hitTestable().evaluate().length;
+    final playerRect = tester.getRect(player);
+    var buttonRect = 'unavailable';
+    if (buttonCount == 1) {
+      try {
+        buttonRect = tester.getRect(playPauseButton).toString();
+      } catch (error) {
+        buttonRect = 'unavailable ($error)';
+      }
+    }
+    final offstageStates = find
+        .ancestor(of: playPauseButton, matching: find.byType(Offstage))
+        .evaluate()
+        .map((element) => (element.widget as Offstage).offstage)
+        .toList();
+    debugPrint(
+      'ANDROID_PLAYER_CONTROLS_TIMEOUT '
+      'controls=${controller.showControls.value} '
+      'locked=${controller.controlsLock.value} '
+      'buffering=${controller.isBuffering.value} '
+      'data=${controller.dataStatus.value} '
+      'playing=${controller.videoPlayerController!.state.playing} '
+      'rate=${controller.videoPlayerController!.state.rate} '
+      'buttonCount=$buttonCount hitTestableCount=$hitTestableCount '
+      'playerRect=$playerRect buttonRect=$buttonRect '
+      'offstageAncestors=$offstageStates',
+    );
+    rethrow;
+  }
   expect(playPauseButton, findsOneWidget, reason: 'one active play/pause control');
 }
 

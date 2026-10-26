@@ -205,6 +205,13 @@ cleanup() {
     awk -v target="$source_dir" '$1 == "worktree" && $2 == target { found = 1 } END { exit !found }'; then
     git -C "$repo_root" worktree remove --force "$source_dir" || true
   fi
+  for label in baseline candidate; do
+    local profile_source_dir="$runner_temp/expiliplus-android-profile-$label"
+    if git -C "$repo_root" worktree list --porcelain |
+      awk -v target="$profile_source_dir" '$1 == "worktree" && $2 == target { found = 1 } END { exit !found }'; then
+      git -C "$repo_root" worktree remove --force "$profile_source_dir" || true
+    fi
+  done
   rm -f "$fixture" "$defines_file" "$runner_temp/android_benchmark_video_data.dart"
 }
 trap cleanup EXIT
@@ -485,6 +492,7 @@ run_profile_revision() {
   local label="$1"
   local source_sha="$2"
   local output_dir="$evidence_dir/$label"
+  local source_dir="$runner_temp/expiliplus-android-profile-$label"
   local stage_status=0
   local profile_lock_sha
   local plugin_metadata
@@ -696,8 +704,19 @@ PY
 
 # APK bytes and dependency comparability are recorded before profile GIF work.
 # A later profile failure therefore cannot hide the completed package-size result.
-run_profile_revision baseline "$baseline_sha"
-run_profile_revision candidate "$candidate_sha"
+baseline_profile_status=0
+candidate_profile_status=0
+run_profile_revision baseline "$baseline_sha" &
+baseline_profile_pid=$!
+wait "$baseline_profile_pid" || baseline_profile_status=$?
+run_profile_revision candidate "$candidate_sha" &
+candidate_profile_pid=$!
+wait "$candidate_profile_pid" || candidate_profile_status=$?
+if [ "$baseline_profile_status" -ne 0 ] || [ "$candidate_profile_status" -ne 0 ]; then
+  echo "GIF profile validation failed: baseline=$baseline_profile_status candidate=$candidate_profile_status." >&2
+  echo "APK size results remain in $evidence_dir/apk-size-summary.md." >&2
+  exit 1
+fi
 
 if ! cmp -s \
   "$evidence_dir/baseline/resolved-pubspec-lock.sha256" \

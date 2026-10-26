@@ -34,10 +34,11 @@ def function_body(name: str, next_marker: str) -> str:
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
     def test_injected_benchmark_targets_are_analyzed_before_emulator_and_release(self) -> None:
-        self.assertIn(
-            "timeout --signal=TERM --kill-after=30s 15m sudo apt-get install",
-            BENCHMARK_WORKFLOW,
-        )
+        self.assertEqual(BENCHMARK_WORKFLOW.count("for attempt in 1 2"), 2)
+        self.assertIn("timeout --signal=TERM --kill-after=30s 5m sudo apt-get update", BENCHMARK_WORKFLOW)
+        self.assertIn("timeout --signal=TERM --kill-after=30s 8m \\", BENCHMARK_WORKFLOW)
+        self.assertIn("sudo apt-get install --no-install-recommends -y ffmpeg", BENCHMARK_WORKFLOW)
+        self.assertIn("apt-get install ffmpeg attempt ${attempt}/2 failed", BENCHMARK_WORKFLOW)
         preflight = BENCHMARK_WORKFLOW.index(
             "Compile injected GIF benchmark targets before APK builds"
         )
@@ -74,13 +75,18 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
             "'lavfi-fps=fps=$fps,lavfi-scale=w=$width:h=-2:flags=lanczos'",
             GIF_CONVERTER,
         )
-        self.assertIn("_command(['vf', 'set', videoFilters])", GIF_CONVERTER)
+        self.assertIn("_command(['vf', 'set', _videoFilters])", GIF_CONVERTER)
         self.assertIn("if (filterResult < 0)", GIF_CONVERTER)
         self.assertIn("_readOsdProperty('vf')", GIF_CONVERTER)
+        self.assertIn("_readOsdProperty('video-out-params/w')", GIF_CONVERTER)
+        self.assertIn("_readOsdProperty('video-out-params/h')", GIF_CONVERTER)
+        self.assertIn("_readOsdProperty('estimated-vf-fps')", GIF_CONVERTER)
+        self.assertIn("requestedVf=$requestedVf", GIF_CONVERTER)
+        self.assertIn("filteredOutput=${filteredWidth}x$filteredHeight", GIF_CONVERTER)
         self.assertIn("MPV_END_FILE_REASON_EOF", GIF_CONVERTER)
         self.assertIn("eof=$reachedEof", GIF_CONVERTER)
         self.assertIn("validation?.isValid == true", GIF_CONVERTER)
-        self.assertIn("vf=$videoFilters", GIF_CONVERTER)
+        self.assertIn("vf=$_videoFilters", GIF_CONVERTER)
         self.assertIn("const _expectedGifHeight = 270;", GIF_BENCHMARK_TEST)
         self.assertIn(
             "_expectedFrameCount - _frameCountTolerance",
@@ -88,6 +94,22 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         )
         self.assertIn("_expectedFrameCount + _frameCountTolerance", GIF_BENCHMARK_TEST)
         self.assertIn("not 28 <= frames <= 32", BENCHMARK_SCRIPT)
+
+    def test_player_controls_wait_for_state_before_repeating_surface_tap(self) -> None:
+        integration_test = Path(__file__).parents[2].joinpath(
+            "integration_test", "app_smoke_test.dart"
+        ).read_text(encoding="utf-8")
+        helper_start = integration_test.index("Future<void> _showPlayerControls(")
+        helper_end = integration_test.index("Finder _playerControls(", helper_start)
+        helper = integration_test[helper_start:helper_end]
+        self.assertIn("if (!controller.showControls.value)", helper)
+        self.assertNotIn(
+            "if (playPauseButton.hitTestable().evaluate().isEmpty)", helper
+        )
+        self.assertIn("controller.controlsLock.value", helper)
+        self.assertIn("controller.isBuffering.value", helper)
+        self.assertIn("state.rate == 1.5", integration_test)
+        self.assertIn("find.text('1.5X')", integration_test)
 
     def test_manifest_hash_comparison_ignores_sha256sum_output_paths(self) -> None:
         digest = "35b1de752a9cdf894c67eee838538f616d6d72654f7e4aa2cf80409749a43cc2"
@@ -186,6 +208,34 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertLess(profile_start, profile_candidate)
         self.assertIn("--summary-output", BENCHMARK_SCRIPT)
         self.assertIn("GITHUB_STEP_SUMMARY", BENCHMARK_SCRIPT)
+
+    def test_candidate_profile_runs_even_if_baseline_gif_validation_fails(self) -> None:
+        baseline = BENCHMARK_SCRIPT.index(
+            'run_profile_revision baseline "$baseline_sha" &'
+        )
+        baseline_wait = BENCHMARK_SCRIPT.index('wait "$baseline_profile_pid"', baseline)
+        candidate = BENCHMARK_SCRIPT.index(
+            'run_profile_revision candidate "$candidate_sha" &', baseline_wait
+        )
+        candidate_wait = BENCHMARK_SCRIPT.index(
+            'wait "$candidate_profile_pid"', candidate
+        )
+        result_check = BENCHMARK_SCRIPT.index(
+            'if [ "$baseline_profile_status" -ne 0 ]', candidate_wait
+        )
+        profile = function_body(
+            "run_profile_revision", 'build_release_revision baseline "$baseline_sha"'
+        )
+
+        self.assertLess(baseline, baseline_wait)
+        self.assertLess(baseline_wait, candidate)
+        self.assertLess(candidate, candidate_wait)
+        self.assertLess(candidate_wait, result_check)
+        self.assertIn(
+            'local source_dir="$runner_temp/expiliplus-android-profile-$label"',
+            profile,
+        )
+        self.assertIn('profile_source_dir="$runner_temp/expiliplus-android-profile-$label"', BENCHMARK_SCRIPT)
 
     def test_profile_harness_is_copied_only_after_release_build_function(self) -> None:
         release = function_body("build_release_revision", "run_profile_revision() {")
