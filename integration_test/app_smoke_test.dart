@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:ex_piliplus/common/widgets/progress_bar/audio_video_progress_bar.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
@@ -35,7 +36,19 @@ void main() {
   testWidgets(
     'fresh install navigates settings and plays/exports a public video',
     (tester) async {
-      await tester.runAsync(() => app.startApp(useScaledBinding: false));
+      await tester.runAsync(() async {
+        // The production crash reporter replaces the global handlers. Keep the
+        // integration binding's handlers after startup so asynchronous app
+        // errors are reported as test failures instead of being diverted.
+        final flutterErrorHandler = FlutterError.onError;
+        final platformErrorHandler = PlatformDispatcher.instance.onError;
+        try {
+          await app.startApp(useScaledBinding: false);
+        } finally {
+          FlutterError.onError = flutterErrorHandler;
+          PlatformDispatcher.instance.onError = platformErrorHandler;
+        }
+      });
       await tester.pump();
 
       await _waitFor(tester, find.byType(OnboardingPage));
@@ -334,8 +347,26 @@ void main() {
   );
 }
 
-AppLocalizations _localizations(WidgetTester tester) =>
-    AppLocalizations.of(tester.element(find.byType(RootPage)));
+AppLocalizations _localizations(WidgetTester tester) {
+  // Settings and video details can be pushed above the RootPage route, so use
+  // the current page's context. Prefer the most specific active page first.
+  final candidates = <Finder>[
+    find.byType(VideoDetailPageV),
+    find.byType(SettingPage),
+    find.byType(OnboardingPage),
+    find.byType(MainApp),
+    find.byType(RootPage),
+  ];
+  for (final finder in candidates) {
+    if (finder.evaluate().isNotEmpty) {
+      return AppLocalizations.of(tester.element(finder.first));
+    }
+  }
+  throw TestFailure(
+    'No active app page provides a localization context. '
+    'Page counts: ${candidates.map((finder) => finder.evaluate().length)}',
+  );
+}
 
 Future<void> _tapText(
   WidgetTester tester,
