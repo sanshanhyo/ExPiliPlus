@@ -1,14 +1,50 @@
+import 'dart:io';
+
+import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/services/shutdown_timer_service.dart';
 import 'package:ex_piliplus/services/shutdown_timer_snapshot.dart';
+import 'package:ex_piliplus/utils/storage.dart';
+import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:flutter/foundation.dart' show ValueListenable, ValueNotifier;
 import 'package:flutter/widgets.dart' show Builder, Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:material_ui/material_ui.dart' as mui;
 
 void main() {
+  late Directory tempDirectory;
   late _FakeShutdownTimerControls controller;
+
+  setUpAll(() async {
+    tempDirectory = await Directory.systemTemp.createTemp(
+      'expiliplus-shutdown-timer-dialog-test-',
+    );
+    Hive.init(tempDirectory.path);
+    GStorage.setting = await Hive.openBox<dynamic>('setting');
+    GStorage.video = await Hive.openBox<dynamic>('video');
+    GStorage.localCache = await Hive.openBox<dynamic>('localCache');
+
+    ThemeUtils.lightTheme = ThemeUtils.getThemeData(
+      colorScheme: mui.ColorScheme.fromSeed(seedColor: mui.Colors.teal),
+      isDynamic: false,
+    );
+    ThemeUtils.darkTheme = ThemeUtils.getThemeData(
+      colorScheme: mui.ColorScheme.fromSeed(
+        seedColor: mui.Colors.teal,
+        brightness: mui.Brightness.dark,
+      ),
+      isDynamic: false,
+      isDark: true,
+    );
+    ThemeUtils.themeMode = mui.ThemeMode.light;
+  });
+
+  tearDownAll(() async {
+    await Hive.close();
+    await tempDirectory.delete(recursive: true);
+  });
 
   setUp(() {
     controller = _FakeShutdownTimerControls();
@@ -104,7 +140,7 @@ Future<void> _openTimerDialog(
   await tester.pumpWidget(
     GetMaterialApp(
       locale: const Locale('zh'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: mui.Theme(
         data: mui.ThemeData(
