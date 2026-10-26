@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ex_piliplus/models/common/app_font_family.dart';
+import 'package:ex_piliplus/models/common/app_font_selection.dart';
 import 'package:ex_piliplus/services/app_font_archive_extractor.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -92,11 +93,14 @@ abstract final class AppFontManager {
   static String? fontFamilyFor(AppFontFamily font) =>
       _loadedFonts.contains(font) ? font.fontFamily : null;
 
-  static Future<void> init() async {
+  static Future<void> init({AppFontSelection? selection}) async {
     if (_initialized) return;
     _initialized = true;
 
-    final selected = Pref.appFontFamily;
+    final activeSelection =
+        selection ?? AppFontSelection.catalog(Pref.appFontFamily);
+    if (!activeSelection.isCatalog) return;
+    final selected = activeSelection.catalogFont;
     try {
       await _fontDirectory.create(recursive: true);
       for (final font in AppFontFamily.values) {

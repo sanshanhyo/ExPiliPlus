@@ -13,6 +13,33 @@ class AppFontFamilyDialog extends StatelessWidget {
 
   final AppFontFamily value;
 
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      clipBehavior: Clip.hardEdge,
+      title: Text(context.l10n.settingsAppFontTitle),
+      constraints: const BoxConstraints(minWidth: 300, maxWidth: 380),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+      content: AppFontFamilyPicker(
+        value: value,
+        onSelected: (font) => Navigator.of(context).pop(font),
+      ),
+    );
+  }
+}
+
+/// The existing checksum-and-license-backed catalog, reusable in the
+/// multi-source font picker without changing its download behavior.
+class AppFontFamilyPicker extends StatelessWidget {
+  const AppFontFamilyPicker({
+    super.key,
+    required this.value,
+    required this.onSelected,
+  });
+
+  final AppFontFamily value;
+  final ValueChanged<AppFontFamily> onSelected;
+
   static String _sizeLabel(int bytes) =>
       '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
 
@@ -84,10 +111,8 @@ class AppFontFamilyDialog extends StatelessWidget {
     };
   }
 
-  void _select(BuildContext context, AppFontFamily font) {
-    if (AppFontManager.isDownloaded(font)) {
-      Navigator.of(context).pop(font);
-    }
+  void _select(AppFontFamily font) {
+    if (AppFontManager.isDownloaded(font)) onSelected(font);
   }
 
   Widget _buildTile(
@@ -161,38 +186,32 @@ class AppFontFamilyDialog extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
       trailing: trailing,
-      onTap: downloaded ? () => _select(context, font) : null,
+      onTap: downloaded ? () => _select(font) : null,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      clipBehavior: Clip.hardEdge,
-      title: Text(context.l10n.settingsAppFontTitle),
-      constraints: const BoxConstraints(minWidth: 300, maxWidth: 380),
-      contentPadding: const EdgeInsets.symmetric(vertical: 12),
-      content: Material(
-        type: MaterialType.transparency,
-        child: SingleChildScrollView(
-          child: RadioGroup<AppFontFamily>(
-            groupValue: value,
-            onChanged: (font) {
-              if (font != null) _select(context, font);
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: AppFontFamily.values
-                  .map((font) {
-                    if (font.isSystem) return _buildTile(context, font);
-                    return ValueListenableBuilder(
-                      valueListenable: AppFontManager.downloadProgressOf(font),
-                      builder: (context, progress, _) =>
-                          _buildTile(context, font, progress),
-                    );
-                  })
-                  .toList(growable: false),
-            ),
+    return Material(
+      type: MaterialType.transparency,
+      child: SingleChildScrollView(
+        child: RadioGroup<AppFontFamily>(
+          groupValue: value,
+          onChanged: (font) {
+            if (font != null) _select(font);
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: AppFontFamily.values
+                .map((font) {
+                  if (font.isSystem) return _buildTile(context, font);
+                  return ValueListenableBuilder(
+                    valueListenable: AppFontManager.downloadProgressOf(font),
+                    builder: (context, progress, _) =>
+                        _buildTile(context, font, progress),
+                  );
+                })
+                .toList(growable: false),
           ),
         ),
       ),

@@ -128,6 +128,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSystemDefaultFont => 'System default';
 
   @override
+  String get settingsFontSourceCatalog => 'ExP font catalog';
+
+  @override
+  String get settingsFontSourceSystem => 'System fonts';
+
+  @override
+  String get settingsFontSourceLocal => 'Local font';
+
+  @override
+  String get settingsFontLocalDescription =>
+      'Choose a font file from this device. Local fonts are separate from the ExP font catalog.';
+
+  @override
+  String get settingsFontChooseLocalFile => 'Choose font file';
+
+  @override
+  String get settingsFontSystemUnsupported =>
+      'System font listing is supported on Android, Windows, and Linux.';
+
+  @override
+  String get settingsFontSystemEmpty => 'No system font families were found.';
+
+  @override
+  String get settingsFontInvalidLocalFile =>
+      'Choose a readable .ttf, .ttc, or .otf font file.';
+
+  @override
   String get settingsAppFontWeight => 'Font weight';
 
   @override

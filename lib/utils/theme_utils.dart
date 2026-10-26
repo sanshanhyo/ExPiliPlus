@@ -1,5 +1,6 @@
 import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
+import 'package:ex_piliplus/services/local_app_font_manager.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/cupertino.dart' show CupertinoThemeData;
@@ -39,7 +40,12 @@ abstract final class ThemeUtils {
     final fontWeight = appFontWeight == -1
         ? null
         : FontWeight.values[appFontWeight];
-    final fontFamily = AppFontManager.fontFamilyFor(Pref.appFontFamily);
+    final fontSelection = Pref.appFontSelection;
+    final fontFamily = switch (fontSelection.source) {
+      .catalog => AppFontManager.fontFamilyFor(fontSelection.catalogFont),
+      .system => fontSelection.systemFamily,
+      .local => LocalAppFontManager.fontFamilyFor(fontSelection),
+    };
     late final textStyle = TextStyle(
       fontFamily: fontFamily,
       fontWeight: fontWeight,

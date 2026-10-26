@@ -309,6 +309,22 @@ abstract class AppLocalizations {
   /// **'系统默认'**
   String get settingsSystemDefaultFont;
 
+  String get settingsFontSourceCatalog;
+
+  String get settingsFontSourceSystem;
+
+  String get settingsFontSourceLocal;
+
+  String get settingsFontLocalDescription;
+
+  String get settingsFontChooseLocalFile;
+
+  String get settingsFontSystemUnsupported;
+
+  String get settingsFontSystemEmpty;
+
+  String get settingsFontInvalidLocalFile;
+
   /// No description provided for @settingsAppFontWeight.
   ///
   /// In zh, this message translates to:

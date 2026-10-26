@@ -121,6 +121,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSystemDefaultFont => '系统默认';
 
   @override
+  String get settingsFontSourceCatalog => 'ExP 字体目录';
+
+  @override
+  String get settingsFontSourceSystem => '系统字体';
+
+  @override
+  String get settingsFontSourceLocal => '本地字体';
+
+  @override
+  String get settingsFontLocalDescription =>
+      '从此设备选择字体文件。本地字体与 ExP 字体目录分开管理。';
+
+  @override
+  String get settingsFontChooseLocalFile => '选择字体文件';
+
+  @override
+  String get settingsFontSystemUnsupported =>
+      '系统字体列表支持 Android、Windows 和 Linux。';
+
+  @override
+  String get settingsFontSystemEmpty => '没有找到系统字体。';
+
+  @override
+  String get settingsFontInvalidLocalFile =>
+      '请选择可读取的 .ttf、.ttc 或 .otf 字体文件。';
+
+  @override
   String get settingsAppFontWeight => '应用字体字重';
 
   @override
@@ -7571,6 +7598,33 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsSystemDefaultFont => '系統預設';
+
+  @override
+  String get settingsFontSourceCatalog => 'ExP 字型目錄';
+
+  @override
+  String get settingsFontSourceSystem => '系統字型';
+
+  @override
+  String get settingsFontSourceLocal => '本機字型';
+
+  @override
+  String get settingsFontLocalDescription =>
+      '從此裝置選擇字型檔。本機字型與 ExP 字型目錄分開管理。';
+
+  @override
+  String get settingsFontChooseLocalFile => '選擇字型檔';
+
+  @override
+  String get settingsFontSystemUnsupported =>
+      '系統字型列表支援 Android、Windows 和 Linux。';
+
+  @override
+  String get settingsFontSystemEmpty => '找不到系統字型。';
+
+  @override
+  String get settingsFontInvalidLocalFile =>
+      '請選擇可讀取的 .ttf、.ttc 或 .otf 字型檔。';
 
   @override
   String get settingsAppFontWeight => '應用程式字重';

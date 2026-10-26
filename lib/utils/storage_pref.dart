@@ -5,6 +5,7 @@ import 'package:ex_piliplus/common/widgets/gesture/horizontal_drag_gesture_recog
 import 'package:ex_piliplus/common/widgets/pair.dart';
 import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/models/common/app_font_family.dart';
+import 'package:ex_piliplus/models/common/app_font_selection.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:ex_piliplus/models/common/bar_hide_type.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_badge_mode.dart';
@@ -638,6 +639,18 @@ abstract final class Pref {
   static AppFontFamily get appFontFamily => AppFontFamily.fromName(
     _setting.get(SettingBoxKey.appFontFamily),
   );
+
+  static AppFontSelection get appFontSelection =>
+      AppFontSelection.fromStorage(
+        sourceName: _setting.get(SettingBoxKey.appFontSource),
+        catalogFontName: _setting.get(SettingBoxKey.appFontFamily),
+        systemFontFamily: _setting.get(SettingBoxKey.appFontSystemFamily),
+        localFileName: _setting.get(SettingBoxKey.appFontLocalFileName),
+        localDisplayName: _setting.get(
+          SettingBoxKey.appFontLocalDisplayName,
+        ),
+        localFontFamily: _setting.get(SettingBoxKey.appFontLocalFamily),
+      );
 
   static bool get enableDragSubtitle =>
       _setting.get(SettingBoxKey.enableDragSubtitle, defaultValue: false);
