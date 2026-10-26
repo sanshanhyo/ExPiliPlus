@@ -8,6 +8,7 @@ import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter_base.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_file_validator.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_runtime_capabilities.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:get/get_rx/get_rx.dart';
 import 'package:media_kit/ffi/src/allocation.dart';
@@ -375,7 +376,7 @@ class MpvConvertGif implements GifConverter {
     debugPrint(
       'GifConvert: capabilities mpv=${_readProperty('mpv-version')} '
       'ffmpeg=${_readProperty('ffmpeg-version')} '
-      'gifEncoder=${_hasEntry(encoderList, 'gif')} '
+      'gifEncoder=${mpvEncoderListContainsCodec(encoderList, 'gif')} '
       'encoderList=$encoderListSummary '
       'filterFlags=$enabledFilterFlags '
       'configuredFlags=$configFlags '
@@ -402,11 +403,5 @@ class MpvConvertGif implements GifConverter {
     final result = _sanitizeDiagnostic(value.toDartString());
     _mpv.mpv_free(value.cast());
     return result;
-  }
-
-  bool _hasEntry(String list, String expected) {
-    return list
-        .split(RegExp(r'[\r\n, ]+'))
-        .any((entry) => entry == expected || entry.startsWith('$expected '));
   }
 }
