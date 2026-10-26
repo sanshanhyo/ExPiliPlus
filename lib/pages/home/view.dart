@@ -94,6 +94,7 @@ class _HomePageState extends CommonPageState<HomePage>
 
   Widget customAppBar() {
     const padding = EdgeInsets.fromLTRB(14, 6, 14, 0);
+    final theme = Theme.of(context);
     final child = Row(
       children: [
         searchBar(),
