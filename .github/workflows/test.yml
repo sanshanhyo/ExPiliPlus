@@ -120,7 +120,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash .github/scripts/android_integration_test.sh "${{ runner.temp }}/android-integration-evidence"
+          script: bash .github/scripts/android_integration_test.sh "${{ runner.temp }}/android-integration-evidence" true
 
       - name: Upload Android integration evidence
         if: always()
@@ -131,5 +131,7 @@ jobs:
             ${{ runner.temp }}/android-integration-evidence/emulator-screen.png
             ${{ runner.temp }}/android-integration-evidence/android-logcat.txt
             ${{ runner.temp }}/android-integration-evidence/gif-probe.json
+            ${{ runner.temp }}/android-integration-evidence/countdown_quick_bar.png
+            ${{ runner.temp }}/android-integration-evidence/countdown_outside_tile.png
           if-no-files-found: ignore
           retention-days: 5

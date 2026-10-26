@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:ex_piliplus/common/widgets/progress_bar/audio_video_progress_bar.dart';
@@ -13,10 +14,13 @@ import 'package:ex_piliplus/pages/onboarding/view.dart';
 import 'package:ex_piliplus/pages/root/view.dart';
 import 'package:ex_piliplus/pages/setting/view.dart';
 import 'package:ex_piliplus/pages/video/view.dart';
+import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/view/view.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/play_pause_btn.dart';
+import 'package:ex_piliplus/services/shutdown_timer_service.dart';
+import 'package:ex_piliplus/utils/path_utils.dart' show tmpDirPath;
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:flutter/material.dart';
@@ -216,6 +220,65 @@ void main() {
 
       await _showPlayerControls(tester);
       l10n = _localizations(tester);
+      await tester.tap(find.byTooltip(l10n.playerMoreSettings).first);
+      await tester.pump();
+      final sleepTimerTile = find.byType(ShutdownTimerListTile);
+      await _waitFor(tester, sleepTimerTile);
+      await tester.ensureVisible(sleepTimerTile);
+      await tester.tap(sleepTimerTile);
+      await tester.pump();
+
+      final fifteenMinutePreset = find.text(l10n.shutdownMinutes(15));
+      await _waitFor(tester, fifteenMinutePreset);
+      await tester.tap(fifteenMinutePreset);
+      await tester.pump();
+      await _waitForCondition(
+        tester,
+        () => shutdownTimerService.isActive &&
+            shutdownTimerService.countdown.value.isScheduled,
+        description: 'sleep timer is scheduled from the video settings',
+      );
+
+      await tester.tap(find.byTooltip(l10n.playerMoreSettings).first);
+      await tester.pump();
+      final quickTimerAction = find.byType(ShutdownTimerQuickActionContent);
+      await _waitFor(tester, quickTimerAction);
+      final remainingLabel = l10n.statisticsRemaining(
+        l10n.shutdownMinutes(
+          shutdownTimerService.countdown.value.remainingMinutes,
+        ),
+      );
+      final quickRemainingLabel = find.descendant(
+        of: quickTimerAction,
+        matching: find.text(remainingLabel),
+      );
+      await _waitFor(tester, quickRemainingLabel);
+      await _captureCountdownScreenshot(tester, 'countdown_quick_bar');
+
+      await tester.ensureVisible(sleepTimerTile);
+      await tester.pump();
+      final outsideRemainingLabel = find.descendant(
+        of: sleepTimerTile,
+        matching: find.text(remainingLabel),
+      );
+      await _waitFor(tester, outsideRemainingLabel);
+      await _captureCountdownScreenshot(tester, 'countdown_outside_tile');
+
+      await tester.tap(sleepTimerTile);
+      await tester.pump();
+      final disableTimer = find.text(l10n.commonDisabled);
+      await _waitFor(tester, disableTimer);
+      await tester.tap(disableTimer);
+      await tester.pump();
+      await _waitForCondition(
+        tester,
+        () => !shutdownTimerService.isActive &&
+            !shutdownTimerService.countdown.value.isScheduled,
+        description: 'sleep timer cancels after screenshot capture',
+      );
+
+      await _showPlayerControls(tester);
+      l10n = _localizations(tester);
       final fullScreen = find.byTooltip(l10n.playerFullScreen);
       await _waitFor(tester, fullScreen);
       await tester.tap(fullScreen);
@@ -285,6 +348,22 @@ Future<void> _tapText(
   await tester.tap(target);
   await tester.pump();
   await Future<void>.delayed(const Duration(milliseconds: 300));
+  await tester.pump();
+}
+
+Future<void> _captureCountdownScreenshot(
+  WidgetTester tester,
+  String name,
+) async {
+  final binding = IntegrationTestWidgetsFlutterBinding.instance;
+  await binding.convertFlutterSurfaceToImage();
+  await tester.pump();
+  final screenshot = await binding.takeScreenshot(name);
+  expect(screenshot, isNotEmpty, reason: 'Expected screenshot bytes for $name');
+  await tester.runAsync(() async {
+    await File('$tmpDirPath/$name.png').writeAsBytes(screenshot, flush: true);
+  });
+  await binding.revertFlutterImage();
   await tester.pump();
 }
 
