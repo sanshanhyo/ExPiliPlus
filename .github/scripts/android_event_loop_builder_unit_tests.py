@@ -64,6 +64,9 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         flutter_setup = benchmark_workflow.index(
             "name: Setup Flutter for Android library packaging"
         )
+        dependency_resolution = benchmark_workflow.index(
+            "name: Resolve Flutter dependencies for the media_kit FFI contract"
+        )
         self.assertIn('"$RUNNER_TEMP/android-gif-libmpv-base"', benchmark_workflow)
         self.assertIn("android-gif-native-artifacts.sha256", benchmark_workflow)
         self.assertIn("sha256sum --check android-gif-native-artifacts.sha256", benchmark_workflow)
@@ -77,6 +80,9 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         self.assertLess(callback_stage, app_job)
         self.assertLess(app_job, benchmark_job)
         self.assertLess(flutter_setup, benchmark_workflow.index("name: Rebuild pinned filter-enabled GIF libmpv for all Android ABIs"))
+        self.assertIn("run: flutter pub get", benchmark_workflow[dependency_resolution:])
+        self.assertLess(flutter_setup, dependency_resolution)
+        self.assertLess(dependency_resolution, callback_stage)
         self.assertIn("flutter-version-file: pubspec.yaml", benchmark_workflow[flutter_setup:])
         self.assertIn("needs: [native, app-integration]", benchmark_workflow)
         self.assertIn('base_artifact_dir="${3:-$root_dir/third_party/android-gif-libmpv/artifacts}"', self.script)
