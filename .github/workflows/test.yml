@@ -57,6 +57,7 @@ jobs:
           python3 -m unittest discover -s .github/scripts -p 'media_kit_event_loop_contract_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_event_loop_artifact_stage_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_event_loop_builder_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_gif_common_lifecycle_fix_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Analyze

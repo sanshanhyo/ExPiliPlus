@@ -21,13 +21,22 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v7
 
+      - name: Restore the pinned Android GIF artifact cache
+        id: native-artifact-cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ runner.temp }}/android-gif-native-artifacts.tar.gz
+          key: android-gif-native-v1-${{ hashFiles('pubspec.yaml', 'pubspec.lock', 'lib/scripts/build_android_gif_libmpv.sh', 'lib/scripts/enable_android_gif_filters.py', 'lib/scripts/build_android_event_loop_compat.sh', 'third_party/android-gif-libmpv/**') }}
+
       - name: Setup Java for Android SDK tools
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
       - name: Setup Flutter for Android library packaging
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -35,17 +44,42 @@ jobs:
           cache: true
 
       - name: Resolve Flutter dependencies for the media_kit FFI contract
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         run: flutter pub get
 
+      - name: Verify restored pinned native GIF artifacts
+        if: steps.native-artifact-cache.outputs.cache-hit == 'true'
+        run: |
+          test -s "$RUNNER_TEMP/android-gif-native-artifacts.tar.gz"
+          tar -xzf "$RUNNER_TEMP/android-gif-native-artifacts.tar.gz" -C "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP"
+          sha256sum --check android-gif-native-artifacts.sha256
+          grep -Fxq 'source_commit=0bb77586769b9e882123197ef8dc940bae5de8b2' \
+            android-gif-libmpv-base/build-metadata.txt
+          grep -Fxq 'fps_filter=enabled' android-gif-libmpv-base/build-metadata.txt
+          grep -Fxq 'scale_filter=enabled' android-gif-libmpv-base/build-metadata.txt
+          grep -Fxq 'media_kit_native_event_loop_source_commit=73771ec38176be2d984a3049c28177bce23b54a0' \
+            android-gif-event-loop-artifacts/build-metadata.txt
+          grep -Fxq 'media_kit_native_event_loop_ndk_version=28.2.13676358' \
+            android-gif-event-loop-artifacts/build-metadata.txt
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            test -s "android-gif-libmpv-base/default-${abi}.jar"
+            test -s "android-gif-event-loop-artifacts/default-${abi}.jar"
+          done
+          echo "reused_native_artifact_cache_key=${{ steps.native-artifact-cache.outputs.cache-primary-key }}"
+
       - name: Check native builder contracts
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         run: |
           python3 -m unittest discover -s .github/scripts -p 'android_emulator_script_check_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_benchmark_script_check_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_event_loop_builder_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_gif_common_lifecycle_fix_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_event_loop_artifact_stage_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Install Android GIF native build tools
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         run: |
           if timeout --signal=TERM --kill-after=30s 5m sudo apt-get update; then
             :
@@ -83,6 +117,7 @@ jobs:
           echo "$RUNNER_TEMP/android-gif-build-venv/bin" >> "$GITHUB_PATH"
 
       - name: Rebuild pinned filter-enabled GIF libmpv for all Android ABIs
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         env:
           ANDROID_HOME: /usr/local/lib/android/sdk
           ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
@@ -108,6 +143,7 @@ jobs:
               "$RUNNER_TEMP/android-gif-libmpv-base"
 
       - name: Stage the locked media_kit callback into the rebuilt JARs
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         run: |
           bash lib/scripts/build_android_event_loop_compat.sh \
             "$RUNNER_TEMP/android-gif-event-loop-artifacts" \
@@ -115,6 +151,7 @@ jobs:
             "$RUNNER_TEMP/android-gif-libmpv-base"
 
       - name: Package and hash the temporary native artifacts
+        if: steps.native-artifact-cache.outputs.cache-hit != 'true'
         run: |
           cd "$RUNNER_TEMP"
           sha256sum \
@@ -129,6 +166,18 @@ jobs:
             android-event-loop-evidence \
             android-gif-build-toolchain.txt \
             android-gif-native-artifacts.sha256
+
+      - name: Report correctness-fixed GIF baseline
+        run: |
+          echo "Benchmark baseline identity: correctness-fixed baseline, abbfdd170c30a3996f083a00b3cf49a548b407a5 plus shared speed=1/deferred-END_FILE patch."
+          echo "The recorded performance comparison is the remaining candidate delta, not a broad refactor speed claim."
+          {
+            echo '### GIF benchmark baseline'
+            echo
+            echo '- Baseline: `abbfdd170c30a3996f083a00b3cf49a548b407a5` with the temporary shared speed and deferred END_FILE teardown patch.'
+            echo '- Candidate: current workflow head; both sides use the same correctness behavior and staged native JAR hashes.'
+            echo '- Comparison scope: removal of the second FILE_LOADED filter application plus diagnostic differences; no broad refactor claim.'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload temporary native artifacts for downstream validation
         if: success()
@@ -339,6 +388,7 @@ jobs:
           python3 -m unittest discover -s .github/scripts -p 'media_kit_event_loop_contract_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_event_loop_artifact_stage_unit_tests.py' -v
           python3 -m unittest discover -s .github/scripts -p 'android_event_loop_builder_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_gif_common_lifecycle_fix_unit_tests.py' -v
           python3 .github/scripts/check_android_emulator_scripts.py
 
       - name: Compile injected GIF benchmark targets before APK builds
@@ -352,7 +402,8 @@ jobs:
           bash .github/scripts/check_android_benchmark_harness.sh \
             "${{ github.sha }}" "$video_data" \
             "$RUNNER_TEMP/android-benchmark-harness-preflight" \
-            "$RUNNER_TEMP/android-gif-event-loop-artifacts"
+            "$RUNNER_TEMP/android-gif-event-loop-artifacts" \
+            abbfdd170c30a3996f083a00b3cf49a548b407a5
 
       - name: Verify KVM for the ephemeral Android runner
         run: |
@@ -378,7 +429,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash .github/scripts/run_android_benchmark.sh 9aa7ac0b3c68f696736afbca029c17f53b878c95 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
+          script: bash .github/scripts/run_android_benchmark.sh abbfdd170c30a3996f083a00b3cf49a548b407a5 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
 
       - name: Upload Android package and performance evidence
         if: always()

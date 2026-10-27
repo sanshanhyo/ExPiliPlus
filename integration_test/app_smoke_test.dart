@@ -18,6 +18,7 @@ import 'package:ex_piliplus/pages/root/view.dart';
 import 'package:ex_piliplus/pages/search/view.dart';
 import 'package:ex_piliplus/pages/setting/common_setting.dart';
 import 'package:ex_piliplus/pages/setting/view.dart';
+import 'package:ex_piliplus/pages/video/controller.dart';
 import 'package:ex_piliplus/pages/video/view.dart';
 import 'package:ex_piliplus/pages/video/widgets/header_control.dart';
 import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
@@ -218,6 +219,34 @@ void main() {
       expect(videoDetail, findsOneWidget, reason: 'one active video detail page');
       debugPrint('ANDROID_SMOKE_PHASE=public-video-detail-opened');
       l10n = _localizations(tester);
+      final videoDetailController = Get.find<VideoDetailController>(
+        tag: Get.arguments['heroTag'] as String,
+      );
+      try {
+        await _waitForCondition(
+          tester,
+          () => !videoDetailController.isQuerying &&
+              videoDetailController.videoUrl != null &&
+              videoDetailController.audioUrl != null,
+          description:
+              'public video play URLs finish loading before manual playback',
+          timeout: const Duration(seconds: 120),
+        );
+      } catch (_) {
+        debugPrint(
+          'ANDROID_VIDEO_SOURCE_DIAGNOSTICS '
+          'isQuerying=${videoDetailController.isQuerying} '
+          'hasVideoUrl=${videoDetailController.videoUrl != null} '
+          'hasAudioUrl=${videoDetailController.audioUrl != null} '
+          'autoPlay=${videoDetailController.autoPlay} '
+          'dataStatus=${PlPlayerController.instance!.dataStatus.value}',
+        );
+        rethrow;
+      }
+      debugPrint(
+        'ANDROID_SMOKE_PHASE=public-video-play-sources-ready '
+        'isQuerying=false hasVideoUrl=true hasAudioUrl=true',
+      );
       final manualPlay = find.descendant(
         of: videoDetail,
         matching: find.byTooltip(l10n.playerPlay),
@@ -228,11 +257,25 @@ void main() {
         description: 'start video playback from the detail page',
       );
       final playerController = PlPlayerController.instance!;
-      await _waitForCondition(
-        tester,
-        () => playerController.videoPlayerController != null,
-        description: 'native player controller initializes for public video',
-      );
+      try {
+        await _waitForCondition(
+          tester,
+          () => playerController.videoPlayerController != null,
+          description: 'native player controller initializes for public video',
+          timeout: const Duration(seconds: 90),
+        );
+      } catch (_) {
+        debugPrint(
+          'ANDROID_PLAYER_CREATION_DIAGNOSTICS '
+          'isQuerying=${videoDetailController.isQuerying} '
+          'hasVideoUrl=${videoDetailController.videoUrl != null} '
+          'hasAudioUrl=${videoDetailController.audioUrl != null} '
+          'autoPlay=${videoDetailController.autoPlay} '
+          'controllerCreated=${playerController.videoPlayerController != null} '
+          'dataStatus=${playerController.dataStatus.value}',
+        );
+        rethrow;
+      }
       final nativePlayer = playerController.videoPlayerController!;
       final playerErrors = <String>[];
       final bufferingEvents = <bool>[];

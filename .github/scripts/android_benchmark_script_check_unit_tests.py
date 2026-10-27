@@ -26,6 +26,9 @@ TEST_WORKFLOW = Path(__file__).parents[1].joinpath(
 APP_GIF_VALIDATION = Path(__file__).with_name(
     "run_android_app_gif_validation.sh"
 ).read_text(encoding="utf-8")
+APP_SMOKE_TEST = Path(__file__).parents[2].joinpath(
+    "integration_test", "app_smoke_test.dart"
+).read_text(encoding="utf-8")
 BENCHMARK_PREFLIGHT = Path(__file__).with_name(
     "check_android_benchmark_harness.sh"
 ).read_text(encoding="utf-8")
@@ -93,6 +96,9 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("flutter analyze", BENCHMARK_PREFLIGHT)
         self.assertIn("integration_test/android_gif_benchmark_test.dart", BENCHMARK_PREFLIGHT)
         self.assertIn("integration_test/android_benchmark_driver.dart", BENCHMARK_PREFLIGHT)
+        self.assertIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_PREFLIGHT)
+        self.assertIn('baseline_sha="${5:-}"', BENCHMARK_PREFLIGHT)
+        self.assertIn("Correctness-fixed baseline Dart analysis failed", BENCHMARK_PREFLIGHT)
         self.assertLess(
             BENCHMARK_PREFLIGHT.index('cp "$video_data_dart"'),
             BENCHMARK_PREFLIGHT.index("flutter analyze"),
@@ -129,6 +135,39 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertLess(
             BENCHMARK_WORKFLOW.index("name: Run Android app and GIF export validation"),
             BENCHMARK_WORKFLOW.index("name: Compare APK size and synthetic-video GIF performance"),
+        )
+
+    def test_public_video_query_finishes_before_the_smoke_test_taps_play(self) -> None:
+        ready_marker = APP_SMOKE_TEST.index(
+            "ANDROID_SMOKE_PHASE=public-video-play-sources-ready"
+        )
+        play_tap = APP_SMOKE_TEST.index(
+            "description: 'start video playback from the detail page'"
+        )
+        self.assertLess(ready_marker, play_tap)
+        readiness_wait = APP_SMOKE_TEST.index(
+            "description:\n              'public video play URLs finish loading before manual playback'"
+        )
+        self.assertLess(readiness_wait, ready_marker)
+        self.assertIn("!videoDetailController.isQuerying", APP_SMOKE_TEST)
+        self.assertIn("videoDetailController.videoUrl != null", APP_SMOKE_TEST)
+        self.assertIn("videoDetailController.audioUrl != null", APP_SMOKE_TEST)
+        self.assertIn("ANDROID_PLAYER_CREATION_DIAGNOSTICS", APP_SMOKE_TEST)
+
+    def test_benchmark_uses_correctness_fixed_parent_and_reuses_native_cache(self) -> None:
+        self.assertIn("abbfdd170c30a3996f083a00b3cf49a548b407a5", BENCHMARK_WORKFLOW)
+        self.assertIn("Restore the pinned Android GIF artifact cache", BENCHMARK_WORKFLOW)
+        self.assertIn("Verify restored pinned native GIF artifacts", BENCHMARK_WORKFLOW)
+        self.assertIn("steps.native-artifact-cache.outputs.cache-hit", BENCHMARK_WORKFLOW)
+        self.assertIn("correctness-fixed baseline", BENCHMARK_WORKFLOW)
+        self.assertIn(
+            'script: bash .github/scripts/run_android_benchmark.sh '
+            'abbfdd170c30a3996f083a00b3cf49a548b407a5 "${{ github.sha }}"',
+            BENCHMARK_WORKFLOW,
+        )
+        self.assertIn('"label": "correctness-fixed baseline"', BENCHMARK_SCRIPT)
+        self.assertIn(
+            "apply_android_gif_common_lifecycle_fix.py", BENCHMARK_SCRIPT
         )
         self.assertIn(
             "if: github.ref != 'refs/heads/refactor/shutdown-timer-ui'",

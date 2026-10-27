@@ -9,6 +9,7 @@ fi
 baseline_sha="$1"
 candidate_sha="$2"
 evidence_dir="$3"
+correctness_baseline_sha="abbfdd170c30a3996f083a00b3cf49a548b407a5"
 repo_root="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
 runner_temp="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 source_dir="$runner_temp/expiliplus-android-benchmark-source"
@@ -32,6 +33,10 @@ esac
 mkdir -p "$evidence_dir/baseline" "$evidence_dir/candidate" "$evidence_dir/toolchain"
 git -C "$repo_root" cat-file -e "${baseline_sha}^{commit}"
 git -C "$repo_root" cat-file -e "${candidate_sha}^{commit}"
+if [ "$baseline_sha" != "$correctness_baseline_sha" ]; then
+  echo "This comparison requires the pinned correctness-fixed baseline source: $correctness_baseline_sha" >&2
+  exit 1
+fi
 actual_fixture_sha="$(sha256sum "$source_fixture" | awk '{print $1}')"
 if [ "$actual_fixture_sha" != "$expected_fixture_sha" ]; then
   echo "Synthetic benchmark fixture hash mismatch: $actual_fixture_sha" >&2
@@ -90,6 +95,8 @@ python3 -m unittest discover -s "$repo_root/.github/scripts" \
 
 baseline_lock_sha="$(git -C "$repo_root" show "$baseline_sha:pubspec.lock" | sha256sum | awk '{print $1}')"
 candidate_lock_sha="$(git -C "$repo_root" show "$candidate_sha:pubspec.lock" | sha256sum | awk '{print $1}')"
+baseline_converter_sha="$(git -C "$repo_root" show "$baseline_sha:lib/plugin/pl_player/widgets/mpv_convert_gif.dart" | sha256sum | awk '{print $1}')"
+candidate_converter_sha="$(git -C "$repo_root" show "$candidate_sha:lib/plugin/pl_player/widgets/mpv_convert_gif.dart" | sha256sum | awk '{print $1}')"
 if [ "$baseline_lock_sha" != "$candidate_lock_sha" ]; then
   echo "pubspec.lock differs between benchmark inputs" >&2
   exit 1
@@ -133,7 +140,8 @@ adb shell getprop ro.build.version.release > "$evidence_dir/toolchain/android-re
 adb shell getprop ro.build.version.sdk > "$evidence_dir/toolchain/android-api.txt"
 sha256sum "$defines_file" > "$evidence_dir/toolchain/benchmark-defines.sha256"
 python3 - "$evidence_dir/benchmark-metadata.json" \
-  "$baseline_sha" "$candidate_sha" "$baseline_lock_sha" \
+  "$baseline_sha" "$candidate_sha" "$baseline_converter_sha" \
+  "$candidate_converter_sha" "$baseline_lock_sha" \
   "$build_name" "$build_number" "$upstream_version" \
   "$expected_fixture_sha" "$event_loop_artifact_dir" <<'PY'
 import json
@@ -141,10 +149,20 @@ import hashlib
 import sys
 from pathlib import Path
 
-output, baseline, candidate, lock_sha, name, code, upstream, fixture_sha, event_loop_dir = sys.argv[1:]
+output, baseline, candidate, baseline_converter, candidate_converter, lock_sha, name, code, upstream, fixture_sha, event_loop_dir = sys.argv[1:]
 metadata = {
     "baseline_sha": baseline,
     "candidate_sha": candidate,
+    "baseline_identity": {
+        "label": "correctness-fixed baseline",
+        "source_commit": baseline,
+        "temporary_patch": "shared explicit speed=1 and deferred END_FILE teardown; FILE_LOADED filter reapplication retained",
+    },
+    "comparison_scope": "The candidate removes the second FILE_LOADED filter set and adds runtime diagnostics after the shared lifecycle fix; this is not a broad refactor comparison.",
+    "gif_converter_source_sha256": {
+        "baseline_before_temporary_patch": baseline_converter,
+        "candidate": candidate_converter,
+    },
     "runner": "ubuntu-22.04",
     "flutter": "3.47.7",
     "java": "Temurin 17",
@@ -226,6 +244,22 @@ cleanup() {
 }
 trap cleanup EXIT
 
+apply_baseline_correctness_patch() {
+  local label="$1"
+  local source_sha="$2"
+  local source_path="$3"
+  local output_dir="$4"
+  if [ "$label" != "baseline" ] || [ "$source_sha" != "$correctness_baseline_sha" ]; then
+    echo "Refusing to apply the correctness-baseline patch to $label ($source_sha)." >&2
+    return 1
+  fi
+  python3 "$repo_root/.github/scripts/apply_android_gif_common_lifecycle_fix.py" \
+    "$source_path" "$source_sha" \
+    --metadata-output "$output_dir/correctness-fixed-baseline.txt"
+  cp "$output_dir/correctness-fixed-baseline.txt" \
+    "$evidence_dir/toolchain/correctness-fixed-baseline.txt"
+}
+
 build_release_revision() {
   local label="$1"
   local source_sha="$2"
@@ -240,6 +274,9 @@ build_release_revision() {
   local release_apk
 
   git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
+  if [ "$label" = "baseline" ]; then
+    apply_baseline_correctness_patch "$label" "$source_sha" "$source_dir" "$output_dir"
+  fi
 
   input_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
   printf '%s\n' "$input_lock_sha" > "$output_dir/input-pubspec-lock.sha256"
@@ -495,6 +532,10 @@ PY
   fi
   cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"
   printf '%s\n' "$source_sha" > "$output_dir/source-sha.txt"
+  if [ "$label" = "baseline" ]; then
+    printf '%s\n' "correctness-fixed baseline: source=$source_sha" \
+      > "$output_dir/source-identity.txt"
+  fi
   git -C "$repo_root" worktree remove --force "$source_dir"
 }
 
@@ -508,6 +549,9 @@ run_profile_revision() {
   local plugin_metadata
 
   git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
+  if [ "$label" = "baseline" ]; then
+    apply_baseline_correctness_patch "$label" "$source_sha" "$source_dir" "$output_dir"
+  fi
   if (
     cd "$source_dir" &&
     echo "benchmark stage: Android patch for profile GIF ($label)" &&
@@ -684,6 +728,8 @@ lines = [
     f"- Production lock SHA-256: `{production_lock_sha}`",
     f"- Production manifest SHA-256: `{production_manifest_sha}`",
     "- Baseline and candidate production manifest/lock were checked identical before profiling.",
+    "- Correctness-fixed baseline: `abbfdd170c30a3996f083a00b3cf49a548b407a5` plus the recorded shared speed/deferred-teardown patch.",
+    "- Comparison scope: candidate removes the previous FILE_LOADED filter reapplication and adds runtime diagnostics; this does not measure a broad refactor.",
     "",
 ]
 summary = "\n".join(lines)
