@@ -202,6 +202,17 @@ jobs:
           git diff --exit-code -- lib/l10n/generated
           git diff --check
 
+      - name: Install pinned Pillow decoder for app GIF verification
+        run: |
+          python3 -m venv "$RUNNER_TEMP/android-app-gif-venv"
+          timeout --signal=TERM --kill-after=15s 4m \
+            "$RUNNER_TEMP/android-app-gif-venv/bin/pip" install --no-input \
+              --disable-pip-version-check --only-binary=:all: --timeout 20 --retries 2 \
+              Pillow==12.3.0
+          "$RUNNER_TEMP/android-app-gif-venv/bin/python" -c \
+            'import PIL; print(f"Pillow {PIL.__version__}"); assert PIL.__version__ == "12.3.0"'
+          echo "$RUNNER_TEMP/android-app-gif-venv/bin" >> "$GITHUB_PATH"
+
       - name: Enable KVM for Android emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

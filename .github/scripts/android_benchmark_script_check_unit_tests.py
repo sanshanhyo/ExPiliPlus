@@ -110,6 +110,18 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("validate_android_gif.py", APP_GIF_VALIDATION)
         self.assertIn('if [ "$integration_status" -eq 0 ]; then', APP_GIF_VALIDATION)
         self.assertIn('tee "$evidence_dir/validation-status.txt"', APP_GIF_VALIDATION)
+        app_validation = BENCHMARK_WORKFLOW.index(
+            "name: Run Android app and GIF export validation"
+        )
+        app_gif_decoder = BENCHMARK_WORKFLOW.index(
+            "Install pinned Pillow decoder for app GIF verification"
+        )
+        app_emulator = BENCHMARK_WORKFLOW.index(
+            "Run app playback, timer, and real GIF export on Android"
+        )
+        self.assertLess(app_validation, app_gif_decoder)
+        self.assertLess(app_gif_decoder, app_emulator)
+        self.assertIn("Pillow==12.3.0", BENCHMARK_WORKFLOW[app_gif_decoder:app_emulator])
         self.assertIn("android-gif-build-toolchain.txt", BENCHMARK_WORKFLOW)
         self.assertIn("needs: [native, app-integration]", BENCHMARK_WORKFLOW)
         self.assertIn("needs.native.result == 'success'", BENCHMARK_WORKFLOW)
