@@ -154,7 +154,7 @@ mkdir -p "$OUTPUT_DIR/licenses"
     cp "$license_file" "$destination"
     echo "$relative_path"
   done < <(
-    find "$SOURCE_DIR/deps" -type f \
+    find "$SOURCE_DIR/buildscripts/deps" -type f \
       \( -iname 'LICENSE*' -o -iname 'COPYING*' \) -print0 | sort -z
   )
 } > "$OUTPUT_DIR/licenses.txt"

@@ -111,6 +111,7 @@ def _write_metadata(
     patch_file: Path,
     ndk_version: str,
     host_contract_test: str,
+    license_inventory_entry: str,
 ) -> None:
     metadata_path = artifact_dir / "build-metadata.txt"
     old_lines = metadata_path.read_text(encoding="utf-8").splitlines()
@@ -139,7 +140,7 @@ def _write_metadata(
         "media_kit_native_event_loop_source_manifest_sha256": manifest_hash.hexdigest(),
         "media_kit_native_event_loop_license": "MIT",
         "media_kit_native_event_loop_license_sha256": sha256_file(source_dir / "LICENSE"),
-        "media_kit_native_event_loop_license_inventory_entry": LOCKED_LICENSE_INVENTORY_ENTRY,
+        "media_kit_native_event_loop_license_inventory_entry": license_inventory_entry,
         "media_kit_native_event_loop_patch_sha256": sha256_file(patch_file),
         "media_kit_native_event_loop_callback_contract_test": host_contract_test,
     }
@@ -218,20 +219,33 @@ def stage_artifacts(
 
     license_inventory = output_dir / "licenses.txt"
     inventory_entries = license_inventory.read_text(encoding="utf-8").splitlines()
-    locked_license = output_dir / "licenses" / LOCKED_LICENSE_INVENTORY_ENTRY
-    if LOCKED_LICENSE_INVENTORY_ENTRY in inventory_entries:
-        if not locked_license.is_file() or locked_license.read_bytes() != (source_dir / "LICENSE").read_bytes():
-            raise ValueError("Existing locked event-loop license inventory entry does not match its source")
+    locked_license_entry = BASE_LICENSE_INVENTORY_ENTRY
+    source_license_bytes = (source_dir / "LICENSE").read_bytes()
+    staged_base_license = output_dir / "licenses" / BASE_LICENSE_INVENTORY_ENTRY
+    if staged_base_license.read_bytes() == source_license_bytes:
+        if BASE_LICENSE_INVENTORY_ENTRY not in inventory_entries:
+            raise ValueError("Base media_kit license is missing from the staged inventory")
     else:
-        if locked_license.exists():
-            raise ValueError("Locked event-loop license file exists without a license inventory entry")
-        locked_license.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source_dir / "LICENSE", locked_license)
-        inventory_entries.append(LOCKED_LICENSE_INVENTORY_ENTRY)
-        license_inventory.write_text("\n".join(inventory_entries) + "\n", encoding="utf-8")
+        locked_license_entry = LOCKED_LICENSE_INVENTORY_ENTRY
+        locked_license = output_dir / "licenses" / LOCKED_LICENSE_INVENTORY_ENTRY
+        if LOCKED_LICENSE_INVENTORY_ENTRY in inventory_entries:
+            if not locked_license.is_file() or locked_license.read_bytes() != source_license_bytes:
+                raise ValueError("Existing locked event-loop license inventory entry does not match its source")
+        else:
+            if locked_license.exists():
+                raise ValueError("Locked event-loop license file exists without a license inventory entry")
+            locked_license.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source_dir / "LICENSE", locked_license)
+            inventory_entries.append(LOCKED_LICENSE_INVENTORY_ENTRY)
+            license_inventory.write_text("\n".join(inventory_entries) + "\n", encoding="utf-8")
 
     if (output_dir / "licenses" / BASE_LICENSE_INVENTORY_ENTRY).read_bytes() != upstream_license.read_bytes():
         raise ValueError("Base media_kit license changed while staging")
+
+    if locked_license_entry == LOCKED_LICENSE_INVENTORY_ENTRY:
+        locked_license = output_dir / "licenses" / LOCKED_LICENSE_INVENTORY_ENTRY
+        if not locked_license.is_file() or locked_license.read_bytes() != source_license_bytes:
+            raise ValueError("Staged locked event-loop MIT license does not match its source")
 
     _write_metadata(
         output_dir,
@@ -239,6 +253,7 @@ def stage_artifacts(
         patch_file,
         ndk_version,
         host_contract_test,
+        locked_license_entry,
     )
 
 

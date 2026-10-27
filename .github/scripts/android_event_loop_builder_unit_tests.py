@@ -49,6 +49,13 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         self.assertIn('"$evidence_dir/native-libs"', self.script)
         self.assertIn('"$android_sdk"/cmdline-tools/*/bin/sdkmanager', self.script)
 
+    def test_collects_licenses_from_the_buildscripts_dependency_tree(self) -> None:
+        native_builder = (ROOT / "lib/scripts/build_android_gif_libmpv.sh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('find "$SOURCE_DIR/buildscripts/deps" -type f', native_builder)
+        self.assertNotIn('find "$SOURCE_DIR/deps" -type f', native_builder)
+
     def test_refactor_workflow_stages_rebuilt_filter_enabled_jars_before_emulator(self) -> None:
         test_workflow = (ROOT / ".github/workflows/test.yml").read_text(encoding="utf-8")
         benchmark_workflow = (ROOT / ".github/workflows/android-benchmark.yml").read_text(

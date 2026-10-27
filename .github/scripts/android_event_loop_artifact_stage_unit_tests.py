@@ -138,6 +138,27 @@ class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
             (self.source / "LICENSE").read_bytes(),
         )
 
+    def test_reuses_the_base_inventory_when_its_license_matches_the_locked_source(self) -> None:
+        base_license = self.base / "licenses" / BASE_LICENSE_INVENTORY_ENTRY
+        base_license.write_bytes((self.source / "LICENSE").read_bytes())
+        stage_artifacts(
+            self.base,
+            self.native,
+            self.output,
+            self.source,
+            self.patch,
+            "28.2.13676358",
+        )
+
+        inventory = (self.output / "licenses.txt").read_text(encoding="utf-8").splitlines()
+        metadata = (self.output / "build-metadata.txt").read_text(encoding="utf-8")
+        self.assertIn(BASE_LICENSE_INVENTORY_ENTRY, inventory)
+        self.assertNotIn(LOCKED_LICENSE_INVENTORY_ENTRY, inventory)
+        self.assertIn(
+            f"media_kit_native_event_loop_license_inventory_entry={BASE_LICENSE_INVENTORY_ENTRY}",
+            metadata,
+        )
+
     def test_rejects_mismatched_existing_locked_license_entry(self) -> None:
         inventory = self.base / "licenses.txt"
         inventory.write_text(
