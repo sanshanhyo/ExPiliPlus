@@ -27,6 +27,13 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Setup Flutter for Android library packaging
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
       - name: Check native builder contracts
         run: |
           python3 -m unittest discover -s .github/scripts -p 'android_emulator_script_check_unit_tests.py' -v

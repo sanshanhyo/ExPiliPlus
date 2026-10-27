@@ -61,6 +61,9 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         self.assertIn("refs/heads/refactor/shutdown-timer-ui", test_workflow)
         self.assertIn("build_android_gif_libmpv.sh", benchmark_workflow)
         self.assertIn("Refusing the upstream command-line-tools bootstrap", benchmark_workflow)
+        flutter_setup = benchmark_workflow.index(
+            "name: Setup Flutter for Android library packaging"
+        )
         self.assertIn('"$RUNNER_TEMP/android-gif-libmpv-base"', benchmark_workflow)
         self.assertIn("android-gif-native-artifacts.sha256", benchmark_workflow)
         self.assertIn("sha256sum --check android-gif-native-artifacts.sha256", benchmark_workflow)
@@ -73,6 +76,8 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         )
         self.assertLess(callback_stage, app_job)
         self.assertLess(app_job, benchmark_job)
+        self.assertLess(flutter_setup, benchmark_workflow.index("name: Rebuild pinned filter-enabled GIF libmpv for all Android ABIs"))
+        self.assertIn("flutter-version-file: pubspec.yaml", benchmark_workflow[flutter_setup:])
         self.assertIn("needs: [native, app-integration]", benchmark_workflow)
         self.assertIn('base_artifact_dir="${3:-$root_dir/third_party/android-gif-libmpv/artifacts}"', self.script)
         benchmark_preflight = (ROOT / ".github/scripts/check_android_benchmark_harness.sh").read_text(

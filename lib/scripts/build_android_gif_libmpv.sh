@@ -14,6 +14,11 @@ fi
 RUN_ROOT="${RUNNER_TEMP:-$(mktemp -d /tmp/expiliplus-android-gif-build.XXXXXX)}"
 SOURCE_DIR="$RUN_ROOT/libmpv-android-video-build"
 
+if ! command -v flutter >/dev/null 2>&1; then
+  echo "Flutter SDK is required to package the Android library artifacts." >&2
+  exit 1
+fi
+
 mkdir -p "$OUTPUT_DIR"
 rm -f "$OUTPUT_DIR"/*.jar "$OUTPUT_DIR"/build-metadata.txt \
   "$OUTPUT_DIR"/build.log "$OUTPUT_DIR"/licenses.txt \

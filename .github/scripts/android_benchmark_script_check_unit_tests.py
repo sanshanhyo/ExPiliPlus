@@ -191,6 +191,7 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("MAX_DURATION_MS = 3200", GIF_VALIDATOR)
 
     def test_pinned_android_gif_build_enables_and_verifies_required_lavfi_filters(self) -> None:
+        self.assertIn("Flutter SDK is required to package the Android library artifacts.", GIF_BUILD_SCRIPT)
         self.assertIn("--enable-muxer=gif", GIF_BUILD_PATCH)
         self.assertIn("--enable-encoder=gif", GIF_BUILD_PATCH)
         self.assertIn("--enable-filter=fps", GIF_FILTER_PATCHER)
