@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$#" -ne 3 ]; then
-  echo "Usage: check_android_benchmark_harness.sh CANDIDATE_SHA VIDEO_DATA_DART EVIDENCE_DIR" >&2
+if [ "$#" -lt 3 ] || [ "$#" -gt 4 ]; then
+  echo "Usage: check_android_benchmark_harness.sh CANDIDATE_SHA VIDEO_DATA_DART EVIDENCE_DIR [STAGED_ARTIFACT_DIR]" >&2
   exit 2
 fi
 
@@ -15,6 +15,7 @@ source_dir="$runner_temp/expiliplus-benchmark-harness-preflight"
 patch_log="$evidence_dir/android-patch.log"
 event_loop_log="$evidence_dir/event-loop-build.log"
 analyze_log="$evidence_dir/dart-analyze.log"
+staged_artifact_dir="${4:-}"
 
 case "$source_dir" in
   "$runner_temp"/*) ;;
@@ -69,16 +70,37 @@ fi
 
 echo "Android GIF benchmark injection passed Dart analysis for $candidate_sha."
 
-if (
-  cd "$source_dir"
-  bash lib/scripts/build_android_event_loop_compat.sh \
-    "$runner_temp/android-gif-event-loop-artifacts" \
-    "$evidence_dir/event-loop-build"
-) > "$event_loop_log" 2>&1; then
-  cat "$event_loop_log"
+if [ -n "$staged_artifact_dir" ]; then
+  for artifact in default-arm64-v8a.jar default-armeabi-v7a.jar default-x86_64.jar; do
+    if [ ! -s "$staged_artifact_dir/$artifact" ]; then
+      echo "Prebuilt GIF artifact is missing: $staged_artifact_dir/$artifact" >&2
+      exit 1
+    fi
+  done
+  metadata="$staged_artifact_dir/build-metadata.txt"
+  if ! grep -Fxq \
+    "media_kit_native_event_loop_source_commit=73771ec38176be2d984a3049c28177bce23b54a0" \
+    "$metadata" ||
+    ! grep -Fxq 'fps_filter=enabled' "$metadata" ||
+    ! grep -Fxq 'scale_filter=enabled' "$metadata"; then
+    echo "Prebuilt GIF artifact metadata is missing the pinned callback or filters." >&2
+    cat "$metadata" >&2
+    exit 1
+  fi
+  printf 'reused_staged_gif_artifacts=%s\n' "$staged_artifact_dir" \
+    | tee "$event_loop_log"
 else
-  status=$?
-  echo "Benchmark event-loop compatibility build failed with status $status." >&2
-  tail -n 120 "$event_loop_log" >&2 || true
-  exit "$status"
+  if (
+    cd "$source_dir"
+    bash lib/scripts/build_android_event_loop_compat.sh \
+      "$runner_temp/android-gif-event-loop-artifacts" \
+      "$evidence_dir/event-loop-build"
+  ) > "$event_loop_log" 2>&1; then
+    cat "$event_loop_log"
+  else
+    status=$?
+    echo "Benchmark event-loop compatibility build failed with status $status." >&2
+    tail -n 120 "$event_loop_log" >&2 || true
+    exit "$status"
+  fi
 fi

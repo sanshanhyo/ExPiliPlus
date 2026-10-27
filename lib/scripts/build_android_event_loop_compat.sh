@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ "$#" -ne 2 ]; then
-  echo "Usage: build_android_event_loop_compat.sh STAGED_ARTIFACT_DIR EVIDENCE_DIR" >&2
+if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
+  echo "Usage: build_android_event_loop_compat.sh STAGED_ARTIFACT_DIR EVIDENCE_DIR [BASE_ARTIFACT_DIR]" >&2
   exit 2
 fi
 
 artifact_dir="$1"
 evidence_dir="$2"
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+base_artifact_dir="${3:-$root_dir/third_party/android-gif-libmpv/artifacts}"
 source_dir="$root_dir/third_party/android-gif-libmpv/media_kit_native_event_loop"
 source_patch="$source_dir/android-opaque-mpv-handle.patch"
 ndk_version="28.2.13676358"
@@ -211,7 +212,7 @@ build_one_abi x86_64 x86_64-linux-android${android_api}-clang++
 python3 "$root_dir/.github/scripts/check_media_kit_event_loop_contract.py" "$root_dir" \
   | tee -a "$build_log"
 python3 "$root_dir/.github/scripts/stage_android_event_loop_artifacts.py" \
-  --base-artifacts "$root_dir/third_party/android-gif-libmpv/artifacts" \
+  --base-artifacts "$base_artifact_dir" \
   --native-libs "$native_output" \
   --output-dir "$artifact_dir" \
   --source-dir "$source_dir" \

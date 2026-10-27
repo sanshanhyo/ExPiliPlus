@@ -20,6 +20,12 @@ BENCHMARK_SCRIPT = Path(__file__).with_name("run_android_benchmark.sh").read_tex
 BENCHMARK_WORKFLOW = Path(__file__).parents[1].joinpath(
     "workflows", "android-benchmark.yml"
 ).read_text(encoding="utf-8")
+TEST_WORKFLOW = Path(__file__).parents[1].joinpath(
+    "workflows", "test.yml"
+).read_text(encoding="utf-8")
+APP_GIF_VALIDATION = Path(__file__).with_name(
+    "run_android_app_gif_validation.sh"
+).read_text(encoding="utf-8")
 BENCHMARK_PREFLIGHT = Path(__file__).with_name(
     "check_android_benchmark_harness.sh"
 ).read_text(encoding="utf-8")
@@ -54,21 +60,35 @@ def function_body(name: str, next_marker: str) -> str:
 
 class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
     def test_injected_benchmark_targets_are_analyzed_before_emulator_and_release(self) -> None:
-        self.assertNotIn("apt-get", BENCHMARK_WORKFLOW)
         self.assertNotIn("ffmpeg", BENCHMARK_WORKFLOW)
         self.assertIn("Pillow==12.3.0", BENCHMARK_WORKFLOW)
+        self.assertIn("Install Android GIF native build tools", BENCHMARK_WORKFLOW)
+        self.assertIn("Rebuild pinned filter-enabled GIF libmpv for all Android ABIs", BENCHMARK_WORKFLOW)
+        self.assertIn("Stage the locked media_kit callback into the rebuilt JARs", BENCHMARK_WORKFLOW)
         self.assertIn("sha256sum --check SHA256SUMS", BENCHMARK_WORKFLOW)
         self.assertIn("android-benchmark-source.mp4", BENCHMARK_WORKFLOW)
         preflight = BENCHMARK_WORKFLOW.index(
             "Compile injected GIF benchmark targets before APK builds"
         )
         kvm = BENCHMARK_WORKFLOW.index("Verify KVM for the ephemeral Android runner")
-        emulator = BENCHMARK_WORKFLOW.index("uses: reactivecircus/android-emulator-runner@v2")
-        upload_evidence = BENCHMARK_WORKFLOW.index("Upload benchmark evidence")
+        emulator = BENCHMARK_WORKFLOW.index(
+            "script: bash .github/scripts/run_android_benchmark.sh"
+        )
+        upload_evidence = BENCHMARK_WORKFLOW.index(
+            "Upload Android package and performance evidence"
+        )
 
         self.assertIn("check_android_benchmark_harness.sh", BENCHMARK_WORKFLOW)
+        native_build = BENCHMARK_WORKFLOW.index(
+            "Rebuild pinned filter-enabled GIF libmpv for all Android ABIs"
+        )
+        callback_stage = BENCHMARK_WORKFLOW.index(
+            "Stage the locked media_kit callback into the rebuilt JARs"
+        )
         self.assertLess(preflight, kvm)
         self.assertLess(preflight, emulator)
+        self.assertLess(native_build, callback_stage)
+        self.assertLess(callback_stage, preflight)
         self.assertLess(emulator, upload_evidence)
         self.assertIn("flutter analyze", BENCHMARK_PREFLIGHT)
         self.assertIn("integration_test/android_gif_benchmark_test.dart", BENCHMARK_PREFLIGHT)
@@ -79,7 +99,32 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         )
         self.assertLess(
             BENCHMARK_WORKFLOW.index("Compile injected GIF benchmark targets before APK builds"),
-            BENCHMARK_WORKFLOW.index("Build matched APKs and benchmark native GIF conversion"),
+            BENCHMARK_WORKFLOW.index(
+                "Build matched APKs and benchmark synthetic GIF conversion"
+            ),
+        )
+
+    def test_app_gif_validation_and_benchmark_are_separate_jobs(self) -> None:
+        self.assertIn("run_android_app_gif_validation.sh", BENCHMARK_WORKFLOW)
+        self.assertIn("android_integration_test.sh", APP_GIF_VALIDATION)
+        self.assertIn("validate_android_gif.py", APP_GIF_VALIDATION)
+        self.assertIn('if [ "$integration_status" -eq 0 ]; then', APP_GIF_VALIDATION)
+        self.assertIn('tee "$evidence_dir/validation-status.txt"', APP_GIF_VALIDATION)
+        self.assertIn("android-gif-build-toolchain.txt", BENCHMARK_WORKFLOW)
+        self.assertIn("needs: [native, app-integration]", BENCHMARK_WORKFLOW)
+        self.assertIn("needs.native.result == 'success'", BENCHMARK_WORKFLOW)
+        self.assertIn("run_android_benchmark.sh", BENCHMARK_WORKFLOW)
+        self.assertLess(
+            BENCHMARK_WORKFLOW.index("name: Run Android app and GIF export validation"),
+            BENCHMARK_WORKFLOW.index("name: Compare APK size and synthetic-video GIF performance"),
+        )
+        self.assertIn(
+            "if: github.ref != 'refs/heads/refactor/shutdown-timer-ui'",
+            TEST_WORKFLOW,
+        )
+        self.assertIn(
+            "The refactor branch runs this same app/GIF integration after building",
+            TEST_WORKFLOW,
         )
 
     def test_gif_benchmark_uses_the_production_file_validator_api(self) -> None:

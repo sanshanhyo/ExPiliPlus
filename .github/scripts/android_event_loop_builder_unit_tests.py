@@ -49,22 +49,38 @@ class AndroidEventLoopBuilderTest(unittest.TestCase):
         self.assertIn('"$evidence_dir/native-libs"', self.script)
         self.assertIn('"$android_sdk"/cmdline-tools/*/bin/sdkmanager', self.script)
 
-    def test_both_android_workflows_stage_before_the_emulator_and_use_staged_jars(self) -> None:
+    def test_refactor_workflow_stages_rebuilt_filter_enabled_jars_before_emulator(self) -> None:
         test_workflow = (ROOT / ".github/workflows/test.yml").read_text(encoding="utf-8")
         benchmark_workflow = (ROOT / ".github/workflows/android-benchmark.yml").read_text(
             encoding="utf-8"
         )
-        for workflow in (test_workflow, benchmark_workflow):
-            self.assertIn(
-                "MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts",
-                workflow,
-            )
-        test_stage = test_workflow.index("Build locked media_kit Android event-loop compatibility artifact")
-        test_emulator = test_workflow.index("Run isolated app integration test")
-        self.assertLess(test_stage, test_emulator)
+        self.assertIn(
+            "MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts",
+            benchmark_workflow,
+        )
+        self.assertIn("refs/heads/refactor/shutdown-timer-ui", test_workflow)
+        self.assertIn("build_android_gif_libmpv.sh", benchmark_workflow)
+        self.assertIn("Refusing the upstream command-line-tools bootstrap", benchmark_workflow)
+        self.assertIn('"$RUNNER_TEMP/android-gif-libmpv-base"', benchmark_workflow)
+        self.assertIn("android-gif-native-artifacts.sha256", benchmark_workflow)
+        self.assertIn("sha256sum --check android-gif-native-artifacts.sha256", benchmark_workflow)
+        callback_stage = benchmark_workflow.index(
+            "Stage the locked media_kit callback into the rebuilt JARs"
+        )
+        app_job = benchmark_workflow.index("name: Run Android app and GIF export validation")
+        benchmark_job = benchmark_workflow.index(
+            "name: Compare APK size and synthetic-video GIF performance"
+        )
+        self.assertLess(callback_stage, app_job)
+        self.assertLess(app_job, benchmark_job)
+        self.assertIn("needs: [native, app-integration]", benchmark_workflow)
+        self.assertIn('base_artifact_dir="${3:-$root_dir/third_party/android-gif-libmpv/artifacts}"', self.script)
         benchmark_preflight = (ROOT / ".github/scripts/check_android_benchmark_harness.sh").read_text(
             encoding="utf-8"
         )
+        self.assertIn("fps_filter=enabled", benchmark_preflight)
+        self.assertIn("scale_filter=enabled", benchmark_preflight)
+        self.assertIn('"$staged_artifact_dir"', benchmark_preflight)
         self.assertIn("build_android_event_loop_compat.sh", benchmark_preflight)
         self.assertLess(
             benchmark_preflight.index("flutter analyze"),

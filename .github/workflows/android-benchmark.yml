@@ -13,16 +13,269 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  compare-android:
-    name: Compare Android APK size and native GIF conversion
+  native:
+    name: Build temporary filter-enabled Android GIF libraries
     runs-on: ubuntu-22.04
-    # Covers the explicit per-revision pub/build/profile limits for both runs.
-    timeout-minutes: 240
+    timeout-minutes: 180
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Setup Java for Android SDK tools
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Check native builder contracts
+        run: |
+          python3 -m unittest discover -s .github/scripts -p 'android_emulator_script_check_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_benchmark_script_check_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_event_loop_builder_unit_tests.py' -v
+          python3 -m unittest discover -s .github/scripts -p 'android_event_loop_artifact_stage_unit_tests.py' -v
+          python3 .github/scripts/check_android_emulator_scripts.py
+
+      - name: Install Android GIF native build tools
+        run: |
+          if timeout --signal=TERM --kill-after=30s 5m sudo apt-get update; then
+            :
+          else
+            status=$?
+            echo "apt-get update failed or timed out (status $status)" >&2
+            exit "$status"
+          fi
+          if timeout --signal=TERM --kill-after=30s 5m sudo apt-get install --no-install-recommends -y \
+            autoconf pkg-config libtool ninja-build nasm unzip python3-pip python3-venv; then
+            :
+          else
+            status=$?
+            echo "native package installation failed or timed out (status $status)" >&2
+            exit "$status"
+          fi
+          python3 -m venv "$RUNNER_TEMP/android-gif-build-venv"
+          if timeout --signal=TERM --kill-after=30s 4m \
+            "$RUNNER_TEMP/android-gif-build-venv/bin/pip" install --no-input \
+              --disable-pip-version-check --only-binary=:all: --timeout 20 --retries 2 \
+              meson jsonschema jinja2; then
+            :
+          else
+            status=$?
+            echo "native Python build-tool installation failed or timed out (status $status)" >&2
+            exit "$status"
+          fi
+          {
+            echo "python=$(python3 --version 2>&1)"
+            echo "pip=$($RUNNER_TEMP/android-gif-build-venv/bin/pip --version)"
+            "$RUNNER_TEMP/android-gif-build-venv/bin/pip" freeze
+            dpkg-query -W -f='${Package}=${Version}\n' \
+              autoconf pkg-config libtool ninja-build nasm unzip python3-pip python3-venv
+          } > "$RUNNER_TEMP/android-gif-build-toolchain.txt"
+          echo "$RUNNER_TEMP/android-gif-build-venv/bin" >> "$GITHUB_PATH"
+
+      - name: Rebuild pinned filter-enabled GIF libmpv for all Android ABIs
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+        run: |
+          sdk_root="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
+          sdkmanager=""
+          for candidate in \
+            "$sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "$sdk_root/tools/bin/sdkmanager" \
+            "$sdk_root"/cmdline-tools/*/bin/sdkmanager; do
+            if [ -x "$candidate" ]; then
+              sdkmanager="$candidate"
+              break
+            fi
+          done
+          if [ -z "$sdkmanager" ]; then
+            echo "Refusing the upstream command-line-tools bootstrap: hosted Android SDK is unavailable at $sdk_root" >&2
+            exit 1
+          fi
+          echo "using_existing_sdkmanager=$sdkmanager"
+          timeout --signal=TERM --kill-after=60s 100m \
+            bash lib/scripts/build_android_gif_libmpv.sh \
+              "$RUNNER_TEMP/android-gif-libmpv-base"
+
+      - name: Stage the locked media_kit callback into the rebuilt JARs
+        run: |
+          bash lib/scripts/build_android_event_loop_compat.sh \
+            "$RUNNER_TEMP/android-gif-event-loop-artifacts" \
+            "$RUNNER_TEMP/android-event-loop-evidence" \
+            "$RUNNER_TEMP/android-gif-libmpv-base"
+
+      - name: Package and hash the temporary native artifacts
+        run: |
+          cd "$RUNNER_TEMP"
+          sha256sum \
+            android-gif-libmpv-base/default-*.jar \
+            android-gif-libmpv-base/build-metadata.txt \
+            android-gif-event-loop-artifacts/default-*.jar \
+            android-gif-event-loop-artifacts/build-metadata.txt \
+            > android-gif-native-artifacts.sha256
+          tar -czf android-gif-native-artifacts.tar.gz \
+            android-gif-libmpv-base \
+            android-gif-event-loop-artifacts \
+            android-event-loop-evidence \
+            android-gif-build-toolchain.txt \
+            android-gif-native-artifacts.sha256
+
+      - name: Upload temporary native artifacts for downstream validation
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-gif-native-bundle-${{ github.run_id }}
+          path: ${{ runner.temp }}/android-gif-native-artifacts.tar.gz
+          if-no-files-found: error
+          retention-days: 5
+
+      - name: Upload native build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-gif-native-build-evidence-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/android-gif-libmpv-base/build.log
+            ${{ runner.temp }}/android-gif-libmpv-base/build-metadata.txt
+            ${{ runner.temp }}/android-gif-build-toolchain.txt
+            ${{ runner.temp }}/android-event-loop-evidence/**
+          if-no-files-found: ignore
+          retention-days: 5
+
+  app-integration:
+    name: Run Android app and GIF export validation
+    needs: native
+    runs-on: ubuntu-22.04
+    timeout-minutes: 75
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v7
+
+      - name: Download temporary native artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-gif-native-bundle-${{ github.run_id }}
+          path: ${{ runner.temp }}/android-gif-native-download
+
+      - name: Verify and unpack temporary native artifacts
+        run: |
+          tar -xzf "$RUNNER_TEMP/android-gif-native-download/android-gif-native-artifacts.tar.gz" \
+            -C "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP"
+          sha256sum --check android-gif-native-artifacts.sha256
+          grep -Fxq 'fps_filter=enabled' android-gif-event-loop-artifacts/build-metadata.txt
+          grep -Fxq 'scale_filter=enabled' android-gif-event-loop-artifacts/build-metadata.txt
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            test -s "android-gif-libmpv-base/default-${abi}.jar"
+            test -s "android-gif-event-loop-artifacts/default-${abi}.jar"
+          done
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.7"
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Apply Android Flutter patch
+        shell: pwsh
+        run: lib/scripts/patch.ps1 Android
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Check generated localizations and whitespace
+        run: |
+          git diff --exit-code -- lib/l10n/generated
+          git diff --check
+
+      - name: Enable KVM for Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle
+          if [ ! -e /dev/kvm ]; then
+            echo "KVM device /dev/kvm is unavailable" >&2
+            exit 1
+          fi
+          ls -l /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
+
+      - name: Run app playback, timer, and real GIF export on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash .github/scripts/run_android_app_gif_validation.sh "${{ runner.temp }}/android-app-gif-validation"
+
+      - name: Upload Android app and GIF verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-app-gif-validation-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/android-app-gif-validation/emulator-screen.png
+            ${{ runner.temp }}/android-app-gif-validation/android-logcat.txt
+            ${{ runner.temp }}/android-app-gif-validation/countdown_quick_bar.png
+            ${{ runner.temp }}/android-app-gif-validation/countdown_outside_tile.png
+            ${{ runner.temp }}/android-app-gif-validation/integration-step.log
+            ${{ runner.temp }}/android-app-gif-validation/gif-validation.log
+            ${{ runner.temp }}/android-app-gif-validation/gif-probe.json
+            ${{ runner.temp }}/android-app-gif-validation/export-gif.sha256
+            ${{ runner.temp }}/android-app-gif-validation/validation-status.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+  compare:
+    name: Compare APK size and synthetic-video GIF performance
+    needs: [native, app-integration]
+    if: ${{ always() && needs.native.result == 'success' }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
     steps:
       - name: Checkout candidate and baseline history
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+
+      - name: Download temporary native artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-gif-native-bundle-${{ github.run_id }}
+          path: ${{ runner.temp }}/android-gif-native-download
+
+      - name: Verify and unpack temporary native artifacts
+        run: |
+          tar -xzf "$RUNNER_TEMP/android-gif-native-download/android-gif-native-artifacts.tar.gz" \
+            -C "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP"
+          sha256sum --check android-gif-native-artifacts.sha256
+          grep -Fxq 'fps_filter=enabled' android-gif-event-loop-artifacts/build-metadata.txt
+          grep -Fxq 'scale_filter=enabled' android-gif-event-loop-artifacts/build-metadata.txt
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            test -s "android-gif-libmpv-base/default-${abi}.jar"
+            test -s "android-gif-event-loop-artifacts/default-${abi}.jar"
+          done
 
       - name: Setup Java
         uses: actions/setup-java@v5
@@ -77,7 +330,8 @@ jobs:
             "$fixture" "$video_data"
           bash .github/scripts/check_android_benchmark_harness.sh \
             "${{ github.sha }}" "$video_data" \
-            "$RUNNER_TEMP/android-benchmark-harness-preflight"
+            "$RUNNER_TEMP/android-benchmark-harness-preflight" \
+            "$RUNNER_TEMP/android-gif-event-loop-artifacts"
 
       - name: Verify KVM for the ephemeral Android runner
         run: |
@@ -92,7 +346,7 @@ jobs:
           ls -l /dev/kvm
           test -r /dev/kvm && test -w /dev/kvm
 
-      - name: Build matched APKs and benchmark native GIF conversion
+      - name: Build matched APKs and benchmark synthetic GIF conversion
         uses: reactivecircus/android-emulator-runner@v2
         env:
           MEDIA_KIT_ANDROID_VIDEO_ARTIFACT_DIR: ${{ runner.temp }}/android-gif-event-loop-artifacts
@@ -105,11 +359,11 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: bash .github/scripts/run_android_benchmark.sh 9aa7ac0b3c68f696736afbca029c17f53b878c95 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
 
-      - name: Upload benchmark evidence
+      - name: Upload Android package and performance evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-benchmark-${{ github.run_id }}
+          name: android-apk-gif-benchmark-${{ github.run_id }}
           path: ${{ runner.temp }}/android-benchmark/
           if-no-files-found: ignore
           retention-days: 14

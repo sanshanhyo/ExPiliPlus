@@ -75,6 +75,9 @@ jobs:
 
   android-integration:
     name: Android emulator integration
+    # The refactor branch runs this same app/GIF integration after building
+    # the filter-enabled native artifacts in android-benchmark.yml.
+    if: github.ref != 'refs/heads/refactor/shutdown-timer-ui'
     needs: quality
     runs-on: ubuntu-latest
     timeout-minutes: 45

@@ -38,20 +38,40 @@ git -C "$SOURCE_DIR" apply \
 python3 "$ROOT_DIR/lib/scripts/enable_android_gif_filters.py" \
   "$SOURCE_DIR/buildscripts/flavors/default.sh"
 
-# Reuse a complete local Android SDK on macOS when available. The pinned
-# upstream bootstrap otherwise downloads the 137 MB command-line-tools ZIP
-# into every fresh temporary checkout before sdkmanager can validate/install
-# the pinned platform, build-tools, NDK and CMake versions.
-if [[ "$OSTYPE" == darwin* ]]; then
+# Reuse an installed Android SDK when available. The pinned upstream bootstrap
+# otherwise downloads a command-line-tools ZIP into every fresh checkout.
+if [[ "$OSTYPE" == darwin* || "$OSTYPE" == linux* ]]; then
   local_android_sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-${HOME:-}/Library/Android/sdk}}"
-  if [ -x "$local_android_sdk/cmdline-tools/latest/bin/sdkmanager" ]; then
+  local_sdkmanager=""
+  for candidate in \
+    "$local_android_sdk/cmdline-tools/latest/bin/sdkmanager" \
+    "$local_android_sdk/tools/bin/sdkmanager"; do
+    if [ -x "$candidate" ]; then
+      local_sdkmanager="$candidate"
+      break
+    fi
+  done
+  if [ -z "$local_sdkmanager" ]; then
+    for candidate in "$local_android_sdk"/cmdline-tools/*/bin/sdkmanager; do
+      if [ -x "$candidate" ]; then
+        local_sdkmanager="$candidate"
+        break
+      fi
+    done
+  fi
+  if [ -n "$local_sdkmanager" ]; then
     mkdir -p "$SOURCE_DIR/buildscripts/sdk"
-    ln -s "$local_android_sdk" \
-      "$SOURCE_DIR/buildscripts/sdk/android-sdk-mac"
-    # The pinned path.sh currently uses the Linux directory name even on
-    # macOS when constructing the NDK toolchain path.
-    ln -s "$local_android_sdk" \
-      "$SOURCE_DIR/buildscripts/sdk/android-sdk-linux"
+    if [[ "$OSTYPE" == darwin* ]]; then
+      ln -s "$local_android_sdk" \
+        "$SOURCE_DIR/buildscripts/sdk/android-sdk-mac"
+    fi
+    # The pinned path.sh uses the Linux directory name on both Linux and macOS
+    # when constructing the Android toolchain path.
+    if [ ! -e "$SOURCE_DIR/buildscripts/sdk/android-sdk-linux" ] &&
+      [ ! -L "$SOURCE_DIR/buildscripts/sdk/android-sdk-linux" ]; then
+      ln -s "$local_android_sdk" \
+        "$SOURCE_DIR/buildscripts/sdk/android-sdk-linux"
+    fi
     echo "reusing_local_android_sdk=$local_android_sdk"
   fi
 fi
