@@ -8,9 +8,12 @@ from pathlib import Path
 
 from stage_android_event_loop_artifacts import (
     JARS,
+    LOCKED_LICENSE_INVENTORY_ENTRY,
     SOURCE_COMMIT,
     stage_artifacts,
 )
+
+BASE_LICENSE_INVENTORY_ENTRY = "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
 
 
 class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
@@ -26,6 +29,7 @@ class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
         self.source.mkdir()
         self.patch.write_text("patch bytes\n", encoding="utf-8")
         (self.source / "LICENSE").write_text("MIT license fixture\n", encoding="utf-8")
+        self.base_license_bytes = b"MIT license packaged by the unpatched base builder\n"
         source_files = self.source / "src"
         source_files.mkdir()
         for name in (
@@ -41,12 +45,12 @@ class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
                 f"new callback library {abi}".encode("utf-8")
             )
         self.base.mkdir()
-        license_path = self.base / "licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
+        license_path = self.base / "licenses" / BASE_LICENSE_INVENTORY_ENTRY
         license_path.parent.mkdir(parents=True)
-        license_path.write_bytes((self.source / "LICENSE").read_bytes())
+        license_path.write_bytes(self.base_license_bytes)
         (self.base / "source-license.txt").write_text("builder license\n", encoding="utf-8")
         (self.base / "licenses.txt").write_text(
-            "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE\n",
+            f"{BASE_LICENSE_INVENTORY_ENTRY}\n",
             encoding="utf-8",
         )
 
@@ -109,25 +113,41 @@ class StageAndroidEventLoopArtifactsTest(unittest.TestCase):
         self.assertIn("media_kit_native_event_loop_api=legacy-wakeup-callback-v1", metadata)
         self.assertIn("media_kit_native_event_loop_ndk_version=28.2.13676358", metadata)
         self.assertIn("media_kit_native_event_loop_callback_contract_test=passed", metadata)
+        self.assertIn(
+            f"media_kit_native_event_loop_license_inventory_entry={LOCKED_LICENSE_INVENTORY_ENTRY}",
+            metadata,
+        )
         for _, name in JARS:
             self.assertIn(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), metadata)
         self.assertIn(
-            "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE",
+            BASE_LICENSE_INVENTORY_ENTRY,
+            (self.output / "licenses.txt").read_text(encoding="utf-8"),
+        )
+        self.assertIn(
+            LOCKED_LICENSE_INVENTORY_ENTRY,
             (self.output / "licenses.txt").read_text(encoding="utf-8"),
         )
         self.assertEqual(
+            (self.output / "licenses" / BASE_LICENSE_INVENTORY_ENTRY).read_bytes(),
+            self.base_license_bytes,
+        )
+        self.assertEqual(
             (
-                self.output
-                / "licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
+                self.output / "licenses" / LOCKED_LICENSE_INVENTORY_ENTRY
             ).read_bytes(),
             (self.source / "LICENSE").read_bytes(),
         )
 
-    def test_rejects_mismatched_event_loop_license(self) -> None:
-        (self.base / "licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE").write_text(
-            "different license\n", encoding="utf-8"
+    def test_rejects_mismatched_existing_locked_license_entry(self) -> None:
+        inventory = self.base / "licenses.txt"
+        inventory.write_text(
+            inventory.read_text(encoding="utf-8") + f"{LOCKED_LICENSE_INVENTORY_ENTRY}\n",
+            encoding="utf-8",
         )
-        with self.assertRaisesRegex(ValueError, "MIT license does not match"):
+        conflicting = self.base / "licenses" / LOCKED_LICENSE_INVENTORY_ENTRY
+        conflicting.parent.mkdir(parents=True)
+        conflicting.write_text("different locked license\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Existing locked event-loop license"):
             stage_artifacts(
                 self.base,
                 self.native,

@@ -22,7 +22,8 @@ JARS = (
 )
 EVENT_LOOP_PATH_TEMPLATE = "lib/{abi}/libmedia_kit_native_event_loop.so"
 METADATA_PREFIX = "media_kit_native_event_loop_"
-LICENSE_INVENTORY_ENTRY = "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
+BASE_LICENSE_INVENTORY_ENTRY = "buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
+LOCKED_LICENSE_INVENTORY_ENTRY = "expiliplus/locked-deps/media_kit_native_event_loop/LICENSE"
 
 
 def sha256_file(path: Path) -> str:
@@ -138,6 +139,7 @@ def _write_metadata(
         "media_kit_native_event_loop_source_manifest_sha256": manifest_hash.hexdigest(),
         "media_kit_native_event_loop_license": "MIT",
         "media_kit_native_event_loop_license_sha256": sha256_file(source_dir / "LICENSE"),
+        "media_kit_native_event_loop_license_inventory_entry": LOCKED_LICENSE_INVENTORY_ENTRY,
         "media_kit_native_event_loop_patch_sha256": sha256_file(patch_file),
         "media_kit_native_event_loop_callback_contract_test": host_contract_test,
     }
@@ -189,12 +191,11 @@ def stage_artifacts(
     if not (base_artifacts / "licenses.txt").is_file():
         raise ValueError("Base GIF artifact license inventory is missing")
 
-    upstream_license = (
-        base_artifacts
-        / "licenses/buildscripts/deps/media_kit/media_kit_native_event_loop/LICENSE"
-    )
-    if not upstream_license.is_file() or upstream_license.read_bytes() != (source_dir / "LICENSE").read_bytes():
-        raise ValueError("Locked event-loop MIT license does not match the packaged inventory")
+    base_license_inventory = base_artifacts / "licenses.txt"
+    base_license_entries = base_license_inventory.read_text(encoding="utf-8").splitlines()
+    upstream_license = base_artifacts / "licenses" / BASE_LICENSE_INVENTORY_ENTRY
+    if BASE_LICENSE_INVENTORY_ENTRY not in base_license_entries or not upstream_license.is_file():
+        raise ValueError("Base GIF artifact does not preserve its media_kit event-loop license")
 
     rows = _metadata_rows(base_artifacts)
     if set(rows) != {name for _, name in JARS}:
@@ -216,11 +217,21 @@ def stage_artifacts(
             )
 
     license_inventory = output_dir / "licenses.txt"
-    if LICENSE_INVENTORY_ENTRY not in license_inventory.read_text(encoding="utf-8").splitlines():
-        raise ValueError("Base GIF artifact does not inventory the locked event-loop license")
-    packaged_license = output_dir / "licenses" / LICENSE_INVENTORY_ENTRY
-    if not packaged_license.is_file() or packaged_license.read_bytes() != (source_dir / "LICENSE").read_bytes():
-        raise ValueError("Staged JAR license inventory lost the locked event-loop MIT license")
+    inventory_entries = license_inventory.read_text(encoding="utf-8").splitlines()
+    locked_license = output_dir / "licenses" / LOCKED_LICENSE_INVENTORY_ENTRY
+    if LOCKED_LICENSE_INVENTORY_ENTRY in inventory_entries:
+        if not locked_license.is_file() or locked_license.read_bytes() != (source_dir / "LICENSE").read_bytes():
+            raise ValueError("Existing locked event-loop license inventory entry does not match its source")
+    else:
+        if locked_license.exists():
+            raise ValueError("Locked event-loop license file exists without a license inventory entry")
+        locked_license.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source_dir / "LICENSE", locked_license)
+        inventory_entries.append(LOCKED_LICENSE_INVENTORY_ENTRY)
+        license_inventory.write_text("\n".join(inventory_entries) + "\n", encoding="utf-8")
+
+    if (output_dir / "licenses" / BASE_LICENSE_INVENTORY_ENTRY).read_bytes() != upstream_license.read_bytes():
+        raise ValueError("Base media_kit license changed while staging")
 
     _write_metadata(
         output_dir,
