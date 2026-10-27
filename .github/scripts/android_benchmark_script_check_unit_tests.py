@@ -414,6 +414,17 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("--summary-output", BENCHMARK_SCRIPT)
         self.assertIn("GITHUB_STEP_SUMMARY", BENCHMARK_SCRIPT)
 
+    def test_apk_summary_receives_both_revision_ids(self) -> None:
+        summary_start = BENCHMARK_SCRIPT.index(
+            'python3 - "$evidence_dir" "$baseline_sha" "$candidate_sha" <<\'PY\''
+        )
+        summary_end = BENCHMARK_SCRIPT.index("\nPY\n", summary_start)
+        summary = BENCHMARK_SCRIPT[summary_start:summary_end]
+
+        self.assertIn("baseline_sha, candidate_sha = sys.argv[2:]", summary)
+        self.assertIn('f"- Measured-before baseline: `{baseline_sha}` (no source patch)."', summary)
+        self.assertIn('f"- Candidate: `{candidate_sha}`."', summary)
+
     def test_candidate_profile_runs_even_if_baseline_gif_validation_fails(self) -> None:
         baseline = BENCHMARK_SCRIPT.index(
             'run_profile_revision baseline "$baseline_sha" &'

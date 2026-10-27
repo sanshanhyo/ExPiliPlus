@@ -681,13 +681,14 @@ python3 "$repo_root/.github/scripts/android_apk_report.py" \
   --baseline-sha "$baseline_sha" --candidate-sha "$candidate_sha" \
   --output "$evidence_dir/apk-size-comparison.json" \
   --summary-output "$evidence_dir/apk-size-summary.md"
-python3 - "$evidence_dir" <<'PY'
+python3 - "$evidence_dir" "$baseline_sha" "$candidate_sha" <<'PY'
 import json
 import os
 import sys
 from pathlib import Path
 
 evidence = Path(sys.argv[1])
+baseline_sha, candidate_sha = sys.argv[2:]
 with (evidence / "toolchain/flutter.json").open(encoding="utf-8") as source:
     flutter = json.load(source)
 full_lock_sha = __import__("hashlib").sha256(
@@ -712,6 +713,7 @@ lines = [
     f"- Production manifest SHA-256: `{production_manifest_sha}`",
     "- Baseline and candidate production manifest/lock were checked identical before profiling.",
     f"- Measured-before baseline: `{baseline_sha}` (no source patch).",
+    f"- Candidate: `{candidate_sha}`.",
     "- Comparison scope: candidate removes the synchronous full GIF read/parse from END_FILE before deferred teardown; both retain the same post-teardown output validation.",
     "",
 ]
