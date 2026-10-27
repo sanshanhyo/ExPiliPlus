@@ -26,6 +26,9 @@ TEST_WORKFLOW = Path(__file__).parents[1].joinpath(
 APP_GIF_VALIDATION = Path(__file__).with_name(
     "run_android_app_gif_validation.sh"
 ).read_text(encoding="utf-8")
+ANDROID_INTEGRATION_TEST = Path(__file__).with_name(
+    "android_integration_test.sh"
+).read_text(encoding="utf-8")
 APP_SMOKE_TEST = Path(__file__).parents[2].joinpath(
     "integration_test", "app_smoke_test.dart"
 ).read_text(encoding="utf-8")
@@ -114,8 +117,13 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("run_android_app_gif_validation.sh", BENCHMARK_WORKFLOW)
         self.assertIn("android_integration_test.sh", APP_GIF_VALIDATION)
         self.assertIn("validate_android_gif.py", APP_GIF_VALIDATION)
+        self.assertIn("timeout --signal=TERM --kill-after=30s 35m", APP_GIF_VALIDATION)
+        self.assertIn('tee "$evidence_dir/integration-step.log"', APP_GIF_VALIDATION)
         self.assertIn('if [ "$integration_status" -eq 0 ]; then', APP_GIF_VALIDATION)
         self.assertIn('tee "$evidence_dir/validation-status.txt"', APP_GIF_VALIDATION)
+        self.assertIn("flutter test --reporter expanded integration_test/app_smoke_test.dart", ANDROID_INTEGRATION_TEST)
+        self.assertIn("trap 'exit 143' TERM", ANDROID_INTEGRATION_TEST)
+        self.assertIn("trap 'exit 130' INT", ANDROID_INTEGRATION_TEST)
         app_validation = BENCHMARK_WORKFLOW.index(
             "name: Run Android app and GIF export validation"
         )

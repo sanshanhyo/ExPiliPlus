@@ -24,9 +24,11 @@ capture_emulator_evidence() {
   pull_countdown_screenshots || true
 }
 trap capture_emulator_evidence EXIT
+trap 'exit 143' TERM
+trap 'exit 130' INT
 
 adb shell settings put system volume_music 0
-flutter test integration_test/app_smoke_test.dart -d emulator-5554
+flutter test --reporter expanded integration_test/app_smoke_test.dart -d emulator-5554
 if [ "$require_countdown_screenshots" = "true" ]; then
   pull_countdown_screenshots
 fi

@@ -23,13 +23,19 @@ fi
 mkdir -p "$evidence_dir"
 
 echo "validation_phase=real_android_app_integration"
-if bash "$repo_root/.github/scripts/android_integration_test.sh" \
-  "$evidence_dir" true > "$evidence_dir/integration-step.log" 2>&1; then
-  integration_status=0
-else
-  integration_status=$?
+set +e
+timeout --signal=TERM --kill-after=30s 35m \
+  bash "$repo_root/.github/scripts/android_integration_test.sh" "$evidence_dir" true \
+  2>&1 | tee "$evidence_dir/integration-step.log"
+pipeline_status=("${PIPESTATUS[@]}")
+set -e
+integration_status="${pipeline_status[0]}"
+if [ "${pipeline_status[1]}" -ne 0 ] && [ "$integration_status" -eq 0 ]; then
+  integration_status="${pipeline_status[1]}"
 fi
-cat "$evidence_dir/integration-step.log"
+if [ "$integration_status" -eq 124 ]; then
+  echo "The Android integration test exceeded its 35-minute limit." >&2
+fi
 
 gif_validation_status=125
 if [ "$integration_status" -eq 0 ]; then
