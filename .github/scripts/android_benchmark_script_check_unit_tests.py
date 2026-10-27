@@ -96,9 +96,9 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("flutter analyze", BENCHMARK_PREFLIGHT)
         self.assertIn("integration_test/android_gif_benchmark_test.dart", BENCHMARK_PREFLIGHT)
         self.assertIn("integration_test/android_benchmark_driver.dart", BENCHMARK_PREFLIGHT)
-        self.assertIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_PREFLIGHT)
+        self.assertNotIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_PREFLIGHT)
         self.assertIn('baseline_sha="${5:-}"', BENCHMARK_PREFLIGHT)
-        self.assertIn("Correctness-fixed baseline Dart analysis failed", BENCHMARK_PREFLIGHT)
+        self.assertIn("Measured-before baseline Dart analysis failed", BENCHMARK_PREFLIGHT)
         self.assertLess(
             BENCHMARK_PREFLIGHT.index('cp "$video_data_dart"'),
             BENCHMARK_PREFLIGHT.index("flutter analyze"),
@@ -154,21 +154,21 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("videoDetailController.audioUrl != null", APP_SMOKE_TEST)
         self.assertIn("ANDROID_PLAYER_CREATION_DIAGNOSTICS", APP_SMOKE_TEST)
 
-    def test_benchmark_uses_correctness_fixed_parent_and_reuses_native_cache(self) -> None:
-        self.assertIn("abbfdd170c30a3996f083a00b3cf49a548b407a5", BENCHMARK_WORKFLOW)
+    def test_benchmark_uses_exact_measured_before_and_reuses_native_cache(self) -> None:
+        self.assertIn("85415402420eaabeae08fb33e496d3eaced232cc", BENCHMARK_WORKFLOW)
         self.assertIn("Restore the pinned Android GIF artifact cache", BENCHMARK_WORKFLOW)
         self.assertIn("Verify restored pinned native GIF artifacts", BENCHMARK_WORKFLOW)
         self.assertIn("steps.native-artifact-cache.outputs.cache-hit", BENCHMARK_WORKFLOW)
-        self.assertIn("correctness-fixed baseline", BENCHMARK_WORKFLOW)
+        self.assertIn("exact measured-before source", BENCHMARK_WORKFLOW)
         self.assertIn(
             'script: bash .github/scripts/run_android_benchmark.sh '
-            'abbfdd170c30a3996f083a00b3cf49a548b407a5 "${{ github.sha }}"',
+            '85415402420eaabeae08fb33e496d3eaced232cc "${{ github.sha }}"',
             BENCHMARK_WORKFLOW,
         )
-        self.assertIn('"label": "correctness-fixed baseline"', BENCHMARK_SCRIPT)
-        self.assertIn(
-            "apply_android_gif_common_lifecycle_fix.py", BENCHMARK_SCRIPT
-        )
+        self.assertIn('"label": "measured-before baseline"', BENCHMARK_SCRIPT)
+        self.assertIn("This comparison must isolate only the GIF converter source change.", BENCHMARK_SCRIPT)
+        self.assertNotIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_SCRIPT)
+        self.assertNotIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_PREFLIGHT)
         self.assertIn(
             "if: github.ref != 'refs/heads/refactor/shutdown-timer-ui'",
             TEST_WORKFLOW,

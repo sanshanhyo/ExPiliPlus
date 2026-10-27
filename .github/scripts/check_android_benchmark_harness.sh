@@ -80,15 +80,8 @@ echo "Android GIF benchmark injection passed Dart analysis for $candidate_sha."
 if [ -n "$baseline_sha" ]; then
   git -C "$repo_root" cat-file -e "${baseline_sha}^{commit}"
   git -C "$repo_root" worktree add --detach "$baseline_source_dir" "$baseline_sha"
-  if python3 "$repo_root/.github/scripts/apply_android_gif_common_lifecycle_fix.py" \
-    "$baseline_source_dir" "$baseline_sha" \
-    --metadata-output "$evidence_dir/correctness-fixed-baseline.txt"; then
-    :
-  else
-    status=$?
-    echo "Correctness-fixed baseline patch failed before release builds (status $status)." >&2
-    exit "$status"
-  fi
+  printf 'measured_before_source_sha=%s\nsource_patch=none\n' "$baseline_sha" \
+    > "$evidence_dir/baseline-source-identity.txt"
   if (
     cd "$baseline_source_dir"
     GITHUB_WORKSPACE="$baseline_source_dir" timeout --foreground --signal=TERM --kill-after=60s 20m \
@@ -97,7 +90,7 @@ if [ -n "$baseline_sha" ]; then
     :
   else
     status=$?
-    echo "Correctness-fixed baseline Android dependency setup failed (status $status)." >&2
+    echo "Measured-before baseline Android dependency setup failed (status $status)." >&2
     tail -n 120 "$evidence_dir/baseline-android-patch.log" >&2 || true
     exit "$status"
   fi
@@ -117,11 +110,11 @@ if [ -n "$baseline_sha" ]; then
     cat "$baseline_analyze_log"
   else
     status=$?
-    echo "Correctness-fixed baseline Dart analysis failed (status $status)." >&2
+    echo "Measured-before baseline Dart analysis failed (status $status)." >&2
     tail -n 120 "$baseline_analyze_log" >&2 || true
     exit "$status"
   fi
-  echo "Correctness-fixed baseline benchmark injection passed Dart analysis for $baseline_sha."
+  echo "Measured-before baseline benchmark injection passed Dart analysis for $baseline_sha."
 fi
 
 if [ -n "$staged_artifact_dir" ]; then

@@ -189,17 +189,10 @@ class MpvConvertGif implements GifConverter {
             ? ''
             : _sanitizeDiagnostic(_errorText(error));
         final runtime = _runtimeState();
-        final beforeExists = File(outFile).existsSync();
-        final beforeSize = beforeExists ? File(outFile).lengthSync() : 0;
-        final beforeValidation = beforeExists
-            ? _validateOutput(File(outFile))
-            : null;
         debugPrint(
           'GifConvert: end-file before native teardown reason=$reason '
           'error=$error${errorText.isEmpty ? '' : ' ($errorText)'} '
-          'runtime=$runtime output=$beforeExists bytes=$beforeSize '
-          'frames=${beforeValidation?.frameCount ?? 0} '
-          'complete=${beforeValidation?.isComplete ?? false}',
+          'runtime=$runtime',
         );
         // FILE_LOADED and END_FILE are delivered to Dart asynchronously by
         // media_kit's native event loop. Defer teardown until this callback

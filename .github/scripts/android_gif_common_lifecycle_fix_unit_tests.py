@@ -71,7 +71,7 @@ class AndroidGifCommonLifecycleFixTest(unittest.TestCase):
             )
             self.assertIn("void _finishAfterEndFile(", source)
 
-    def test_baseline_preserves_the_old_filter_reapplication_as_comparison_delta(
+    def test_historical_fixed_baseline_retains_the_old_filter_reapplication(
         self,
     ) -> None:
         self.assertEqual(
@@ -112,12 +112,28 @@ class AndroidGifCommonLifecycleFixTest(unittest.TestCase):
                 finish_helper.index("_completer.complete(success)"),
             )
 
-    def test_benchmark_applies_patch_to_release_and_profile_baseline(self) -> None:
-        self.assertIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_SCRIPT)
-        self.assertGreaterEqual(
-            BENCHMARK_SCRIPT.count("apply_baseline_correctness_patch"), 3
+    def test_candidate_skips_full_output_parse_before_deferred_teardown(self) -> None:
+        end_file_case = self.candidate.split(
+            "case generated.mpv_event_id.MPV_EVENT_END_FILE:", 1
+        )[1].split(
+            "case generated.mpv_event_id.MPV_EVENT_SHUTDOWN:", 1
+        )[0]
+        self.assertNotIn("_validateOutput(", end_file_case)
+        self.assertIn("Timer.run(() => _finishAfterEndFile", end_file_case)
+        finish_helper = self.candidate.split("  void _finishAfterEndFile(", 1)[1].split(
+            "  void _complete(bool success)", 1
+        )[0]
+        self.assertIn("_disposeNative();", finish_helper)
+        self.assertIn("_validateOutput(output)", finish_helper)
+
+    def test_historical_correctness_patch_stays_pinned_but_is_not_current_baseline(
+        self,
+    ) -> None:
+        self.assertEqual(
+            CORRECTNESS_BASELINE_SHA,
+            "abbfdd170c30a3996f083a00b3cf49a548b407a5",
         )
-        self.assertIn("correctness-fixed-baseline", BENCHMARK_SCRIPT)
+        self.assertNotIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_SCRIPT)
 
 
 if __name__ == "__main__":

@@ -167,16 +167,16 @@ jobs:
             android-gif-build-toolchain.txt \
             android-gif-native-artifacts.sha256
 
-      - name: Report correctness-fixed GIF baseline
+      - name: Report GIF before-and-after scope
         run: |
-          echo "Benchmark baseline identity: correctness-fixed baseline, abbfdd170c30a3996f083a00b3cf49a548b407a5 plus shared speed=1/deferred-END_FILE patch."
-          echo "The recorded performance comparison is the remaining candidate delta, not a broad refactor speed claim."
+          echo "Benchmark baseline identity: exact measured-before source 85415402420eaabeae08fb33e496d3eaced232cc; no source patch."
+          echo "Only the full GIF parse before END_FILE teardown is removed in the candidate."
           {
-            echo '### GIF benchmark baseline'
+            echo '### GIF before-and-after benchmark'
             echo
-            echo '- Baseline: `abbfdd170c30a3996f083a00b3cf49a548b407a5` with the temporary shared speed and deferred END_FILE teardown patch.'
-            echo '- Candidate: current workflow head; both sides use the same correctness behavior and staged native JAR hashes.'
-            echo '- Comparison scope: removal of the second FILE_LOADED filter application plus diagnostic differences; no broad refactor claim.'
+            echo '- Baseline: exact source `85415402420eaabeae08fb33e496d3eaced232cc`; no temporary source patch.'
+            echo '- Candidate: current workflow head; same deferred teardown, final GIF validator, dependencies, and staged native JAR hashes.'
+            echo '- Comparison scope: remove only the synchronous full GIF read/parse inside END_FILE before deferred teardown.'
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload temporary native artifacts for downstream validation
@@ -403,7 +403,7 @@ jobs:
             "${{ github.sha }}" "$video_data" \
             "$RUNNER_TEMP/android-benchmark-harness-preflight" \
             "$RUNNER_TEMP/android-gif-event-loop-artifacts" \
-            abbfdd170c30a3996f083a00b3cf49a548b407a5
+            85415402420eaabeae08fb33e496d3eaced232cc
 
       - name: Verify KVM for the ephemeral Android runner
         run: |
@@ -429,7 +429,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash .github/scripts/run_android_benchmark.sh abbfdd170c30a3996f083a00b3cf49a548b407a5 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
+          script: bash .github/scripts/run_android_benchmark.sh 85415402420eaabeae08fb33e496d3eaced232cc "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
 
       - name: Upload Android package and performance evidence
         if: always()

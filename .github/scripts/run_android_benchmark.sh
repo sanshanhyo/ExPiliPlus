@@ -9,7 +9,7 @@ fi
 baseline_sha="$1"
 candidate_sha="$2"
 evidence_dir="$3"
-correctness_baseline_sha="abbfdd170c30a3996f083a00b3cf49a548b407a5"
+measured_before_sha="85415402420eaabeae08fb33e496d3eaced232cc"
 repo_root="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
 runner_temp="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 source_dir="$runner_temp/expiliplus-android-benchmark-source"
@@ -33,8 +33,8 @@ esac
 mkdir -p "$evidence_dir/baseline" "$evidence_dir/candidate" "$evidence_dir/toolchain"
 git -C "$repo_root" cat-file -e "${baseline_sha}^{commit}"
 git -C "$repo_root" cat-file -e "${candidate_sha}^{commit}"
-if [ "$baseline_sha" != "$correctness_baseline_sha" ]; then
-  echo "This comparison requires the pinned correctness-fixed baseline source: $correctness_baseline_sha" >&2
+if [ "$baseline_sha" != "$measured_before_sha" ]; then
+  echo "This comparison requires the exact measured-before source: $measured_before_sha" >&2
   exit 1
 fi
 actual_fixture_sha="$(sha256sum "$source_fixture" | awk '{print $1}')"
@@ -55,6 +55,12 @@ if ! git -C "$repo_root" diff --quiet "$baseline_sha" "$candidate_sha" -- \
     pubspec.yaml pubspec.lock pubspec_overrides.yaml UPSTREAM_VERSION android/ third_party/ \
     ':(exclude)third_party/android-gif-libmpv/media_kit_native_event_loop' \
     lib/scripts/patch.ps1 >&2
+  exit 1
+fi
+changed_library_sources="$(git -C "$repo_root" diff --name-only "$baseline_sha" "$candidate_sha" -- lib/)"
+if [ "$changed_library_sources" != "lib/plugin/pl_player/widgets/mpv_convert_gif.dart" ]; then
+  echo "This comparison must isolate only the GIF converter source change." >&2
+  printf 'Changed lib sources:\n%s\n' "$changed_library_sources" >&2
   exit 1
 fi
 
@@ -154,13 +160,13 @@ metadata = {
     "baseline_sha": baseline,
     "candidate_sha": candidate,
     "baseline_identity": {
-        "label": "correctness-fixed baseline",
+        "label": "measured-before baseline",
         "source_commit": baseline,
-        "temporary_patch": "shared explicit speed=1 and deferred END_FILE teardown; FILE_LOADED filter reapplication retained",
+        "temporary_patch": None,
     },
-    "comparison_scope": "The candidate removes the second FILE_LOADED filter set and adds runtime diagnostics after the shared lifecycle fix; this is not a broad refactor comparison.",
+    "comparison_scope": "Candidate removes the synchronous full GIF read/parse from the END_FILE callback; both revisions retain deferred native teardown and the same post-teardown correctness validation.",
     "gif_converter_source_sha256": {
-        "baseline_before_temporary_patch": baseline_converter,
+        "baseline": baseline_converter,
         "candidate": candidate_converter,
     },
     "runner": "ubuntu-22.04",
@@ -244,22 +250,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-apply_baseline_correctness_patch() {
-  local label="$1"
-  local source_sha="$2"
-  local source_path="$3"
-  local output_dir="$4"
-  if [ "$label" != "baseline" ] || [ "$source_sha" != "$correctness_baseline_sha" ]; then
-    echo "Refusing to apply the correctness-baseline patch to $label ($source_sha)." >&2
-    return 1
-  fi
-  python3 "$repo_root/.github/scripts/apply_android_gif_common_lifecycle_fix.py" \
-    "$source_path" "$source_sha" \
-    --metadata-output "$output_dir/correctness-fixed-baseline.txt"
-  cp "$output_dir/correctness-fixed-baseline.txt" \
-    "$evidence_dir/toolchain/correctness-fixed-baseline.txt"
-}
-
 build_release_revision() {
   local label="$1"
   local source_sha="$2"
@@ -274,10 +264,6 @@ build_release_revision() {
   local release_apk
 
   git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
-  if [ "$label" = "baseline" ]; then
-    apply_baseline_correctness_patch "$label" "$source_sha" "$source_dir" "$output_dir"
-  fi
-
   input_lock_sha="$(sha256sum "$source_dir/pubspec.lock" | awk '{print $1}')"
   printf '%s\n' "$input_lock_sha" > "$output_dir/input-pubspec-lock.sha256"
   cp "$source_dir/pubspec.lock" "$output_dir/input-pubspec.lock"
@@ -533,7 +519,7 @@ PY
   cp "$release_apk" "$output_dir/expiliplus-arm64-release.apk"
   printf '%s\n' "$source_sha" > "$output_dir/source-sha.txt"
   if [ "$label" = "baseline" ]; then
-    printf '%s\n' "correctness-fixed baseline: source=$source_sha" \
+    printf '%s\n' "measured-before baseline: source=$source_sha; no source patch" \
       > "$output_dir/source-identity.txt"
   fi
   git -C "$repo_root" worktree remove --force "$source_dir"
@@ -549,9 +535,6 @@ run_profile_revision() {
   local plugin_metadata
 
   git -C "$repo_root" worktree add --detach "$source_dir" "$source_sha"
-  if [ "$label" = "baseline" ]; then
-    apply_baseline_correctness_patch "$label" "$source_sha" "$source_dir" "$output_dir"
-  fi
   if (
     cd "$source_dir" &&
     echo "benchmark stage: Android patch for profile GIF ($label)" &&
@@ -728,8 +711,8 @@ lines = [
     f"- Production lock SHA-256: `{production_lock_sha}`",
     f"- Production manifest SHA-256: `{production_manifest_sha}`",
     "- Baseline and candidate production manifest/lock were checked identical before profiling.",
-    "- Correctness-fixed baseline: `abbfdd170c30a3996f083a00b3cf49a548b407a5` plus the recorded shared speed/deferred-teardown patch.",
-    "- Comparison scope: candidate removes the previous FILE_LOADED filter reapplication and adds runtime diagnostics; this does not measure a broad refactor.",
+    f"- Measured-before baseline: `{baseline_sha}` (no source patch).",
+    "- Comparison scope: candidate removes the synchronous full GIF read/parse from END_FILE before deferred teardown; both retain the same post-teardown output validation.",
     "",
 ]
 summary = "\n".join(lines)
