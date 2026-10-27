@@ -46,7 +46,7 @@ class AndroidGifValidationTest(unittest.TestCase):
             path = Path(temporary_directory) / "wrong-size.gif"
             make_gif(path, size=(854, 480))
 
-            with self.assertRaisesRegex(GifValidationError, "Expected 480x270"):
+            with self.assertRaisesRegex(GifValidationError, "854"):
                 validate_gif(path)
 
     def test_rejects_wrong_frame_count(self) -> None:
@@ -55,6 +55,24 @@ class AndroidGifValidationTest(unittest.TestCase):
             make_gif(path, frames=85)
 
             with self.assertRaisesRegex(GifValidationError, "85"):
+                validate_gif(path)
+
+    def test_diagnostic_decode_reports_but_does_not_accept_19_frames(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "diagnostic-19-frames.gif"
+            make_gif(path, frames=19)
+
+            result = validate_gif(path, require_benchmark_contract=False)
+
+        self.assertEqual(result["decoded_frames"], 19)
+        self.assertFalse(result["benchmark_contract_passed"])
+
+    def test_diagnostic_mode_does_not_change_strict_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            path = Path(temporary_directory) / "strict-19-frames.gif"
+            make_gif(path, frames=19)
+
+            with self.assertRaisesRegex(GifValidationError, "strict benchmark contract"):
                 validate_gif(path)
 
     def test_rejects_corrupt_frame_data(self) -> None:

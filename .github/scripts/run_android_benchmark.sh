@@ -597,6 +597,19 @@ run_profile_revision() {
   if [ "$drive_status" -ne 0 ]; then
     echo "Profile GIF benchmark failed for $label ($source_sha), status $drive_status" >&2
     cat "$output_dir/profile-benchmark.log" >&2
+    if [ -s "$output_dir/gif-benchmark.json" ]; then
+      echo "Profile diagnostic report for $label:" >&2
+      cat "$output_dir/gif-benchmark.json" >&2
+    else
+      echo "Profile diagnostic report was not returned by the driver for $label." >&2
+    fi
+    if [ -s "$output_dir/synthetic-output.gif" ]; then
+      python3 "$repo_root/.github/scripts/validate_android_gif.py" \
+        "$output_dir/synthetic-output.gif" "$output_dir/gif-decode-diagnostic.json" \
+        --diagnostic || true
+    else
+      echo "No GIF bytes were returned for independent failure-path decoding." >&2
+    fi
     return "$drive_status"
   fi
 

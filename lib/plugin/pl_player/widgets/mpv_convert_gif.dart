@@ -26,7 +26,9 @@ class MpvConvertGif implements GifConverter {
   bool _disposed = false;
   bool _initialized = false;
   bool _succeeded = false;
+  bool _endFileFinishScheduled = false;
   String? _lastError;
+  double? _lastObservedPosition;
 
   final String url;
   final String outFile;
@@ -61,6 +63,7 @@ class MpvConvertGif implements GifConverter {
         'o': outFile,
         'start': start.toStringAsFixed(3),
         'end': (start + duration).toStringAsFixed(3),
+        'speed': '1',
         'of': 'gif',
         'ofopts': 'loop=0',
         'ovc': 'gif',
@@ -87,7 +90,7 @@ class MpvConvertGif implements GifConverter {
       throw StateError('mpv rejected GIF video filters');
     }
     debugPrint(
-      'GifConvert: vf configured result=$filterResult '
+      'GifConvert: vf configured before load result=$filterResult '
       'requestedVf=${_readOsdProperty('vf')}',
     );
     if (_disposed) {
@@ -100,9 +103,7 @@ class MpvConvertGif implements GifConverter {
       userAgent: BrowserUa.pc,
       referer: HttpString.baseUrl,
     );
-    if (progress != null) {
-      _observeProperty('time-pos');
-    }
+    if (progress != null) _observeProperty('time-pos');
 
     debugPrint(
       'GifConvert: start input=${_describeUrl(url)} '
@@ -154,25 +155,19 @@ class MpvConvertGif implements GifConverter {
       case generated.mpv_event_id.MPV_EVENT_PROPERTY_CHANGE:
         final prop = event.ref.data.cast<generated.mpv_event_property>().ref;
         if (prop.name.toDartString() == 'time-pos' &&
-            prop.format == generated.mpv_format.MPV_FORMAT_DOUBLE &&
-            progress != null) {
-          progress!.value =
-              ((prop.data.cast<Double>().value - start) / duration).clamp(0, 1);
+            prop.format == generated.mpv_format.MPV_FORMAT_DOUBLE) {
+          final position = prop.data.cast<Double>().value;
+          _lastObservedPosition = position;
+          if (progress != null) {
+            progress!.value = ((position - start) / duration).clamp(0, 1);
+          }
         }
         break;
       case generated.mpv_event_id.MPV_EVENT_FILE_LOADED:
         _loaded = true;
-        // Initializer options are applied before a video track has been
-        // configured. Reapply the same chain now so mpv can report a filter
-        // creation failure instead of merely retaining the requested string.
-        final filterResult = _command(['vf', 'set', _videoFilters]);
         debugPrint(
-          'GifConvert: input loaded vfResult=$filterResult '
-          'requestedVf=${_readOsdProperty('vf')}',
+          'GifConvert: input loaded runtime=${_runtimeState()}',
         );
-        if (filterResult < 0) {
-          _recordError('mpv could not initialize GIF video filters');
-        }
         break;
       case generated.mpv_event_id.MPV_EVENT_LOG_MESSAGE:
         final log = event.ref.data.cast<generated.mpv_event_log_message>().ref;
@@ -186,47 +181,30 @@ class MpvConvertGif implements GifConverter {
         break;
       case generated.mpv_event_id.MPV_EVENT_END_FILE:
         final end = event.ref.data.cast<generated.mpv_event_end_file>().ref;
+        if (_endFileFinishScheduled) break;
+        _endFileFinishScheduled = true;
         final reason = end.reason;
-        final reachedEof =
-            reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF;
         final error = end.error;
-        final output = File(outFile);
-        final exists = output.existsSync();
-        final size = exists ? output.lengthSync() : 0;
-        final requestedVf = _readOsdProperty('vf');
-        final filteredWidth = _readOsdProperty('video-out-params/w');
-        final filteredHeight = _readOsdProperty('video-out-params/h');
-        final filteredFps = _readOsdProperty('estimated-vf-fps');
-        var validation = exists ? _validateOutput(output) : null;
-        if (validation != null &&
-            validation.frameCount >= 2 &&
-            !validation.hasInfiniteLoop) {
-          _ensureInfiniteLoop(output);
-          validation = _validateOutput(output);
-        }
-        final header = validation?.header ?? '';
         final errorText = error == 0
             ? ''
             : _sanitizeDiagnostic(_errorText(error));
-        final success =
-            reachedEof &&
-            error == 0 &&
-            _lastError == null &&
-            exists &&
-            size > 0 &&
-            validation?.isValid == true;
+        final runtime = _runtimeState();
+        final beforeExists = File(outFile).existsSync();
+        final beforeSize = beforeExists ? File(outFile).lengthSync() : 0;
+        final beforeValidation = beforeExists
+            ? _validateOutput(File(outFile))
+            : null;
         debugPrint(
-          'GifConvert: end reason=$reason eof=$reachedEof error=$error'
-          '${errorText.isEmpty ? '' : ' ($errorText)'} '
-          'loaded=$_loaded output=$exists size=$size header=$header '
-          'requestedVf=$requestedVf '
-          'filteredOutput=${filteredWidth}x$filteredHeight '
-          'estimatedVfFps=$filteredFps '
-          'frames=${validation?.frameCount ?? 0} '
-          'loop=${validation?.hasInfiniteLoop ?? false} '
-          'lastError=$_lastError success=$success',
+          'GifConvert: end-file before native teardown reason=$reason '
+          'error=$error${errorText.isEmpty ? '' : ' ($errorText)'} '
+          'runtime=$runtime output=$beforeExists bytes=$beforeSize '
+          'frames=${beforeValidation?.frameCount ?? 0} '
+          'complete=${beforeValidation?.isComplete ?? false}',
         );
-        _complete(success);
+        // FILE_LOADED and END_FILE are delivered to Dart asynchronously by
+        // media_kit's native event loop. Defer teardown until this callback
+        // returns, then validate the output after mpv has closed its muxer.
+        Timer.run(() => _finishAfterEndFile(reason, error, errorText));
         break;
       case generated.mpv_event_id.MPV_EVENT_SHUTDOWN:
         _recordError('mpv shutdown before GIF conversion completed');
@@ -234,6 +212,53 @@ class MpvConvertGif implements GifConverter {
         break;
     }
     return null;
+  }
+
+  void _finishAfterEndFile(int reason, int error, String errorText) {
+    if (_disposed || _completer.isCompleted) return;
+    _disposed = true;
+
+    try {
+      _disposeNative();
+      final reachedEof =
+          reason == generated.mpv_end_file_reason.MPV_END_FILE_REASON_EOF;
+      final output = File(outFile);
+      final exists = output.existsSync();
+      final size = exists ? output.lengthSync() : 0;
+      var validation = exists ? _validateOutput(output) : null;
+      if (validation != null &&
+          validation.frameCount >= 2 &&
+          !validation.hasInfiniteLoop) {
+        _ensureInfiniteLoop(output);
+        validation = _validateOutput(output);
+      }
+      final success =
+          reachedEof &&
+          error == 0 &&
+          _lastError == null &&
+          exists &&
+          size > 0 &&
+          validation?.isValid == true;
+      debugPrint(
+        'GifConvert: after native teardown reason=$reason eof=$reachedEof '
+        'error=$error${errorText.isEmpty ? '' : ' ($errorText)'} '
+        'loaded=$_loaded output=$exists bytes=$size '
+        'header=${validation?.header ?? ''} '
+        'frames=${validation?.frameCount ?? 0} '
+        'loop=${validation?.hasInfiniteLoop ?? false} '
+        'lastError=$_lastError success=$success',
+      );
+
+      _succeeded = success;
+      progress?.value = 1;
+      if (!success) _removeOutputIfPresent();
+      if (!_completer.isCompleted) _completer.complete(success);
+    } catch (error) {
+      _recordError('GIF validation after native teardown failed: $error');
+      _succeeded = false;
+      _removeOutputIfPresent();
+      if (!_completer.isCompleted) _completer.complete(false);
+    }
   }
 
   void _complete(bool success) {
@@ -404,4 +429,14 @@ class MpvConvertGif implements GifConverter {
     _mpv.mpv_free(value.cast());
     return result;
   }
+
+  String _runtimeState() =>
+      'timePos=${_readOsdProperty('time-pos')} '
+      'lastObservedPos=${_lastObservedPosition?.toStringAsFixed(3) ?? '<none>'} '
+      'duration=${_readOsdProperty('duration')} '
+      'speed=${_readOsdProperty('speed')} '
+      'vf=${_readOsdProperty('vf')} '
+      'filteredOutput=${_readOsdProperty('video-out-params/w')}x'
+      '${_readOsdProperty('video-out-params/h')} '
+      'estimatedVfFps=${_readOsdProperty('estimated-vf-fps')}';
 }

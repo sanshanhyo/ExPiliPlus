@@ -7,6 +7,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from PIL import Image
 
@@ -23,7 +24,19 @@ class GifValidationError(ValueError):
     pass
 
 
-def validate_gif(path: Path) -> dict[str, int | str]:
+def benchmark_contract_passed(report: dict[str, Any]) -> bool:
+    return (
+        report.get("width") == EXPECTED_WIDTH
+        and report.get("height") == EXPECTED_HEIGHT
+        and MIN_FRAMES <= report.get("decoded_frames", 0) <= MAX_FRAMES
+        and report.get("loop_count") == 0
+        and MIN_DURATION_MS <= report.get("duration_ms", 0) <= MAX_DURATION_MS
+    )
+
+
+def validate_gif(
+    path: Path, *, require_benchmark_contract: bool = True
+) -> dict[str, Any]:
     if not path.is_file() or path.stat().st_size == 0:
         raise GifValidationError("GIF output is missing or empty")
 
@@ -50,23 +63,7 @@ def validate_gif(path: Path) -> dict[str, int | str]:
         raise GifValidationError(f"GIF frame decode failed: {error}") from error
 
     total_duration_ms = sum(durations)
-    if width != EXPECTED_WIDTH or height != EXPECTED_HEIGHT:
-        raise GifValidationError(
-            f"Expected {EXPECTED_WIDTH}x{EXPECTED_HEIGHT}, got {width}x{height}"
-        )
-    if not MIN_FRAMES <= frame_count <= MAX_FRAMES:
-        raise GifValidationError(
-            f"Expected {MIN_FRAMES}..{MAX_FRAMES} decoded frames, got {frame_count}"
-        )
-    if loop_count != 0:
-        raise GifValidationError(f"Expected infinite GIF loop (0), got {loop_count!r}")
-    if not MIN_DURATION_MS <= total_duration_ms <= MAX_DURATION_MS:
-        raise GifValidationError(
-            "Expected 2800..3200 ms total frame duration, "
-            f"got {total_duration_ms} ms"
-        )
-
-    return {
+    report: dict[str, Any] = {
         "codec": "gif",
         "width": width,
         "height": height,
@@ -76,18 +73,34 @@ def validate_gif(path: Path) -> dict[str, int | str]:
         "bytes": path.stat().st_size,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     }
+    report["benchmark_contract_passed"] = benchmark_contract_passed(report)
+    if require_benchmark_contract and not report["benchmark_contract_passed"]:
+        raise GifValidationError(
+            "GIF decoded, but failed the strict benchmark contract: "
+            f"{report}"
+        )
+    return report
 
 
 def main() -> None:
-    if len(sys.argv) != 3:
-        raise SystemExit("usage: validate_android_gif.py INPUT.gif OUTPUT.json")
+    if len(sys.argv) not in (3, 4):
+        raise SystemExit(
+            "usage: validate_android_gif.py INPUT.gif OUTPUT.json [--diagnostic]"
+        )
     gif_path = Path(sys.argv[1])
     report_path = Path(sys.argv[2])
-    report = validate_gif(gif_path)
+    diagnostic = len(sys.argv) == 4 and sys.argv[3] == "--diagnostic"
+    if len(sys.argv) == 4 and not diagnostic:
+        raise SystemExit(f"unsupported option: {sys.argv[3]}")
+    report = validate_gif(
+        gif_path, require_benchmark_contract=not diagnostic
+    )
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    label = "diagnostic_gif_decode" if diagnostic else "verified_gif_decode"
     print(
-        "verified_gif_decode=success "
+        f"{label}=success "
+        f"benchmark_contract_passed={report['benchmark_contract_passed']} "
         f"width={report['width']} height={report['height']} "
         f"decoded_frames={report['decoded_frames']} "
         f"duration_ms={report['duration_ms']} bytes={report['bytes']}"

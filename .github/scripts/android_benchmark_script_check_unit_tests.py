@@ -166,8 +166,19 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("_readOsdProperty('video-out-params/w')", GIF_CONVERTER)
         self.assertIn("_readOsdProperty('video-out-params/h')", GIF_CONVERTER)
         self.assertIn("_readOsdProperty('estimated-vf-fps')", GIF_CONVERTER)
-        self.assertIn("requestedVf=$requestedVf", GIF_CONVERTER)
-        self.assertIn("filteredOutput=${filteredWidth}x$filteredHeight", GIF_CONVERTER)
+        self.assertIn("GifConvert: input loaded runtime=", GIF_CONVERTER)
+        self.assertIn("GifConvert: end-file before native teardown", GIF_CONVERTER)
+        self.assertIn("GifConvert: after native teardown", GIF_CONVERTER)
+        self.assertIn("Timer.run(() => _finishAfterEndFile", GIF_CONVERTER)
+        self.assertEqual(
+            GIF_CONVERTER.count("_command(['vf', 'set', _videoFilters])"), 1
+        )
+        loaded_case = GIF_CONVERTER.split(
+            "case generated.mpv_event_id.MPV_EVENT_FILE_LOADED:", 1
+        )[1].split(
+            "case generated.mpv_event_id.MPV_EVENT_LOG_MESSAGE:", 1
+        )[0]
+        self.assertNotIn("_command(", loaded_case)
         self.assertIn("MPV_END_FILE_REASON_EOF", GIF_CONVERTER)
         self.assertIn("eof=$reachedEof", GIF_CONVERTER)
         self.assertIn("validation?.isValid == true", GIF_CONVERTER)
@@ -182,6 +193,18 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
             GIF_BENCHMARK_TEST,
         )
         self.assertIn("_expectedFrameCount + _frameCountTolerance", GIF_BENCHMARK_TEST)
+        for scenario in (
+            "keyframe-aligned-1-to-4",
+            "keyframe-aligned-0-to-3",
+            "non-keyframe-1.1-to-4.1",
+        ):
+            self.assertIn(scenario, GIF_BENCHMARK_TEST)
+        self.assertIn("'speed': '1'", GIF_CONVERTER)
+        self.assertLess(
+            GIF_BENCHMARK_TEST.index("binding.reportData ="),
+            GIF_BENCHMARK_TEST.index("expect(\n        diagnosticsPassed"),
+        )
+        self.assertIn("--diagnostic", BENCHMARK_SCRIPT)
         self.assertIn("image.load()", GIF_VALIDATOR)
         self.assertIn("EXPECTED_WIDTH = 480", GIF_VALIDATOR)
         self.assertIn("EXPECTED_HEIGHT = 270", GIF_VALIDATOR)
