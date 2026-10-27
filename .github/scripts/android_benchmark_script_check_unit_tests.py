@@ -41,6 +41,9 @@ GIF_BENCHMARK_TEST = Path(__file__).parents[1].joinpath(
 GIF_CONVERTER = Path(__file__).parents[2].joinpath(
     "lib", "plugin", "pl_player", "widgets", "mpv_convert_gif.dart"
 ).read_text(encoding="utf-8")
+GIF_FILE_VALIDATOR = Path(__file__).parents[2].joinpath(
+    "lib", "plugin", "pl_player", "widgets", "gif_file_validator.dart"
+).read_text(encoding="utf-8")
 GIF_VALIDATOR = Path(__file__).with_name("validate_android_gif.py").read_text(
     encoding="utf-8"
 )
@@ -163,18 +166,18 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         self.assertIn("ANDROID_PLAYER_CREATION_DIAGNOSTICS", APP_SMOKE_TEST)
 
     def test_benchmark_uses_exact_measured_before_and_reuses_native_cache(self) -> None:
-        self.assertIn("85415402420eaabeae08fb33e496d3eaced232cc", BENCHMARK_WORKFLOW)
+        self.assertIn("63f0d813ae23ab7e21f2405140893645f0f027a7", BENCHMARK_WORKFLOW)
         self.assertIn("Restore the pinned Android GIF artifact cache", BENCHMARK_WORKFLOW)
         self.assertIn("Verify restored pinned native GIF artifacts", BENCHMARK_WORKFLOW)
         self.assertIn("steps.native-artifact-cache.outputs.cache-hit", BENCHMARK_WORKFLOW)
         self.assertIn("exact measured-before source", BENCHMARK_WORKFLOW)
         self.assertIn(
             'script: bash .github/scripts/run_android_benchmark.sh '
-            '85415402420eaabeae08fb33e496d3eaced232cc "${{ github.sha }}"',
+            '63f0d813ae23ab7e21f2405140893645f0f027a7 "${{ github.sha }}"',
             BENCHMARK_WORKFLOW,
         )
         self.assertIn('"label": "measured-before baseline"', BENCHMARK_SCRIPT)
-        self.assertIn("This comparison must isolate only the GIF converter source change.", BENCHMARK_SCRIPT)
+        self.assertIn("This comparison must isolate only the GIF file validator change.", BENCHMARK_SCRIPT)
         self.assertNotIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_SCRIPT)
         self.assertNotIn("apply_android_gif_common_lifecycle_fix.py", BENCHMARK_PREFLIGHT)
         self.assertIn(
@@ -193,6 +196,15 @@ class AndroidBenchmarkScriptCheckTest(unittest.TestCase):
         )
         self.assertIn("GifFileValidation.fromBytes(bytes)", GIF_BENCHMARK_TEST)
         self.assertNotIn("GifFileValidator", GIF_BENCHMARK_TEST)
+
+    def test_image_data_skip_does_not_copy_sub_block_payloads(self) -> None:
+        skip = GIF_FILE_VALIDATOR.split("  bool skipSubBlocks() {", 1)[1].split(
+            "\n  }", 1
+        )[0]
+        self.assertIn("final length = readByte();", skip)
+        self.assertIn("!skip(length)", skip)
+        self.assertNotIn("readSubBlocks()", skip)
+        self.assertNotIn("addAll", skip)
 
     def test_gif_benchmark_checks_requested_filters_and_output_contract(self) -> None:
         self.assertIn(

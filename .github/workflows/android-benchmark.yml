@@ -169,14 +169,14 @@ jobs:
 
       - name: Report GIF before-and-after scope
         run: |
-          echo "Benchmark baseline identity: exact measured-before source 85415402420eaabeae08fb33e496d3eaced232cc; no source patch."
-          echo "Only the full GIF parse before END_FILE teardown is removed in the candidate."
+          echo "Benchmark baseline identity: exact measured-before source 63f0d813ae23ab7e21f2405140893645f0f027a7; no source patch."
+          echo "Only GIF image-data sub-block traversal changes in the candidate."
           {
             echo '### GIF before-and-after benchmark'
             echo
-            echo '- Baseline: exact source `85415402420eaabeae08fb33e496d3eaced232cc`; no temporary source patch.'
+            echo '- Baseline: exact source `63f0d813ae23ab7e21f2405140893645f0f027a7`; no temporary source patch.'
             echo '- Candidate: current workflow head; same deferred teardown, final GIF validator, dependencies, and staged native JAR hashes.'
-            echo '- Comparison scope: remove only the synchronous full GIF read/parse inside END_FILE before deferred teardown.'
+            echo '- Comparison scope: traverse GIF image-data sub-blocks without copying their payload bytes; extension metadata parsing is unchanged.'
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload temporary native artifacts for downstream validation
@@ -403,7 +403,7 @@ jobs:
             "${{ github.sha }}" "$video_data" \
             "$RUNNER_TEMP/android-benchmark-harness-preflight" \
             "$RUNNER_TEMP/android-gif-event-loop-artifacts" \
-            85415402420eaabeae08fb33e496d3eaced232cc
+            63f0d813ae23ab7e21f2405140893645f0f027a7
 
       - name: Verify KVM for the ephemeral Android runner
         run: |
@@ -429,7 +429,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash .github/scripts/run_android_benchmark.sh 85415402420eaabeae08fb33e496d3eaced232cc "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
+          script: bash .github/scripts/run_android_benchmark.sh 63f0d813ae23ab7e21f2405140893645f0f027a7 "${{ github.sha }}" "${{ runner.temp }}/android-benchmark"
 
       - name: Upload Android package and performance evidence
         if: always()

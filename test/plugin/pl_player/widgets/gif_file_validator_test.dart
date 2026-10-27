@@ -15,6 +15,29 @@ void main() {
     expect(result.trailerOffset, sourceTrailerOffset(_twoFrameGif()));
   });
 
+  test('validates image data across many sub-blocks', () {
+    final bytes = _gifWithImageDataBlocks(List<int>.filled(128, 255));
+
+    final result = GifFileValidation.fromBytes(bytes);
+
+    expect(result.frameCount, 2);
+    expect(result.hasInfiniteLoop, isTrue);
+    expect(result.isComplete, isTrue);
+    expect(result.isValid, isTrue);
+  });
+
+  test('rejects image data whose final sub-block is truncated', () {
+    final complete = _gifWithImageDataBlocks([255, 255, 17]);
+    final truncated = Uint8List.fromList(
+      complete.take(complete.length - 7).toList(),
+    );
+
+    final result = GifFileValidation.fromBytes(truncated);
+
+    expect(result.isComplete, isFalse);
+    expect(result.isValid, isFalse);
+  });
+
   test('rejects an incomplete GIF', () {
     final bytes = Uint8List.fromList(_twoFrameGif().take(25).toList());
 
@@ -145,4 +168,63 @@ Uint8List _twoFrameGif() {
     0,
     0x3b,
   ]);
+}
+
+Uint8List _gifWithImageDataBlocks(List<int> blockLengths) {
+  final bytes = <int>[
+    ...'GIF89a'.codeUnits,
+    1,
+    0,
+    1,
+    0,
+    0x80,
+    0,
+    0,
+    0,
+    0,
+    0,
+    255,
+    255,
+    255,
+    0x21,
+    0xff,
+    0x0b,
+    ...'NETSCAPE2.0'.codeUnits,
+    3,
+    1,
+    0,
+    0,
+    0,
+  ];
+
+  for (var frame = 0; frame < 2; frame++) {
+    bytes.addAll(<int>[
+      0x21,
+      0xf9,
+      4,
+      0,
+      10,
+      0,
+      0,
+      0,
+      0x2c,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      2,
+    ]);
+    for (final length in blockLengths) {
+      bytes.add(length);
+      bytes.addAll(List<int>.filled(length, frame));
+    }
+    bytes.add(0);
+  }
+  bytes.add(0x3b);
+  return Uint8List.fromList(bytes);
 }

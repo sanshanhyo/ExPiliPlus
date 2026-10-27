@@ -214,5 +214,12 @@ class _GifReader {
     }
   }
 
-  bool skipSubBlocks() => readSubBlocks() != null;
+  /// Advances past sub-block payloads without copying image data.
+  bool skipSubBlocks() {
+    while (true) {
+      final length = readByte();
+      if (length < 0 || !skip(length)) return false;
+      if (length == 0) return true;
+    }
+  }
 }

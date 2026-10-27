@@ -9,7 +9,7 @@ fi
 baseline_sha="$1"
 candidate_sha="$2"
 evidence_dir="$3"
-measured_before_sha="85415402420eaabeae08fb33e496d3eaced232cc"
+measured_before_sha="63f0d813ae23ab7e21f2405140893645f0f027a7"
 repo_root="${GITHUB_WORKSPACE:-$(git rev-parse --show-toplevel)}"
 runner_temp="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 source_dir="$runner_temp/expiliplus-android-benchmark-source"
@@ -58,8 +58,8 @@ if ! git -C "$repo_root" diff --quiet "$baseline_sha" "$candidate_sha" -- \
   exit 1
 fi
 changed_library_sources="$(git -C "$repo_root" diff --name-only "$baseline_sha" "$candidate_sha" -- lib/)"
-if [ "$changed_library_sources" != "lib/plugin/pl_player/widgets/mpv_convert_gif.dart" ]; then
-  echo "This comparison must isolate only the GIF converter source change." >&2
+if [ "$changed_library_sources" != "lib/plugin/pl_player/widgets/gif_file_validator.dart" ]; then
+  echo "This comparison must isolate only the GIF file validator change." >&2
   printf 'Changed lib sources:\n%s\n' "$changed_library_sources" >&2
   exit 1
 fi
@@ -101,8 +101,8 @@ python3 -m unittest discover -s "$repo_root/.github/scripts" \
 
 baseline_lock_sha="$(git -C "$repo_root" show "$baseline_sha:pubspec.lock" | sha256sum | awk '{print $1}')"
 candidate_lock_sha="$(git -C "$repo_root" show "$candidate_sha:pubspec.lock" | sha256sum | awk '{print $1}')"
-baseline_converter_sha="$(git -C "$repo_root" show "$baseline_sha:lib/plugin/pl_player/widgets/mpv_convert_gif.dart" | sha256sum | awk '{print $1}')"
-candidate_converter_sha="$(git -C "$repo_root" show "$candidate_sha:lib/plugin/pl_player/widgets/mpv_convert_gif.dart" | sha256sum | awk '{print $1}')"
+baseline_validator_sha="$(git -C "$repo_root" show "$baseline_sha:lib/plugin/pl_player/widgets/gif_file_validator.dart" | sha256sum | awk '{print $1}')"
+candidate_validator_sha="$(git -C "$repo_root" show "$candidate_sha:lib/plugin/pl_player/widgets/gif_file_validator.dart" | sha256sum | awk '{print $1}')"
 if [ "$baseline_lock_sha" != "$candidate_lock_sha" ]; then
   echo "pubspec.lock differs between benchmark inputs" >&2
   exit 1
@@ -146,8 +146,8 @@ adb shell getprop ro.build.version.release > "$evidence_dir/toolchain/android-re
 adb shell getprop ro.build.version.sdk > "$evidence_dir/toolchain/android-api.txt"
 sha256sum "$defines_file" > "$evidence_dir/toolchain/benchmark-defines.sha256"
 python3 - "$evidence_dir/benchmark-metadata.json" \
-  "$baseline_sha" "$candidate_sha" "$baseline_converter_sha" \
-  "$candidate_converter_sha" "$baseline_lock_sha" \
+  "$baseline_sha" "$candidate_sha" "$baseline_validator_sha" \
+  "$candidate_validator_sha" "$baseline_lock_sha" \
   "$build_name" "$build_number" "$upstream_version" \
   "$expected_fixture_sha" "$event_loop_artifact_dir" <<'PY'
 import json
@@ -155,7 +155,7 @@ import hashlib
 import sys
 from pathlib import Path
 
-output, baseline, candidate, baseline_converter, candidate_converter, lock_sha, name, code, upstream, fixture_sha, event_loop_dir = sys.argv[1:]
+output, baseline, candidate, baseline_validator, candidate_validator, lock_sha, name, code, upstream, fixture_sha, event_loop_dir = sys.argv[1:]
 metadata = {
     "baseline_sha": baseline,
     "candidate_sha": candidate,
@@ -164,10 +164,10 @@ metadata = {
         "source_commit": baseline,
         "temporary_patch": None,
     },
-    "comparison_scope": "Candidate removes the synchronous full GIF read/parse from the END_FILE callback; both revisions retain deferred native teardown and the same post-teardown correctness validation.",
-    "gif_converter_source_sha256": {
-        "baseline": baseline_converter,
-        "candidate": candidate_converter,
+    "comparison_scope": "Candidate advances over GIF image-data sub-blocks without copying their bytes into a temporary list; extension sub-blocks are still collected for loop metadata.",
+    "gif_file_validator_source_sha256": {
+        "baseline": baseline_validator,
+        "candidate": candidate_validator,
     },
     "runner": "ubuntu-22.04",
     "flutter": "3.47.7",
@@ -714,7 +714,7 @@ lines = [
     "- Baseline and candidate production manifest/lock were checked identical before profiling.",
     f"- Measured-before baseline: `{baseline_sha}` (no source patch).",
     f"- Candidate: `{candidate_sha}`.",
-    "- Comparison scope: candidate removes the synchronous full GIF read/parse from END_FILE before deferred teardown; both retain the same post-teardown output validation.",
+    "- Comparison scope: candidate validates GIF image-data sub-blocks without allocating a payload copy; loop-extension parsing is unchanged.",
     "",
 ]
 summary = "\n".join(lines)
