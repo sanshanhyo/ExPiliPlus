@@ -150,6 +150,7 @@ abstract final class SettingBoxKey {
       showMemberShop = 'showMemberShop',
       showRandomVideoButton = 'showRandomVideoButton',
       autoLikeOpenedVideo = 'autoLikeOpenedVideo',
+      enableAicuCommentLookup = 'enableAicuCommentLookup',
       enablePermanentDynamicBlock = 'enablePermanentDynamicBlock',
       enablePlayAll = 'enablePlayAll',
       enableTapDm = 'enableTapDm',

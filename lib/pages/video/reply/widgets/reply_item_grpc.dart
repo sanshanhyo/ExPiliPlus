@@ -26,9 +26,12 @@ import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/pages/member/widget/medal_widget.dart';
 import 'package:ex_piliplus/pages/save_panel/view.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
+import 'package:ex_piliplus/pages/aicu_lookup/view.dart';
+import 'package:ex_piliplus/pages/video/reply/widgets/aicu_lookup_menu_tile.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/zan_grpc.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
+import 'package:ex_piliplus/utils/aicu_url_policy.dart';
 import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/color_utils.dart';
 import 'package:ex_piliplus/utils/danmaku_utils.dart';
@@ -1226,6 +1229,23 @@ class ReplyItemGrpc extends StatelessWidget {
                 context.l10n.commonReport,
                 style: style.copyWith(color: errorColor),
               ),
+            ),
+          if (AicuLookupMenuTile.shouldShow(
+            enabled: GStorage.setting.get(
+              SettingBoxKey.enableAicuCommentLookup,
+              defaultValue: true,
+            ) == true,
+            authorUid: item.mid.toInt(),
+          ))
+            AicuLookupMenuTile(
+              style: style,
+              onTap: () {
+                final uri = AicuUrlPolicy.replyForUid(item.mid.toInt());
+                Get.back();
+                if (uri != null) {
+                  Get.to<void>(() => AicuLookupPage(initialUri: uri));
+                }
+              },
             ),
           if (replyLevel == 1 && !isSubReply && ownerMid == upMid)
             ListTile(

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/aicu-comment-lookup
   pull_request:
     branches:
       - main
@@ -57,3 +58,12 @@ jobs:
 
       - name: Test
         run: flutter test --no-pub
+
+      - name: Upload rendered AICU UI captures
+        if: always() && github.ref == 'refs/heads/feat/aicu-comment-lookup'
+        uses: actions/upload-artifact@v7
+        with:
+          name: aicu-rendered-ui-${{ github.run_id }}
+          path: build/test-artifacts/aicu/
+          if-no-files-found: warn
+          retention-days: 14

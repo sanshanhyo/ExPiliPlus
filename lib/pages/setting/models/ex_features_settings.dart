@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
+import 'package:ex_piliplus/models/common/aicu_probe_status.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/pages/dynamic_banned_up_list/view.dart';
 import 'package:ex_piliplus/pages/dynamics/controller.dart';
@@ -10,6 +13,7 @@ import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/slider_dialog.dart';
 import 'package:ex_piliplus/services/app_locale_controller.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
+import 'package:ex_piliplus/services/aicu_probe_service.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -22,6 +26,37 @@ import 'package:get/get.dart';
 List<SettingsModel> exFeatureSettings(BuildContext context) {
   final l10n = context.l10n;
   return [
+    SwitchModel(
+      getTitle: () => l10n.settingsAicuLookupEnabled,
+      getSubtitle: () => l10n.settingsAicuLookupEnabledDescription,
+      leading: const Icon(Icons.auto_awesome_outlined),
+      setKey: SettingBoxKey.enableAicuCommentLookup,
+      defaultVal: true,
+    ),
+    NormalModel(
+      getTitle: () => l10n.settingsAicuProbe,
+      getSubtitle: () => switch (AicuProbeService.instance.status.value) {
+        AicuProbeStatus.notChecked => l10n.aicuProbeNotChecked,
+        AicuProbeStatus.checking => l10n.aicuProbeChecking,
+        AicuProbeStatus.reachable => l10n.aicuProbeReachable,
+        AicuProbeStatus.limited => l10n.aicuProbeLimited,
+        AicuProbeStatus.unavailable => l10n.aicuProbeUnavailable,
+        AicuProbeStatus.timedOut => l10n.aicuProbeTimedOut,
+        AicuProbeStatus.unexpectedResponse => l10n.aicuProbeUnexpectedResponse,
+      },
+      leading: const Icon(Icons.cloud_sync_outlined),
+      getTrailing: (theme) => Icon(
+        AicuProbeService.instance.status.value == AicuProbeStatus.checking
+            ? Icons.hourglass_top
+            : Icons.refresh,
+        color: theme.colorScheme.outline,
+      ),
+      onTap: (_, refresh) {
+        final check = AicuProbeService.instance.check();
+        refresh();
+        unawaited(check.whenComplete(refresh));
+      },
+    ),
     NormalModel(
       getTitle: () => l10n.settingsAppLanguage,
       getSubtitle: () => l10n.settingsCurrentLanguage(
