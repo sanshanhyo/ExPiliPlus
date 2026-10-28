@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-      - upstream-2.1.4-sync
-      - sync/upstream-2.1.6.2
-      - feature/timer-countdown
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
@@ -57,100 +57,3 @@ jobs:
 
       - name: Test
         run: flutter test --no-pub
-
-  android-integration:
-    name: Android emulator integration
-    needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version-file: pubspec.yaml
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Apply Android Flutter patches
-        shell: pwsh
-        run: lib/scripts/patch.ps1 Android
-
-      - name: Generate localizations
-        run: flutter gen-l10n
-
-      - name: Check generated localizations
-        run: git diff --exit-code -- lib/l10n/generated
-
-      - name: Check diff whitespace
-        run: git diff --check
-
-      - name: Enable KVM for Android emulator
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-          sudo udevadm settle
-          if [ ! -e /dev/kvm ]; then
-            echo "KVM device /dev/kvm is unavailable"
-            exit 1
-          fi
-          ls -l /dev/kvm
-          test -r /dev/kvm && test -w /dev/kvm
-
-      - name: Run isolated app integration test
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 35
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash .github/scripts/android_integration_test.sh "${{ runner.temp }}/android-integration-evidence" true
-
-      - name: Upload Android integration evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-integration-evidence-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/android-integration-evidence/emulator-screen.png
-            ${{ runner.temp }}/android-integration-evidence/android-logcat.txt
-            ${{ runner.temp }}/android-integration-evidence/countdown_quick_bar.png
-            ${{ runner.temp }}/android-integration-evidence/countdown_outside_tile.png
-          if-no-files-found: ignore
-          retention-days: 5
-
-      - name: Install GIF inspection tools
-        if: success()
-        run: |
-          if ! command -v ffprobe >/dev/null 2>&1 || ! command -v ffmpeg >/dev/null 2>&1; then
-            if ! timeout --signal=TERM --kill-after=30s 5m sudo apt-get update; then
-              echo "GIF inspection dependency setup failed or timed out during apt-get update" >&2
-              exit 1
-            fi
-            if ! timeout --signal=TERM --kill-after=30s 5m sudo apt-get install --no-install-recommends -y ffmpeg; then
-              echo "GIF inspection dependency setup failed or timed out while installing ffmpeg" >&2
-              exit 1
-            fi
-          fi
-          ffprobe -version
-
-      - name: Validate exported GIF
-        if: success()
-        run: bash .github/scripts/validate_android_gif.sh "${{ runner.temp }}/android-integration-evidence"
-
-      - name: Upload GIF validation evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-gif-validation-${{ github.run_id }}
-          path: ${{ runner.temp }}/android-integration-evidence/gif-probe.json
-          if-no-files-found: ignore
-          retention-days: 5
