@@ -13474,6 +13474,7 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'长按或悬停表情时显示预览'**
   String get settingsEnableEmoteTooltipDescription;
+
   /// No description provided for @syncPlayTitle.
   ///
   /// In zh, this message translates to:
