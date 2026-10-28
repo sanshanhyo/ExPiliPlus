@@ -56,17 +56,22 @@ Future<void> _saveRenderedCapture(WidgetTester tester, String filename) async {
   });
 }
 
-Widget _capture(Widget child) => RepaintBoundary(
-  key: _captureKey,
-  child: GetMaterialApp(
-    debugShowCheckedModeBanner: false,
-    locale: const Locale('zh'),
-    localizationsDelegates: appLocalizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    theme: ThemeData.dark().copyWith(fontFamily: 'Source Han Serif CN'),
-    home: child,
-  ),
-);
+Widget _capture(Widget child) {
+  final theme = ThemeData.dark();
+  return RepaintBoundary(
+    key: _captureKey,
+    child: GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      locale: const Locale('zh'),
+      localizationsDelegates: appLocalizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: theme.copyWith(
+        textTheme: theme.textTheme.apply(fontFamily: 'Source Han Serif CN'),
+      ),
+      home: child,
+    ),
+  );
+}
 
 void main() {
   setUpAll(() async {
