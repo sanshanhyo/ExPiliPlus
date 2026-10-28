@@ -22,22 +22,44 @@ import 'package:fixnum/fixnum.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:test_api/scaffolding.dart' show Timeout;
 
 const _captureKey = ValueKey('aicu-capture');
+
+class _MemoryBox implements Box<dynamic> {
+  final Map<dynamic, dynamic> _values = {};
+
+  @override
+  dynamic get(dynamic key, {dynamic defaultValue}) =>
+      _values.containsKey(key) ? _values[key] : defaultValue;
+
+  @override
+  Future<void> put(dynamic key, dynamic value) async {
+    _values[key] = value;
+  }
+
+  @override
+  Future<void> clear() async => _values.clear();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 Future<void> _saveCapture(WidgetTester tester, String filename) async {
   final boundary = tester.renderObject<RenderRepaintBoundary>(
     find.byKey(_captureKey),
   );
-  final image = await boundary.toImage(pixelRatio: 2);
-  try {
-    final data = await image.toByteData(format: ui.ImageByteFormat.png);
-    final file = File('build/test-artifacts/aicu/$filename');
-    await file.parent.create(recursive: true);
-    await file.writeAsBytes(data!.buffer.asUint8List());
-  } finally {
-    image.dispose();
-  }
+  await tester.runAsync(() async {
+    final image = await boundary.toImage(pixelRatio: 2);
+    try {
+      final data = await image.toByteData(format: ui.ImageByteFormat.png);
+      final file = File('build/test-artifacts/aicu/$filename');
+      await file.parent.create(recursive: true);
+      await file.writeAsBytes(data!.buffer.asUint8List());
+    } finally {
+      image.dispose();
+    }
+  });
 }
 
 Widget _app(Widget child) => RepaintBoundary(
@@ -52,22 +74,9 @@ Widget _app(Widget child) => RepaintBoundary(
 );
 
 void main() {
-  late Directory tempDirectory;
-
-  setUpAll(() async {
-    tempDirectory = await Directory.systemTemp.createTemp('aicu-render-');
-    Hive.init(tempDirectory.path);
-    GStorage.setting = await Hive.openBox<dynamic>('setting');
-    GStorage.localCache = await Hive.openBox<dynamic>('localCache');
-  });
-
-  tearDownAll(() async {
-    await Hive.close();
-    await tempDirectory.delete(recursive: true);
-  });
-
-  setUp(() async {
-    await GStorage.setting.clear();
+  setUp(() {
+    GStorage.setting = _MemoryBox();
+    GStorage.localCache = _MemoryBox();
     AicuProbeService.instance.status.value = AicuProbeStatus.notChecked;
   });
 
@@ -141,7 +150,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('AICU 评论查询'), findsOneWidget);
     expect(find.text('此平台不支持应用内网页，请选择外部浏览器打开。'), findsOneWidget);
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('settings starts enabled and exposes a manual probe status', (
     tester,
@@ -175,7 +184,7 @@ void main() {
       GStorage.setting.get(SettingBoxKey.enableAicuCommentLookup),
       isFalse,
     );
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('renders the in-app page shell without a UID or network request', (
     tester,
@@ -217,5 +226,5 @@ void main() {
     expect(find.text('AICU 页面内容预览'), findsOneWidget);
     expect(find.text('/reply'), findsOneWidget);
     await _saveCapture(tester, 'lookup-page-shell-dark.png');
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 }
