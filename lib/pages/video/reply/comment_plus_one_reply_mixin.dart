@@ -9,7 +9,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
-mixin CommentPlusOneReplyMixin on ReplyController {
+mixin CommentPlusOneReplyMixin<R> on ReplyController<R> {
   Future<void> onCommentPlusOne(ReplyInfo replyItem) async {
     final (inputDisabled, _) = replyHint;
     if (inputDisabled) return;

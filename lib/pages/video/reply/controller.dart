@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:get/get.dart';
 
 class VideoReplyController extends ReplyController<MainListReply>
-    with ReplyVoteMixin, CommentPlusOneReplyMixin {
+    with ReplyVoteMixin, CommentPlusOneReplyMixin<MainListReply> {
   VideoReplyController({
     required this.aid,
     required this.videoType,

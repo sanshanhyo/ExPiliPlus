@@ -18,8 +18,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class VideoReplyReplyController extends ReplyController
-    with GetSingleTickerProviderStateMixin, CommentPlusOneReplyMixin {
+class VideoReplyReplyController extends ReplyController<DetailListReply>
+    with
+        GetSingleTickerProviderStateMixin,
+        CommentPlusOneReplyMixin<DetailListReply> {
   VideoReplyReplyController({
     required this.hasRoot,
     required this.id,
@@ -62,12 +64,15 @@ class VideoReplyReplyController extends ReplyController
   }
 
   @override
-  List<ReplyInfo>? getDataList(response) {
+  List<ReplyInfo>? getDataList(DetailListReply response) {
     return dialog != null ? response.replies : response.root.replies;
   }
 
   @override
-  bool customHandleResponse(bool isRefresh, Success response) {
+  bool customHandleResponse(
+    bool isRefresh,
+    Success<DetailListReply> response,
+  ) {
     final data = response.response;
 
     subjectControl = data.subjectControl;
@@ -123,7 +128,7 @@ class VideoReplyReplyController extends ReplyController
   }
 
   @override
-  Future<LoadingState> customGetData() => dialog != null
+  Future<LoadingState<DetailListReply>> customGetData() => dialog != null
       ? ReplyGrpc.dialogList(
           type: replyType,
           oid: oid,
