@@ -19,6 +19,8 @@ import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../support/render_test_fonts.dart';
+
 const _captureKey = ValueKey('comment-plus-one-capture');
 
 class _MemoryBox implements Box<dynamic> {
@@ -57,16 +59,18 @@ Future<void> _saveRenderedCapture(WidgetTester tester, String filename) async {
 Widget _capture(Widget child) => RepaintBoundary(
   key: _captureKey,
   child: GetMaterialApp(
+    debugShowCheckedModeBanner: false,
     locale: const Locale('zh'),
     localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    theme: ThemeData.dark(),
+    theme: ThemeData.dark().copyWith(fontFamily: 'Source Han Serif CN'),
     home: child,
   ),
 );
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
+    await loadRenderTestFonts();
     GStorage.setting = _MemoryBox();
     GStorage.localCache = _MemoryBox();
   });
