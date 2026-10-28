@@ -18,7 +18,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:test_api/scaffolding.dart' show Timeout;
 
 const _captureKey = ValueKey('comment-plus-one-capture');
 

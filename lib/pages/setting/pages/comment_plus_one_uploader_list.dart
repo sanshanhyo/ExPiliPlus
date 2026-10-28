@@ -28,53 +28,19 @@ class _CommentPlusOneUploaderListPageState
     _mids = Pref.commentPlusOneUpMids.toList()..sort();
   }
 
-  Future<int?> _requestMid() async {
+  Future<int?> _requestMid() {
     final l10n = context.l10n;
-    final controller = TextEditingController();
-    var invalid = false;
-    try {
-      return await showDialog<int>(
-        context: context,
-        builder: (context) => StatefulBuilder(
-          builder: (context, setDialogState) => AlertDialog(
-            title: Text(l10n.commentPlusOneAddUploader),
-            content: TextField(
-              controller: controller,
-              autofocus: true,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                labelText: l10n.commentPlusOneUploaderUid,
-                hintText: l10n.commentPlusOneEnterUploaderUid,
-                errorText: invalid ? l10n.commentPlusOneInvalidUid : null,
-              ),
-              onChanged: (_) {
-                if (invalid) setDialogState(() => invalid = false);
-              },
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(l10n.commonCancel),
-              ),
-              FilledButton(
-                onPressed: () {
-                  final mid = int.tryParse(controller.text);
-                  if (mid == null || mid <= 0) {
-                    setDialogState(() => invalid = true);
-                    return;
-                  }
-                  Navigator.of(context).pop(mid);
-                },
-                child: Text(l10n.commonConfirm),
-              ),
-            ],
-          ),
-        ),
-      );
-    } finally {
-      controller.dispose();
-    }
+    return showDialog<int>(
+      context: context,
+      builder: (_) => _AddCommentPlusOneUploaderDialog(
+        title: l10n.commentPlusOneAddUploader,
+        uidLabel: l10n.commentPlusOneUploaderUid,
+        hint: l10n.commentPlusOneEnterUploaderUid,
+        invalidUid: l10n.commentPlusOneInvalidUid,
+        cancelLabel: l10n.commonCancel,
+        confirmLabel: l10n.commonConfirm,
+      ),
+    );
   }
 
   Future<void> _add() async {
@@ -152,4 +118,80 @@ class _CommentPlusOneUploaderListPageState
             ),
     );
   }
+}
+
+class _AddCommentPlusOneUploaderDialog extends StatefulWidget {
+  const _AddCommentPlusOneUploaderDialog({
+    required this.title,
+    required this.uidLabel,
+    required this.hint,
+    required this.invalidUid,
+    required this.cancelLabel,
+    required this.confirmLabel,
+  });
+
+  final String title;
+  final String uidLabel;
+  final String hint;
+  final String invalidUid;
+  final String cancelLabel;
+  final String confirmLabel;
+
+  @override
+  State<_AddCommentPlusOneUploaderDialog> createState() =>
+      _AddCommentPlusOneUploaderDialogState();
+}
+
+class _AddCommentPlusOneUploaderDialogState
+    extends State<_AddCommentPlusOneUploaderDialog> {
+  late final TextEditingController _controller;
+  bool _invalid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(widget.title),
+    content: TextField(
+      controller: _controller,
+      autofocus: true,
+      keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      decoration: InputDecoration(
+        labelText: widget.uidLabel,
+        hintText: widget.hint,
+        errorText: _invalid ? widget.invalidUid : null,
+      ),
+      onChanged: (_) {
+        if (_invalid) setState(() => _invalid = false);
+      },
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text(widget.cancelLabel),
+      ),
+      FilledButton(
+        onPressed: () {
+          final mid = int.tryParse(_controller.text);
+          if (mid == null || mid <= 0) {
+            setState(() => _invalid = true);
+            return;
+          }
+          Navigator.of(context).pop(mid);
+        },
+        child: Text(widget.confirmLabel),
+      ),
+    ],
+  );
 }
