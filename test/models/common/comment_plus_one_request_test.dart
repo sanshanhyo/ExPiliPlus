@@ -8,8 +8,11 @@ ReplyInfo _reply({
   int root = 0,
   String message = 'A useful comment',
   List<Picture> pictures = const [],
+  List<MapEntry<String, Emote>> emotes = const [],
+  List<MapEntry<String, Topic>> topics = const [],
   Vote? vote,
   List<MapEntry<String, Url>> urls = const [],
+  RichText? richText,
   Map<String, int> mentions = const {},
 }) => ReplyInfo(
   id: Int64(id),
@@ -19,8 +22,11 @@ ReplyInfo _reply({
   content: Content(
     message: message,
     pictures: pictures,
+    emotes: emotes,
+    topics: topics,
     vote: vote,
     urls: urls,
+    richText: richText,
     atNameToMid: mentions.entries.map(
       (entry) => MapEntry(entry.key, Int64(entry.value)),
     ),
@@ -92,7 +98,28 @@ void main() {
     );
   });
 
-  test('rejects media, votes, rich cards, and invalid identifiers', () {
+  test('preserves visible emoji, emotes, topics, and URL text', () {
+    const message = 'I agree 😄 [doge] #topic# https://example.test';
+    final request = CommentPlusOneRequest.fromReply(
+      _reply(
+        id: 1,
+        message: message,
+        emotes: [MapEntry('[doge]', Emote(text: '[doge]'))],
+        topics: [MapEntry('topic', Topic(link: 'https://example.test/topic'))],
+        urls: [
+          MapEntry(
+            'https://example.test',
+            Url(pcUrl: 'https://example.test'),
+          ),
+        ],
+      ),
+    );
+
+    expect(request, isNotNull);
+    expect(request!.message, message);
+  });
+
+  test('rejects hidden presentation metadata, votes, and invalid identifiers', () {
     expect(
       CommentPlusOneRequest.fromReply(
         _reply(id: 1, pictures: [Picture()]),
@@ -108,6 +135,66 @@ void main() {
         _reply(
           id: 1,
           urls: [MapEntry('note-link', Url(clickReport: '{"cvid":123}'))],
+        ),
+      ),
+      isNull,
+    );
+    expect(
+      CommentPlusOneRequest.fromReply(
+        _reply(
+          id: 1,
+          message: 'visible comment',
+          emotes: [MapEntry('[hidden emote]', Emote(text: '[hidden emote]'))],
+        ),
+      ),
+      isNull,
+    );
+    expect(
+      CommentPlusOneRequest.fromReply(
+        _reply(
+          id: 1,
+          message: 'Visible topic label',
+          topics: [MapEntry('topic', Topic(link: 'https://example.test'))],
+        ),
+      ),
+      isNull,
+    );
+    expect(
+      CommentPlusOneRequest.fromReply(
+        _reply(
+          id: 1,
+          message: 'Visible link label',
+          urls: [
+            MapEntry(
+              'Hidden link target',
+              Url(pcUrl: 'https://example.test'),
+            ),
+          ],
+        ),
+      ),
+      isNull,
+    );
+    expect(
+      CommentPlusOneRequest.fromReply(
+        _reply(
+          id: 1,
+          message: 'note label',
+          richText: RichText(note: RichTextNote(summary: 'note label')),
+        ),
+      ),
+      isNull,
+    );
+    expect(
+      CommentPlusOneRequest.fromReply(
+        _reply(
+          id: 1,
+          message: 'Review https://example.test/cv123',
+          urls: [
+            MapEntry(
+              'https://example.test/cv123',
+              Url(clickReport: '{"cvid":123}'),
+            ),
+          ],
         ),
       ),
       isNull,

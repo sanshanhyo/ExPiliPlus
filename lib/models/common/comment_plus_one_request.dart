@@ -29,15 +29,23 @@ class CommentPlusOneRequest {
   static CommentPlusOneRequest? fromReply(ReplyInfo reply) {
     final content = reply.content;
     final message = content.message;
-    if (message.trim().isEmpty || content.pictures.isNotEmpty) return null;
-    if (content.hasVote() || _voteToken.hasMatch(message)) return null;
-    if (content.hasRichText() &&
-        (content.richText.hasNote() || content.richText.hasOpus())) {
-      return null;
-    }
-    if (content.urls.values.any(
-      (url) => url.clickReport.trimLeft().startsWith('{"cvid'),
-    )) {
+    if (message.trim().isEmpty ||
+        content.pictures.isNotEmpty ||
+        content.hasVote() ||
+        content.hasRichText() ||
+        _voteToken.hasMatch(message) ||
+        content.emotes.keys.any(
+          (token) => token.isEmpty || !message.contains(token),
+        ) ||
+        content.topics.keys.any(
+          (topic) => topic.isEmpty || !message.contains('#$topic#'),
+        ) ||
+        content.urls.keys.any(
+          (token) => token.isEmpty || !message.contains(token),
+        ) ||
+        content.urls.values.any(
+          (url) => url.clickReport.trimLeft().startsWith('{"cvid'),
+        )) {
       return null;
     }
 

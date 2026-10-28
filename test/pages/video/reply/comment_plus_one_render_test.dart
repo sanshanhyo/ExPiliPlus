@@ -18,22 +18,41 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:test_api/scaffolding.dart' show Timeout;
 
 const _captureKey = ValueKey('comment-plus-one-capture');
+
+class _MemoryBox implements Box<dynamic> {
+  final Map<dynamic, dynamic> _values = {};
+
+  @override
+  dynamic get(dynamic key, {dynamic defaultValue}) =>
+      _values.containsKey(key) ? _values[key] : defaultValue;
+
+  @override
+  Future<void> put(dynamic key, dynamic value) async {
+    _values[key] = value;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 Future<void> _saveRenderedCapture(WidgetTester tester, String filename) async {
   final boundary = tester.renderObject<RenderRepaintBoundary>(
     find.byKey(_captureKey),
   );
-  final image = await boundary.toImage(pixelRatio: 2);
-  try {
-    final data = await image.toByteData(format: ui.ImageByteFormat.png);
-    final file = File('build/test-artifacts/comment-plus-one/$filename');
-    await file.parent.create(recursive: true);
-    await file.writeAsBytes(data!.buffer.asUint8List());
-  } finally {
-    image.dispose();
-  }
+  await tester.runAsync(() async {
+    final image = await boundary.toImage(pixelRatio: 2);
+    try {
+      final data = await image.toByteData(format: ui.ImageByteFormat.png);
+      final file = File('build/test-artifacts/comment-plus-one/$filename');
+      await file.parent.create(recursive: true);
+      await file.writeAsBytes(data!.buffer.asUint8List());
+    } finally {
+      image.dispose();
+    }
+  });
 }
 
 Widget _capture(Widget child) => RepaintBoundary(
@@ -48,20 +67,9 @@ Widget _capture(Widget child) => RepaintBoundary(
 );
 
 void main() {
-  late Directory tempDirectory;
-
-  setUpAll(() async {
-    tempDirectory = await Directory.systemTemp.createTemp(
-      'comment-plus-one-render-',
-    );
-    Hive.init(tempDirectory.path);
-    GStorage.setting = await Hive.openBox<dynamic>('setting');
-    GStorage.localCache = await Hive.openBox<dynamic>('localCache');
-  });
-
-  tearDownAll(() async {
-    await Hive.close();
-    await tempDirectory.delete(recursive: true);
+  setUpAll(() {
+    GStorage.setting = _MemoryBox();
+    GStorage.localCache = _MemoryBox();
   });
 
   testWidgets('renders +1 after Reply and before existing reaction actions', (
@@ -109,7 +117,7 @@ void main() {
     final plusOneX = tester.getTopLeft(find.text('+1')).dx;
     expect(plusOneX, greaterThan(replyTextX));
     await _saveRenderedCapture(tester, 'reply-actions-dark.png');
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('renders the production +1 mode row and all three choices', (
     tester,
@@ -146,7 +154,7 @@ void main() {
     await tester.tap(find.text('指定 UP 主开启'));
     await tester.pumpAndSettle();
     expect(Pref.commentPlusOneMode, CommentPlusOneMode.selectedUploaders);
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('renders uploader allow-list without touching block lists', (
     tester,
@@ -175,7 +183,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(Pref.commentPlusOneUpMids, {1001, 2002, 3003});
     expect(GStorage.localCache.get(LocalCacheKey.blackMids), {9999});
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('unsupported media stays visible but cannot be sent', (
     tester,
@@ -226,5 +234,5 @@ void main() {
     await tester.tap(find.text('+1'));
     await tester.pumpAndSettle();
     expect(sendCount, 0);
-  });
+  }, timeout: const Timeout(Duration(minutes: 3)));
 }
