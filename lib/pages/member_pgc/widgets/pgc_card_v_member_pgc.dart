@@ -4,7 +4,7 @@ import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/space/space_archive/item.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // 视频卡片 - 垂直布局
 class PgcCardVMemberPgc extends StatelessWidget {
@@ -15,12 +15,10 @@ class PgcCardVMemberPgc extends StatelessWidget {
 
   final SpaceArchiveItem item;
 
+  void onLongPress() => showPgcCover(title: item.title, cover: item.cover);
+
   @override
   Widget build(BuildContext context) {
-    void onLongPress() => imageSaveDialog(
-      title: item.title,
-      cover: item.cover,
-    );
     return Card(
       shape: const RoundedRectangleBorder(borderRadius: Style.mdRadius),
       child: InkWell(
@@ -32,7 +30,7 @@ class PgcCardVMemberPgc extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AspectRatio(
-              aspectRatio: 0.75,
+              aspectRatio: Style.aspectRatio3x4,
               child: LayoutBuilder(
                 builder: (context, boxConstraints) {
                   return NetworkImgLayer(

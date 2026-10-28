@@ -6,6 +6,7 @@ final class GifExportSession {
   private let arguments: [String: Any]
   private let cancellationLock = NSLock()
   private var isCancelled = false
+  private var sourceDownloadTask: URLSessionDownloadTask?
 
   init(arguments: [String: Any]) {
     self.arguments = arguments
@@ -14,6 +15,7 @@ final class GifExportSession {
   func cancel() {
     cancellationLock.lock()
     isCancelled = true
+    sourceDownloadTask?.cancel()
     cancellationLock.unlock()
   }
 
@@ -62,15 +64,25 @@ final class GifExportSession {
 
     do {
       try checkCancellation()
+      var assetOptions: [String: Any] = [
+        "AVURLAssetHTTPHeaderFieldsKey": [
+          "User-Agent": request.userAgent,
+          "Referer": request.referer,
+        ],
+        AVURLAssetPreferPreciseDurationAndTimingKey: true,
+      ]
+      if #available(macOS 14.0, *) {
+        assetOptions[AVURLAssetOverrideMIMETypeKey as String] = "video/mp4"
+      }
+      let sourceURL = try materializeSource(request)
+      defer {
+        if sourceURL != request.sourceURL {
+          try? FileManager.default.removeItem(at: sourceURL)
+        }
+      }
       let asset = AVURLAsset(
-        url: request.sourceURL,
-        options: [
-          "AVURLAssetHTTPHeaderFieldsKey": [
-            "User-Agent": request.userAgent,
-            "Referer": request.referer,
-          ],
-          AVURLAssetPreferPreciseDurationAndTimingKey: true,
-        ]
+        url: sourceURL,
+        options: assetOptions
       )
       diagnostic("asset-created")
       guard let videoTrack = try loadVideoTracks(asset).first else {
@@ -148,6 +160,105 @@ final class GifExportSession {
       try? fileManager.removeItem(at: outputURL)
       throw error
     }
+  }
+
+  /// AVFoundation cannot inspect Bilibili's remote DASH `.m4s` response on
+  /// macOS: the CDN reports `application/octet-stream` and the URL is a
+  /// fragmented MP4 resource. Downloading it to a `.mp4` temporary file lets
+  /// AVFoundation use the same decoder that handles local MP4 files, while
+  /// keeping the generated GIF and source cleanup inside the app container.
+  private func materializeSource(_ request: GifExportRequest) throws -> URL {
+    if request.sourceURL.isFileURL {
+      return request.sourceURL
+    }
+
+    try checkCancellation()
+    let fileManager = FileManager.default
+    let temporaryURL = fileManager.temporaryDirectory
+      .appendingPathComponent("expiliplus-gif-\(UUID().uuidString).mp4")
+    var urlRequest = URLRequest(url: request.sourceURL)
+    urlRequest.setValue(request.userAgent, forHTTPHeaderField: "User-Agent")
+    urlRequest.setValue(request.referer, forHTTPHeaderField: "Referer")
+
+    let semaphore = DispatchSemaphore(value: 0)
+    var downloadedURL: URL?
+    var downloadError: Error?
+    let session = URLSession(configuration: .ephemeral)
+    let task = session.downloadTask(with: urlRequest) { location, response, error in
+      defer { semaphore.signal() }
+      if let error {
+        downloadError = error
+        return
+      }
+      guard let location, let response else {
+        downloadError = GifExportError.assetUnreadable(
+          "The video download returned no file."
+        )
+        return
+      }
+      guard
+        let httpResponse = response as? HTTPURLResponse,
+        (200...299).contains(httpResponse.statusCode)
+      else {
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+        downloadError = GifExportError.assetUnreadable(
+          "The video download returned HTTP \(statusCode)."
+        )
+        return
+      }
+      do {
+        try fileManager.moveItem(at: location, to: temporaryURL)
+        downloadedURL = temporaryURL
+      } catch {
+        downloadError = GifExportError.outputCreation
+      }
+    }
+    cancellationLock.lock()
+    sourceDownloadTask = task
+    let cancelled = isCancelled
+    cancellationLock.unlock()
+    if cancelled {
+      task.cancel()
+      session.invalidateAndCancel()
+      throw GifExportError.cancelled
+    } else {
+      diagnostic("source-download-start")
+      task.resume()
+    }
+
+    guard semaphore.wait(timeout: .now() + 120) == .success else {
+      task.cancel()
+      session.invalidateAndCancel()
+      cancellationLock.lock()
+      sourceDownloadTask = nil
+      cancellationLock.unlock()
+      try? fileManager.removeItem(at: temporaryURL)
+      throw GifExportError.assetUnreadable("Timed out while downloading video.")
+    }
+    session.invalidateAndCancel()
+    cancellationLock.lock()
+    sourceDownloadTask = nil
+    cancellationLock.unlock()
+    do {
+      try checkCancellation()
+    } catch {
+      try? fileManager.removeItem(at: temporaryURL)
+      throw error
+    }
+    if let downloadError {
+      try? fileManager.removeItem(at: temporaryURL)
+      if let gifError = downloadError as? GifExportError {
+        throw gifError
+      }
+      throw GifExportError.assetUnreadable(
+        "The video download failed (\((downloadError as NSError).code))."
+      )
+    }
+    guard let downloadedURL else {
+      throw GifExportError.assetUnreadable("The video download returned no file.")
+    }
+    diagnostic("source-download-finished bytes=\(fileSize(atPath: downloadedURL.path))")
+    return downloadedURL
   }
 
   private func loadVideoTracks(_ asset: AVAsset) throws -> [AVAssetTrack] {

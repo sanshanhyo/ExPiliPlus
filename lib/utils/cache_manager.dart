@@ -31,7 +31,7 @@ abstract final class CacheManager {
 
   // 循环计算文件的大小
   @pragma('vm:notify-debugger-on-exception')
-  static Future<int> getTotalSizeOfFilesInDir(final Directory file) async {
+  static Future<int> getTotalSizeOfFilesInDir(Directory file) async {
     int total = 0;
     await for (final child in file.list(recursive: false)) {
       if (child is File) {
@@ -49,18 +49,6 @@ abstract final class CacheManager {
       }
     }
     return total;
-  }
-
-  // 缓存大小格式转换
-  static String formatSize(num value) {
-    const unitArr = ['B', 'K', 'M', 'G', 'T', 'P'];
-    int index = 0;
-    while (value >= 1024) {
-      index++;
-      value = value / 1024;
-    }
-    String size = value.toStringAsFixed(2);
-    return size + (unitArr.elementAtOrNull(index) ?? '');
   }
 
   // 清除 Library/Caches 目录及文件缓存

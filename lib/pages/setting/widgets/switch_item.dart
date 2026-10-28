@@ -4,7 +4,7 @@ import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart' hide ListTile;
+import 'package:material_ui/material_ui.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class SetSwitchItem extends StatefulWidget {
@@ -46,47 +46,37 @@ class SetSwitchItem extends StatefulWidget {
 class _SetSwitchItemState extends State<SetSwitchItem> {
   late bool val;
 
-  void setVal() {
-    if (widget.setKey == SettingBoxKey.appFontWeight) {
-      val = Pref.appFontWeight != -1;
-    } else {
-      val = GStorage.setting.get(
-        widget.setKey,
-        defaultValue: widget.defaultVal,
-      );
-    }
+  void _setVal() {
+    val = GStorage.setting.get(widget.setKey, defaultValue: widget.defaultVal);
   }
 
   @override
   void didUpdateWidget(SetSwitchItem oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.setKey != widget.setKey) {
-      setVal();
+      _setVal();
     }
   }
 
   @override
   void initState() {
     super.initState();
-    setVal();
+    _setVal();
   }
 
   Future<void> switchChange([bool? value]) async {
     val = value ?? !val;
 
-    if (widget.setKey == SettingBoxKey.badCertificateCallback && val) {
+    if (val && widget.setKey == SettingBoxKey.badCertificateCallback) {
       val = await showConfirmDialog(
         context: context,
         title: Text(context.l10n.settingsDisableSslVerification),
         content: Text(context.l10n.settingsDisableSslVerificationDescription),
       );
+      if (!val) return;
     }
 
-    if (widget.setKey == SettingBoxKey.appFontWeight) {
-      await GStorage.setting.put(SettingBoxKey.appFontWeight, val ? 4 : -1);
-    } else {
-      await GStorage.setting.put(widget.setKey, val);
-    }
+    await GStorage.setting.put(widget.setKey, val);
 
     widget.onChanged?.call(val);
     if (widget.needReboot) {

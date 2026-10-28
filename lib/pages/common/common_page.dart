@@ -2,7 +2,7 @@ import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/pages/home/controller.dart';
 import 'package:ex_piliplus/pages/main/controller.dart';
 import 'package:flutter/foundation.dart' show clampDouble;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 abstract class CommonPageState<T extends StatefulWidget> extends State<T> {

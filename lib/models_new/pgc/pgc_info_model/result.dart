@@ -9,6 +9,8 @@ import 'package:ex_piliplus/models_new/pgc/pgc_info_model/section.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_info_model/stat.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_info_model/up_info.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_info_model/user_status.dart';
+import 'package:ex_piliplus/models_new/pgc/pgc_info_model/season.dart';
+
 
 class PgcInfoModel {
   String? actors;
@@ -31,6 +33,11 @@ class PgcInfoModel {
   UserStatus? userStatus;
   List<Cooperator>? cooperators;
   Brief? brief;
+  List<Season>? seasons;
+
+  bool get hasSeasons => seasons != null && seasons!.length > 1;
+
+  bool get hasEpisodes => episodes?.isNotEmpty ?? false;
 
   PgcInfoModel({
     this.actors,
@@ -53,6 +60,7 @@ class PgcInfoModel {
     this.userStatus,
     this.cooperators,
     this.brief,
+    this.seasons,
   });
 
   factory PgcInfoModel.fromJson(Map<String, dynamic> json) => PgcInfoModel(
@@ -98,5 +106,8 @@ class PgcInfoModel {
     brief: json['brief'] == null
         ? null
         : Brief.fromJson(json['brief'] as Map<String, dynamic>),
+    seasons: (json['seasons'] as List<dynamic>?)
+        ?.map((e) => Season.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }

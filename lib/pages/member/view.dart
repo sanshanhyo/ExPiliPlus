@@ -46,7 +46,7 @@ import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -381,8 +381,7 @@ class _MemberPageState extends State<MemberPage> {
     PopupMenuButton(
       icon: const Icon(Icons.more_vert),
       itemBuilder: (_) => <PopupMenuEntry>[
-        if (_userController.account.isLogin &&
-            _userController.account.mid != _mid) ...[
+        if (_userController.account.mid != _mid) ...[
           PopupMenuItem(
             onTap: () => _userController.blockUser(context),
             child: Row(
@@ -398,7 +397,8 @@ class _MemberPageState extends State<MemberPage> {
               ],
             ),
           ),
-          if (_userController.isFollowed == 1)
+          if (_userController.account.isLogin &&
+              _userController.isFollowed == 1)
             PopupMenuItem(
               onTap: _userController.onRemoveFan,
               child: Row(

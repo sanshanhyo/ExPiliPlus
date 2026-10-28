@@ -16,6 +16,8 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/url_utils.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -31,6 +33,8 @@ class ArticleController extends CommonDynController {
   @override
   int get replyType => commentType;
   final summary = Summary();
+  @override
+  MentionItem? get mentionItem => summary.author?.mentionItem;
 
   late final RxInt topIndex = 0.obs;
 
@@ -183,19 +187,17 @@ class ArticleController extends CommonDynController {
 
   Future<void> onFav() async {
     final favorite = stats.value?.favorite;
-    bool isFav = favorite?.status == true;
+    if (favorite == null) return;
+    final isFav = favorite.status ?? false;
     final res = type == 'read'
         ? isFav
               ? await FavHttp.delFavArticle(id: commentId)
               : await FavHttp.addFavArticle(id: commentId)
         : await FavHttp.communityAction(opusId: id, action: isFav ? 4 : 3);
     if (res.isSuccess) {
-      favorite?.status = !isFav;
-      if (isFav) {
-        favorite?.count--;
-      } else {
-        favorite?.count++;
-      }
+      favorite
+        ..status = !isFav
+        ..count = (favorite.count ?? 0) + (isFav ? -1 : 1);
       stats.refresh();
       SmartDialog.showToast(
         isFav
@@ -209,18 +211,16 @@ class ArticleController extends CommonDynController {
 
   Future<void> onLike() async {
     final like = stats.value?.like;
-    bool isLike = like?.status == true;
+    if (like == null) return;
+    final isLike = like.status ?? false;
     final res = await DynamicsHttp.thumbDynamic(
       dynamicId: opusData?.idStr ?? articleData?.dynIdStr,
       up: isLike ? 2 : 1,
     );
     if (res.isSuccess) {
-      like?.status = !isLike;
-      if (isLike) {
-        like?.count--;
-      } else {
-        like?.count++;
-      }
+      like
+        ..status = !isLike
+        ..count = (like.count ?? 0) + (isLike ? -1 : 1);
       stats.refresh();
       SmartDialog.showToast(
         !isLike

@@ -1,7 +1,7 @@
 import 'package:ex_piliplus/models/common/setting_type.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CommonSetting extends StatefulWidget {
   const CommonSetting({
@@ -44,6 +44,7 @@ class _CommonSettingState extends State<CommonSetting> {
   Widget build(BuildContext context) {
     final showAppBar = widget.showAppBar;
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: showAppBar
           ? AppBar(

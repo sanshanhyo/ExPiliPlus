@@ -8,8 +8,7 @@ import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/common/widgets/dialog/dialog.dart';
 import 'package:ex_piliplus/common/widgets/dialog/report.dart';
 import 'package:ex_piliplus/common/widgets/emote_span.dart';
-import 'package:ex_piliplus/common/widgets/flutter/text/text.dart'
-    as custom_text;
+import 'package:ex_piliplus/common/widgets/text_more/text_more.dart';
 import 'package:ex_piliplus/common/widgets/gesture/tap_gesture_recognizer.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/common/widgets/image_grid/image_grid_view.dart';
@@ -52,11 +51,16 @@ import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/url_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/common/widgets/emote_tooltip.dart';
+import 'package:ex_piliplus/common/widgets/text_ellipsis/text_ellipsis.dart';
+import 'package:ex_piliplus/utils/extension/string_ext.dart';
+import 'package:ex_piliplus/utils/theme_utils.dart';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:protobuf/protobuf.dart';
@@ -348,7 +352,7 @@ class ReplyItemGrpc extends StatelessWidget {
           ),
         Padding(
           padding: padding,
-          child: custom_text.Text.rich(
+          child: TextMore.rich(
             primary: colorScheme.primary,
             style: const TextStyle(height: 1.75, fontSize: 14),
             maxLines: replyLevel == 1 ? replyLengthLimit : null,
@@ -832,22 +836,30 @@ class ReplyItemGrpc extends StatelessWidget {
       onMatch: (Match match) {
         String matchStr = match[0]!;
         late final name = matchStr.substring(1);
-        late final topic = matchStr.substring(1, matchStr.length - 1);
+        late final topic = matchStr.substring1;
         if (content.emotes.containsKey(matchStr)) {
           // 处理表情
           final emote = content.emotes[matchStr]!;
           final size = emote.size.toInt() * 20.0;
+          final url = emote.hasWebpUrl()
+              ? emote.webpUrl
+              : emote.hasGifUrl()
+              ? emote.gifUrl
+              : emote.url;
           spanChildren.add(
             WidgetSpan(
-              child: NetworkImgLayer(
-                src: emote.hasWebpUrl()
-                    ? emote.webpUrl
-                    : emote.hasGifUrl()
-                    ? emote.gifUrl
-                    : emote.url,
-                type: ImageType.emote,
-                width: size,
-                height: size,
+              child: emoteTooltipBuilder(
+                url: url,
+                emote: matchStr,
+                triggerMode: .tap,
+                jumpUrl: emote.hasJumpUrl() ? emote.jumpUrl : null,
+                colorScheme: colorScheme,
+                child: NetworkImgLayer(
+                  src: url,
+                  type: .emote,
+                  width: size,
+                  height: size,
+                ),
               ),
             ),
           );
@@ -1160,17 +1172,43 @@ class ReplyItemGrpc extends StatelessWidget {
                 style: style.copyWith(color: errorColor),
               ),
             ),
-          if (ownerMid != Int64.ZERO)
+          if (ownerMid == Int64.ZERO)
             ListTile(
               onTap: () {
                 Get.back();
+                Pref.setBlackMid(item.mid.toInt());
+                onDelete();
+                SmartDialog.showToast(context.l10n.commonBlockSucceeded);
+                return;
+              },
+              minLeadingWidth: 0,
+              leading: Icon(Icons.error_outline, color: errorColor, size: 19),
+              title: Text(
+                context.l10n.commonBlock,
+                style: TextStyle(fontSize: 14, color: errorColor),
+              ),
+            )
+          else
+            ListTile(
+              onTap: () {
+                Get.back();
+
+                final oid = item.oid;
+                final rpid = item.id;
+
                 autoWrapReportDialog(
                   context,
+                  onRemove: onDelete,
+                  mid: () => item.mid.toInt(),
                   ReportOptions.commentReport,
+                  withContent: ReportOptions.withContentReply,
+                  contentRequired: ReportOptions.contentRequiredReply,
+                  reportUrl:
+                      'https://www.bilibili.com/h5/comment/report?oid=$oid&pageType=${item.type}&rpid=$rpid&platform=android&build=8430300&${ThemeUtils.themeUrl(colorScheme.isDark)}',
                   (reasonType, reasonDesc, banUid) async {
                     final res = await ReplyHttp.report(
-                      rpid: item.id,
-                      oid: item.oid,
+                      rpid: rpid,
+                      oid: oid,
                       reasonType: reasonType,
                       reasonDesc: reasonDesc,
                       banUid: banUid,

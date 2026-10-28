@@ -4,7 +4,7 @@ import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models/common/stat_type.dart';
 import 'package:ex_piliplus/models_new/space/space_opus/item.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SpaceOpusItem extends StatelessWidget {
   const SpaceOpusItem({

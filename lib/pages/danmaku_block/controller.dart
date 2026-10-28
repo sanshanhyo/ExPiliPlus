@@ -6,7 +6,7 @@ import 'package:ex_piliplus/models/common/dm_block_type.dart';
 import 'package:ex_piliplus/models/user/danmaku_block.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:archive/archive.dart' show getCrc32;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 

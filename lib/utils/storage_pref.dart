@@ -49,7 +49,7 @@ import 'package:ex_piliplus/utils/utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart' show FlexSchemeVariant;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 
@@ -313,26 +313,6 @@ abstract final class Pref {
   );
 
   static List<VideoDecodeFormatType> get preferCodecs {
-    // TODO: remove next 2 version
-    if (_setting.get('defaultDecode') case String codecStr) {
-      String? codecStr2 = _setting.get('secondDecode');
-      _setting.deleteAll(const ['defaultDecode', 'secondDecode']);
-      final codecs = [
-        VideoDecodeFormatType.values.firstWhere(
-          (i) => i.codes.contains(codecStr),
-        ),
-        if (codecStr2 != null && codecStr2 != codecStr)
-          VideoDecodeFormatType.values.firstWhere(
-            (i) => i.codes.contains(codecStr2),
-          ),
-      ];
-      _setting.put(
-        SettingBoxKey.preferCodecs,
-        codecs.map((i) => i.name).toList(),
-      );
-      return codecs;
-    }
-
     final codecs = _setting.get(SettingBoxKey.preferCodecs);
     if (codecs is List) {
       return codecs.map((i) => VideoDecodeFormatType.values.byName(i)).toList();
@@ -342,9 +322,7 @@ abstract final class Pref {
 
   static String get hardwareDecoding => _setting.get(
     SettingBoxKey.hardwareDecoding,
-    defaultValue: Platform.isAndroid
-        ? HwDecType.androidDefault
-        : HwDecType.auto.hwdec,
+    defaultValue: HwDecType.kHwdec,
   );
 
   static String get videoSync =>
@@ -1088,6 +1066,8 @@ abstract final class Pref {
 
   static String? get downloadPath => _setting.get(SettingBoxKey.downloadPath);
 
+  static String? get imageSavePath => _setting.get(SettingBoxKey.imageSavePath);
+
   static String? get liveCdnUrl => _setting.get(SettingBoxKey.liveCdnUrl);
 
   static bool get showBatteryLevel => _setting.get(
@@ -1147,4 +1127,10 @@ abstract final class Pref {
       _setting.get(SettingBoxKey.maxVolume, defaultValue: 2.0);
 
   static List? get liveStream => _setting.get(SettingBoxKey.liveStream);
+
+  static bool get enableDocProvider =>
+      _setting.get(SettingBoxKey.enableDocProvider, defaultValue: false);
+
+  static bool get enableEmoteTooltip =>
+      _setting.get(SettingBoxKey.enableEmoteTooltip, defaultValue: false);
 }

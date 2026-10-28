@@ -28,8 +28,17 @@ import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/mini_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart'
+    show tabBarScrollPhysics;
+import 'package:ex_piliplus/models/dynamics/article_content_model.dart' show Pic;
+import 'package:ex_piliplus/pages/article/widgets/sliver_to_box_adapter.dart';
+import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/material.dart' hide PageView;
+import 'package:material_ui/material_ui.dart' hide PageView;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -44,15 +53,27 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends CommonDynPageState<ArticlePage> {
   @override
-  final ArticleController controller = Get.putOrFind(
-    ArticleController.new,
-    tag: Get.parameters['type']! + Get.parameters['id']!,
-  );
+  late final ArticleController controller;
+  @override
+  bool get isArticle => true;
 
   @override
-  dynamic get arguments => {
-    'id': controller.id,
-  };
+  dynamic get arguments => {'id': controller.id};
+
+  UniqueKey? _centerKey;
+
+  @override
+  void initState() {
+    final params = Get.parameters;
+    controller = Get.putOrFind(
+      ArticleController.new,
+      tag: params['type']! + params['id']!,
+    );
+    if (params.containsKey('viewComment')) {
+      _centerKey = UniqueKey();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +100,8 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
         padding: .symmetric(horizontal: padding),
         child: SelectionArea(
           child: CustomScrollView(
+            primary: true,
+            center: _centerKey,
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               _buildContent(
@@ -92,7 +115,10 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                   ),
                 ),
               ),
-              SelectionContainer.disabled(child: buildReplyHeader()),
+              SelectionContainer.disabled(
+                key: _centerKey,
+                child: buildReplyHeader(),
+              ),
               SelectionContainer.disabled(
                 child: Obx(() => replyList(controller.loadingState.value)),
               ),
@@ -102,6 +128,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
       );
     }
 
+    _centerKey = null;
     padding = padding / 4;
     final flex = controller.ratio[0].toInt();
     final flex1 = controller.ratio[1].toInt();
@@ -112,6 +139,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
           flex: flex,
           child: SelectionArea(
             child: CustomScrollView(
+              primary: true,
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverPadding(
@@ -347,36 +375,12 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
       foregroundColor: outline,
     );
 
-    Widget textIconButton({
-      required IconData icon,
-      required String text,
-      required DynamicStat? stat,
-      required VoidCallback onPressed,
-      IconData? activatedIcon,
-    }) {
-      final status = stat?.status == true;
-      final color = status ? primary : outline;
-      return TextButton.icon(
-        onPressed: onPressed,
-        icon: Icon(
-          status ? activatedIcon : icon,
-          size: 16,
-          color: color,
-        ),
-        style: btnStyle,
-        label: Text(
-          stat?.count != null ? NumUtils.numFormat(stat!.count) : text,
-          style: TextStyle(color: color),
-        ),
-      );
-    }
-
     return Padding(
       padding: .only(left: padding.left, right: padding.right),
       child: Obx(() {
         final stats = controller.stats.value;
 
-        Widget btn = Padding(
+        final fab = Padding(
           padding: .only(
             right: kFloatingActionButtonMargin,
             bottom:
@@ -387,14 +391,39 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
         );
 
         if (stats == null) {
-          return Align(alignment: .bottomRight, child: btn);
+          return Align(alignment: .bottomRight, child: fab);
+        }
+
+        Widget textIconButton({
+          required IconData icon,
+          required String text,
+          required DynamicStat? stat,
+          required VoidCallback onPressed,
+          IconData? activatedIcon,
+        }) {
+          final bool status;
+          final String count;
+          if (stat != null) {
+            status = stat.status ?? false;
+            count = stat.count != null ? NumUtils.numFormat(stat.count) : text;
+          } else {
+            status = false;
+            count = text;
+          }
+          final color = status ? primary : outline;
+          return TextButton.icon(
+            style: btnStyle,
+            onPressed: onPressed,
+            label: Text(count, style: TextStyle(color: color)),
+            icon: Icon(status ? activatedIcon : icon, size: 16, color: color),
+          );
         }
 
         return Column(
           mainAxisSize: .min,
           crossAxisAlignment: .end,
           children: [
-            btn,
+            fab,
             Container(
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
@@ -434,6 +463,11 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                                 pic: summary.cover,
                                 title: summary.title,
                                 uname: summary.author?.name,
+                                replyInfo: (
+                                  oid: controller.oid,
+                                  replyType: controller.replyType,
+                                ),
+                                mentionItem: summary.author?.mentionItem,
                                 onSuccess: () {
                                   if (forward != null) {
                                     int count = forward.count ?? 0;
@@ -466,6 +500,14 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                       text: context.l10n.commonAddToFavorites,
                       stat: stats.favorite,
                       onPressed: controller.onFav,
+                    ),
+                  ),
+                  Expanded(
+                    child: textIconButton(
+                      icon: FontAwesomeIcons.comment,
+                      text: '评论',
+                      stat: stats.comment,
+                      onPressed: _jumpToComment,
                     ),
                   ),
                   Expanded(
@@ -541,6 +583,7 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
                       CachedNetworkImage(
                         height: height,
                         width: maxWidth,
+                        gaplessPlayback: true,
                         memCacheWidth: memCacheWidth,
                         memCacheHeight: memCacheHeight,
                         fit: pic.isLongPic == true ? BoxFit.cover : null,
@@ -619,6 +662,27 @@ class _ArticlePageState extends CommonDynPageState<ArticlePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _jumpToComment() {
+    if (!isPortrait) return;
+    if (_centerKey == null) {
+      _centerKey = UniqueKey();
+      setState(() {});
+    } else {
+      PrimaryScrollController.of(context).jumpToTop();
+    }
+  }
+
+  @override
+  Widget httpError({String? errMsg, VoidCallback? onReload}) {
+    return ArticleSliverToBoxAdapter(
+      child: HttpError(
+        isSliver: false,
+        errMsg: errMsg,
+        onReload: controller.onReload,
       ),
     );
   }

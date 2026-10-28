@@ -6,7 +6,7 @@ import 'package:ex_piliplus/models/common/badge_type.dart';
 import 'package:ex_piliplus/models/dynamics/result.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 Widget liveRcmdPanel(
   BuildContext context, {

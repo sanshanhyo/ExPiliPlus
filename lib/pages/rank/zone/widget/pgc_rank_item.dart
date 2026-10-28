@@ -6,19 +6,17 @@ import 'package:ex_piliplus/models/common/stat_type.dart';
 import 'package:ex_piliplus/models_new/pgc/pgc_rank/pgc_rank_item_model.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PgcRankItem extends StatelessWidget {
   const PgcRankItem({super.key, required this.item});
 
   final PgcRankItemModel item;
 
+  void onLongPress() => showPgcCover(title: item.title, cover: item.cover);
+
   @override
   Widget build(BuildContext context) {
-    void onLongPress() => imageSaveDialog(
-      title: item.title,
-      cover: item.cover,
-    );
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
@@ -38,7 +36,7 @@ class PgcRankItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: 3 / 4,
+                aspectRatio: Style.aspectRatio3x4,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     return NetworkImgLayer(

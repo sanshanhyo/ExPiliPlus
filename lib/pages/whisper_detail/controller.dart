@@ -13,7 +13,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -78,7 +78,7 @@ class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
     String? message,
     Map? picMsg,
     required VoidCallback onClearText,
-    int? msgType,
+    MsgType? msgType,
     int? index,
   }) async {
     // debug
@@ -117,14 +117,15 @@ class WhisperDetailController extends CommonListController<RspSessionMsg, Msg> {
     final res = await ImGrpc.sendMsg(
       senderUid: account.mid,
       receiverId: mid!,
-      content: msgType == 5
+      content: msgType == .EN_MSG_TYPE_DRAW_BACK
           ? message!
           : jsonEncode(picMsg ?? {"content": message!}),
-      msgType: MsgType.values[msgType ?? (picMsg != null ? 2 : 1)],
+      msgType:
+          msgType ?? (picMsg != null ? .EN_MSG_TYPE_PIC : .EN_MSG_TYPE_TEXT),
     );
     SmartDialog.dismiss();
     if (res.isSuccess) {
-      if (msgType == 5) {
+      if (msgType == .EN_MSG_TYPE_DRAW_BACK) {
         loadingState
           ..value.data![index!].msgStatus = 1
           ..refresh();

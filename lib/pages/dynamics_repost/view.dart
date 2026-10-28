@@ -14,7 +14,13 @@ import 'package:ex_piliplus/pages/emote/view.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
-import 'package:flutter/material.dart' hide TextField;
+import 'package:material_ui/material_ui.dart' hide TextField;
+import 'dart:async';
+
+import 'package:ex_piliplus/common/widgets/animated_height.dart';
+import 'package:ex_piliplus/http/video.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -30,6 +36,10 @@ class RepostPanel extends CommonRichTextPubPage {
     this.pic,
     this.title,
     this.uname,
+    // reply
+    this.replyInfo,
+    // mention
+    this.mentionItem,
   });
 
   // video
@@ -38,6 +48,12 @@ class RepostPanel extends CommonRichTextPubPage {
   final String? pic;
   final String? title;
   final String? uname;
+
+  // reply
+  final ({int oid, int replyType})? replyInfo;
+
+  // mention
+  final MentionItem? mentionItem;
 
   final DynamicItemModel? item;
   final String? dynIdStr;
@@ -48,6 +64,7 @@ class RepostPanel extends CommonRichTextPubPage {
 }
 
 class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
+  late final RxBool _reply = false.obs;
   late bool _isMax = false;
   late bool _isExpanded = false;
 
@@ -92,7 +109,6 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
     Widget page([ScrollController? scrollController]) => Column(
       key: _isMax ? _key : null,
       mainAxisSize: _isMax ? MainAxisSize.max : MainAxisSize.min,
@@ -106,14 +122,14 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
               padding: EdgeInsets.zero,
               controller: scrollController,
               physics: platformClampingPhysics,
-              children: _buildEditPanel(theme),
+              children: _buildEditPanel(),
             ),
           ),
           _buildToolbar,
-          buildPanelContainer(theme, Colors.transparent),
+          buildPanelContainer(Colors.transparent),
         ] else ...[
-          ..._buildEditPanel(theme),
-          ..._buildDismiss(theme),
+          ..._buildEditPanel(),
+          ..._buildDismiss(),
         ],
       ],
     );
@@ -140,7 +156,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
           );
   }
 
-  List<Widget> _buildEditPanel(ThemeData theme) => [
+  List<Widget> _buildEditPanel() => [
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: _isMax
@@ -154,14 +170,14 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
                   ),
                 ),
               ),
-              child: _buildEditPlaceHolder(theme),
+              child: _buildEditPlaceHolder(),
             ),
     ),
     const SizedBox(height: 10),
-    _buildRefWidget(theme),
+    _buildRefWidget(),
   ];
 
-  Widget _buildRefWidget(ThemeData theme) => Card(
+  Widget _buildRefWidget() => Card(
     margin: const EdgeInsets.symmetric(horizontal: 16),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -207,7 +223,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     ),
   );
 
-  Widget _buildEditPlaceHolder(ThemeData theme) => GestureDetector(
+  Widget _buildEditPlaceHolder() => GestureDetector(
     behavior: HitTestBehavior.opaque,
     onTap: () {
       setState(() => _isMax = true);
@@ -255,8 +271,8 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
           ),
           contentPadding: EdgeInsets.zero,
         ),
-        // inputFormatters: [LengthLimitingTextInputFormatter(1000)],
       ),
+      // inputFormatters: [LengthLimitingTextInputFormatter(1000)],
     ),
   );
 
@@ -354,15 +370,51 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
   Widget get _buildToolbar => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Row(
-      spacing: 16,
       children: [
         emojiBtn,
+        const SizedBox(width: 16),
         atBtn,
+        const Spacer(),
+        if (widget.replyInfo != null) replyBtn,
       ],
     ),
   );
 
-  List<Widget> _buildDismiss(ThemeData theme) => [
+  Widget get replyBtn {
+    return Obx(() {
+      final reply = _reply.value;
+      final color = reply
+          ? theme.colorScheme.primary
+          : theme.colorScheme.outline;
+      return GestureDetector(
+        onTap: _reply.toggle,
+        behavior: .translucent,
+        child: SizedBox(
+          height: 36,
+          child: Row(
+            spacing: 4,
+            mainAxisSize: .min,
+            children: [
+              reply
+                  ? Icon(Icons.check_box_outlined, color: color, size: 20)
+                  : Icon(
+                      Icons.check_box_outline_blank_outlined,
+                      color: color,
+                      size: 20,
+                    ),
+              Text(
+                context.l10n.feedRepostAndComment,
+                style: TextStyle(color: color, height: 1),
+                strutStyle: const StrutStyle(leading: 0, height: 1),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  List<Widget> _buildDismiss() => [
     const SizedBox(height: 10),
     Divider(
       height: 1,
@@ -423,10 +475,34 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
     }
   }
 
+  Future<void> _replyIfNeeded() async {
+    final replyInfo = widget.replyInfo;
+    if (replyInfo == null || !_reply.value || editController.items.isEmpty) {
+      return;
+    }
+    final Map<String, int> atNameToMid = {};
+    for (final e in editController.items) {
+      if (e.type == .at) {
+        atNameToMid[e.rawText] ??= int.parse(e.id!);
+      }
+    }
+    final message = editController.rawText;
+    final res = await VideoHttp.replyAdd(
+      type: replyInfo.replyType,
+      oid: replyInfo.oid,
+      message: message,
+      atNameToMid: atNameToMid,
+    );
+    if (res is! Success) {
+      SmartDialog.showToast(context.l10n.commonSubmitFailed(res.toString()));
+    }
+  }
+
   @override
   Future<void> onCustomPublish({List? pictures}) async {
     final l10n = context.l10n;
     SmartDialog.showLoading();
+    _replyIfNeeded();
     List<Map<String, dynamic>>? richContent = getRichContent();
     final hasRichText = richContent != null;
     List<Map<String, dynamic>>? repostContent = widget.item?.orig != null
@@ -462,4 +538,7 @@ class _RepostPanelState extends CommonRichTextPubPageState<RepostPanel> {
 
   @override
   void onSave() {}
+
+  @override
+  MentionItem? get topMentionItem => widget.mentionItem;
 }

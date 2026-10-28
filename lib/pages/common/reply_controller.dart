@@ -12,13 +12,18 @@ import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/reply_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:fixnum/fixnum.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
 abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
-  final RxInt count = (-1).obs;
+  ReplyController({int count = -1}) : count = RxInt(count);
+
+  late final RxInt count;
 
   late final Rx<ReplySortType> sortType;
   late Mode mode;
@@ -69,7 +74,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
       if (hasUpTop = data.hasUpTop()) {
         data.replies.insert(0, data.upTop);
       }
-      if (subjectControl?.title == ReplySortType.select.title) {
+      if (subjectControl?.title == ReplySortType.select.desc) {
         sortType.value = .select;
       }
     }
@@ -128,6 +133,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
     ReplyInfo? replyItem, {
     int? oid,
     int? replyType,
+    MentionItem? mentionItem,
   }) {
     if (loadingState.value case Error(:final errMsg, :final code)) {
       if (errMsg != null && (code == 12061 || code == 12002)) {
@@ -155,6 +161,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
                 parent: oid != null ? 0 : replyItem!.id.toInt(),
                 replyType: replyItem?.type.toInt() ?? replyType!,
                 replyItem: replyItem,
+                mentionItem: mentionItem,
                 items: savedReplies[key],
 
                 /// hd api deprecated
@@ -214,7 +221,7 @@ abstract class ReplyController<R> extends CommonListController<R, ReplyInfo> {
     loadingState.refresh();
   }
 
-  void onCheckReply(ReplyInfo replyInfo, {required bool isManual}) {
+  void onCheckReply(ReplyInfo replyInfo, {bool isManual = true}) {
     ReplyUtils.onCheckReply(
       replyInfo: replyInfo,
       biliSendCommAntifraud: _biliSendCommAntifraud,

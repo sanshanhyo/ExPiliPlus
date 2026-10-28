@@ -1,6 +1,7 @@
 import 'package:ex_piliplus/common/widgets/flutter/list_tile.dart';
 import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
 import 'package:ex_piliplus/http/login.dart';
+import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/setting_type.dart';
 import 'package:ex_piliplus/pages/about/view.dart';
 import 'package:ex_piliplus/pages/login/controller.dart';
@@ -11,7 +12,7 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
-import 'package:flutter/material.dart' hide ListTile;
+import 'package:material_ui/material_ui.dart' hide ListTile;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -90,6 +91,11 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
+      // Keep the desktop split view opaque all the way to the bottom. The
+      // right-hand settings page is another scaffold, so relying on a
+      // transparent/default canvas can expose the native window background
+      // after the list content ends on macOS.
+      backgroundColor: theme.scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
@@ -112,22 +118,28 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   Expanded(
                     flex: 6,
-                    child: switch (_type) {
-                      .privacySetting ||
-                      .recommendSetting ||
-                      .videoSetting ||
-                      .playSetting ||
-                      .styleSetting ||
-                      .extraSetting ||
-                      .exPiliPlusSetting => CommonSetting(
-                        settingType: _type,
-                        showAppBar: false,
-                      ),
-                      .webdavSetting => const WebDavSettingPage(
-                        showAppBar: false,
-                      ),
-                      .about => const AboutPage(showAppBar: false),
-                    },
+                    child: ColoredBox(
+                      // Keep the right panel opaque even when its nested
+                      // settings list is shorter than the window.
+                      color: theme.scaffoldBackgroundColor,
+                      key: const ValueKey('settings-body-background'),
+                      child: switch (_type) {
+                        .privacySetting ||
+                        .recommendSetting ||
+                        .videoSetting ||
+                        .playSetting ||
+                        .styleSetting ||
+                        .extraSetting ||
+                        .exPiliPlusSetting => CommonSetting(
+                          settingType: _type,
+                          showAppBar: false,
+                        ),
+                        .webdavSetting => const WebDavSettingPage(
+                          showAppBar: false,
+                        ),
+                        .about => const AboutPage(showAppBar: false),
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -276,14 +288,17 @@ class _SettingPageState extends State<SettingPage> {
             TextButton(
               onPressed: () async {
                 SmartDialog.showLoading();
-                final res = await LoginHttp.logout(Accounts.main);
-                if (res['status']) {
+                final account = Accounts.main;
+                final LoadingState<void> res = account is LoginAccount
+                    ? await LoginHttp.logout(account)
+                    : Error(context.l10n.accountPleaseSignIn);
+                if (res.isSuccess) {
                   SmartDialog.dismiss();
                   logout();
                   Get.back();
                 } else {
                   SmartDialog.dismiss();
-                  SmartDialog.showToast(res['msg'].toString());
+                  res.toast();
                 }
               },
               child: Text(context.l10n.commonConfirm),

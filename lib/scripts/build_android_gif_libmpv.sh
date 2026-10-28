@@ -8,6 +8,9 @@ readonly SOURCE_TAG="vnext"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OUTPUT_DIR="${1:-$ROOT_DIR/build/android-gif-libmpv}"
+if [[ "$OUTPUT_DIR" != /* ]]; then
+  OUTPUT_DIR="$ROOT_DIR/$OUTPUT_DIR"
+fi
 RUN_ROOT="${RUNNER_TEMP:-$(mktemp -d /tmp/expiliplus-android-gif-build.XXXXXX)}"
 SOURCE_DIR="$RUN_ROOT/libmpv-android-video-build"
 
@@ -57,28 +60,43 @@ mkdir -p "$SOURCE_DIR/deps" "$SOURCE_DIR/prefix" "$SOURCE_DIR/buildscripts/scrip
 touch "$SOURCE_DIR/buildscripts/scripts/ffmpeg.sh"
 
 cd "$SOURCE_DIR/buildscripts"
+echo "build_phase=bundle_default_start"
 ./bundle_default.sh
+echo "build_phase=bundle_default_complete"
 
 for abi in arm64-v8a armeabi-v7a x86_64; do
   test -s "$SOURCE_DIR/output/default-${abi}.jar"
 done
 
-gif_encoder_config="$(grep -RIlE 'CONFIG_GIF_ENCODER[[:space:]]+1' "$SOURCE_DIR/deps/ffmpeg" | head -1 || true)"
-gif_muxer_config="$(grep -RIlE 'CONFIG_GIF_MUXER[[:space:]]+1' "$SOURCE_DIR/deps/ffmpeg" | head -1 || true)"
+gif_config_files=("$SOURCE_DIR"/buildscripts/deps/ffmpeg/_build-*/ffbuild/config.mak)
+gif_encoder_config=""
+gif_muxer_config=""
+for config_file in "${gif_config_files[@]}"; do
+  [ -f "$config_file" ] || continue
+  if grep -qE 'CONFIG_GIF_ENCODER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
+    gif_encoder_config="${config_file#"$SOURCE_DIR/"}"
+  fi
+  if grep -qE 'CONFIG_GIF_MUXER[[:space:]]*=[[:space:]]*(1|yes)' "$config_file"; then
+    gif_muxer_config="${config_file#"$SOURCE_DIR/"}"
+  fi
+done
 test -n "$gif_encoder_config"
 test -n "$gif_muxer_config"
+echo "build_phase=gif_config_verified encoder=$gif_encoder_config muxer=$gif_muxer_config"
 
 mkdir -p "$OUTPUT_DIR"
 for abi in arm64-v8a armeabi-v7a x86_64; do
   artifact="default-${abi}.jar"
   test -s "$SOURCE_DIR/output/$artifact"
-  jar_contents="$(unzip -p "$SOURCE_DIR/output/$artifact" "lib/$abi/libmpv.so" | strings)"
-  printf '%s\n' "$jar_contents" | grep -q 'ff_gif_encoder'
-  printf '%s\n' "$jar_contents" | grep -q 'ff_gif_muxer'
-  if printf '%s\n' "$jar_contents" | grep -Eiq 'ff_libx264|--enable-libx264|libx264-lossless'; then
+  symbols_file="$RUN_ROOT/${artifact}.strings"
+  unzip -p "$SOURCE_DIR/output/$artifact" "lib/$abi/libmpv.so" | strings > "$symbols_file"
+  grep -F 'ff_gif_encoder' "$symbols_file" >/dev/null
+  grep -F 'ff_gif_muxer' "$symbols_file" >/dev/null
+  if grep -Ei 'ff_libx264|--enable-libx264|libx264-lossless' "$symbols_file" >/dev/null; then
     echo "GIF-only artifact contains x264 symbols: $artifact" >&2
     exit 1
   fi
+  echo "artifact_symbols_verified=$artifact"
   cp "$SOURCE_DIR/output/$artifact" "$OUTPUT_DIR/$artifact"
 done
 

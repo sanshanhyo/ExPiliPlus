@@ -8,15 +8,17 @@ import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
 import 'package:ex_piliplus/models_new/download/bili_download_entry_info.dart';
 import 'package:ex_piliplus/pages/common/multi_select/base.dart'
     show BaseMultiSelectMixin;
-import 'package:ex_piliplus/pages/download/controller.dart';
 import 'package:ex_piliplus/pages/download/detail/widgets/item.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
+import 'package:ex_piliplus/pages/download/download/controller.dart';
+import 'package:ex_piliplus/pages/download/download_action_mixin.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -37,15 +39,25 @@ class DownloadDetailPage extends StatefulWidget {
 }
 
 class _DownloadDetailPageState extends State<DownloadDetailPage>
-    with BaseMultiSelectMixin<BiliDownloadEntryInfo>, GridMixin {
+    with
+        BaseMultiSelectMixin<BiliDownloadEntryInfo>,
+        GridMixin,
+        BaseDownloadActionMixin<DownloadDetailPage, BiliDownloadEntryInfo>,
+        CommonDownloadActionMixin<DownloadDetailPage> {
   StreamSubscription? _sub;
   final _downloadItems = RxList<BiliDownloadEntryInfo>();
-  final _controller = Get.find<DownloadPageController>();
-  final _downloadService = Get.find<DownloadService>();
+  final _controller = Get.find<DownloadController>();
+
   @override
   RxList<BiliDownloadEntryInfo> get list => _downloadItems;
   @override
   RxList<BiliDownloadEntryInfo> get state => _downloadItems;
+
+  @override
+  final downloadService = Get.find<DownloadService>();
+
+  @override
+  BaseMultiSelectMixin<BiliDownloadEntryInfo> get multiSelectCtr => this;
 
   @override
   void initState() {
@@ -70,11 +82,14 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
   }
 
   void _loadList() {
-    final list =
-        _controller.pages
-            .firstWhereOrNull((e) => e.pageId == widget.pageId)
-            ?.entries
-          ?..sort((a, b) => a.sortKey.compareTo(b.sortKey));
+    List<BiliDownloadEntryInfo>? list;
+    for (final season in _controller.seasons) {
+      for (final page in season.pages) {
+        if (page.pageId == widget.pageId) {
+          list = page.entries..sort(downloadEntrySort);
+        }
+      }
+    }
     if (list != null) {
       _downloadItems.value = list;
     } else {
@@ -84,7 +99,6 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = ColorScheme.of(context);
     return Obx(() {
       final enableMultiSelect = this.enableMultiSelect.value;
       return popScope(
@@ -107,7 +121,7 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                   final l10n = context.l10n;
                   final futures = allChecked
                       .map(
-                        (e) => _downloadService.downloadDanmaku(
+                        (e) => downloadService.downloadDanmaku(
                           entry: e,
                           isUpdate: true,
                         ),
@@ -157,19 +171,19 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
                         return DetailItem(
                           entry: entry,
                           progress: widget.progress,
-                          downloadService: _downloadService,
+                          downloadService: downloadService,
                           showTitle: false,
                           onDelete: () async {
                             if (_downloadItems.length == 1) {
                               await _closeSub();
-                              await _downloadService.deletePage(
+                              await downloadService.deletePage(
                                 pageDirPath: entry.pageDirPath,
                               );
                               if (mounted) {
                                 Get.back();
                               }
                             } else {
-                              _downloadService.deleteDownload(
+                              downloadService.deleteDownload(
                                 entry: entry,
                                 removeList: true,
                               );
@@ -207,13 +221,13 @@ class _DownloadDetailPageState extends State<DownloadDetailPage>
             allChecked.map((e) => e.cid.toString()),
           ),
           for (final entry in allChecked)
-            _downloadService.deleteDownload(
+            downloadService.deleteDownload(
               entry: entry,
               removeList: true,
               refresh: false,
             ),
         ]);
-        _downloadService.flagNotifier.refresh();
+        downloadService.flagNotifier.refresh();
         if (isDeleteAll) {
           SmartDialog.dismiss();
           if (mounted) {

@@ -8,10 +8,12 @@ import 'package:ex_piliplus/pages/member_search/child/widgets/search_archive_grp
 import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class MemberSearchChildPage extends StatefulWidget {
   const MemberSearchChildPage({
@@ -84,10 +86,11 @@ class _MemberSearchChildPageState extends State<MemberSearchChildPage>
                 ),
                 MemberSearchType.dynamic =>
                   GlobalData().dynamicsWaterfallFlow
-                      ? SliverWaterfallFlow(
+                      ? SliverMasonryGrid(
+                          crossAxisSpacing: 4,
                           gridDelegate: dynGridDelegate,
                           delegate: SliverChildBuilderDelegate(
-                            (_, index) => _itemBuilder(response, index),
+                            (context, index) => _itemBuilder(response, index),
                             childCount: response.length,
                           ),
                         )

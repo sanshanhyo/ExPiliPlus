@@ -8,10 +8,13 @@ import 'package:ex_piliplus/pages/member_shop/controller.dart';
 import 'package:ex_piliplus/pages/member_shop/widgets/item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class MemberShop extends StatefulWidget {
   const MemberShop({
@@ -44,6 +47,7 @@ class _MemberShopState extends State<MemberShop>
   Widget build(BuildContext context) {
     super.build(context);
     return refreshIndicator(
+      isClampingScrollPhysics: true,
       onRefresh: _controller.onRefresh,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -65,32 +69,32 @@ class _MemberShopState extends State<MemberShop>
   @override
   bool get wantKeepAlive => true;
 
-  late final gridDelegate = SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+  late final gridDelegate = SliverSimpleGridDelegateWithMaxCrossAxisExtent_(
     maxCrossAxisExtent: Grid.smallCardWidth,
-    mainAxisSpacing: Style.safeSpace,
-    crossAxisSpacing: Style.safeSpace,
   );
 
   Widget _buildBody(LoadingState<List<SpaceShopItem>?> loadingState) {
     switch (loadingState) {
       case Loading():
-        return SliverWaterfallFlow(
+        return SliverMasonryGrid(
+          mainAxisSpacing: Style.safeSpace,
+          crossAxisSpacing: Style.safeSpace,
           gridDelegate: gridDelegate,
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => const SpaceOpusSkeleton(),
-            childCount: 10,
+          delegate: const SliverSingleChildDelegate(
+            count: 10,
+            child: SpaceOpusSkeleton(),
           ),
         );
       case Success(:final response):
         if (response == null || response.isEmpty) {
           return HttpError(onReload: _controller.onReload);
         }
-        Widget sliver = SliverWaterfallFlow(
+        Widget sliver = SliverMasonryGrid(
+          mainAxisSpacing: Style.safeSpace,
+          crossAxisSpacing: Style.safeSpace,
           gridDelegate: gridDelegate,
           delegate: SliverChildBuilderDelegate(
-            (_, index) {
-              return MemberShopItem(item: response[index]);
-            },
+            (context, index) => MemberShopItem(item: response[index]),
             childCount: response.length,
           ),
         );

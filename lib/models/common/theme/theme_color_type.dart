@@ -1,5 +1,5 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const List<ThemeColorType> colorThemeTypes = [
   ThemeColorType(Color(0xFF5CB67B), ThemeColorName.defaultGreen),

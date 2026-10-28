@@ -23,7 +23,7 @@ import 'package:ex_piliplus/utils/share_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
     show ExtendedNestedScrollViewState;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -208,6 +208,13 @@ class MemberController extends CommonDataController<SpaceData, SpaceData?>
               : context.l10n.memberUnblockConfirm,
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Pref.setBlackMid(mid);
+            },
+            child: const Text('本地屏蔽'),
+          ),
           TextButton(
             onPressed: Get.back,
             child: Text(

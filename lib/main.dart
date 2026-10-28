@@ -8,6 +8,7 @@ import 'package:ex_piliplus/common/widgets/route_aware_mixin.dart';
 import 'package:ex_piliplus/common/widgets/scale_app.dart';
 import 'package:ex_piliplus/common/widgets/scroll_behavior.dart';
 import 'package:ex_piliplus/http/init.dart';
+import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/fullscreen.dart';
@@ -22,6 +23,7 @@ import 'package:ex_piliplus/utils/cache_manager.dart';
 import 'package:ex_piliplus/utils/calc_window_position.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/desktop_window_size.dart';
+import 'package:ex_piliplus/utils/extension/core_palettes_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/json_file_handler.dart';
 import 'package:ex_piliplus/utils/max_screen_size.dart';
@@ -33,11 +35,14 @@ import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/utils/device_utils.dart';
+import 'package:ex_piliplus/utils/ios/pip_helper.dart';
+
 import 'package:catcher_2/catcher_2.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -91,8 +96,24 @@ Future<void> _initAppPath() async {
   appSupportDirPath = (await getApplicationSupportDirectory()).path;
 }
 
-void main() async {
-  ScaledWidgetsFlutterBinding.ensureInitialized();
+KeyEventResult _onKeyEvent(KeyEvent event) {
+  if (event is KeyDownEvent &&
+      event.logicalKey == LogicalKeyboardKey.escape) {
+    MyApp._onBack();
+    return KeyEventResult.handled;
+  }
+  return KeyEventResult.ignored;
+}
+
+Future<void> main() => startApp();
+
+/// Initializes and launches the app.
+///
+/// Integration tests install [IntegrationTestWidgetsFlutterBinding] before
+/// calling this function, so they skip the production binding while sharing
+/// the same app startup path.
+Future<void> startApp({bool useScaledBinding = true}) async {
+  if (useScaledBinding) ScaledWidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
   await _initAppPath();
   try {
@@ -106,7 +127,9 @@ void main() async {
     exit(0);
   }
   await AppFontManager.init();
-  ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
+  if (useScaledBinding) {
+    ScaledWidgetsFlutterBinding.instance.scaleFactor = Pref.uiScale;
+  }
   await Future.wait([
     _initDownPath(),
     _initTmpPath(),
@@ -122,6 +145,7 @@ void main() async {
     await Future.wait([
       if (Pref.horizontalScreen) ?fullMode() else ?portraitUpMode(),
       setupServiceLocator(),
+      if (Platform.isIOS) IOSPipHelper.init(),
     ]);
   } else if (Platform.isWindows) {
     if (await WebViewEnvironment.getAvailableVersion() != null) {
@@ -140,6 +164,8 @@ void main() async {
   RequestUtils.syncHistoryStatus();
 
   SmartDialog.config.toast = SmartConfigToast(displayType: .onlyRefresh);
+
+  FocusManager.instance.addEarlyKeyEventHandler(_onKeyEvent);
 
   if (PlatformUtils.isMobile) {
     SystemChrome.setEnabledSystemUIMode(.edgeToEdge);
@@ -173,9 +199,7 @@ void main() async {
     final windowOptions = WindowOptions(
       minimumSize: DesktopWindowSize.minimumSize,
       skipTaskbar: false,
-      titleBarStyle: Pref.showWindowTitleBar
-          ? TitleBarStyle.normal
-          : TitleBarStyle.hidden,
+      titleBarStyle: Pref.showWindowTitleBar ? .normal : .hidden,
       title: Constants.appName,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -254,21 +278,26 @@ class MyApp extends StatelessWidget {
 
   static (ThemeData, ThemeData) getAllTheme() {
     final dynamicColor = _light != null && _dark != null && Pref.dynamicColor;
-    late final brandColor =
-        Pref.customThemeColor ?? colorThemeTypes[Pref.customColor].color;
-    late final variant = Pref.schemeVariant;
+    final ColorScheme lightScheme;
+    final ColorScheme darkScheme;
+    if (dynamicColor) {
+      lightScheme = _light!;
+      darkScheme = _dark!;
+    } else {
+      final brandColor =
+          Pref.customThemeColor ?? colorThemeTypes[Pref.customColor].color;
+      final variant = Pref.schemeVariant;
+      lightScheme = brandColor.asColorSchemeSeed(variant, .light);
+      darkScheme = brandColor.asColorSchemeSeed(variant, .dark);
+    }
     return (
       ThemeUtils.lightTheme = ThemeUtils.getThemeData(
-        colorScheme: dynamicColor
-            ? _light!
-            : brandColor.asColorSchemeSeed(variant, .light),
+        colorScheme: lightScheme,
         isDynamic: dynamicColor,
       ),
       ThemeUtils.darkTheme = ThemeUtils.getThemeData(
         isDark: true,
-        colorScheme: dynamicColor
-            ? _dark!
-            : brandColor.asColorSchemeSeed(variant, .dark),
+        colorScheme: darkScheme,
         isDynamic: dynamicColor,
       ),
     );
@@ -284,7 +313,7 @@ class MyApp extends StatelessWidget {
         theme: light,
         darkTheme: dark,
         themeMode: ThemeUtils.themeMode = Pref.themeMode,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         locale: locale,
         fallbackLocale: AppLocaleController.fallbackLocale,
         supportedLocales: AppLocalizations.supportedLocales,

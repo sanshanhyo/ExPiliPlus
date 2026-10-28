@@ -12,7 +12,7 @@ import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -304,6 +304,14 @@ class VideoPopupMenu extends StatelessWidget {
                             ),
                           ),
                           actions: [
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                                Pref.setBlackMid(videoItem.owner.mid!);
+                                onRemove?.call();
+                              },
+                              child: const Text('本地屏蔽'),
+                            ),
                             TextButton(
                               onPressed: Get.back,
                               child: Text(

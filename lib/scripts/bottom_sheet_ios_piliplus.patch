@@ -2,14 +2,14 @@ diff --git a/lib/pages/common/slide/common_slide_page.dart b/lib/pages/common/sl
 index 58ba68b7c..a6bb398ac 100644
 --- a/lib/pages/common/slide/common_slide_page.dart
 +++ b/lib/pages/common/slide/common_slide_page.dart
-@@ -3,7 +3,8 @@ import 'dart:math' show max;
+@@ -2,7 +2,8 @@ import 'dart:math' show max;
  
  import 'package:ex_piliplus/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart';
  import 'package:ex_piliplus/utils/storage_pref.dart';
 -import 'package:flutter/gestures.dart' show HorizontalDragGestureRecognizer;
 +import 'package:flutter/gestures.dart'
 +    show HorizontalDragGestureRecognizer, DeviceGestureSettings;
- import 'package:flutter/material.dart';
+ import 'package:material_ui/material_ui.dart';
  import 'package:get/get.dart';
  
 @@ -142,6 +143,10 @@ class SlideDragGestureRecognizer extends HorizontalDragGestureRecognizer {

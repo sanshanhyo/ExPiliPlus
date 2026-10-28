@@ -8,7 +8,8 @@ import 'package:ex_piliplus/plugin/pl_player/models/play_status.dart';
 import 'package:ex_piliplus/plugin/pl_player/utils/danmaku_options.dart';
 import 'package:ex_piliplus/utils/danmaku_utils.dart';
 import 'package:canvas_danmaku/canvas_danmaku.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+
 import 'package:get/get.dart';
 
 /// 传入播放器控制器，监听播放进度，加载对应弹幕
@@ -56,9 +57,7 @@ class _PlDanmakuState extends State<PlDanmaku> {
         _plDanmakuController.initFileDmIfNeeded();
       } else {
         _plDanmakuController.queryDanmaku(
-          PlDanmakuController.calcSegment(
-            playerController.positionInMilliseconds,
-          ),
+          DmUtils.calcSegment(playerController.positionInMilliseconds),
         );
       }
     }
@@ -73,7 +72,10 @@ class _PlDanmakuState extends State<PlDanmaku> {
     if (oldWidget.notFullscreen != widget.notFullscreen &&
         !DanmakuOptions.sameFontScale) {
       _controller?.updateOption(
-        DanmakuOptions.get(notFullscreen: widget.notFullscreen),
+        DanmakuOptions.get(
+          notFullscreen: widget.notFullscreen,
+          speed: playerController.playbackSpeed,
+        ),
       );
     }
   }

@@ -2,7 +2,7 @@ import 'package:ex_piliplus/pages/fav/note/child_view.dart';
 import 'package:ex_piliplus/pages/fav/note/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class FavNotePage extends StatefulWidget {

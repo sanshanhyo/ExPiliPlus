@@ -17,7 +17,7 @@ import 'package:ex_piliplus/utils/duration_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 // 收藏视频卡片 - 水平布局
@@ -34,6 +34,33 @@ class FavVideoCardH extends StatelessWidget {
   }) : assert(ctr == null || index != null);
 
   bool get isSort => ctr == null;
+
+  void _onTap() {
+    // 0/4/16/...: 正常；9: up自己删除；1: 其他原因删除
+    if (const [1, 9].contains(item.attr)) {
+      Get.toNamed('/member?mid=${item.upper?.mid}');
+      return;
+    }
+
+    switch (item.type) {
+      case 12:
+        AudioPage.toAudioPage(
+          oid: item.id!,
+          itemType: 3,
+          from: PlaylistSource.AUDIO_CARD,
+        );
+        break;
+      case 24:
+        PageUtils.viewPgc(
+          seasonId: item.ogv!.seasonId,
+          epId: item.id,
+        );
+        break;
+      default:
+        ctr!.onViewFav(item, index);
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,31 +89,7 @@ class FavVideoCardH extends StatelessWidget {
             ? null
             : enableMultiSelect
             ? () => ctr!.onSelect(item)
-            : () {
-                if (!const [0, 16].contains(item.attr)) {
-                  Get.toNamed('/member?mid=${item.upper?.mid}');
-                  return;
-                }
-
-                switch (item.type) {
-                  case 12:
-                    AudioPage.toAudioPage(
-                      oid: item.id!,
-                      itemType: 3,
-                      from: PlaylistSource.AUDIO_CARD,
-                    );
-                    break;
-                  case 24:
-                    PageUtils.viewPgc(
-                      seasonId: item.ogv!.seasonId,
-                      epId: item.id,
-                    );
-                    break;
-                  default:
-                    ctr!.onViewFav(item, index);
-                    break;
-                }
-              },
+            : _onTap,
         onLongPress: onLongPress,
         onSecondaryTap: PlatformUtils.isMobile ? null : onLongPress,
         child: Padding(

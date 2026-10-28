@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2191,6 +2192,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get videoEpisodes => '视频选集';
+
+  @override
+  String get videoNoEpisodes => '暂无可用剧集';
 
   @override
   String videoEpisodeCount(int count) {
@@ -4471,6 +4475,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get memberHomeAnime => '追番';
 
   @override
+  String get memberNotLiveVisitRoom => 'TA现在并没有直播，前往TA的直播间';
+
+  @override
+  String get blacklistLocal => '本地';
+
+  @override
+  String get blacklistOnline => '在线';
+
+  @override
+  String get blacklistAddMid => '屏蔽用户';
+
+  @override
+  String get blacklistUid => 'UID';
+
+  @override
+  String get blacklistImportExport => '导入/导出';
+
+  @override
   String blacklistTitle(Object count) {
     return '黑名单管理$count';
   }
@@ -5099,6 +5121,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get feedRepostFeed => '转发动态';
 
   @override
+  String get feedRepostAndComment => '同时评论';
+
+  @override
   String get feedPublishNow => '立即发布';
 
   @override
@@ -5587,6 +5612,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get loginVerificationTitle => '验证码';
+
+  @override
+  String get loginVerificationLoadFailed => '验证码加载失败';
 
   @override
   String get loginCompleteVerificationWindow => '请在弹出的新窗口中完成验证';
@@ -6485,6 +6513,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get commonBlock => '屏蔽';
+
+  @override
+  String get commonBlockSucceeded => '屏蔽成功';
 
   @override
   String get commonShow => '显示';
@@ -7421,6 +7452,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get shareTicketFrom => '分享来自 ExPiliPlus';
+
+  @override
+  String get videoNoteWindowPinned => '已置顶笔记窗口';
+
+  @override
+  String get videoNoteWindowOpened => '已在新窗口打开';
+
+  @override
+  String get settingsEnableDocProvider => '允许三方 APP 访问私有存储';
+
+  @override
+  String get settingsEnableDocProviderDescription => '允许三方 APP 通过外部存储访问应用私有文件';
+
+  @override
+  String get settingsEnableEmoteTooltip => '点击表情显示 Tooltip';
+
+  @override
+  String get settingsEnableEmoteTooltipDescription => '长按或悬停表情时显示预览';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -9610,6 +9659,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get videoEpisodes => '影片選集';
+
+  @override
+  String get videoNoEpisodes => '目前沒有可用劇集';
 
   @override
   String videoEpisodeCount(int count) {
@@ -11891,6 +11943,24 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get memberHomeAnime => '追番';
 
   @override
+  String get memberNotLiveVisitRoom => 'TA現在沒有直播，前往TA的直播間';
+
+  @override
+  String get blacklistLocal => '本機';
+
+  @override
+  String get blacklistOnline => '線上';
+
+  @override
+  String get blacklistAddMid => '封鎖使用者';
+
+  @override
+  String get blacklistUid => 'UID';
+
+  @override
+  String get blacklistImportExport => '匯入/匯出';
+
+  @override
   String blacklistTitle(Object count) {
     return '黑名單管理$count';
   }
@@ -12519,6 +12589,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get feedRepostFeed => '轉發動態';
 
   @override
+  String get feedRepostAndComment => '同時評論';
+
+  @override
   String get feedPublishNow => '立即發佈';
 
   @override
@@ -13007,6 +13080,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get loginVerificationTitle => '驗證';
+
+  @override
+  String get loginVerificationLoadFailed => '驗證碼載入失敗';
 
   @override
   String get loginCompleteVerificationWindow => '請在彈出的新視窗中完成驗證';
@@ -13905,6 +13981,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get commonBlock => '封鎖';
+
+  @override
+  String get commonBlockSucceeded => '封鎖成功';
 
   @override
   String get commonShow => '顯示';
@@ -14841,4 +14920,23 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get shareTicketFrom => '分享來自 ExPiliPlus';
+
+  @override
+  String get videoNoteWindowPinned => '筆記視窗已置頂';
+
+  @override
+  String get videoNoteWindowOpened => '已在新視窗開啟筆記';
+
+  @override
+  String get settingsEnableDocProvider => '允許第三方 APP 存取私有儲存空間';
+
+  @override
+  String get settingsEnableDocProviderDescription =>
+      '允許第三方 APP 透過外部儲存空間存取應用程式私有檔案';
+
+  @override
+  String get settingsEnableEmoteTooltip => '點擊表情顯示 Tooltip';
+
+  @override
+  String get settingsEnableEmoteTooltipDescription => '長按或懸停表情時顯示預覽';
 }

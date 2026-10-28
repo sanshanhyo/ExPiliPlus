@@ -3963,6 +3963,12 @@ abstract class AppLocalizations {
   /// **'视频选集'**
   String get videoEpisodes;
 
+  /// No description provided for @videoNoEpisodes.
+  ///
+  /// In zh, this message translates to:
+  /// **'暂无可用剧集'**
+  String get videoNoEpisodes;
+
   /// No description provided for @videoEpisodeCount.
   ///
   /// In zh, this message translates to:
@@ -8073,6 +8079,42 @@ abstract class AppLocalizations {
   /// **'追番'**
   String get memberHomeAnime;
 
+  /// No description provided for @memberNotLiveVisitRoom.
+  ///
+  /// In zh, this message translates to:
+  /// **'TA现在并没有直播，前往TA的直播间'**
+  String get memberNotLiveVisitRoom;
+
+  /// No description provided for @blacklistLocal.
+  ///
+  /// In zh, this message translates to:
+  /// **'本地'**
+  String get blacklistLocal;
+
+  /// No description provided for @blacklistOnline.
+  ///
+  /// In zh, this message translates to:
+  /// **'在线'**
+  String get blacklistOnline;
+
+  /// No description provided for @blacklistAddMid.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽用户'**
+  String get blacklistAddMid;
+
+  /// No description provided for @blacklistUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'UID'**
+  String get blacklistUid;
+
+  /// No description provided for @blacklistImportExport.
+  ///
+  /// In zh, this message translates to:
+  /// **'导入/导出'**
+  String get blacklistImportExport;
+
   /// No description provided for @blacklistTitle.
   ///
   /// In zh, this message translates to:
@@ -9205,6 +9247,12 @@ abstract class AppLocalizations {
   /// **'转发动态'**
   String get feedRepostFeed;
 
+  /// No description provided for @feedRepostAndComment.
+  ///
+  /// In zh, this message translates to:
+  /// **'同时评论'**
+  String get feedRepostAndComment;
+
   /// No description provided for @feedPublishNow.
   ///
   /// In zh, this message translates to:
@@ -10104,6 +10152,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'验证码'**
   String get loginVerificationTitle;
+
+  /// No description provided for @loginVerificationLoadFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码加载失败'**
+  String get loginVerificationLoadFailed;
 
   /// No description provided for @loginCompleteVerificationWindow.
   ///
@@ -11734,6 +11788,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'屏蔽'**
   String get commonBlock;
+
+  /// No description provided for @commonBlockSucceeded.
+  ///
+  /// In zh, this message translates to:
+  /// **'屏蔽成功'**
+  String get commonBlockSucceeded;
 
   /// No description provided for @commonShow.
   ///
@@ -13378,6 +13438,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'分享来自 ExPiliPlus'**
   String get shareTicketFrom;
+
+  /// No description provided for @videoNoteWindowPinned.
+  ///
+  /// In zh, this message translates to:
+  /// **'已置顶笔记窗口'**
+  String get videoNoteWindowPinned;
+
+  /// No description provided for @videoNoteWindowOpened.
+  ///
+  /// In zh, this message translates to:
+  /// **'已在新窗口打开'**
+  String get videoNoteWindowOpened;
+
+  /// No description provided for @settingsEnableDocProvider.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许三方 APP 访问私有存储'**
+  String get settingsEnableDocProvider;
+
+  /// No description provided for @settingsEnableDocProviderDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'允许三方 APP 通过外部存储访问应用私有文件'**
+  String get settingsEnableDocProviderDescription;
+
+  /// No description provided for @settingsEnableEmoteTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'点击表情显示 Tooltip'**
+  String get settingsEnableEmoteTooltip;
+
+  /// No description provided for @settingsEnableEmoteTooltipDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'长按或悬停表情时显示预览'**
+  String get settingsEnableEmoteTooltipDescription;
 }
 
 class _AppLocalizationsDelegate

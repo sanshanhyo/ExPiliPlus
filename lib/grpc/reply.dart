@@ -5,6 +5,8 @@ import 'package:ex_piliplus/grpc/grpc_req.dart';
 import 'package:ex_piliplus/grpc/url.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/utils/global_data.dart';
+
 import 'package:fixnum/fixnum.dart';
 
 abstract final class ReplyGrpc {
@@ -37,7 +39,8 @@ abstract final class ReplyGrpc {
   }
 
   static bool needRemoveGrpc(ReplyInfo reply) {
-    return (enableFilter && replyRegExp.hasMatch(reply.content.message)) ||
+    return GlobalData().blackMids.contains(reply.mid.toInt()) ||
+        (enableFilter && replyRegExp.hasMatch(reply.content.message)) ||
         (antiGoodsReply && needRemoveGoodGrpc(reply));
   }
 
@@ -54,12 +57,12 @@ abstract final class ReplyGrpc {
         oid: Int64(oid),
         type: Int64(type),
         rpid: Int64.ZERO,
-        // cursor: CursorReq(
-        //   mode: mode,
-        //   next: cursorNext,
-        // ),
-        mode: mode,
-        pagination: offset == null ? null : FeedPagination(offset: offset),
+        cursor: CursorReq(
+          mode: mode,
+          next: cursorNext,
+        ),
+        // mode: mode,
+        // pagination: offset == null ? null : FeedPagination(offset: offset),
       ),
       MainListReply.fromBuffer,
     );

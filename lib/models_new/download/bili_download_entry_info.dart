@@ -7,9 +7,18 @@ import 'package:ex_piliplus/pages/common/multi_select/base.dart'
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:ex_piliplus/utils/utils.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:ex_piliplus/models_new/download/download_info.dart';
+import 'package:ex_piliplus/models_new/sponsor_block/segment_item.dart';
+import 'package:ex_piliplus/utils/path_utils.dart';
+
 import 'package:get/route_manager.dart';
+
+int downloadEntrySort(BiliDownloadEntryInfo a, BiliDownloadEntryInfo b) {
+  return a.sortKey.compareTo(b.sortKey);
+}
 
 class BiliDownloadEntryInfo with MultiSelectData {
   int mediaType;
@@ -36,9 +45,11 @@ class BiliDownloadEntryInfo with MultiSelectData {
   final int? ownerId;
   final String? ownerName;
   PageInfo? pageData;
-  final String? seasonId;
+  final String? seasonId; // pgc
   final SourceInfo? source;
   EpInfo? ep;
+  List<SegmentItemModel>? segments;
+  SeasonInfo? seasonInfo;
 
   late String pageDirPath;
   late String entryDirPath;
@@ -48,7 +59,7 @@ class BiliDownloadEntryInfo with MultiSelectData {
 
   String get pageId => seasonId ?? avid.toString();
 
-  int get sortKey => ep?.sortIndex ?? pageData!.cid;
+  int get sortKey => ep?.sortIndex ?? pageData!.page;
 
   String get showTitle {
     if (pageData case PageInfo(:final part)) {
@@ -59,6 +70,17 @@ class BiliDownloadEntryInfo with MultiSelectData {
     }
     return title;
   }
+
+  DownloadPageInfo toDownloadPageInfo(String pageId, {int? sortKey}) =>
+      DownloadPageInfo(
+        pageId: pageId,
+        dirPath: pageDirPath,
+        title: title,
+        cover: cover,
+        sortKey: sortKey ?? this.sortKey,
+        seasonType: ep?.seasonType,
+        entries: [this],
+      );
 
   Widget moreBtn(ColorScheme colorScheme) => SizedBox(
     width: 29,
@@ -128,6 +150,12 @@ class BiliDownloadEntryInfo with MultiSelectData {
                 SmartDialog.showToast(e.toString());
               }
             },
+          )
+        else
+          PopupMenuItem(
+            height: 38,
+            child: const Text('复制缓存路径', style: TextStyle(fontSize: 13)),
+            onTap: () => Utils.copyText(entryDirPath),
           ),
         if (ownerId case final mid?)
           PopupMenuItem(
@@ -172,6 +200,8 @@ class BiliDownloadEntryInfo with MultiSelectData {
     this.seasonId,
     this.source,
     this.ep,
+    this.segments,
+    this.seasonInfo,
   });
 
   factory BiliDownloadEntryInfo.fromJson(Map<String, dynamic> json) =>
@@ -210,6 +240,10 @@ class BiliDownloadEntryInfo with MultiSelectData {
         ep: json['ep'] != null
             ? EpInfo.fromJson(json['ep'] as Map<String, dynamic>)
             : null,
+        segments: SegmentItemModel.fromCache(json['segments']),
+        seasonInfo: json['season_info'] != null
+            ? SeasonInfo.fromJson(json['season_info'] as Map<String, dynamic>)
+            : null,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -240,6 +274,8 @@ class BiliDownloadEntryInfo with MultiSelectData {
     'season_id': ?seasonId,
     'source': ?source?.toJson(),
     'ep': ?ep?.toJson(),
+    'segments': ?segments?.map((e) => e.toJson()).toList(),
+    'season_info': ?seasonInfo?.toJson(),
   };
 
   @override
@@ -255,6 +291,56 @@ class BiliDownloadEntryInfo with MultiSelectData {
 
   @override
   int get hashCode => cid.hashCode;
+}
+
+class SeasonInfo {
+  final int index;
+  final int id;
+  final String title;
+  final String cover;
+  final int mid;
+  final String uname;
+
+  SeasonInfo({
+    required this.index,
+    required this.id,
+    required this.title,
+    required this.cover,
+    required this.mid,
+    required this.uname,
+  });
+
+  factory SeasonInfo.fromJson(Map<String, dynamic> json) => SeasonInfo(
+    index: json['index'] as int,
+    id: json['id'] as int,
+    title: json['title'] as String,
+    cover: json['cover'] as String,
+    mid: json['mid'] as int,
+    uname: json['uname'] as String,
+  );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'index': index,
+    'id': id,
+    'title': title,
+    'cover': cover,
+    'mid': mid,
+    'uname': uname,
+  };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other is SeasonInfo) {
+      return id == other.id;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class PageInfo {

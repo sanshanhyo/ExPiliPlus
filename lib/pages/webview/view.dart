@@ -10,11 +10,20 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/login_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/common/widgets/route_aware_mixin.dart'
+    show routeObserver;
+import 'package:ex_piliplus/main.dart' show webViewEnvironment;
+import 'package:ex_piliplus/plugin/linux_webview.dart';
+import 'package:ex_piliplus/utils/extension/num_ext.dart';
+import 'package:ex_piliplus/utils/extension/string_ext.dart';
+import 'package:ex_piliplus/utils/linux_cookie_manager.dart';
+
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart' as dww;
 
 class WebviewPage extends StatefulWidget {
   const WebviewPage({
@@ -25,12 +34,39 @@ class WebviewPage extends StatefulWidget {
     this.userAgent,
   });
 
-  final String? url;
-
   // note
+  final String? url;
   final int? oid;
   final String? title;
   final String? userAgent;
+
+  static Future<dww.Webview?> openLinux({
+    required String url,
+    String? title,
+    int? oid,
+    bool inApp = false,
+    bool off = false,
+    VoidCallback? onClose,
+    VoidCallback? onFinish,
+  }) async {
+    if (!Platform.isLinux) return null;
+    try {
+      final webview = await dww.WebviewWindow.create(
+        configuration: dww.CreateConfiguration(
+          windowWidth: 1080,
+          windowHeight: 760,
+          title: title ?? url,
+        ),
+      );
+      webview.onClose.whenComplete(() => onClose?.call());
+      webview.launch(url);
+      return webview;
+    } catch (e) {
+      if (kDebugMode) debugPrint('Linux Webview open error: $e');
+      SmartDialog.showToast('无法启动网页窗口: $e');
+      return null;
+    }
+  }
 
   @override
   State<WebviewPage> createState() => _WebviewPageState();
@@ -258,9 +294,7 @@ class _WebviewPageState extends State<WebviewPage> {
                     builder: (context) {
                       String suggestedFilename = request.suggestedFilename
                           .toString();
-                      String fileSize = CacheManager.formatSize(
-                        request.contentLength.toDouble(),
-                      );
+                      final fileSize = request.contentLength.formatSize;
                       try {
                         suggestedFilename = Uri.decodeComponent(
                           suggestedFilename,

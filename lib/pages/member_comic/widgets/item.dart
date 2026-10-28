@@ -3,13 +3,15 @@ import 'package:ex_piliplus/common/widgets/image/image_save.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
 import 'package:ex_piliplus/models_new/space/space_archive/item.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MemberComicItem extends StatelessWidget {
   const MemberComicItem({super.key, required this.item});
 
   final SpaceArchiveItem item;
+
+  void onLongPress() => showPgcCover(title: item.title, cover: item.cover);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,6 @@ class MemberComicItem extends StatelessWidget {
       fontSize: 13,
       color: theme.colorScheme.onSurfaceVariant,
     );
-    void onLongPress() => imageSaveDialog(title: item.title, cover: item.cover);
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
@@ -41,7 +42,7 @@ class MemberComicItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AspectRatio(
-                aspectRatio: 3 / 4,
+                aspectRatio: Style.aspectRatio3x4,
                 child: LayoutBuilder(
                   builder:
                       (BuildContext context, BoxConstraints boxConstraints) {

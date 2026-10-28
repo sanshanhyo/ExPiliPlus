@@ -4,7 +4,7 @@ import 'package:ex_piliplus/utils/num_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ActionPanel extends StatelessWidget {
@@ -48,6 +48,8 @@ class ActionPanel extends StatelessWidget {
                         (context as Element?)?.markNeedsBuild();
                       }
                     },
+                    replyInfo: item.basic?.replyInfo,
+                    mentionItem: item.modules.moduleAuthor?.mentionItem,
                   ),
                 ),
                 icon: Icon(

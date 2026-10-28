@@ -8,7 +8,7 @@ import 'package:ex_piliplus/models_new/fav/fav_pgc/list.dart';
 import 'package:ex_piliplus/pages/common/multi_select/base.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FavPgcItem extends StatelessWidget {
   const FavPgcItem({
@@ -58,7 +58,7 @@ class FavPgcItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AspectRatio(
-                    aspectRatio: 3 / 4,
+                    aspectRatio: Style.aspectRatio3x4,
                     child: LayoutBuilder(
                       builder: (context, boxConstraints) {
                         return Stack(

@@ -9,7 +9,10 @@ import 'package:ex_piliplus/pages/search_panel/user/view.dart';
 import 'package:ex_piliplus/pages/search_panel/video/view.dart';
 import 'package:ex_piliplus/pages/search_result/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scroll_physics.dart' show tabBarView;
+import 'package:ex_piliplus/pages/search_panel/all/view.dart';
 import 'package:get/get.dart';
 
 class SearchResultPage extends StatefulWidget {
@@ -38,7 +41,7 @@ class _SearchResultPageState extends State<SearchResultPage>
     _tabController = TabController(
       vsync: this,
       initialIndex: Get.arguments?['initIndex'] ?? 0,
-      length: SearchType.values.length,
+      length: SearchType.actives.length,
     );
 
     if (_isFromSearch) {
@@ -78,7 +81,7 @@ class _SearchResultPageState extends State<SearchResultPage>
         title: GestureDetector(
           onTap: () {
             if (_isFromSearch) {
-              Get.back();
+              Get.back(result: true);
             } else {
               Get.offNamed(
                 '/search',
@@ -106,7 +109,7 @@ class _SearchResultPageState extends State<SearchResultPage>
               splashFactory: NoSplash.splashFactory,
               padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
               controller: _tabController,
-              tabs: SearchType.values
+              tabs: SearchType.actives
                   .map(
                     (item) => Obx(
                       () {
@@ -153,36 +156,35 @@ class _SearchResultPageState extends State<SearchResultPage>
             Expanded(
               child: tabBarView(
                 controller: _tabController,
-                children: SearchType.values
+                children: SearchType.actives
                     .map(
                       (item) => switch (item) {
-                        // SearchType.all => SearchAllPanel(
-                        //   tag: _tag,
-                        //   searchType: item,
-                        //   keyword: _searchResultController.keyword,
-                        // ),
-                        SearchType.video => SearchVideoPanel(
+                        .all => SearchAllPanel(
                           tag: _tag,
                           searchType: item,
                           keyword: _searchResultController.keyword,
                         ),
-                        SearchType.media_bangumi ||
-                        SearchType.media_ft => SearchPgcPanel(
+                        .video => SearchVideoPanel(
                           tag: _tag,
                           searchType: item,
                           keyword: _searchResultController.keyword,
                         ),
-                        SearchType.live_room => SearchLivePanel(
+                        .media_bangumi || .media_ft => SearchPgcPanel(
                           tag: _tag,
                           searchType: item,
                           keyword: _searchResultController.keyword,
                         ),
-                        SearchType.bili_user => SearchUserPanel(
+                        .live_room => SearchLivePanel(
                           tag: _tag,
                           searchType: item,
                           keyword: _searchResultController.keyword,
                         ),
-                        SearchType.article => SearchArticlePanel(
+                        .bili_user => SearchUserPanel(
+                          tag: _tag,
+                          searchType: item,
+                          keyword: _searchResultController.keyword,
+                        ),
+                        .article => SearchArticlePanel(
                           tag: _tag,
                           searchType: item,
                           keyword: _searchResultController.keyword,

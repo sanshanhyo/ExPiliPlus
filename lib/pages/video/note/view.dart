@@ -1,3 +1,4 @@
+import 'package:ex_piliplus/common/widgets/extended_visibility_detector.dart';
 import 'package:ex_piliplus/common/skeleton/video_reply.dart';
 import 'package:ex_piliplus/common/widgets/flutter/refresh_indicator.dart';
 import 'package:ex_piliplus/common/widgets/image/network_img_layer.dart';
@@ -13,8 +14,14 @@ import 'package:ex_piliplus/utils/bili_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+
+import 'dart:io' show Platform;
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/mini_scaffold.dart';
+import 'package:desktop_webview_window/desktop_webview_window.dart' as dww;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
 import 'package:get/get.dart';
 
 class NoteListPage extends CommonSlidePage {
@@ -38,6 +45,10 @@ class NoteListPage extends CommonSlidePage {
 
 class _NoteListPageState extends State<NoteListPage>
     with SingleTickerProviderStateMixin, CommonSlideMixin {
+  static dww.Webview? _activeNoteWebview;
+  static _NoteListPageState? _dwwOwner;
+
+  bool _isOpeningNote = false;
   late final NoteListPageCtr _controller;
 
   @override
@@ -51,8 +62,14 @@ class _NoteListPageState extends State<NoteListPage>
 
   @override
   void dispose() {
+    if (identical(_dwwOwner, this)) _dwwOwner = null;
     Get.delete<NoteListPageCtr>(tag: widget.heroTag);
     super.dispose();
+  }
+
+  void _closeLinuxWebview() {
+    _activeNoteWebview = null;
+    if (identical(_dwwOwner, this)) _dwwOwner = null;
   }
 
   @override
@@ -309,6 +326,47 @@ class _NoteListPageState extends State<NoteListPage>
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _onTakeNoteLinux(String url) async {
+    if (_activeNoteWebview != null) {
+      await _activeNoteWebview?.bringToForeground();
+      SmartDialog.showToast(context.l10n.videoNoteWindowPinned);
+      return;
+    }
+    if (_isOpeningNote) return;
+    _isOpeningNote = true;
+    SmartDialog.showToast(context.l10n.videoNoteWindowOpened);
+    try {
+      var webview = await WebviewPage.openLinux(
+        oid: widget.oid,
+        title: widget.title,
+        url: url,
+        onClose: _closeLinuxWebview,
+      );
+      if (mounted) {
+        _activeNoteWebview = webview;
+        _dwwOwner = this;
+      } else {
+        webview?.close();
+        webview = null;
+      }
+    } finally {
+      _isOpeningNote = false;
+    }
+  }
+
+  Future<void> _onTakeNote() async {
+    final url =
+        'https://www.bilibili.com/h5/note-app?oid=${widget.oid}&pagefrom=ugcvideo&is_stein_gate=${widget.isStein ? 1 : 0}';
+    if (Platform.isLinux) {
+      await _onTakeNoteLinux(url);
+      return;
+    }
+    MiniScaffold.of(context).showBottomSheet(
+      constraints: const BoxConstraints(),
+      (context) => WebviewPage(oid: widget.oid, title: widget.title, url: url),
     );
   }
 }

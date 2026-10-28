@@ -5,7 +5,7 @@ import 'package:ex_piliplus/common/widgets/loading_widget/loading_widget.dart';
 import 'package:ex_piliplus/common/widgets/view_sliver_safe_area.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:dlna_dart/dlna.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class DLNAPage extends StatefulWidget {

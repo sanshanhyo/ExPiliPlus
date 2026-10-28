@@ -8,10 +8,13 @@ import 'package:ex_piliplus/utils/global_data.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class MemberDynamicsPage extends StatefulWidget {
   const MemberDynamicsPage({super.key, this.mid});
@@ -61,6 +64,7 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
   }
 
   Widget _buildBody(EdgeInsets padding) => refreshIndicator(
+    isClampingScrollPhysics: widget.mid != null,
     onRefresh: _memberDynamicController.onRefresh,
     child: CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -83,10 +87,11 @@ class _MemberDynamicsPageState extends State<MemberDynamicsPage>
       Success(:final response) =>
         response != null && response.isNotEmpty
             ? GlobalData().dynamicsWaterfallFlow
-                  ? SliverWaterfallFlow(
+                  ? SliverMasonryGrid(
+                      crossAxisSpacing: 4,
                       gridDelegate: dynGridDelegate,
                       delegate: SliverChildBuilderDelegate(
-                        (_, index) => _itemBuilder(response, index),
+                        (context, index) => _itemBuilder(response, index),
                         childCount: response.length,
                       ),
                     )

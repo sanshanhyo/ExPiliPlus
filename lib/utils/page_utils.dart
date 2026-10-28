@@ -33,7 +33,7 @@ import 'package:ex_piliplus/utils/url_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -236,6 +236,7 @@ abstract final class PageUtils {
           parameters: {
             'id': item.idStr,
             'type': 'opus',
+            if (viewComment) 'viewComment': '',
           },
         );
       } else {
@@ -313,6 +314,7 @@ abstract final class PageUtils {
           parameters: {
             'id': item.idStr,
             'type': 'opus',
+            if (viewComment) 'viewComment': '',
           },
         );
         break;
@@ -472,8 +474,8 @@ abstract final class PageUtils {
 
   static Future<void> handleWebview(
     String url, {
-    bool off = false,
     bool inApp = false,
+    bool off = false,
     Map? parameters,
   }) async {
     if (!inApp && Pref.openInBrowser) {
