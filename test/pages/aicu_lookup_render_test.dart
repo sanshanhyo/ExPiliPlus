@@ -44,6 +44,8 @@ class _MemoryBox implements Box<dynamic> {
     return removed;
   }
 
+  void reset() => _values.clear();
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -77,9 +79,18 @@ Widget _app(Widget child) => RepaintBoundary(
 );
 
 void main() {
+  final settingBox = _MemoryBox();
+  final localCacheBox = _MemoryBox();
+
+  setUpAll(() {
+    GStorage.setting = settingBox;
+    GStorage.localCache = localCacheBox;
+    GStorage.reply = null;
+  });
+
   setUp(() {
-    GStorage.setting = _MemoryBox();
-    GStorage.localCache = _MemoryBox();
+    settingBox.reset();
+    localCacheBox.reset();
     AicuProbeService.instance.status.value = AicuProbeStatus.notChecked;
   });
 
