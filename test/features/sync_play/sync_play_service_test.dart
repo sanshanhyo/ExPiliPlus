@@ -370,8 +370,10 @@ void main() {
 
   test('attaches a pN room identity only to its confirmed local page', () async {
     final socket = _FakeSocket();
+    final monotonic = Duration.zero;
     final service = SyncPlayService(
       reconnectEnabled: false,
+      monotonicNow: () => monotonic,
       socketFactory: (_, __) async => socket,
     );
     addTearDown(service.dispose);
@@ -593,17 +595,23 @@ void main() {
 
   test('reconnects with the in-memory member token after a socket closes', () async {
     final sockets = <_FakeSocket>[];
-    final secondSocketOpened = Completer<void>();
+    final secondSocketConnected = Completer<void>();
     final service = SyncPlayService(
       reconnectDelay: (_) => Duration.zero,
       socketFactory: (_, __) async {
         final socket = _FakeSocket();
         sockets.add(socket);
-        if (sockets.length == 2) secondSocketOpened.complete();
         return socket;
       },
     );
     addTearDown(service.dispose);
+    service.addListener(() {
+      if (sockets.length == 2 &&
+          service.status == SyncPlayConnectionStatus.connected &&
+          !secondSocketConnected.isCompleted) {
+        secondSocketConnected.complete();
+      }
+    });
 
     await service.joinRoom(_settings, 'ROOM42:fake-join-token-123');
     sockets.first.emit({
@@ -616,7 +624,7 @@ void main() {
     });
     await _flush();
     await sockets.first.controller.close();
-    await secondSocketOpened.future.timeout(const Duration(seconds: 1));
+    await secondSocketConnected.future.timeout(const Duration(seconds: 1));
 
     expect(service.status, SyncPlayConnectionStatus.connected);
     expect(sockets[1].sent.single, {

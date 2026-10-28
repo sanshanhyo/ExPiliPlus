@@ -188,7 +188,12 @@ void main() {
     });
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('ROOM42'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is Text && widget.data?.contains('ROOM42') == true,
+      ),
+      findsOneWidget,
+    );
     expect(find.text('测试成员'), findsOneWidget);
     expect(find.text('虚构成员'), findsOneWidget);
     expect(find.text('仅用于截图的合成视频标题'), findsOneWidget);
