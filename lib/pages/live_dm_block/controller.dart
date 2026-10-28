@@ -2,7 +2,7 @@ import 'package:ex_piliplus/http/live.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/live/live_dm_silent_type.dart';
 import 'package:ex_piliplus/models_new/live/live_dm_block/shield_user_list.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class LiveDmBlockController extends GetxController

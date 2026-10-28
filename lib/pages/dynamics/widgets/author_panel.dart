@@ -28,9 +28,10 @@ import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -678,7 +679,28 @@ class AuthorPanel extends StatelessWidget {
                     ),
                   ),
               ],
-              if (Accounts.main.isLogin)
+              if (!Accounts.main.isLogin)
+                ListTile(
+                  title: Text(
+                    context.l10n.commonBlock,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                  leading: Icon(
+                    Icons.error_outline_outlined,
+                    size: 19,
+                    color: theme.colorScheme.error,
+                  ),
+                  onTap: () {
+                    Get.back();
+                    Pref.setBlackMid(moduleAuthor.mid!);
+                    SmartDialog.showToast(context.l10n.commonBlockSucceeded);
+                  },
+                  minLeadingWidth: 0,
+                )
+              else
                 ListTile(
                   title: Text(
                     context.l10n.commonReport,
@@ -695,6 +717,7 @@ class AuthorPanel extends StatelessWidget {
                     Get.back();
                     autoWrapReportDialog(
                       context,
+                      mid: () => moduleAuthor.mid!,
                       ReportOptions.dynamicReport,
                       (reasonType, reasonDesc, banUid) {
                         if (banUid) {
@@ -708,7 +731,7 @@ class AuthorPanel extends StatelessWidget {
                           mid: moduleAuthor.mid!,
                           dynId: item.idStr,
                           reasonType: reasonType,
-                          reasonDesc: reasonType == 0 ? reasonDesc : null,
+                          reasonDesc: reasonDesc,
                         );
                       },
                     );

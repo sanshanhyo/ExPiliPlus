@@ -8,6 +8,8 @@ import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/pair.dart';
 import 'package:ex_piliplus/grpc/bilibili/app/im/v1.pbenum.dart'
     show IMSettingType;
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/models_new/msg/msg_like/item.dart';
@@ -17,7 +19,7 @@ import 'package:ex_piliplus/utils/app_scheme.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart' hide ListTile;
+import 'package:material_ui/material_ui.dart' hide ListTile;
 import 'package:get/get.dart';
 
 class LikeMePage extends StatefulWidget {
@@ -161,11 +163,14 @@ class _LikeMePageState extends State<LikeMePage> {
     final firstUser = item.users!.first;
     Widget avatar;
     if (item.users!.length == 1) {
-      avatar = NetworkImgLayer(
-        width: 45,
-        height: 45,
-        type: ImageType.avatar,
-        src: firstUser.avatar,
+      avatar = GestureDetector(
+        onTap: () => Get.toNamed('/member?mid=${firstUser.mid}'),
+        child: NetworkImgLayer(
+          width: 45,
+          height: 45,
+          type: ImageType.avatar,
+          src: firstUser.avatar,
+        ),
       );
     } else {
       avatar = SizedBox(

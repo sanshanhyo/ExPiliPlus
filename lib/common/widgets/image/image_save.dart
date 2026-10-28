@@ -6,15 +6,32 @@ import 'package:ex_piliplus/http/user.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:ex_piliplus/utils/utils.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+
+void showPgcCover({
+  required String? title,
+  required String? cover,
+  dynamic aid,
+  String? bvid,
+}) => imageSaveDialog(
+  title: title,
+  cover: cover,
+  aid: aid,
+  bvid: bvid,
+  orientation: .portrait,
+  aspectRatio: Style.aspectRatio3x4,
+);
 
 void imageSaveDialog({
   required String? title,
   required String? cover,
   dynamic aid,
   String? bvid,
+  Orientation orientation = .landscape,
+  double aspectRatio = Style.aspectRatio16x9,
 }) {
   final double imgWidth = MediaQuery.sizeOf(Get.context!).shortestSide - 16;
   SmartDialog.show(
@@ -99,6 +116,16 @@ void imageSaveDialog({
                           ImageUtils.onShareImg(cover);
                         },
                         icon: const Icon(Icons.share),
+                      )
+                    else
+                      iconButton(
+                        iconSize: iconSize,
+                        tooltip: context.l10n.commonCopyLink,
+                        onPressed: () {
+                          SmartDialog.dismiss();
+                          Utils.copyText(cover);
+                        },
+                        icon: const Icon(Icons.copy),
                       ),
                     iconButton(
                       iconSize: iconSize,

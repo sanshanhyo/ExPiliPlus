@@ -1,13 +1,15 @@
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+import 'package:ex_piliplus/models/common/enum_with_label.dart';
 
-enum DynamicBadgeMode {
+enum DynamicBadgeMode implements EnumWithLabel {
   hidden('隐藏'),
   point('红点'),
   number('数字'),
   ;
 
-  final String desc;
-  const DynamicBadgeMode(this.desc);
+  @override
+  final String label;
+  const DynamicBadgeMode(this.label);
 
   String localizedDescription(AppLocalizations l10n) => switch (this) {
     .hidden => l10n.settingsBadgeHidden,

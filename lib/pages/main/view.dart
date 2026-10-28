@@ -24,11 +24,15 @@ import 'package:ex_piliplus/services/network_type_service.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:ex_piliplus/common/widgets/main_layout.dart';
+import 'package:ex_piliplus/utils/android/bindings.g.dart';
+import 'package:ex_piliplus/utils/device_utils.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tray_manager/tray_manager.dart' as tray_manager show Image;
+
 import 'package:tray_manager/tray_manager.dart';
-import 'package:win32/win32.dart' as kernel32;
 import 'package:window_manager/window_manager.dart';
 
 class MainApp extends StatefulWidget {
@@ -38,13 +42,12 @@ class MainApp extends StatefulWidget {
   State<MainApp> createState() => _MainAppState();
 }
 
+class _RefreshRecommendationsIntent extends Intent {
+  const _RefreshRecommendationsIntent();
+}
+
 class _MainAppState extends PopScopeState<MainApp>
-    with
-        RouteAware,
-        RouteAwareMixin,
-        WidgetsBindingObserver,
-        WindowListener,
-        TrayListener {
+    with RouteAware, RouteAwareMixin, WidgetsBindingObserver, WindowListener {
   final _mainController = Get.put(MainController());
   late final _setting = GStorage.setting;
   late EdgeInsets _padding;
@@ -57,6 +60,9 @@ class _MainAppState extends PopScopeState<MainApp>
   @override
   void initState() {
     super.initState();
+    if (Platform.isMacOS) {
+      HardwareKeyboard.instance.addHandler(_handleKeyEvent);
+    }
     if (PlatformUtils.isMobile) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await NetworkTypeService.start();
@@ -67,11 +73,8 @@ class _MainAppState extends PopScopeState<MainApp>
       windowManager
         ..addListener(this)
         ..setPreventClose(true);
-      if (_mainController.showTrayIcon) {
-        trayManager.addListener(this);
-      }
-    } else {
-      // FlutterSmartDialog throws
+    }
+    if (!Platform.isMacOS) {
       PiliScheme.init();
     }
   }
@@ -85,9 +88,7 @@ class _MainAppState extends PopScopeState<MainApp>
     NetworkImgLayer.reduce =
         NetworkImgLayer.reduceLuxColor != null && brightness.isDark;
     if (PlatformUtils.isDesktop) {
-      if (_mainController.showTrayIcon) {
-        _handleTray();
-      }
+      if (_mainController.showTrayIcon && _trayIcon == null) _initTrayIcon();
       if (_brightness != brightness) {
         _brightness = brightness;
         windowManager.setBrightness(brightness);
@@ -127,14 +128,24 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   void dispose() {
+    if (Platform.isMacOS) {
+      HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
+    }
     if (PlatformUtils.isDesktop) {
-      trayManager.removeListener(this);
+      _destroyTrayIcon();
       windowManager.removeListener(this);
     }
     removeObserverMobile(this);
     PiliScheme.listener?.cancel();
     GStorage.close();
     super.dispose();
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    return event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.keyR &&
+        HardwareKeyboard.instance.isMetaPressed &&
+        _mainController.refreshRecommendations();
   }
 
   @override
@@ -149,7 +160,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   Future<void> onWindowMoved() async {
-    if (PlPlayerController.instance?.isDesktopPip ?? false) {
+    if (PlPlayerController.instance?.updatePipBounds() ?? false) {
       return;
     }
     final Offset offset = await windowManager.getPosition();
@@ -158,7 +169,7 @@ class _MainAppState extends PopScopeState<MainApp>
 
   @override
   Future<void> onWindowResized() async {
-    if (PlPlayerController.instance?.isDesktopPip ?? false) {
+    if (PlPlayerController.instance?.updatePipBounds() ?? false) {
       return;
     }
     final Rect bounds = await windowManager.getBounds();
@@ -181,16 +192,8 @@ class _MainAppState extends PopScopeState<MainApp>
   Future<void> _onClose() async {
     await GStorage.compact();
     await GStorage.close();
-    await trayManager.destroy();
-    if (Platform.isWindows) {
-      // flutter_inappwebview
-      // 6.2.0-beta.2+ https://github.com/pichillilorenzo/flutter_inappwebview/issues/2482
-      // 6.1.5 https://github.com/pichillilorenzo/flutter_inappwebview/issues/2512#issuecomment-3031039587
-      final hProcess = kernel32.GetCurrentProcess();
-      kernel32.TerminateProcess(hProcess, 0);
-    } else {
-      exit(0);
-    }
+    _destroyTrayIcon();
+    DeviceUtils.exitApp();
   }
 
   @override
@@ -221,61 +224,132 @@ class _MainAppState extends PopScopeState<MainApp>
     }
   }
 
-  @override
-  Future<void> onTrayIconMouseDown() async {
-    if (await windowManager.isVisible()) {
-      _onHideWindow();
-      windowManager.hide();
-    } else {
-      _onShowWindow();
-      windowManager.show();
+  double? _opacity;
+
+  Future<void>? _setOpacity(double opacity) {
+    if (Platform.isWindows && _opacity != opacity) {
+      _opacity = opacity;
+      return windowManager.setOpacity(opacity);
     }
+    return null;
   }
 
   @override
-  Future<void> onTrayIconRightMouseDown() async {
-    // ignore: deprecated_member_use
-    trayManager.popUpContextMenu(bringAppToFront: true);
+  Future<void>? onWindowFocus() {
+    return _setOpacity(1.0);
   }
 
-  @override
-  void onTrayMenuItemClick(MenuItem menuItem) {
-    switch (menuItem.key) {
-      case 'show':
-        windowManager.show();
-      case 'exit':
-        _onClose();
+  /// https://github.com/leanflutter/window_manager/issues/571
+  Future<void> _hide() async {
+    await _setOpacity(0.0);
+    await windowManager.hide();
+  }
+
+  Future<void> _show() {
+    return windowManager.show();
+  }
+
+  TrayIcon? _trayIcon;
+  tray_manager.Image? _icon;
+  int? _trayListenerId;
+  Menu? _trayMenu;
+  int? _showMenuId;
+  MenuItem? _showMenuItem;
+  int? _exitMenuId;
+  MenuItem? _exitMenuItem;
+
+  void _destroyTrayIcon() {
+    if (!_mainController.showTrayIcon) return;
+
+    _showMenuItem
+      ?..removeListener(_showMenuId!)
+      ..dispose();
+    _showMenuId = null;
+    _showMenuItem = null;
+
+    _exitMenuItem
+      ?..removeListener(_exitMenuId!)
+      ..dispose();
+    _exitMenuId = null;
+    _exitMenuItem = null;
+
+    _trayMenu?.dispose();
+    _trayMenu = null;
+
+    _icon?.dispose();
+    _icon = null;
+
+    _trayIcon
+      ?..removeListener(_trayListenerId!)
+      ..dispose();
+    _trayIcon = null;
+  }
+
+  void _showMenuListener(MenuEvent event) {
+    if (event is MenuItemClickedEvent) {
+      _show();
     }
   }
 
-  Future<void> _handleTray() async {
-    final l10n = context.l10n;
-    if (Platform.isWindows) {
-      await trayManager.setIcon(Assets.logoIco);
-    } else {
-      await trayManager.setIcon(Assets.logoLarge);
+  void _exitMenuListener(MenuEvent event) {
+    if (event is MenuItemClickedEvent) {
+      _onClose();
     }
-    if (!Platform.isLinux) {
-      await trayManager.setToolTip(Constants.appName);
-    }
+  }
 
-    Menu trayMenu = Menu(
-      items: [
-        MenuItem(key: 'show', label: l10n.desktopShowWindow),
-        MenuItem.separator(),
-        MenuItem(
-          key: 'exit',
-          label: l10n.desktopExitApp(Constants.appName),
-        ),
-      ],
+  Future<void> _trayListener(TrayIconEvent event) async {
+    switch (event) {
+      case TrayIconClickedEvent():
+        if (await windowManager.isVisible()) {
+          await _hide();
+        } else {
+          await _show();
+        }
+      case TrayIconRightClickedEvent():
+        _trayIcon!.openContextMenu();
+      case TrayIconDoubleClickedEvent():
+    }
+  }
+
+  void _initTrayIcon() {
+    assert(_trayIcon == null);
+    final trayIcon = TrayIcon.create();
+    if (trayIcon == null) return;
+
+    _trayIcon = trayIcon;
+    _trayListenerId = trayIcon.addListener(_trayListener);
+    _icon = ImageAsset.fromAsset(
+      Platform.isWindows ? Assets.logoIco : Assets.logoLarge,
     );
-    await trayManager.setContextMenu(trayMenu);
+    trayIcon
+      ..icon = _icon
+      ..setTooltip(Constants.appName);
+
+    final l10n = context.l10n;
+    _showMenuItem = MenuItem.createWithLabelAndType(
+      l10n.desktopShowWindow,
+      .normal,
+    )!;
+    _showMenuId = _showMenuItem!.addListener(_showMenuListener);
+    _exitMenuItem = MenuItem.createWithLabelAndType(
+      l10n.desktopExitApp(Constants.appName),
+      .normal,
+    );
+    _exitMenuId = _exitMenuItem!.addListener(_exitMenuListener);
+    _trayMenu = Menu.create()!
+      ..addItem(_showMenuItem)
+      ..addSeparator()
+      ..addItem(_exitMenuItem);
+
+    trayIcon
+      ..setContextMenu(_trayMenu)
+      ..setVisible(true);
   }
 
   @pragma('vm:prefer-inline')
   static void _onBack() {
     if (Platform.isAndroid) {
-      PiliAndroidHelper.back();
+      AndroidHelper.back();
     }
   }
 
@@ -508,6 +582,27 @@ class _MainAppState extends PopScopeState<MainApp>
           systemNavigationBarIconBrightness: theme.brightness.reverse,
         ),
         child: child,
+      );
+    }
+
+    if (Platform.isMacOS) {
+      child = Shortcuts(
+        shortcuts: const <ShortcutActivator, Intent>{
+          SingleActivator(LogicalKeyboardKey.keyR, meta: true):
+              _RefreshRecommendationsIntent(),
+        },
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            _RefreshRecommendationsIntent:
+                CallbackAction<_RefreshRecommendationsIntent>(
+                  onInvoke: (_) {
+                    _mainController.refreshRecommendations();
+                    return null;
+                  },
+                ),
+          },
+          child: child,
+        ),
       );
     }
 

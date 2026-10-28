@@ -2,9 +2,9 @@ import 'package:ex_piliplus/common/style.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
 import 'package:ex_piliplus/utils/extension/theme_ext.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
-import 'package:flutter/cupertino.dart' show CupertinoThemeData;
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoThemeData;
 import 'package:flutter/foundation.dart' show PlatformDispatcher;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract final class ThemeUtils {
   static late ThemeData lightTheme;

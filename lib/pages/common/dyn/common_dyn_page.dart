@@ -4,6 +4,9 @@ import 'package:ex_piliplus/common/widgets/custom_icon.dart';
 import 'package:ex_piliplus/common/widgets/loading_widget/http_error.dart';
 import 'package:ex_piliplus/common/widgets/sliver/sliver_pinned_header.dart';
 import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/mini_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:ex_piliplus/http/loading_state.dart';
@@ -20,13 +23,17 @@ import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/pages/article/widgets/sliver_list.dart';
+import 'package:ex_piliplus/utils/num_utils.dart';
+
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 enum DynType implements EnumWithLabel {
-  reply('Reply'),
-  reaction('Reaction');
+  repost('转发'),
+  reply('评论'),
+  like('赞');
 
   @override
   final String label;
@@ -34,7 +41,8 @@ enum DynType implements EnumWithLabel {
 
   String localizedLabel(AppLocalizations l10n) => switch (this) {
     .reply => l10n.feedComment,
-    .reaction => l10n.feedLikesAndReposts,
+    .repost => l10n.feedRepostFeed,
+    .like => l10n.commonLike,
   };
 }
 
@@ -57,7 +65,11 @@ abstract class CommonDynPageMultiState<T extends StatefulWidget>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: DynType.values.length, vsync: this);
+    tabController = TabController(
+      length: DynType.values.length,
+      initialIndex: DynType.reply.index,
+      vsync: this,
+    );
   }
 
   @override
@@ -70,6 +82,7 @@ abstract class CommonDynPageMultiState<T extends StatefulWidget>
 mixin CommonDynPageMixin<T extends StatefulWidget>
     on State<T>, TickerProvider, BaseFabMixin<T>, FabMixin<T> {
   CommonDynController get controller;
+  bool get isArticle => false;
 
   bool get horizontalPreview => !isPortrait && controller.horizontalPreview;
 
@@ -123,7 +136,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
               icon: Icon(Icons.sort, size: 16, color: secondary),
               label: Obx(
                 () => Text(
-                  controller.sortType.value.localizedTitle(context.l10n),
+                  controller.sortType.value.localizedLabel(context.l10n),
                   style: TextStyle(fontSize: 13, color: secondary),
                 ),
               ),
@@ -137,9 +150,12 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
   Widget replyList(LoadingState<List<ReplyInfo>?> loadingState) {
     switch (loadingState) {
       case Loading():
-        return SliverList.builder(
-          itemCount: 12,
-          itemBuilder: (context, index) => const VideoReplySkeleton(),
+        return const SliverPrototypeExtentList(
+          prototypeItem: VideoReplySkeleton(),
+          delegate: SliverSingleChildDelegate(
+            count: 12,
+            child: VideoReplySkeleton(),
+          ),
         );
       case Success(:final response):
         if (response != null && response.isNotEmpty) {
@@ -149,8 +165,9 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
           if (hasVote) {
             count++;
           }
-          return SliverList.builder(
+          return ArticleSliverList.builder(
             itemCount: count,
+            isArticle: isArticle,
             itemBuilder: (context, index) {
               if (hasVote) {
                 if (index == 0) {
@@ -179,15 +196,13 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
                 return ReplyItemGrpc(
                   replyItem: response[index],
                   replyLevel: 1,
-                  replyReply: (replyItem, id) =>
-                      replyReply(context, replyItem, id),
+                  replyReply: (item, id) => replyReply(context, item, id),
                   onReply: controller.onReply,
                   onDelete: (item, subIndex) =>
                       controller.onRemove(index, item, subIndex),
                   upMid: controller.upMid,
                   onViewImage: hideFab,
-                  onCheckReply: (item) =>
-                      controller.onCheckReply(item, isManual: true),
+                  onCheckReply: controller.onCheckReply,
                   onToggleTop: (item) => controller.onToggleTop(
                     item,
                     index,
@@ -216,11 +231,18 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
         }
         return child;
       case Error(:final errMsg):
-        return HttpError(
+        return httpError(
           errMsg: errMsg,
           onReload: controller.onReload,
         );
     }
+  }
+
+  Widget httpError({String? errMsg, VoidCallback? onReload}) {
+    return HttpError(
+      errMsg: errMsg,
+      onReload: controller.onReload,
+    );
   }
 
   void replyReply(BuildContext context, ReplyInfo replyItem, int? id) {
@@ -341,6 +363,7 @@ mixin CommonDynPageMixin<T extends StatefulWidget>
           null,
           oid: controller.oid,
           replyType: controller.replyType,
+          mentionItem: controller.mentionItem,
         );
       } catch (_) {}
     },

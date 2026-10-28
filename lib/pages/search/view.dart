@@ -15,7 +15,9 @@ import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/common/widgets/view_insets_safe_area.dart';
 import 'package:get/get.dart';
 
 class SearchPage extends StatefulWidget {
@@ -35,10 +37,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    _searchController = Get.put(
-      SSearchController(_tag),
-      tag: _tag,
-    );
+    _searchController = Get.put(SSearchController(_tag), tag: _tag);
   }
 
   @override
@@ -62,25 +61,27 @@ class _SearchPageState extends State<SearchPage> {
       appBar: _buildAppBar,
       body: Padding(
         padding: .only(left: padding.left, right: padding.right),
-        child: CustomScrollView(
-          slivers: [
-            if (_searchController.searchSuggestion) _buildSearchSuggest(),
-            if (isPortrait) ...[
-              ?trending,
-              _buildHistory,
-              ?rcmd,
-            ] else if (_searchController.enableTrending ||
-                _searchController.enableSearchRcmd)
-              SliverCrossAxisGroup(
-                slivers: [
-                  SliverMainAxisGroup(slivers: [?trending, ?rcmd]),
-                  _buildHistory,
-                ],
-              )
-            else
-              _buildHistory,
-            SliverPadding(padding: .only(bottom: padding.bottom)),
-          ],
+        child: ViewInsetsSafeArea(
+          child: CustomScrollView(
+            slivers: [
+              if (_searchController.searchSuggestion) _buildSearchSuggest(),
+              if (isPortrait) ...[
+                ?trending,
+                _buildHistory,
+                ?rcmd,
+              ] else if (_searchController.enableTrending ||
+                  _searchController.enableSearchRcmd)
+                SliverCrossAxisGroup(
+                  slivers: [
+                    SliverMainAxisGroup(slivers: [?trending, ?rcmd]),
+                    _buildHistory,
+                  ],
+                )
+              else
+                _buildHistory,
+              SliverPadding(padding: .only(bottom: padding.bottom)),
+            ],
+          ),
         ),
       ),
     );
@@ -143,7 +144,10 @@ class _SearchPageState extends State<SearchPage> {
                   .map(
                     (item) => InkWell(
                       borderRadius: const .all(.circular(4)),
-                      onTap: () => _searchController.onClickKeyword(item.term!),
+                      onTap: () => _searchController.onClickKeyword(
+                        item.term!,
+                        clearSuggest: false,
+                      ),
                       child: Padding(
                         padding: const .only(left: 20, top: 9, bottom: 9),
                         child: Text.rich(
@@ -155,9 +159,7 @@ class _SearchPageState extends State<SearchPage> {
                                     style: e.isEm
                                         ? TextStyle(
                                             fontWeight: .bold,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                            color: theme.colorScheme.primary,
                                           )
                                         : null,
                                   ),
@@ -358,8 +360,10 @@ class _SearchPageState extends State<SearchPage> {
                     text: list[index],
                     onTap: _searchController.onClickKeyword,
                     onLongPress: _searchController.onLongSelect,
-                    fontSize: 14,
                     height: 1,
+                    maxLines: 1,
+                    fontSize: 14,
+                    overflow: .ellipsis,
                     padding: const .fromLTRB(11, 8, 11, 0),
                   ),
                 ),

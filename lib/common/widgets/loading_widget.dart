@@ -1,5 +1,5 @@
 import 'package:ex_piliplus/common/widgets/custom_arc.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class LoadingWidget extends StatelessWidget {

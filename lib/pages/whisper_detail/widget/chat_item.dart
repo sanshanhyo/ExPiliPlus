@@ -25,7 +25,7 @@ import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -344,6 +344,8 @@ class ChatItem extends StatelessWidget {
                           cid: cid,
                           cover: i['cover_url'],
                           dimension: res!.dimension,
+                          // title: res.title,
+
                         );
                       }
                     } catch (err) {
@@ -442,6 +444,8 @@ class ChatItem extends StatelessWidget {
                       cid: cid,
                       cover: content['cover'],
                       dimension: res!.dimension,
+                      // title: res.title,
+
                     );
                   }
                 } catch (err) {
@@ -547,6 +551,8 @@ class ChatItem extends StatelessWidget {
               cid: cid,
               cover: content['thumb'],
               dimension: res!.dimension,
+              // title: res.title,
+
             );
           }
         };
@@ -809,6 +815,7 @@ class ChatItem extends StatelessWidget {
           borderRadius: Style.mdRadius,
           child: CachedNetworkImage(
             width: maxWidth,
+            gaplessPlayback: true,
             memCacheWidth: maxWidth.cacheSize(context),
             imageUrl: ImageUtils.thumbnailUrl(content['pic_url']),
             placeholder: (_, _) => const SizedBox.shrink(),

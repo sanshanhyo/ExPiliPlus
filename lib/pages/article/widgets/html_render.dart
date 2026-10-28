@@ -6,7 +6,7 @@ import 'package:ex_piliplus/utils/image_utils.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
@@ -43,6 +43,7 @@ Widget htmlRender({
           if (clazz?.contains('cut-off') == true || height != null) {
             return CachedNetworkImage(
               width: maxWidth,
+              gaplessPlayback: true,
               memCacheWidth: maxWidth.cacheSize(context),
               height: height != null ? double.parse(height) : null,
               imageUrl: ImageUtils.thumbnailUrl(imgUrl),
@@ -60,6 +61,7 @@ Widget htmlRender({
               tag: imgUrl,
               child: CachedNetworkImage(
                 width: width,
+                gaplessPlayback: true,
                 height: isEmote ? 22.0 : null,
                 memCacheWidth: width.cacheSize(context),
                 imageUrl: ImageUtils.thumbnailUrl(imgUrl, 60),

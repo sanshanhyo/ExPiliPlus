@@ -36,6 +36,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/action_item.dar
 import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:ex_piliplus/pages/video/widgets/header_mixin.dart';
 import 'package:ex_piliplus/pages/video/widgets/player_quick_action_editor_actions.dart';
+import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -50,6 +51,7 @@ import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/image_utils.dart';
+import 'package:ex_piliplus/utils/ios/pip_helper.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -67,7 +69,8 @@ import 'package:dio/dio.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show compute;
-import 'package:flutter/material.dart' hide showBottomSheet;
+import 'package:material_ui/material_ui.dart' hide showBottomSheet;
+import 'package:flutter/foundation.dart' show compute, kDebugMode;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -297,26 +300,22 @@ class HeaderControl extends StatefulWidget {
       return autoWrapReportDialog(
         context,
         ReportOptions.danmakuReport,
+        withContent: ReportOptions.danmakuReportCheck,
+        contentRequired: ReportOptions.danmakuReportCheck,
         (reasonType, reasonDesc, banUid) {
           if (banUid) {
             final filter = ctr.filters;
             if (filter.dmUid.add(extra.mid)) {
               filter.count++;
-              GStorage.localCache.put(
-                LocalCacheKey.danmakuFilterRules,
-                filter,
-              );
+              GStorage.localCache.put(LocalCacheKey.danmakuFilterRules, filter);
             }
-            DanmakuFilterHttp.danmakuFilterAdd(
-              filter: extra.mid,
-              type: 2,
-            );
+            DanmakuFilterHttp.danmakuFilterAdd(filter: extra.mid, type: 2);
           }
           return DanmakuHttp.danmakuReport(
-            reason: reasonType == 0 ? 11 : reasonType,
+            reason: reasonType,
             cid: ctr.cid!,
             id: extra.id,
-            content: reasonType == 0 ? reasonDesc : null,
+            content: reasonDesc,
           );
         },
       );
@@ -334,8 +333,9 @@ class HeaderControl extends StatefulWidget {
     if (Accounts.main.isLogin) {
       return autoWrapReportDialog(
         context,
-        ban: false,
         ReportOptions.liveDanmakuReport,
+        withContent: ReportOptions.liveDanmakuReportCheck,
+        contentRequired: ReportOptions.liveDanmakuReportCheck,
         (reasonType, reasonDesc, banUid) {
           // if (banUid) {
           //   final filter = ctr.filters;
@@ -628,56 +628,67 @@ class HeaderControlState extends State<HeaderControl>
                         (item) => item.id == id,
                       );
                       final active = _isQuickActionActive(id);
+                      final onPressed = action.available
+                          ? () {
+                              _runQuickAction(id);
+                              (context as Element).markNeedsBuild();
+                            }
+                          : null;
+                      final child = id == PlayerQuickActionId.sleepTimer
+                          ? ShutdownTimerQuickActionContent(
+                              countdown: shutdownTimerService.countdown,
+                              idleLabel: action.title,
+                              iconSize: iconSize,
+                              labelFontSize: labelFontSize,
+                              onPressed: onPressed,
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  iconSize: iconSize,
+                                  constraints: BoxConstraints.tightFor(
+                                    width: iconSize + 16,
+                                    height: iconSize + 16,
+                                  ),
+                                  padding: const EdgeInsets.all(8),
+                                  onPressed: onPressed,
+                                  icon: Icon(action.icon),
+                                  style: IconButton.styleFrom(
+                                    shape: const CircleBorder(),
+                                    backgroundColor: active
+                                        ? theme.colorScheme.secondaryContainer
+                                        : theme
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                    foregroundColor: active
+                                        ? theme.colorScheme.onSecondaryContainer
+                                        : theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Flexible(
+                                  child: Text(
+                                    action.title,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.labelMedium
+                                        ?.copyWith(
+                                          fontSize: labelFontSize,
+                                          height: 1.15,
+                                          color: action.available
+                                              ? null
+                                              : theme.colorScheme.outline,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            );
                       return Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                iconSize: iconSize,
-                                constraints: BoxConstraints.tightFor(
-                                  width: iconSize + 16,
-                                  height: iconSize + 16,
-                                ),
-                                padding: const EdgeInsets.all(8),
-                                onPressed: action.available
-                                    ? () {
-                                        _runQuickAction(id);
-                                        (context as Element).markNeedsBuild();
-                                      }
-                                    : null,
-                                icon: Icon(action.icon),
-                                style: IconButton.styleFrom(
-                                  shape: const CircleBorder(),
-                                  backgroundColor: active
-                                      ? theme.colorScheme.secondaryContainer
-                                      : theme
-                                            .colorScheme
-                                            .surfaceContainerHighest,
-                                  foregroundColor: active
-                                      ? theme.colorScheme.onSecondaryContainer
-                                      : theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Flexible(
-                                child: Text(
-                                  action.title,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.labelMedium?.copyWith(
-                                    fontSize: labelFontSize,
-                                    height: 1.15,
-                                    color: action.available
-                                        ? null
-                                        : theme.colorScheme.outline,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: child,
                         ),
                       );
                     }).toList(),
@@ -1092,8 +1103,10 @@ class HeaderControlState extends State<HeaderControl>
                     leading: const Icon(Icons.image_outlined, size: 20),
                     title: Text(l10n.videoSaveCover, style: titleStyle),
                   ),
-                ListTile(
-                  dense: true,
+                ShutdownTimerListTile(
+                  countdown: shutdownTimerService.countdown,
+                  title: l10n.playerSleepTimer,
+                  titleStyle: titleStyle,
                   onTap: () {
                     Get.back();
                     shutdownTimerService.showScheduleExitDialog(
@@ -1101,8 +1114,6 @@ class HeaderControlState extends State<HeaderControl>
                       isFullScreen: isFullScreen,
                     );
                   },
-                  leading: const Icon(Icons.hourglass_top_outlined, size: 20),
-                  title: Text(l10n.playerSleepTimer, style: titleStyle),
                 ),
                 if (!isFileSource) ...[
                   ListTile(
@@ -1150,8 +1161,8 @@ class HeaderControlState extends State<HeaderControl>
                     plPlayerController.setShader(value);
                     setState();
                   },
-                  descFontSize: 12,
                   descPosType: .subtitle,
+                  descStyle: subTitleStyle,
                 ),
                 if (PlatformUtils.isMobile)
                   if (plPlayerController.videoPlayerController
@@ -1336,7 +1347,7 @@ class HeaderControlState extends State<HeaderControl>
                     setState();
                   },
                   descPosType: .subtitle,
-                  descFontSize: 12,
+                  descStyle: subTitleStyle,
                 ),
                 ListTile(
                   dense: true,
@@ -1372,14 +1383,20 @@ class HeaderControlState extends State<HeaderControl>
                     try {
                       final result = await FilePicker.pickFile(
                         type: .custom,
-                        allowedExtensions: const ['json', 'vtt', 'srt', 'ass'],
+                        allowedExtensions: const [
+                          'json',
+                          'vtt',
+                          'srt',
+                          'ass',
+                          'bcc',
+                        ],
                       );
                       if (result != null) {
                         final file = result.xFile;
                         final path = file.path;
                         final name = file.name;
                         final length = videoDetailCtr.subtitles.length;
-                        if (name.endsWith('.json')) {
+                        if (name.endsWith('.json') || name.endsWith('.bcc')) {
                           final file = File(path);
                           final stream = file.openRead().transform(
                             utf8.decoder,
@@ -1583,21 +1600,7 @@ class HeaderControlState extends State<HeaderControl>
     if (currentVideoQa == null) return;
 
     final List<FormatItem> videoFormat = videoInfo.supportFormats!;
-
-    /// 总质量分类
-    final int totalQaSam = videoFormat.length;
-
-    /// 可用的质量分类
-    int usefulQaSam = 0;
-    final List<VideoItem> video = videoInfo.dash!.video!;
-    final Set<int> idSet = {};
-    for (final VideoItem item in video) {
-      final int id = item.id!;
-      if (!idSet.contains(id)) {
-        idSet.add(id);
-        usefulQaSam++;
-      }
-    }
+    final availableQa = videoInfo.dash!.video!.availableVideoQualities;
 
     showBottomSheet(
       (context, setState) {
@@ -1636,7 +1639,7 @@ class HeaderControlState extends State<HeaderControl>
                   ),
                 ),
                 SliverList.builder(
-                  itemCount: totalQaSam,
+                  itemCount: videoFormat.length,
                   itemBuilder: (context, index) {
                     final item = videoFormat[index];
                     final isCurr = currentVideoQa.code == item.quality;
@@ -1671,7 +1674,7 @@ class HeaderControlState extends State<HeaderControl>
                         }
                       },
                       // 可能包含会员解锁画质
-                      enabled: index >= totalQaSam - usefulQaSam,
+                      enabled: availableQa.contains(item.quality),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
@@ -1740,7 +1743,7 @@ class HeaderControlState extends State<HeaderControl>
                           return;
                         }
                         Get.back();
-                        final int quality = item.id!;
+                        final int quality = item.id;
                         final newQa = AudioQuality.fromCode(quality);
                         videoDetailCtr
                           ..plPlayerController.cacheAudioQa = newQa.code
@@ -2774,7 +2777,8 @@ class HeaderControlState extends State<HeaderControl>
                   ),
                 ),
               ),
-              if (Platform.isAndroid ||
+              if ((Platform.isAndroid && AndroidHelper.isPipAvailable) ||
+                  (Platform.isIOS && IOSPipHelper.isAvailable) ||
                   (PlatformUtils.isDesktop && !isFullScreen))
                 SizedBox(
                   width: btnWidth,
@@ -2787,9 +2791,7 @@ class HeaderControlState extends State<HeaderControl>
                         plPlayerController.toggleDesktopPip();
                         return;
                       }
-                      if (AndroidHelper.isPipAvailable) {
-                        plPlayerController.enterPip();
-                      }
+                      plPlayerController.enterPip();
                     },
                     icon: const Icon(
                       Icons.picture_in_picture_outlined,

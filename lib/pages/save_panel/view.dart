@@ -23,7 +23,7 @@ import 'package:ex_piliplus/utils/platform_utils.dart';
 import 'package:ex_piliplus/utils/share_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -300,7 +300,7 @@ class _SavePanelState extends State<SavePanel> {
       image.dispose();
       final pngBytes = byteData!.buffer.asUint8List();
       final picName =
-          "${Constants.appName}_${itemType}_${DateFormat('yyyyMMddHHmmss').format(DateTime.now())}";
+          "${Constants.appName}_${itemType}_${DateFormatUtils.only0_9.format(DateTime.now())}";
       if (isShare) {
         Get.back();
         SmartDialog.dismiss();

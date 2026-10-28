@@ -102,6 +102,7 @@ enum ArchiveFilterType {
   stow('收藏多'),
   scores('评论多'),
   ;
+
   // 专栏
   // attention('最多喜欢'),
 

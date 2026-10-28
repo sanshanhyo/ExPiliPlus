@@ -11,7 +11,7 @@ import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/size_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -282,17 +282,17 @@ Widget msgBadge(MainController mainController, AppLocalizations l10n) {
           tooltip: l10n.navigationMessages,
           onPressed: () {
             mainController
-              ..msgUnReadCount.value = ''
+              ..clearUnreadMsg()
               ..lastCheckUnreadAt = DateTime.now().millisecondsSinceEpoch;
             Get.toNamed('/whisper');
           },
           icon: Badge(
             isLabelVisible:
-                mainController.msgBadgeMode != .hidden && count.isNotEmpty,
+                mainController.msgBadgeMode != .hidden && count != null,
             alignment: isNumBadge
                 ? const Alignment(0.0, -0.85)
                 : const Alignment(1.0, -0.85),
-            label: isNumBadge && count.isNotEmpty ? Text(count) : null,
+            label: isNumBadge && count != null ? Text(count) : null,
             child: const Icon(Icons.notifications_none),
           ),
         );

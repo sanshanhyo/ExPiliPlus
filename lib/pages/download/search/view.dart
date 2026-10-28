@@ -7,9 +7,12 @@ import 'package:ex_piliplus/pages/download/search/controller.dart';
 import 'package:ex_piliplus/services/download/download_service.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/grid.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverGridDelegateWithMaxCrossAxisExtent;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:ex_piliplus/pages/common/multi_select/base.dart';
+import 'package:ex_piliplus/pages/download/download_action_mixin.dart';
+
 import 'package:get/get.dart';
 
 class DownloadSearchPage extends StatefulWidget {
@@ -31,10 +34,18 @@ class _DownloadSearchPageState
           List<BiliDownloadEntryInfo>,
           BiliDownloadEntryInfo
         >
-    with GridMixin {
+    with
+        GridMixin,
+        BaseDownloadActionMixin<DownloadSearchPage, BiliDownloadEntryInfo>,
+        CommonDownloadActionMixin<DownloadSearchPage> {
   @override
   DownloadSearchController controller = Get.put(DownloadSearchController());
-  final _downloadService = Get.find<DownloadService>();
+
+  @override
+  final downloadService = Get.find<DownloadService>();
+
+  @override
+  BaseMultiSelectMixin<BiliDownloadEntryInfo> get multiSelectCtr => controller;
 
   @override
   List<Widget>? get extraActions => [
@@ -63,7 +74,7 @@ class _DownloadSearchPageState
         onPressed: () async {
           final future = controller.allChecked
               .map(
-                (e) => _downloadService.downloadDanmaku(
+                (e) => downloadService.downloadDanmaku(
                   entry: e,
                   isUpdate: true,
                 ),
@@ -95,7 +106,7 @@ class _DownloadSearchPageState
           return DetailItem(
             entry: entry,
             progress: widget.progress,
-            downloadService: _downloadService,
+            downloadService: downloadService,
             showTitle: true,
             onDelete: () => controller.onRemoveSingle(index, entry),
             controller: controller,

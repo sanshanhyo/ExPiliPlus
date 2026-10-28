@@ -22,7 +22,14 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
+import 'package:ex_piliplus/utils/danmaku_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:ex_piliplus/http/sponsor_block.dart';
+import 'package:ex_piliplus/http/video.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:flutter/foundation.dart'
+    show kDebugMode, debugPrint, VoidCallback;
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
@@ -33,6 +40,7 @@ import 'package:synchronized/synchronized.dart';
 class DownloadService extends GetxService {
   static const _entryFile = 'entry.json';
   static const _indexFile = 'index.json';
+  static const _maxDanmakuConcurrency = 4;
 
   final _lock = Lock();
 
@@ -109,12 +117,14 @@ class DownloadService extends GetxService {
     return result;
   }
 
-  void downloadVideo(
-    Part page,
+  void downloadVideo({
+    required int index,
+    required Part page,
     VideoDetailData? videoDetail,
     ugc.EpisodeItem? videoArc,
-    VideoQuality videoQuality,
-  ) {
+    required VideoQuality videoQuality,
+    SeasonInfo? seasonInfo,
+  }) {
     final cid = page.cid!;
     if (downloadList.indexWhere((e) => e.cid == cid) != -1) {
       return;
@@ -165,16 +175,17 @@ class DownloadService extends GetxService {
       ownerId: videoDetail?.owner?.mid ?? videoArc?.arc?.author?.mid,
       ownerName: videoDetail?.owner?.name ?? videoArc?.arc?.author?.name,
       pageData: pageData,
+      seasonInfo: seasonInfo,
     );
     _createDownload(entry);
   }
 
-  void downloadBangumi(
-    int index,
-    PgcInfoModel pgcItem,
-    pgc.EpisodeItem episode,
-    VideoQuality quality,
-  ) {
+  void downloadBangumi({
+    required int index,
+    required PgcInfoModel pgcItem,
+    required pgc.EpisodeItem episode,
+    required VideoQuality quality,
+  }) {
     final cid = episode.cid!;
     if (downloadList.indexWhere((e) => e.cid == cid) != -1) {
       return;
@@ -303,9 +314,7 @@ class DownloadService extends GetxService {
     bool isUpdate = false,
   }) async {
     final cid = entry.pageData?.cid ?? entry.source?.cid;
-    if (cid == null) {
-      return false;
-    }
+    if (cid == null) return false;
     final danmakuFile = File(
       path.join(entry.entryDirPath, PathUtils.danmakuName),
     );
@@ -314,21 +323,26 @@ class DownloadService extends GetxService {
         if (!isUpdate) {
           _updateCurStatus(DownloadStatus.getDanmaku);
         }
-        final seg = (entry.totalTimeMilli / PlDanmakuController.segmentLength)
-            .ceil();
-
-        final res = await Future.wait([
-          for (var i = 1; i <= seg; i++)
-            DmGrpc.dmSegMobile(cid: cid, segmentIndex: i),
-        ]);
-
-        final danmaku = res.removeAt(0).data;
-        for (final i in res) {
-          if (i case Success(:final response)) {
-            danmaku.elems.addAll(response.elems);
-          }
+        final seg = (entry.totalTimeMilli / DmUtils.segLength).ceil();
+        if (seg <= 0) {
+          throw StateError('Invalid danmaku segment count: $seg');
         }
-        res.clear();
+
+        final danmaku = (await DmGrpc.dmSegMobile(
+          cid: cid,
+          segmentIndex: 1,
+        )).data;
+        for (var start = 2; start <= seg; start += _maxDanmakuConcurrency) {
+          final end = start + _maxDanmakuConcurrency - 1;
+          final responses = await Future.wait([
+            for (var index = start; index <= seg && index <= end; index++)
+              DmGrpc.dmSegMobile(cid: cid, segmentIndex: index),
+          ]);
+          for (final response in responses) {
+            danmaku.elems.addAll(response.data.elems);
+          }
+          responses.clear();
+        }
         await danmakuFile.writeAsBytes(danmaku.writeToBuffer());
 
         return true;
@@ -365,13 +379,70 @@ class DownloadService extends GetxService {
     }
   }
 
+  Future<bool> updateSegments(BiliDownloadEntryInfo entry) {
+    if (entry.pageData != null) {
+      return _updateBlockSegments(entry);
+    } else {
+      return _updatePgcSegments(entry);
+    }
+  }
+
+  Future<bool> _updateBlockSegments(BiliDownloadEntryInfo entry) async {
+    final res = await SponsorBlock.getSkipSegments(
+      bvid: entry.bvid,
+      cid: entry.pageData!.cid,
+    );
+    if (res case Success(:final response)) {
+      if (response.isNotEmpty) {
+        entry.segments = response;
+        await _updateBiliDownloadEntryJson(entry);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> _updatePgcSegments(BiliDownloadEntryInfo entry) async {
+    final ep = entry.ep;
+    if (ep == null) return false;
+    final res = await VideoHttp.videoUrl(
+      avid: entry.avid,
+      bvid: entry.bvid,
+      cid: entry.cid,
+      seasonId: entry.seasonId,
+      epid: ep.episodeId,
+      qn: entry.preferedVideoQuality,
+      tryLook: false,
+      videoType: switch (ep.from) {
+        'pugv' => .pugv,
+        _ => .pgc,
+      },
+    );
+    if (res case Success(:final response)) {
+      final clipInfoList = response.clipInfoList;
+      if (clipInfoList != null && clipInfoList.isNotEmpty) {
+        entry.segments = clipInfoList;
+        await _updateBiliDownloadEntryJson(entry);
+      }
+      return true;
+    }
+    return false;
+  }
+
   Future<void> _startDownload(BiliDownloadEntryInfo entry) async {
     try {
       if (!await downloadDanmaku(entry: entry)) {
         return;
       }
 
+      // ugc segments
+      if (entry.pageData != null && Pref.enableSponsorBlock) {
+        await _updateBlockSegments(entry);
+      }
+
       _updateCurStatus(DownloadStatus.getPlayUrl);
+
+      final noSegmentBefore = entry.segments == null;
 
       final mediaFileInfo = await DownloadHttp.getVideoUrl(
         entry: entry,
@@ -379,6 +450,11 @@ class DownloadService extends GetxService {
         source: entry.source,
         pageData: entry.pageData,
       );
+
+      // pgc segments
+      if (noSegmentBefore && entry.segments != null) {
+        await _updateBiliDownloadEntryJson(entry);
+      }
 
       final videoDir = Directory(path.join(entry.entryDirPath, entry.typeTag));
       if (!videoDir.existsSync()) {

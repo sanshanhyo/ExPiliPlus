@@ -45,9 +45,7 @@ abstract final class LiveHttp {
     String csrf = Accounts.main.csrf;
     final res = await Request().post(
       Api.sendLiveMsg,
-      queryParameters: await WbiSign.makSign({
-        'web_location': 444.8,
-      }),
+      queryParameters: await WbiSign.makSign({'web_location': 444.8}),
       data: FormData.fromMap({
         'bubble': 0,
         'msg': msg,
@@ -117,9 +115,7 @@ abstract final class LiveHttp {
   }) async {
     final res = await Request().get(
       Api.liveRoomInfoH5,
-      queryParameters: {
-        'room_id': roomId,
-      },
+      queryParameters: {'room_id': roomId},
     );
     if (res.data['code'] == 0) {
       return Success(RoomInfoH5Data.fromJson(res.data['data']));
@@ -228,10 +224,8 @@ abstract final class LiveHttp {
       options: Options(
         headers: {
           'buvid': LoginHttp.buvid,
-          'fp_local':
-              '1111111111111111111111111111111111111111111111111111111111111111',
-          'fp_remote':
-              '1111111111111111111111111111111111111111111111111111111111111111',
+          'fp_local': '1111111111111111111111111111111111111111111111111111111111111111',
+          'fp_remote': '1111111111111111111111111111111111111111111111111111111111111111',
           'session_id': '11111111',
           'env': 'prod',
           'app-key': 'android',
@@ -308,10 +302,8 @@ abstract final class LiveHttp {
       options: Options(
         headers: {
           'buvid': LoginHttp.buvid,
-          'fp_local':
-              '1111111111111111111111111111111111111111111111111111111111111111',
-          'fp_remote':
-              '1111111111111111111111111111111111111111111111111111111111111111',
+          'fp_local': '1111111111111111111111111111111111111111111111111111111111111111',
+          'fp_remote': '1111111111111111111111111111111111111111111111111111111111111111',
           'session_id': '11111111',
           'env': 'prod',
           'app-key': 'android',
@@ -627,7 +619,7 @@ abstract final class LiveHttp {
 
   @pragma('vm:notify-debugger-on-exception')
   static Future<LoadingState<SuperChatData>> superChatMsg(
-    Object roomId,
+    int roomId,
   ) async {
     final res = await Request().get(
       Api.superChatMsg,
@@ -637,7 +629,7 @@ abstract final class LiveHttp {
     );
     if (res.data['code'] == 0) {
       try {
-        return Success(SuperChatData.fromJson(res.data['data']));
+        return Success(SuperChatData.fromJson(res.data['data'], roomId));
       } catch (e, s) {
         return Error('$e\n\n$s');
       }

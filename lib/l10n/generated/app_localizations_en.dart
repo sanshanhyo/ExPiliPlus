@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -2229,6 +2230,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get videoEpisodes => 'Episodes';
+
+  @override
+  String get videoNoEpisodes => 'No episodes are available';
 
   @override
   String videoEpisodeCount(int count) {
@@ -4636,6 +4640,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberHomeAnime => 'Anime';
 
   @override
+  String get memberNotLiveVisitRoom =>
+      'This user isn\'t live right now. Visit their live room.';
+
+  @override
+  String get blacklistLocal => 'Local';
+
+  @override
+  String get blacklistOnline => 'Online';
+
+  @override
+  String get blacklistAddMid => 'Block user';
+
+  @override
+  String get blacklistUid => 'UID';
+
+  @override
+  String get blacklistImportExport => 'Import / export';
+
+  @override
   String blacklistTitle(Object count) {
     return 'Blocked users$count';
   }
@@ -5293,6 +5316,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedRepostFeed => 'Repost';
 
   @override
+  String get feedRepostAndComment => 'Comment too';
+
+  @override
   String get feedPublishNow => 'Post now';
 
   @override
@@ -5794,6 +5820,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginVerificationTitle => 'Verification';
+
+  @override
+  String get loginVerificationLoadFailed => 'Verification failed to load';
 
   @override
   String get loginCompleteVerificationWindow =>
@@ -6718,6 +6747,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonBlock => 'Block';
+
+  @override
+  String get commonBlockSucceeded => 'Blocked successfully';
 
   @override
   String get commonShow => 'Show';
@@ -7662,4 +7694,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareTicketFrom => 'Shared from ExPiliPlus';
+
+  @override
+  String get videoNoteWindowPinned => 'Note window is already open';
+
+  @override
+  String get videoNoteWindowOpened => 'Note opened in a new window';
+
+  @override
+  String get settingsEnableDocProvider =>
+      'Allow third-party apps to access private storage';
+
+  @override
+  String get settingsEnableDocProviderDescription =>
+      'Allow third-party apps to access app-private files through external storage';
+
+  @override
+  String get settingsEnableEmoteTooltip => 'Show tooltip when tapping an emote';
+
+  @override
+  String get settingsEnableEmoteTooltipDescription =>
+      'Show an emote preview on long press or hover';
 }

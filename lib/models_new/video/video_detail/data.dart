@@ -8,6 +8,9 @@ import 'package:ex_piliplus/models_new/video/video_detail/staff.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/stat.dart';
 import 'package:ex_piliplus/models_new/video/video_detail/ugc_season.dart';
 import 'package:ex_piliplus/utils/parse_string.dart';
+import 'package:ex_piliplus/models_new/download/bili_download_entry_info.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
+
 
 class VideoDetailData {
   String? bvid;
@@ -34,6 +37,31 @@ class VideoDetailData {
   List<Staff>? staff;
   String? redirectUrl;
   bool isPageReversed = false;
+
+  bool get hasSeason => ugcSeason != null;
+
+  bool get hasParts => pages != null && pages!.length > 1;
+
+  bool get hasSeasonOrParts => hasSeason || hasParts;
+
+  SeasonInfo? seasonInfo(int index) {
+    if (ugcSeason != null) {
+      try {
+        return SeasonInfo(
+          index: index,
+          id: ugcSeason!.id!,
+          title: ugcSeason!.title!,
+          cover: ugcSeason!.cover!,
+          mid: owner!.mid!,
+          uname: owner!.name!,
+        );
+      } catch (_) {
+        if (kDebugMode) rethrow;
+      }
+    }
+
+    return null;
+  }
 
   VideoDetailData({
     this.bvid,

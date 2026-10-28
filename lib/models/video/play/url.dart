@@ -58,6 +58,37 @@ class PlayUrlModel {
   Language? language;
   List<SegmentItemModel>? clipInfoList;
 
+  int findAvailableVideoQuality(int preferredQuality) {
+    final curHighestVideoQa = dash!.video!.first.quality.code;
+    if (acceptQuality case final qualitys?
+        when preferredQuality <= curHighestVideoQa) {
+      return qualitys.findClosestTarget((e) => e <= preferredQuality, max);
+    } else {
+      return curHighestVideoQa;
+    }
+  }
+
+  @pragma('vm:notify-debugger-on-exception')
+  int get missingVideoQualityBelowHighest {
+    int best = -1;
+    try {
+      final video = dash!.video!;
+      final available = video.availableVideoQualities;
+      final highest = video.first.id;
+
+      for (final item in supportFormats!) {
+        final quality = item.quality;
+        if (quality != null &&
+            best < quality &&
+            quality < highest &&
+            !available.contains(quality)) {
+          best = quality;
+        }
+      }
+    } catch (_) {}
+    return best;
+  }
+
   PlayUrlModel.fromJson(Map<String, dynamic> json) {
     from = json['from'];
     result = json['result'];
@@ -124,14 +155,16 @@ class Language {
     support = json['support'];
     items =
         (json['items'] as List?)?.map((e) => LanguageItem.fromJson(e)).toList()
-          ?..sort((a, b) {
-            final aHasZh = a.lang?.contains('zh') ?? false;
-            final bHasZh = b.lang?.contains('zh') ?? false;
-            if (aHasZh != bHasZh) return aHasZh ? -1 : 1;
-            if (a.isAi != b.isAi) return a.isAi ? 1 : -1;
-            return 0;
-          });
+          ?..sort(_sort);
   }
+}
+
+int _sort(LanguageItem a, LanguageItem b) {
+  final aHasZh = a.lang?.contains('zh') ?? false;
+  final bHasZh = b.lang?.contains('zh') ?? false;
+  if (aHasZh != bHasZh) return aHasZh ? -1 : 1;
+  if (a.isAi != b.isAi) return a.isAi ? 1 : -1;
+  return 0;
 }
 
 class LanguageItem {
@@ -223,7 +256,7 @@ class Durl {
 }
 
 abstract class BaseItem {
-  int? id;
+  late int id;
   String? baseUrl;
   List<String>? backupUrl;
   int? bandWidth;
@@ -238,7 +271,7 @@ abstract class BaseItem {
   int? codecid;
 
   BaseItem({
-    this.id,
+    required this.id,
     this.baseUrl,
     this.backupUrl,
     this.bandWidth,
@@ -280,7 +313,7 @@ class VideoItem extends BaseItem {
   late VideoQuality quality;
 
   VideoItem({
-    super.id,
+    required super.id,
     super.baseUrl,
     super.backupUrl,
     super.bandWidth,
@@ -304,11 +337,24 @@ class VideoItem extends BaseItem {
 class AudioItem extends BaseItem {
   late String quality;
 
-  AudioItem();
-
   AudioItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     quality = AudioQuality.fromCode(json['id']).desc;
   }
+}
+
+extension BaseItemExt<T extends BaseItem> on List<T> {
+  void merge(List<T>? other) {
+    if (other == null) return;
+    final keys = {for (final item in this) (item.id, item.codecid)};
+    for (final item in other) {
+      if (keys.add((item.id, item.codecid))) {
+        add(item);
+      }
+    }
+    sort((a, b) => b.id.compareTo(a.id));
+  }
+
+  Set<int> get availableVideoQualities => map((i) => i.id).toSet();
 }
 
 class FormatItem {

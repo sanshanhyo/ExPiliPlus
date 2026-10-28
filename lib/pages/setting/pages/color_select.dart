@@ -17,9 +17,13 @@ import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
+
 import 'package:collection/collection.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -57,11 +61,18 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
     Get.updateMyAppTheme();
   }
 
+  late ThemeData theme;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    theme = Theme.of(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    TextStyle titleStyle = theme.textTheme.titleMedium!;
-    TextStyle subTitleStyle = theme.textTheme.labelMedium!.copyWith(
+    final titleStyle = theme.textTheme.titleMedium!;
+    final subTitleStyle = theme.textTheme.labelMedium!.copyWith(
       color: theme.colorScheme.outline,
     );
     final size = MediaQuery.sizeOf(context);
@@ -221,6 +232,109 @@ class _ColorSelectPageState extends State<ColorSelectPage> {
                     .toList(),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildColorPanel(BuildContext context) {
+    final currentColor = ctr.currentColor.value;
+    return AnimatedHeight(
+      expand: !ctr.dynamicColor.value,
+      duration: const Duration(milliseconds: 200),
+      child: Wrap(
+        spacing: 22,
+        runSpacing: 18,
+        alignment: .center,
+        children: [
+          Builder(
+            builder: (context) {
+              final isCurr = currentColor > colorThemeTypes.length;
+              final color = isCurr
+                  ? Color(currentColor)
+                  : colorThemeTypes[currentColor].color;
+              return GestureDetector(
+                behavior: .opaque,
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      clipBehavior: .hardEdge,
+                      contentPadding: const .symmetric(vertical: 16),
+                      title: const Text('Color Picker'),
+                      content: SlideColorPicker(
+                        color: color,
+                        onChanged: (Color? color) {
+                          if (color != null) {
+                            final res = color.toARGB32();
+                            ctr.currentColor.value = res;
+                            GStorage.setting
+                                .put(SettingBoxKey.customColor, res)
+                                .whenComplete(Get.updateMyAppTheme);
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Column(
+                  spacing: 3,
+                  children: [
+                    ColorPalette(
+                      colorScheme: color.asColorSchemeSeed(
+                        _dynamicSchemeVariant,
+                        theme.brightness,
+                      ),
+                      selected: isCurr,
+                    ),
+                    Text(
+                      context.l10n.settingsCustomValue,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isCurr
+                            ? null
+                            : theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          ...colorThemeTypes.mapIndexed(
+            (i, e) {
+              final color = e.color;
+              final isCurr = currentColor == i;
+              return GestureDetector(
+                behavior: .opaque,
+                onTap: () {
+                  ctr.currentColor.value = i;
+                  GStorage.setting
+                      .put(SettingBoxKey.customColor, i)
+                      .whenComplete(Get.updateMyAppTheme);
+                },
+                child: Column(
+                  spacing: 3,
+                  children: [
+                    ColorPalette(
+                      colorScheme: color.asColorSchemeSeed(
+                        _dynamicSchemeVariant,
+                        theme.brightness,
+                      ),
+                      selected: isCurr,
+                    ),
+                    Text(
+                      e.localizedLabel(context.l10n),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isCurr ? null : theme.colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

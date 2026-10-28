@@ -4,12 +4,18 @@ import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/reply_controller.dart';
 import 'package:ex_piliplus/pages/video/reply/vote/reply_vote_mixin.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
+
 import 'package:get/get.dart';
 
 abstract class CommonDynController extends ReplyController<MainListReply>
     with ReplyVoteMixin {
+  CommonDynController({super.count});
+
   int get oid;
   int get replyType;
+
+  MentionItem? get mentionItem => null;
 
   late final RxBool showTitle = false.obs;
 

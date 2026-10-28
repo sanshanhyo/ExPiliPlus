@@ -23,7 +23,7 @@ import 'package:ex_piliplus/common/widgets/dynamic_sliver_app_bar/sliver_persist
 import 'package:ex_piliplus/common/widgets/only_layout_widget.dart'
     show LayoutCallback;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     hide SliverPersistentHeader, SliverPersistentHeaderDelegate;
 import 'package:flutter/rendering.dart' show RenderOpacity, OpacityLayer;
 import 'package:flutter/services.dart';

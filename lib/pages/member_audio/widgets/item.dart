@@ -9,7 +9,7 @@ import 'package:ex_piliplus/models_new/space/space_audio/item.dart';
 import 'package:ex_piliplus/pages/audio/view.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MemberAudioItem extends StatelessWidget {
   const MemberAudioItem({super.key, required this.item});

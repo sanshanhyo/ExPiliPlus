@@ -5,6 +5,7 @@ import 'package:ex_piliplus/grpc/dyn.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/msg.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_badge_mode.dart';
+import 'package:ex_piliplus/models/common/home_tab_type.dart';
 import 'package:ex_piliplus/models/common/msg/msg_unread_type.dart';
 import 'package:ex_piliplus/models/common/nav_bar_config.dart';
 import 'package:ex_piliplus/pages/dynamics/controller.dart';
@@ -20,7 +21,7 @@ import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/update.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MainController extends GetxController
@@ -49,9 +50,10 @@ class MainController extends GetxController
   late bool hasHome = false;
   late final homeController = Get.putOrFind(HomeController.new);
 
+  late final disableLikeMsg = Pref.disableLikeMsg;
   late DynamicBadgeMode msgBadgeMode = Pref.msgBadgeMode;
   late Set<MsgUnReadType> msgUnReadTypes = Pref.msgUnReadTypeV2;
-  late final RxString msgUnReadCount = ''.obs;
+  late final RxnString msgUnReadCount = RxnString(null);
   late int lastCheckUnreadAt = 0;
 
   final enableMYBar = Pref.enableMYBar;
@@ -61,7 +63,7 @@ class MainController extends GetxController
   late final optTabletNav = Pref.optTabletNav;
 
   late bool directExitOnBack = Pref.directExitOnBack;
-  late bool showTrayIcon = Pref.showTrayIcon;
+  late final bool showTrayIcon = Pref.showTrayIcon;
   late bool minimizeOnExit = Pref.minimizeOnExit;
   late bool pauseOnMinimize = Pref.pauseOnMinimize;
   late bool isPlaying = false;
@@ -151,7 +153,7 @@ class MainController extends GetxController
               count += response.at;
               break;
             case MsgUnReadType.like:
-              count += response.like;
+              if (!disableLikeMsg) count += response.like;
               break;
             case MsgUnReadType.sysMsg:
               count += response.sysMsg;
@@ -163,12 +165,16 @@ class MainController extends GetxController
     return count;
   }
 
+  void clearUnreadMsg() {
+    msgUnReadCount.value = null;
+  }
+
   Future<void> queryUnreadMsg([bool isChangeType = false]) async {
     if (!accountService.isLogin.value ||
         !hasHome ||
         msgUnReadTypes.isEmpty ||
         msgBadgeMode == DynamicBadgeMode.hidden) {
-      msgUnReadCount.value = '';
+      clearUnreadMsg();
       return;
     }
 
@@ -177,7 +183,7 @@ class MainController extends GetxController
     final count = res.sum;
 
     final countStr = count == 0
-        ? ''
+        ? null
         : count > 99
         ? '99+'
         : count.toString();
@@ -228,7 +234,7 @@ class MainController extends GetxController
       navigationBars = NavigationBarType.values;
     } else {
       navigationBars = navBarSort
-          .map((i) => NavigationBarType.values[i])
+          .map(NavigationBarType.values.elementAt)
           .toList();
     }
     this.navigationBars = navigationBars;
@@ -332,6 +338,16 @@ class MainController extends GetxController
     }
   }
 
+  bool refreshRecommendations() {
+    if (navigationBars[selectedIndex.value] == NavigationBarType.home &&
+        homeController.tabs[homeController.tabController.index] ==
+            HomeTabType.rcmd) {
+      homeController.onRefresh();
+      return true;
+    }
+    return false;
+  }
+
   @override
   void onClose() {
     barOffset?.close();
@@ -342,6 +358,7 @@ class MainController extends GetxController
   @override
   void onChangeAccount(bool isLogin) {
     if (isLogin) {
+      queryUnreadMsg();
       getUnreadDynamic();
     } else {
       setDynCount();

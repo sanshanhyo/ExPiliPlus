@@ -1,5 +1,5 @@
-import 'package:ex_piliplus/models_new/live/live_dm_block/shield_rules.dart';
 import 'package:ex_piliplus/models_new/live/live_dm_block/shield_user_list.dart';
+import 'package:ex_piliplus/models_new/live/live_dm_block/shield_rules.dart';
 import 'package:ex_piliplus/utils/extension/iterable_ext.dart';
 
 class ShieldInfo {
@@ -18,8 +18,8 @@ class ShieldInfo {
         ?.map((e) => ShieldUserList.fromJson(e as Map<String, dynamic>))
         .toList(),
     keywordList: (json['keyword_list'] as List?)?.fromCast(),
-    shieldRules: json['shield_rules'] == null
-        ? null
-        : ShieldRules.fromJson(json['shield_rules'] as Map<String, dynamic>),
+    shieldRules: json['shield_rules'] is Map
+        ? ShieldRules.fromJson(json['shield_rules'] as Map<String, dynamic>)
+        : null,
   );
 }

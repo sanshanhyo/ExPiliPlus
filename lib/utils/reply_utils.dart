@@ -16,7 +16,7 @@ import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/theme_utils.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -97,7 +97,7 @@ abstract final class ReplyUtils {
 
     // CommAntifraud
     if (!isManual) {
-      await Future.delayed(const Duration(seconds: 8));
+      await Future.pause(const Duration(seconds: 8));
     }
     void showReplyCheckResult(String message, {bool isBan = false}) {
       final theme = ThemeUtils.theme;
@@ -237,7 +237,7 @@ abstract final class ReplyUtils {
           if (data.replies.isNullOrEmpty) {
             break;
           }
-          int index = data.replies?.indexWhere((item) => item.rpid == id) ?? -1;
+          int index = data.replies!.indexWhere((item) => item.rpid == id);
           if (index == -1) {
             // not found
           } else {
@@ -264,7 +264,7 @@ abstract final class ReplyUtils {
           if (data.replies.isNullOrEmpty) {
             break;
           }
-          int index = data.replies?.indexWhere((item) => item.rpid == id) ?? -1;
+          int index = data.replies!.indexWhere((item) => item.rpid == id);
           if (index == -1) {
             // not found
           } else {

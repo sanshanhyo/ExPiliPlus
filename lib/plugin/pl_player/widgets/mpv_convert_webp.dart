@@ -8,7 +8,7 @@ import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:media_kit/ffi/src/allocation.dart';
 import 'package:media_kit/ffi/src/utf8.dart';
@@ -45,6 +45,7 @@ class MpvConvertWebp {
       _mpv,
       _onEvent,
       options: {
+        'idle': 'once',
         'o': outFile,
         'start': start.toStringAsFixed(3),
         'end': (start + duration).toStringAsFixed(3),
@@ -57,6 +58,11 @@ class MpvConvertWebp {
           'hwdec':
               '${Pref.hardwareDecoding},auto-copy', // transcode only support copy
       },
+    );
+    _mpv.mpv_request_event(
+      _ctx,
+      generated.mpv_event_id.MPV_EVENT_VIDEO_RECONFIG,
+      0,
     );
     NativePlayer.setHeader(
       _mpv,
@@ -108,8 +114,7 @@ class MpvConvertWebp {
           _success = false;
         }
         break;
-      case generated.mpv_event_id.MPV_EVENT_END_FILE ||
-          generated.mpv_event_id.MPV_EVENT_SHUTDOWN:
+      case generated.mpv_event_id.MPV_EVENT_SHUTDOWN:
         progress?.value = 1;
         _completer.complete(_success);
         dispose();

@@ -7,7 +7,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/feed_back.dart';
 import 'package:ex_piliplus/utils/request_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -106,6 +106,7 @@ class _GroupPanelState extends State<GroupPanel> {
                       : null,
                   trailing: Transform.scale(
                     scale: 0.9,
+                    alignment: .centerRight,
                     child: Checkbox(
                       value: tags.contains(item.tagid),
                       onChanged: (_) => onTap(),

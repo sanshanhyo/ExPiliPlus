@@ -1,6 +1,6 @@
 import 'package:ex_piliplus/pages/common/multi_select/base.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:get/get.dart';
 
 class MultiSelectAppBarWidget extends StatelessWidget
@@ -43,9 +43,7 @@ class MultiSelectAppBarWidget extends StatelessWidget
           TextButton(
             style: style,
             onPressed: () {
-              if (ctr.checkedCount == 0) {
-                return;
-              }
+              if (ctr.checkedCount == 0) return;
               ctr.onRemove();
             },
             child: Text(

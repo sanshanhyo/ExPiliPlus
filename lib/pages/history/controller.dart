@@ -12,7 +12,8 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/scroll_controller_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -59,18 +60,22 @@ class HistoryController
 
   @override
   bool customHandleResponse(bool isRefresh, Success<HistoryData> response) {
-    HistoryData data = response.response;
-    isEnd = data.list.isNullOrEmpty;
-    max = data.list?.lastOrNull?.history.oid;
-    viewAt = data.list?.lastOrNull?.viewAt;
+    final data = response.response;
+    final last = data.list?.lastOrNull;
+    if (last == null) {
+      isEnd = true;
+      max = viewAt = null;
+    } else {
+      isEnd = false;
+      max = last.history.oid;
+      viewAt = last.viewAt;
+    }
 
     if (isRefresh && type == null) {
-      if (tabs.isEmpty && data.tab?.isNotEmpty == true) {
-        tabs.value = data.tab!;
-        tabController = TabController(
-          length: data.tab!.length + 1,
-          vsync: this,
-        );
+      final tab = data.tab;
+      if (tabs.isEmpty && tab != null && tab.isNotEmpty) {
+        tabs.value = tab;
+        tabController = TabController(length: tab.length + 1, vsync: this);
       }
     }
 

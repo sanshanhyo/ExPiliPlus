@@ -6,7 +6,7 @@ import 'package:ex_piliplus/models_new/space/space_season_series/season.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/platform_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SeasonSeriesCard extends StatelessWidget {
   const SeasonSeriesCard({

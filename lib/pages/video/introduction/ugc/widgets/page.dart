@@ -8,7 +8,7 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/controller.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/num_ext.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -51,6 +51,10 @@ class _PagesPanelState extends State<PagesPanel> {
   List<Part> get pages =>
       widget.list ?? widget.ugcIntroController.videoDetail.value.pages!;
 
+  void _updatePageIndex() {
+    pageIndex = max(0, pages.indexWhere((e) => e.cid == cid));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -60,11 +64,11 @@ class _PagesPanelState extends State<PagesPanel> {
     double offset = 0;
     if (widget.list == null) {
       cid = widget.ugcIntroController.cid.value;
-      pageIndex = pages.indexWhere((Part e) => e.cid == cid);
+      _updatePageIndex();
       offset = targetOffset;
       _listener = _videoDetailController.cid.listen((cid) {
         this.cid = cid;
-        pageIndex = max(0, pages.indexWhere((e) => e.cid == cid));
+        _updatePageIndex();
         if (!mounted) return;
         setState(() {});
         jumpToCurr();

@@ -18,11 +18,14 @@ import 'package:ex_piliplus/utils/share_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/utils.dart';
 import 'package:dio/dio.dart';
+
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:live_photo_maker/live_photo_maker.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:path/path.dart' as path;
+
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -154,6 +157,7 @@ abstract final class ImageUtils {
       return false;
     }
     CancelToken? cancelToken;
+    bool success = true;
     if (!silentDownImg) {
       cancelToken = CancelToken();
       SmartDialog.showLoading(
@@ -162,41 +166,45 @@ abstract final class ImageUtils {
         onDismiss: cancelToken.cancel,
       );
     }
+    final futures = imgList.map((url) async {
+      final name = Utils.getFileName(url);
+      final file = await CacheManager.manager.getSingleFile(url.http2https);
+      return (file, name);
+    });
+    final List<(File, String)> result;
     try {
-      final futures = imgList.map((url) async {
-        final name = Utils.getFileName(url);
-
-        final file = await CacheManager.manager.getSingleFile(
-          url.http2https,
+      try {
+        result = await Future.wait(
+          futures,
+          eagerError: true,
+          cleanUp: (successValue) => successValue.$1.tryDel(),
         );
-        return (filePath: file.path, name: name, statusCode: 200);
-      });
-      final result = await Future.wait(futures, eagerError: true);
-      bool success = true;
+      } catch (e) {
+        SmartDialog.showToast('保存失败');
+        return false;
+      }
       if (PlatformUtils.isMobile) {
         final saveList = <SaveFileData>[];
         for (final i in result) {
-          if (i.statusCode == 200) {
-            saveList.add(
-              SaveFileData(
-                filePath: i.filePath,
-                fileName: i.name,
-                albumPath: _albumPath,
-              ),
-            );
-          } else {
-            success = false;
-          }
+          saveList.add(
+            SaveFileData(
+              filePath: i.$1.path,
+              fileName: i.$2,
+              albumPath: _albumPath,
+            ),
+          );
         }
         await SaverGallery.saveFiles(saveList, skipIfExists: false);
       } else {
-        for (final res in result) {
-          if (res.statusCode == 200) {
-            await saveFileImg(filePath: res.filePath, fileName: res.name);
-          } else {
-            success = false;
-          }
+        final dst = await FilePicker.getDirectoryPath();
+        if (dst == null) {
+          SmartDialog.showToast('取消保存');
+          return false;
         }
+        await Future.wait([
+          for (final (src, name) in result)
+            src.moveOrCopy(path.join(dst, name)),
+        ]);
       }
       if (cancelToken?.isCancelled == true) {
         SmartDialog.showToast(_l10n.commonDownloadCanceled);
@@ -215,7 +223,7 @@ abstract final class ImageUtils {
       }
       return false;
     } finally {
-      if (!silentDownImg) SmartDialog.dismiss(status: SmartStatus.loading);
+      if (!silentDownImg) SmartDialog.dismiss(status: .loading);
     }
   }
 
@@ -260,6 +268,7 @@ abstract final class ImageUtils {
     required Uint8List bytes,
     required String fileName,
     String ext = 'png',
+    bool showLoading = true,
   }) async {
     SaveResult? res;
     fileName += '.$ext';
@@ -290,7 +299,7 @@ abstract final class ImageUtils {
         SmartDialog.showToast(_l10n.commonSaveCanceled);
         return null;
       }
-      await File(savePath).writeAsBytes(bytes);
+      await File(savePath.toFilePath()).writeAsBytes(bytes);
       SmartDialog.showToast(_l10n.commonSaved);
       res = SaveResult(true, null);
     }
@@ -342,7 +351,7 @@ abstract final class ImageUtils {
         SmartDialog.showToast(_l10n.commonSaveCanceled);
         return;
       }
-      await file.copy(savePath);
+      await file.moveOrCopy(savePath.toFilePath());
       res = SaveResult(true, null);
     }
     if (needToast) {

@@ -1,13 +1,17 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'dart:ui';
 
 import 'package:ex_piliplus/utils/android/bindings.g.dart';
 import 'package:ex_piliplus/utils/utils.dart';
+import 'package:ex_piliplus/utils/device_utils.dart';
+import 'package:ex_piliplus/utils/page_utils.dart';
+
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:jni/jni.dart';
 
 abstract final class PiliAndroidHelper {
-  @pragma('vm:prefer-inline')
-  static void back() => AndroidHelper.back();
+  static final isPipAvailable = AndroidHelper.isPipAvailable;
 
   static void biliSendCommAntifraud(
     int action,
@@ -45,8 +49,6 @@ abstract final class PiliAndroidHelper {
         uid,
         jCookie,
       );
-    } catch (e) {
-      Utils.reportError(e);
     } finally {
       jCommentText.release();
       jSourceId.release();
@@ -54,10 +56,6 @@ abstract final class PiliAndroidHelper {
       jPictures?.release();
     }
   }
-
-  @pragma('vm:prefer-inline')
-  static void openLinkVerifySettings() =>
-      AndroidHelper.openLinkVerifySettings();
 
   static bool openMusic(String title, String? artist, String? album) {
     final jTitle = title.toJString();
@@ -116,6 +114,29 @@ abstract final class PiliAndroidHelper {
       jUri.release();
       jLabel.release();
       jPath.release();
+    }
+  }
+
+  static void openUrl(String url, {String domain = '*.bilibili.com'}) {
+    if (!Platform.isAndroid || DeviceUtils.sdkInt < 31) {
+      PageUtils.launchURL(url);
+      return;
+    }
+    final jDomain = domain.toJString();
+    JString? jUrl;
+    try {
+      if (AndroidHelper.isDomainVerified(jDomain)) {
+        jUrl = url.toJString();
+        final jStr = AndroidHelper.openUrl(jUrl);
+        if (jStr != null) {
+          SmartDialog.showToast(jStr.toDartString(releaseOriginal: true));
+        }
+      } else {
+        PageUtils.launchURL(url);
+      }
+    } finally {
+      jDomain.release();
+      jUrl?.release();
     }
   }
 }

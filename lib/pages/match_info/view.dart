@@ -11,16 +11,22 @@ import 'package:ex_piliplus/pages/common/dyn/common_dyn_page.dart';
 import 'package:ex_piliplus/pages/common/fab_mixin.dart'
     show NoBottomPaddingFabLocation;
 import 'package:ex_piliplus/pages/match_info/controller.dart';
+import 'package:ex_piliplus/pages/match_info/widgets/match_info_item.dart';
 import 'package:ex_piliplus/pages/video/reply_reply/view.dart';
 import 'package:ex_piliplus/utils/date_utils.dart';
 import 'package:ex_piliplus/utils/extension/get_ext.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/extension/widget_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
+import 'package:ex_piliplus/pages/match_info/widgets/match_info_item.dart';
+
 import 'package:easy_debounce/easy_throttle.dart';
-import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class MatchInfoPage extends StatefulWidget {
   const MatchInfoPage({super.key});
@@ -69,22 +75,6 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
   Widget _buildInfo(LoadingState<MatchContest?> infoState) {
     if (infoState case Success(:final response?)) {
       try {
-        Widget teamInfo(MatchTeam team) {
-          return Column(
-            spacing: 5,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              NetworkImgLayer(
-                width: 50,
-                height: 50,
-                src: 'https://i1.hdslb.com${team.logo}',
-                type: ImageType.emote,
-              ),
-              Text(team.title!),
-            ],
-          );
-        }
-
         return SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -102,25 +92,26 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (response.homeId != 0)
+                    if (response.homeTeam != null)
                       Expanded(
                         child: Align(
                           alignment: const Alignment(0.8, 1),
-                          child: teamInfo(response.homeTeam!),
+                          child: buildTeamInfo(response.homeTeam!),
                         ),
                       ),
                     Column(
                       spacing: 10,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (response.homeId != 0)
+                        if (response.homeTeam != null)
                           Text(
                             response.contestStatus == 1
                                 ? 'VS'
                                 : '${response.homeScore} : ${response.awayScore}',
                             style: const TextStyle(
                               fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: .bold,
+                              letterSpacing: 1.5,
                             ),
                           )
                         else if (response.season?.logo != null)
@@ -169,11 +160,11 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
                           ),
                       ],
                     ),
-                    if (response.awayId != 0)
+                    if (response.awayTeam != null)
                       Expanded(
                         child: Align(
                           alignment: const Alignment(-0.8, -1),
-                          child: teamInfo(response.awayTeam!),
+                          child: buildTeamInfo(response.awayTeam!),
                         ),
                       ),
                   ],

@@ -9,10 +9,14 @@ import 'package:ex_piliplus/pages/member_opus/controller.dart';
 import 'package:ex_piliplus/pages/member_opus/widgets/space_opus_item.dart';
 import 'package:ex_piliplus/utils/grid.dart';
 import 'package:ex_piliplus/utils/waterfall.dart';
-import 'package:flutter/material.dart';
+import 'package:ex_piliplus/common/sliver_single_child_delegate.dart';
+import 'package:ex_piliplus/common/widgets/scaffold/simple_scaffold.dart';
 import 'package:get/get.dart';
 import 'package:waterfall_flow/waterfall_flow.dart'
     hide SliverWaterfallFlowDelegateWithMaxCrossAxisExtent;
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:material_ui/material_ui.dart';
+
 
 class MemberOpus extends StatefulWidget {
   const MemberOpus({
@@ -132,27 +136,29 @@ class _MemberOpusState extends State<MemberOpus>
     );
   }
 
-  late final gridDelegate = SliverWaterfallFlowDelegateWithMaxCrossAxisExtent(
+  late final gridDelegate = SliverSimpleGridDelegateWithMaxCrossAxisExtent_(
     maxCrossAxisExtent: Grid.smallCardWidth,
-    mainAxisSpacing: Style.safeSpace,
-    crossAxisSpacing: Style.safeSpace,
   );
 
   Widget _buildBody(LoadingState<List<SpaceOpusItemModel>?> loadingState) {
     return switch (loadingState) {
-      Loading() => SliverWaterfallFlow(
+      Loading() => SliverMasonryGrid(
+        mainAxisSpacing: Style.safeSpace,
+        crossAxisSpacing: Style.safeSpace,
         gridDelegate: gridDelegate,
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => const SpaceOpusSkeleton(),
-          childCount: 10,
+        delegate: const SliverSingleChildDelegate(
+          count: 10,
+          child: SpaceOpusSkeleton(),
         ),
       ),
       Success(:final response) =>
         response != null && response.isNotEmpty
-            ? SliverWaterfallFlow(
+            ? SliverMasonryGrid(
+                mainAxisSpacing: Style.safeSpace,
+                crossAxisSpacing: Style.safeSpace,
                 gridDelegate: gridDelegate,
                 delegate: SliverChildBuilderDelegate(
-                  (_, index) {
+                  (context, index) {
                     if (index == response.length - 1) {
                       _controller.onLoadMore();
                     }
