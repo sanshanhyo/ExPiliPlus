@@ -22,7 +22,6 @@ import 'package:fixnum/fixnum.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:test_api/scaffolding.dart' show Timeout;
 
 const _captureKey = ValueKey('aicu-capture');
 
@@ -39,7 +38,11 @@ class _MemoryBox implements Box<dynamic> {
   }
 
   @override
-  Future<void> clear() async => _values.clear();
+  Future<int> clear() async {
+    final removed = _values.length;
+    _values.clear();
+    return removed;
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
