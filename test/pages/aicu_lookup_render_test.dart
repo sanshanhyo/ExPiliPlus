@@ -69,19 +69,22 @@ Future<void> _saveCapture(WidgetTester tester, String filename) async {
   });
 }
 
-Widget _app(Widget child) => RepaintBoundary(
-  key: _captureKey,
-  child: GetMaterialApp(
-    debugShowCheckedModeBanner: false,
-    locale: const Locale('zh'),
-    localizationsDelegates: appLocalizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    theme: ThemeData.dark(useMaterial3: true).copyWith(
-      fontFamily: 'Source Han Serif CN',
+Widget _app(Widget child) {
+  final theme = ThemeData.dark(useMaterial3: true);
+  return RepaintBoundary(
+    key: _captureKey,
+    child: GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      locale: const Locale('zh'),
+      localizationsDelegates: appLocalizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: theme.copyWith(
+        textTheme: theme.textTheme.apply(fontFamily: 'Source Han Serif CN'),
+      ),
+      home: child,
     ),
-    home: child,
-  ),
-);
+  );
+}
 
 void main() {
   final settingBox = _MemoryBox();
