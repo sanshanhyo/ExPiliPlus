@@ -131,7 +131,6 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
       title: launch.title,
       player: launch.player,
       currentVideoId: launch.currentVideoId,
-      currentPart: launch.currentPart,
     );
     if (!mounted) return;
     if (shared) Get.back<void>();

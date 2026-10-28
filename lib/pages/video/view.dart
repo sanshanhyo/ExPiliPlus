@@ -214,7 +214,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     );
     Get.find<SyncPlayService>().attachIfShared(
       video: video,
-      title: ugcIntroController.videoDetail.value.title,
+      title: ugcIntroController.videoDetail.value.title ?? video.bvid,
       player: PlPlayerSyncPort(player),
       currentVideoId: () {
         final cid = videoDetailController.cid.value;

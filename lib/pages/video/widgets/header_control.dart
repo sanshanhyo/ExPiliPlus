@@ -947,7 +947,7 @@ class HeaderControlState extends State<HeaderControl>
           bvid: videoDetailCtr.bvid,
           cid: videoDetailCtr.cid.value,
         );
-        final title = ugcIntroController.videoDetail.value.title;
+        final title = ugcIntroController.videoDetail.value.title ?? video.bvid;
         Get.back();
         Get.toNamed(
           '/syncPlay',

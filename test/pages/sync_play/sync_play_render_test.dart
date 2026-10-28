@@ -100,13 +100,13 @@ void main() {
     GStorage.setting = box;
   });
 
-  setUp(() async {
-    await Get.reset();
+  setUp(() {
+    Get.reset();
     box.reset();
   });
 
-  tearDown(() async {
-    await Get.reset();
+  tearDown(() {
+    Get.reset();
   });
 
   testWidgets('renders the connection form with safe Origin guidance', (
@@ -126,7 +126,7 @@ void main() {
     expect(find.textContaining('不会发送 B 站 Cookie'), findsOneWidget);
     await _saveCapture(tester, 'connection-form-dark-zh.png');
     service.dispose();
-    await Get.reset();
+    Get.reset();
   }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('renders an active room and shared public-video card', (
@@ -196,6 +196,6 @@ void main() {
     await _saveCapture(tester, 'active-room-dark-zh.png');
     await service.leaveRoom();
     service.dispose();
-    await Get.reset();
+    Get.reset();
   }, timeout: const Timeout(Duration(minutes: 3)));
 }
