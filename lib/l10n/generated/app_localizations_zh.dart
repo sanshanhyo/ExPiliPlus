@@ -7508,8 +7508,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aicuLookupTitle => 'AICU 评论查询';
 
   @override
-  String get aicuThirdPartyNotice =>
-      '第三方网站页面，可能显示广告并使用分析服务。查询不会附带 B 站登录凭据。';
+  String get aicuThirdPartyNotice => '第三方网站页面，可能显示广告并使用分析服务。查询不会附带 B 站登录凭据。';
 
   @override
   String get aicuLookupLoadFailed => 'AICU 页面加载失败，请检查网络或重试。';
@@ -15035,8 +15034,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aicuLookupTitle => 'AICU 評論查詢';
 
   @override
-  String get aicuThirdPartyNotice =>
-      '第三方網站頁面，可能顯示廣告並使用分析服務。查詢不會附帶 B 站登入憑據。';
+  String get aicuThirdPartyNotice => '第三方網站頁面，可能顯示廣告並使用分析服務。查詢不會附帶 B 站登入憑據。';
 
   @override
   String get aicuLookupLoadFailed => 'AICU 頁面載入失敗，請檢查網路或重試。';
