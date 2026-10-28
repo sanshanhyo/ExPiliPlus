@@ -4,6 +4,7 @@ import 'package:ex_piliplus/grpc/reply.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/publish/publish_route.dart';
 import 'package:ex_piliplus/pages/common/reply_controller.dart';
+import 'package:ex_piliplus/pages/video/reply/comment_plus_one_reply_mixin.dart';
 import 'package:ex_piliplus/pages/video/reply_new/view.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -18,7 +19,7 @@ import 'package:get/get.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 class VideoReplyReplyController extends ReplyController
-    with GetSingleTickerProviderStateMixin {
+    with GetSingleTickerProviderStateMixin, CommentPlusOneReplyMixin {
   VideoReplyReplyController({
     required this.hasRoot,
     required this.id,

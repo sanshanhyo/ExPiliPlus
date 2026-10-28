@@ -6,12 +6,56 @@ import 'package:ex_piliplus/utils/set_int_adapter.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
+import 'package:ex_piliplus/models/common/comment_plus_one_mode.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 
 void main() {
   group('SettingsBackup', () {
+    test('comment +1 mode and uploader allow-list round-trip independently', () {
+      final exported = SettingsBackup.prepareExPiliPlusForExport(
+        {
+          SettingBoxKey.commentPlusOneMode:
+              CommentPlusOneMode.selectedUploaders.index,
+        },
+        {
+          LocalCacheKey.blackMids: <int>{999},
+          LocalCacheKey.dynamicBannedMids: <int>{888},
+          LocalCacheKey.commentPlusOneUpMids: <int>{1002, 1001, 1002},
+        },
+      );
+
+      expect(
+        exported[SettingBoxKey.commentPlusOneMode],
+        CommentPlusOneMode.selectedUploaders.index,
+      );
+      expect(exported[LocalCacheKey.commentPlusOneUpMids], [1001, 1002]);
+      expect(exported[LocalCacheKey.dynamicBannedMids], [888]);
+      expect(exported.containsKey(LocalCacheKey.blackMids), isFalse);
+
+      final importedSetting = SettingsBackup.prepareForImport(
+        const {},
+        exPiliPlus: exported,
+      );
+      final importedCache = SettingsBackup.prepareExPiliPlusLocalCacheForImport(
+        exported,
+      );
+      expect(
+        CommentPlusOneMode.fromStorage(
+          importedSetting[SettingBoxKey.commentPlusOneMode],
+        ),
+        CommentPlusOneMode.selectedUploaders,
+      );
+      expect(importedCache[LocalCacheKey.commentPlusOneUpMids], {1001, 1002});
+      expect(
+        SettingsBackup.prepareExPiliPlusLocalCacheForImport(const {})[
+          LocalCacheKey.commentPlusOneUpMids
+        ],
+        isEmpty,
+      );
+    });
+
     test('exports all ExPiliplus settings and dynamic block data', () {
       final result = SettingsBackup.prepareExPiliPlusForExport(
         {
@@ -179,7 +223,7 @@ void main() {
     );
   });
 
-  test('blocked dynamic authors survive reopening local storage', () async {
+  test('separate uploader allow-lists survive reopening local storage', () async {
     final tempDir = Directory.systemTemp.createTempSync(
       'dynamic-author-filter-test-',
     );
@@ -194,6 +238,10 @@ void main() {
 
     try {
       expect(Pref.enablePermanentDynamicBlock, isFalse);
+      expect(Pref.commentPlusOneMode, CommentPlusOneMode.disabled);
+      await localCache.put(LocalCacheKey.blackMids, <int>{9999});
+      await Pref.setCommentPlusOneMode(CommentPlusOneMode.selectedUploaders);
+      await Pref.setCommentPlusOneUpMids({3003});
 
       await Pref.setDynamicAuthorPermanentlyBlocked(
         1001,
@@ -225,6 +273,13 @@ void main() {
       expect(
         (localCache.get(LocalCacheKey.dynamicBannedUpList) as List).single,
         containsPair('name', 'Second uploader'),
+      );
+      expect(localCache.get(LocalCacheKey.commentPlusOneUpMids), {3003});
+      expect(localCache.get(LocalCacheKey.dynamicBannedMids), {1002});
+      expect(localCache.get(LocalCacheKey.blackMids), {9999});
+      expect(
+        setting.get(SettingBoxKey.commentPlusOneMode),
+        CommentPlusOneMode.selectedUploaders.index,
       );
     } finally {
       await localCache.close();

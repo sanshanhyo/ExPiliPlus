@@ -2292,5 +2292,33 @@
   "settingsEnableDocProvider": "Allow third-party apps to access private storage",
   "settingsEnableDocProviderDescription": "Allow third-party apps to access app-private files through external storage",
   "settingsEnableEmoteTooltip": "Show tooltip when tapping an emote",
-  "settingsEnableEmoteTooltipDescription": "Show an emote preview on long press or hover"
+  "settingsEnableEmoteTooltipDescription": "Show an emote preview on long press or hover",
+  "commentPlusOneTooltip": "Reply with this comment",
+  "commentPlusOneUnsupported": "This comment has media or structured content and can't be safely repeated.",
+  "commentPlusOneUnconfirmed": "The reply result is unknown. Check the thread before deciding whether to try again.",
+  "commentPlusOneSent": "Replied to this comment",
+  "settingsCommentPlusOneMode": "Comment +1",
+  "settingsCommentPlusOneModeOff": "Off",
+  "settingsCommentPlusOneModeAll": "All videos",
+  "settingsCommentPlusOneModeSelectedUploaders": "Selected uploaders",
+  "settingsCommentPlusOneUploaderList": "Manage selected uploaders",
+  "commentPlusOneUploaderListTitle": "Selected uploaders",
+  "commentPlusOneUploaderListEmpty": "No uploaders selected. Tap the add button above.",
+  "commentPlusOneAddUploader": "Add uploader",
+  "commentPlusOneUploaderUid": "Uploader UID",
+  "commentPlusOneEnterUploaderUid": "Enter the video's uploader UID",
+  "commentPlusOneInvalidUid": "Enter a valid positive integer UID",
+  "commentPlusOneUploaderAlreadySelected": "This uploader is already selected",
+  "commentPlusOneRemoveUploaderConfirm": "Remove UID {uid} from the +1 list?",
+  "@commentPlusOneRemoveUploaderConfirm": {
+    "placeholders": {
+      "uid": {"type": "String"}
+    }
+  },
+  "commentPlusOneUploaderCount": "{count} selected uploaders",
+  "@commentPlusOneUploaderCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

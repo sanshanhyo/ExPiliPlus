@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/comment-plus-one
   pull_request:
     branches:
       - main
@@ -39,7 +40,11 @@ jobs:
         run: flutter gen-l10n
 
       - name: Check generated localizations
-        run: git diff --exit-code -- lib/l10n/generated
+        run: |
+          if ! git diff --exit-code -- lib/l10n/generated; then
+            git diff -- lib/l10n/generated
+            exit 1
+          fi
 
       - name: Check diff whitespace
         run: git diff --check
@@ -57,3 +62,12 @@ jobs:
 
       - name: Test
         run: flutter test --no-pub
+
+      - name: Upload rendered comment +1 UI captures
+        if: always() && github.ref == 'refs/heads/feat/comment-plus-one'
+        uses: actions/upload-artifact@v7
+        with:
+          name: comment-plus-one-rendered-${{ github.run_id }}
+          path: build/test-artifacts/comment-plus-one/
+          if-no-files-found: warn
+          retention-days: 14

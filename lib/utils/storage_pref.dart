@@ -6,6 +6,7 @@ import 'package:ex_piliplus/common/widgets/pair.dart';
 import 'package:ex_piliplus/http/constants.dart';
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
+import 'package:ex_piliplus/models/common/comment_plus_one_mode.dart';
 import 'package:ex_piliplus/models/common/bar_hide_type.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_badge_mode.dart';
 import 'package:ex_piliplus/models/common/dynamic/dynamic_banned_up.dart';
@@ -160,6 +161,32 @@ abstract final class Pref {
   );
 
   static ThemeType get themeType => ThemeType.values[_themeTypeInt];
+
+  static final RxInt commentPlusOneSettingsRevision = 0.obs;
+
+  static CommentPlusOneMode get commentPlusOneMode =>
+      CommentPlusOneMode.fromStorage(
+        _setting.get(SettingBoxKey.commentPlusOneMode),
+      );
+
+  static Future<void> setCommentPlusOneMode(CommentPlusOneMode value) async {
+    await _setting.put(SettingBoxKey.commentPlusOneMode, value.index);
+    commentPlusOneSettingsRevision.value++;
+  }
+
+  static Set<int> get commentPlusOneUpMids {
+    final value = _localCache.get(LocalCacheKey.commentPlusOneUpMids);
+    if (value is Iterable) return value.whereType<int>().toSet();
+    return <int>{};
+  }
+
+  static Future<void> setCommentPlusOneUpMids(Iterable<int> mids) async {
+    await _localCache.put(
+      LocalCacheKey.commentPlusOneUpMids,
+      mids.where((mid) => mid > 0).toSet(),
+    );
+    commentPlusOneSettingsRevision.value++;
+  }
 
   static ThemeMode get themeMode => switch (_themeTypeInt) {
     0 => ThemeMode.light,

@@ -1,9 +1,11 @@
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/models/common/app_language.dart';
+import 'package:ex_piliplus/models/common/comment_plus_one_mode.dart';
 import 'package:ex_piliplus/models/common/theme/theme_color_type.dart';
 import 'package:ex_piliplus/pages/dynamic_banned_up_list/view.dart';
 import 'package:ex_piliplus/pages/dynamics/controller.dart';
 import 'package:ex_piliplus/pages/setting/models/model.dart';
+import 'package:ex_piliplus/pages/setting/pages/comment_plus_one_uploader_list.dart';
 import 'package:ex_piliplus/pages/setting/slide_color_picker.dart';
 import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
 import 'package:ex_piliplus/pages/setting/widgets/select_dialog.dart';
@@ -41,6 +43,59 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       leading: const Icon(Icons.insights_outlined),
       getTrailing: (_) => const Icon(Icons.chevron_right),
       onTap: (context, _) => Get.toNamed('/historyStats'),
+    ),
+    NormalModel(
+      getTitle: () => l10n.settingsCommentPlusOneMode,
+      getSubtitle: () => l10n.settingsCurrentValue(
+        switch (Pref.commentPlusOneMode) {
+          CommentPlusOneMode.disabled =>
+            l10n.settingsCommentPlusOneModeOff,
+          CommentPlusOneMode.allVideos =>
+            l10n.settingsCommentPlusOneModeAll,
+          CommentPlusOneMode.selectedUploaders =>
+            l10n.settingsCommentPlusOneModeSelectedUploaders,
+        },
+      ),
+      leading: const Icon(Icons.add_reaction_outlined),
+      onTap: (context, setState) async {
+        final selected = await showDialog<CommentPlusOneMode>(
+          context: context,
+          builder: (context) => SelectDialog<CommentPlusOneMode>(
+            title: l10n.settingsCommentPlusOneMode,
+            value: Pref.commentPlusOneMode,
+            values: [
+              (
+                CommentPlusOneMode.allVideos,
+                l10n.settingsCommentPlusOneModeAll,
+              ),
+              (
+                CommentPlusOneMode.selectedUploaders,
+                l10n.settingsCommentPlusOneModeSelectedUploaders,
+              ),
+              (
+                CommentPlusOneMode.disabled,
+                l10n.settingsCommentPlusOneModeOff,
+              ),
+            ],
+          ),
+        );
+        if (selected == null) return;
+        await Pref.setCommentPlusOneMode(selected);
+        setState();
+      },
+    ),
+    NormalModel(
+      getTitle: () => l10n.settingsCommentPlusOneUploaderList,
+      getSubtitle: () => l10n.commentPlusOneUploaderCount(
+        Pref.commentPlusOneUpMids.length,
+      ),
+      leading: const Icon(Icons.manage_accounts_outlined),
+      getTrailing: (_) => const Icon(Icons.chevron_right),
+      onTap: (_, setState) {
+        Get.to<void>(
+          () => const CommentPlusOneUploaderListPage(),
+        )?.whenComplete(setState);
+      },
     ),
     SwitchModel(
       getTitle: () => l10n.settingsEnableGifRecord,
