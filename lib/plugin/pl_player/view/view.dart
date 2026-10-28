@@ -776,7 +776,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     height: 35,
                     padding: const EdgeInsets.only(left: 30),
                     value: speed,
-                    onTap: () => plPlayerController.setPlaybackSpeed(speed),
+                    onTap: () {
+                      unawaited(
+                        plPlayerController.setPlaybackSpeedFromUser(speed),
+                      );
+                    },
                     child: Text(
                       "${speed}X",
                       style: const TextStyle(color: Colors.white, fontSize: 13),
@@ -999,8 +1003,10 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
       feedBack();
       plPlayerController
         ..position.value = seekToPos.inSeconds
-        ..seekTo(seekToPos, isSeek: false)
         ..seekToPos = null;
+      unawaited(
+        plPlayerController.seekToFromUser(seekToPos, isSeek: false),
+      );
     } else {
       plPlayerController.position.value =
           plPlayerController.videoPlayerController?.state.position.inSeconds ??
@@ -1173,7 +1179,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
   void _onTapUp(TapUpDetails details) {
     switch (details.kind) {
       case ui.PointerDeviceKind.mouse when PlatformUtils.isDesktop:
-        plPlayerController.onDoubleTapCenter();
+        unawaited(plPlayerController.onDoubleTapCenter());
       default:
         if (_suspendedDm == null) {
           plPlayerController.controls = !plPlayerController.showControls.value;
@@ -1820,9 +1826,11 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                                     if (!plPlayerController
                                         .controlsLock
                                         .value) {
-                                      plPlayerController.seekTo(
-                                        position,
-                                        isSeek: false,
+                                      unawaited(
+                                        plPlayerController.seekToFromUser(
+                                          position,
+                                          isSeek: false,
+                                        ),
                                       );
                                     }
                                   }
@@ -2632,10 +2640,14 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
                     Icons.gps_fixed_outlined,
                     color: Colors.white,
                   ),
-                  onTap: () => plPlayerController.seekTo(
-                    Duration(seconds: seekOffset),
-                    isSeek: false,
-                  ),
+                  onTap: () {
+                    unawaited(
+                      plPlayerController.seekToFromUser(
+                        Duration(seconds: seekOffset),
+                        isSeek: false,
+                      ),
+                    );
+                  },
                 ),
             ],
             LiveDanmaku() => [

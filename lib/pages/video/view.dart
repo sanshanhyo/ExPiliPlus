@@ -26,6 +26,10 @@ import 'package:ex_piliplus/pages/danmaku/view.dart';
 import 'package:ex_piliplus/pages/episode_panel/view.dart';
 import 'package:ex_piliplus/pages/video/ai_conclusion/view.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart'
+    show PlPlayerSyncPort;
+import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
 import 'package:ex_piliplus/pages/video/introduction/local/controller.dart';
 import 'package:ex_piliplus/pages/video/introduction/local/view.dart';
 import 'package:ex_piliplus/pages/video/introduction/pgc/controller.dart';
@@ -194,6 +198,41 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     videoDetailController.playedTime = position;
   }
 
+  void _attachToSyncPlayIfShared() {
+    final player = plPlayerController;
+    if (player == null ||
+        !videoDetailController.isUgc ||
+        videoDetailController.isFileSource ||
+        videoDetailController.cid.value <= 0 ||
+        !Get.isRegistered<SyncPlayService>()) {
+      return;
+    }
+    final bvid = videoDetailController.bvid;
+    final video = SyncPlayVideoRef.fromPlayer(
+      bvid: bvid,
+      cid: videoDetailController.cid.value,
+    );
+    Get.find<SyncPlayService>().attachIfShared(
+      video: video,
+      title: ugcIntroController.videoDetail.value.title,
+      player: PlPlayerSyncPort(player),
+      currentVideoId: () {
+        final cid = videoDetailController.cid.value;
+        final currentBvid = videoDetailController.bvid;
+        return cid > 0 ? '$currentBvid:$cid' : '';
+      },
+      currentPart: () {
+        final cid = videoDetailController.cid.value;
+        final pages = ugcIntroController.videoDetail.value.pages;
+        if (cid <= 0 || pages == null) return null;
+        for (final page in pages) {
+          if (page.cid == cid) return page.page;
+        }
+        return null;
+      },
+    );
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final isResume = state == .resumed;
@@ -222,7 +261,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
         ?..addStatusLister(playerListener)
         ..addPositionListener(positionListener);
     }
-    return plPlayerController?.play();
+    return plPlayerController?.play().then((_) => _attachToSyncPlayIfShared());
   }
 
   // 播放器状态监听
@@ -332,17 +371,21 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       if (plPlayerController.autoEnterFullScreen) {
         plPlayerController.triggerFullScreen();
       }
-      return plPlayerController.play();
+      return plPlayerController.play().then((_) => _attachToSyncPlayIfShared());
     } else {
       return videoDetailController.playerInit(
         autoplay: true,
         autoFullScreenFlag: true,
-      );
+      ).then((_) => _attachToSyncPlayIfShared());
     }
   }
 
   @override
   void dispose() {
+    if (plPlayerController != null &&
+        Get.isRegistered<SyncPlayService>()) {
+      Get.find<SyncPlayService>().detachPlayer(plPlayerController!);
+    }
     plPlayerController
       ?..removeStatusLister(playerListener)
       ..removePositionListener(positionListener);
@@ -399,6 +442,9 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
       ..playerStatus = plPlayerController?.playerStatus
       ..brightness = plPlayerController?.brightness.value;
     if (plPlayerController != null) {
+      if (Get.isRegistered<SyncPlayService>()) {
+        Get.find<SyncPlayService>().detachPlayer(plPlayerController!);
+      }
       videoDetailController.makeHeartBeat();
       plPlayerController!
         ..removeStatusLister(playerListener)
@@ -454,11 +500,13 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
     if (videoDetailController.autoPlay) {
       videoDetailController.playerInit(
         autoplay: videoDetailController.playerStatus?.isPlaying ?? false,
-      );
+      ).then((_) => _attachToSyncPlayIfShared());
     } else if (videoDetailController.plPlayerController.preInitPlayer &&
         !videoDetailController.isQuerying &&
         videoDetailController.videoUrl != null) {
-      videoDetailController.playerInit();
+      videoDetailController.playerInit().then((_) => _attachToSyncPlayIfShared());
+    } else {
+      _attachToSyncPlayIfShared();
     }
   }
 

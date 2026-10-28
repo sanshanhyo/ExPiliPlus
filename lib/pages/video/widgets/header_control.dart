@@ -37,6 +37,10 @@ import 'package:ex_piliplus/pages/video/introduction/ugc/widgets/menu_row.dart';
 import 'package:ex_piliplus/pages/video/widgets/header_mixin.dart';
 import 'package:ex_piliplus/pages/video/widgets/player_quick_action_editor_actions.dart';
 import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart'
+    show PlPlayerSyncPort;
+import 'package:ex_piliplus/pages/sync_play/view.dart' show SyncPlayLaunchContext;
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -445,6 +449,14 @@ class HeaderControlState extends State<HeaderControl>
         title: l10n.playerSleepTimer,
         icon: Icons.hourglass_top_outlined,
         available: true,
+      ),
+      _PlayerQuickAction(
+        id: PlayerQuickActionId.syncPlay,
+        title: l10n.syncPlayTitle,
+        icon: Icons.groups_2_outlined,
+        available: videoDetailCtr.isUgc &&
+            !isFileSource &&
+            videoDetailCtr.cid.value > 0,
       ),
       _PlayerQuickAction(
         id: PlayerQuickActionId.playbackUrl,
@@ -928,6 +940,35 @@ class HeaderControlState extends State<HeaderControl>
         shutdownTimerService.showScheduleExitDialog(
           context,
           isFullScreen: isFullScreen,
+        );
+        return;
+      case PlayerQuickActionId.syncPlay:
+        final video = SyncPlayVideoRef.fromPlayer(
+          bvid: videoDetailCtr.bvid,
+          cid: videoDetailCtr.cid.value,
+        );
+        final title = ugcIntroController.videoDetail.value.title;
+        Get.back();
+        Get.toNamed(
+          '/syncPlay',
+          arguments: SyncPlayLaunchContext(
+            video: video,
+            title: title,
+            player: PlPlayerSyncPort(plPlayerController),
+            currentVideoId: () => SyncPlayVideoRef.fromPlayer(
+              bvid: videoDetailCtr.bvid,
+              cid: videoDetailCtr.cid.value,
+            ).videoId,
+            currentPart: () {
+              final cid = videoDetailCtr.cid.value;
+              final pages = ugcIntroController.videoDetail.value.pages;
+              if (cid <= 0 || pages == null) return null;
+              for (final page in pages) {
+                if (page.cid == cid) return page.page;
+              }
+              return null;
+            },
+          ),
         );
         return;
       case PlayerQuickActionId.playbackUrl:

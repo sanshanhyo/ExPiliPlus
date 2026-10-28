@@ -105,7 +105,7 @@ class AiConclusionPanel extends CommonSlidePage {
                                               try {
                                                 Get.find<VideoDetailController>(
                                                   tag: Get.arguments['heroTag'],
-                                                ).plPlayerController.seekTo(
+                                                ).plPlayerController.seekToFromUser(
                                                   Duration(
                                                     seconds: item.timestamp!,
                                                   ),

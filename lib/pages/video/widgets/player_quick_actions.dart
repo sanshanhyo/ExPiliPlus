@@ -24,6 +24,7 @@ abstract final class PlayerQuickActionId {
   static const saveSubtitles = 'saveSubtitles';
   static const playbackInfo = 'playbackInfo';
   static const report = 'report';
+  static const syncPlay = 'syncPlay';
 }
 
 abstract final class PlayerQuickActionConfig {
@@ -31,6 +32,7 @@ abstract final class PlayerQuickActionConfig {
 
   static const defaults = <String>[
     PlayerQuickActionId.sleepTimer,
+    PlayerQuickActionId.syncPlay,
     PlayerQuickActionId.cdnSettings,
     PlayerQuickActionId.audioOnly,
   ];
@@ -41,6 +43,7 @@ abstract final class PlayerQuickActionConfig {
     PlayerQuickActionId.downloads,
     PlayerQuickActionId.saveCover,
     PlayerQuickActionId.sleepTimer,
+    PlayerQuickActionId.syncPlay,
     PlayerQuickActionId.playbackUrl,
     PlayerQuickActionId.reloadVideo,
     PlayerQuickActionId.superResolution,

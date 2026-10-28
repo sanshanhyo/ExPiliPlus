@@ -7470,6 +7470,119 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsEnableEmoteTooltipDescription => '长按或悬停表情时显示预览';
+
+  @override
+  String get syncPlayTitle => 'Bili-SyncPlay';
+
+  @override
+  String get syncPlaySettingsSubtitle => '加入房间并同步普通投稿视频';
+
+  @override
+  String get syncPlayDescription => '连接兼容 Bili-SyncPlay v5 的房间服务器，同步普通 B 站投稿视频。';
+
+  @override
+  String get syncPlayServerUrl => '同步服务器地址';
+
+  @override
+  String get syncPlayAllowedOrigin => '服务器允许的 Origin';
+
+  @override
+  String get syncPlayOriginHelp => '填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。';
+
+  @override
+  String get syncPlayNickname => '房间昵称';
+
+  @override
+  String get syncPlayDisconnected => '未连接';
+
+  @override
+  String get syncPlayConnecting => '正在连接…';
+
+  @override
+  String get syncPlayConnected => '已连接';
+
+  @override
+  String get syncPlayReconnecting => '正在重连…';
+
+  @override
+  String get syncPlayCreateRoom => '创建房间';
+
+  @override
+  String get syncPlayJoinRoom => '加入房间';
+
+  @override
+  String get syncPlayInviteCode => '邀请代码';
+
+  @override
+  String get syncPlayInviteCopied => '已复制邀请代码';
+
+  @override
+  String get syncPlayInvalidServer => '服务器地址无效；远程服务器必须使用 wss://。';
+
+  @override
+  String get syncPlayInvalidOrigin => 'Origin 必须是服务器明确允许的 http(s) 来源。';
+
+  @override
+  String get syncPlayInvalidName => '昵称需为 1–32 个字符。';
+
+  @override
+  String get syncPlayInvalidInvite => '请输入 ROOMCODE:JOIN_TOKEN 格式的邀请代码。';
+
+  @override
+  String get syncPlayConnectionFailed => '连接失败或已断开，请检查服务器地址和网络。';
+
+  @override
+  String get syncPlayOriginRejected => '服务器拒绝了此 Origin。请让服务器管理员允许你的合法网页来源。';
+
+  @override
+  String get syncPlayRoomNotFound => '找不到房间。';
+
+  @override
+  String get syncPlayInviteRejected => '邀请代码或房间成员令牌无效，请检查后重新加入。';
+
+  @override
+  String get syncPlayRateLimited => '服务器正在限制请求，请稍后再试。';
+
+  @override
+  String get syncPlayRoomFull => '房间已满。';
+
+  @override
+  String get syncPlayProtocolUnsupported => '服务器不支持当前协议版本。';
+
+  @override
+  String get syncPlayInvalidServerMessage => '服务器返回了无效消息。';
+
+  @override
+  String get syncPlayServerError => '服务器暂时无法完成此请求。';
+
+  @override
+  String syncPlayRoomCode(String code) {
+    return '房间：$code';
+  }
+
+  @override
+  String get syncPlayCopyInvite => '复制邀请';
+
+  @override
+  String get syncPlayMembers => '房间成员';
+
+  @override
+  String get syncPlayShareCurrentVideo => '分享当前视频';
+
+  @override
+  String get syncPlaySharedVideo => '房间共享视频';
+
+  @override
+  String get syncPlayOpenSharedVideo => '打开共享视频';
+
+  @override
+  String get syncPlayLeaveRoom => '离开房间';
+
+  @override
+  String get syncPlayPrivacyNote => '只向房间服务器发送公开 B 站视频标识、标题和播放状态；不会发送 B 站 Cookie、accessKey 或视频流地址。房间令牌仅保存在当前内存，离开或重启后需要重新加入。';
+
+  @override
+  String get syncPlayVideoOpenFailed => '无法解析或打开共享视频；请确认它是可访问的普通投稿视频。';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -14939,4 +15052,117 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsEnableEmoteTooltipDescription => '長按或懸停表情時顯示預覽';
+
+  @override
+  String get syncPlayTitle => 'Bili-SyncPlay';
+
+  @override
+  String get syncPlaySettingsSubtitle => '加入房間並同步一般投稿影片';
+
+  @override
+  String get syncPlayDescription => '連線至相容 Bili-SyncPlay v5 的房間伺服器，同步一般 B 站投稿影片。';
+
+  @override
+  String get syncPlayServerUrl => '同步伺服器位址';
+
+  @override
+  String get syncPlayAllowedOrigin => '伺服器允許的 Origin';
+
+  @override
+  String get syncPlayOriginHelp => '填寫伺服器明確允許的網頁來源；不要偽裝瀏覽器擴充功能身分。遠端伺服器請使用 wss://，ws:// 僅限本機 localhost。';
+
+  @override
+  String get syncPlayNickname => '房間暱稱';
+
+  @override
+  String get syncPlayDisconnected => '未連線';
+
+  @override
+  String get syncPlayConnecting => '正在連線…';
+
+  @override
+  String get syncPlayConnected => '已連線';
+
+  @override
+  String get syncPlayReconnecting => '正在重新連線…';
+
+  @override
+  String get syncPlayCreateRoom => '建立房間';
+
+  @override
+  String get syncPlayJoinRoom => '加入房間';
+
+  @override
+  String get syncPlayInviteCode => '邀請代碼';
+
+  @override
+  String get syncPlayInviteCopied => '已複製邀請代碼';
+
+  @override
+  String get syncPlayInvalidServer => '伺服器位址無效；遠端伺服器必須使用 wss://。';
+
+  @override
+  String get syncPlayInvalidOrigin => 'Origin 必須是伺服器明確允許的 http(s) 來源。';
+
+  @override
+  String get syncPlayInvalidName => '暱稱需為 1–32 個字元。';
+
+  @override
+  String get syncPlayInvalidInvite => '請輸入 ROOMCODE:JOIN_TOKEN 格式的邀請代碼。';
+
+  @override
+  String get syncPlayConnectionFailed => '連線失敗或已中斷，請檢查伺服器位址與網路。';
+
+  @override
+  String get syncPlayOriginRejected => '伺服器拒絕了此 Origin。請請伺服器管理員允許你的合法網頁來源。';
+
+  @override
+  String get syncPlayRoomNotFound => '找不到房間。';
+
+  @override
+  String get syncPlayInviteRejected => '邀請代碼或房間成員權杖無效，請檢查後重新加入。';
+
+  @override
+  String get syncPlayRateLimited => '伺服器正在限制請求，請稍後再試。';
+
+  @override
+  String get syncPlayRoomFull => '房間已滿。';
+
+  @override
+  String get syncPlayProtocolUnsupported => '伺服器不支援目前的協定版本。';
+
+  @override
+  String get syncPlayInvalidServerMessage => '伺服器傳回無效訊息。';
+
+  @override
+  String get syncPlayServerError => '伺服器暫時無法完成此請求。';
+
+  @override
+  String syncPlayRoomCode(String code) {
+    return '房間：$code';
+  }
+
+  @override
+  String get syncPlayCopyInvite => '複製邀請';
+
+  @override
+  String get syncPlayMembers => '房間成員';
+
+  @override
+  String get syncPlayShareCurrentVideo => '分享目前影片';
+
+  @override
+  String get syncPlaySharedVideo => '房間共享影片';
+
+  @override
+  String get syncPlayOpenSharedVideo => '開啟共享影片';
+
+  @override
+  String get syncPlayLeaveRoom => '離開房間';
+
+  @override
+  String get syncPlayPrivacyNote => '只向房間伺服器傳送公開 B 站影片識別碼、標題和播放狀態；不會傳送 B 站 Cookie、accessKey 或影片串流網址。房間權杖僅保存在目前記憶體中，離開或重新啟動後需要重新加入。';
+
+  @override
+  String get syncPlayVideoOpenFailed => '無法解析或開啟共享影片；請確認它是可存取的一般投稿影片。';
 }

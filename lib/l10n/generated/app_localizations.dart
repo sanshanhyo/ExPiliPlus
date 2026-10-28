@@ -13491,6 +13491,228 @@ class _AppLocalizationsDelegate
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
+
+  /// No description provided for @syncPlayTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'Bili-SyncPlay'**
+  String get syncPlayTitle;
+
+  /// No description provided for @syncPlaySettingsSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入房间并同步普通投稿视频'**
+  String get syncPlaySettingsSubtitle;
+
+  /// No description provided for @syncPlayDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接兼容 Bili-SyncPlay v5 的房间服务器，同步普通 B 站投稿视频。'**
+  String get syncPlayDescription;
+
+  /// No description provided for @syncPlayServerUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'同步服务器地址'**
+  String get syncPlayServerUrl;
+
+  /// No description provided for @syncPlayAllowedOrigin.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器允许的 Origin'**
+  String get syncPlayAllowedOrigin;
+
+  /// No description provided for @syncPlayOriginHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。'**
+  String get syncPlayOriginHelp;
+
+  /// No description provided for @syncPlayNickname.
+  ///
+  /// In zh, this message translates to:
+  /// **'房间昵称'**
+  String get syncPlayNickname;
+
+  /// No description provided for @syncPlayDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'未连接'**
+  String get syncPlayDisconnected;
+
+  /// No description provided for @syncPlayConnecting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在连接…'**
+  String get syncPlayConnecting;
+
+  /// No description provided for @syncPlayConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接'**
+  String get syncPlayConnected;
+
+  /// No description provided for @syncPlayReconnecting.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在重连…'**
+  String get syncPlayReconnecting;
+
+  /// No description provided for @syncPlayCreateRoom.
+  ///
+  /// In zh, this message translates to:
+  /// **'创建房间'**
+  String get syncPlayCreateRoom;
+
+  /// No description provided for @syncPlayJoinRoom.
+  ///
+  /// In zh, this message translates to:
+  /// **'加入房间'**
+  String get syncPlayJoinRoom;
+
+  /// No description provided for @syncPlayInviteCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'邀请代码'**
+  String get syncPlayInviteCode;
+
+  /// No description provided for @syncPlayInviteCopied.
+  ///
+  /// In zh, this message translates to:
+  /// **'已复制邀请代码'**
+  String get syncPlayInviteCopied;
+
+  /// No description provided for @syncPlayInvalidServer.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器地址无效；远程服务器必须使用 wss://。'**
+  String get syncPlayInvalidServer;
+
+  /// No description provided for @syncPlayInvalidOrigin.
+  ///
+  /// In zh, this message translates to:
+  /// **'Origin 必须是服务器明确允许的 http(s) 来源。'**
+  String get syncPlayInvalidOrigin;
+
+  /// No description provided for @syncPlayInvalidName.
+  ///
+  /// In zh, this message translates to:
+  /// **'昵称需为 1–32 个字符。'**
+  String get syncPlayInvalidName;
+
+  /// No description provided for @syncPlayInvalidInvite.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入 ROOMCODE:JOIN_TOKEN 格式的邀请代码。'**
+  String get syncPlayInvalidInvite;
+
+  /// No description provided for @syncPlayConnectionFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'连接失败或已断开，请检查服务器地址和网络。'**
+  String get syncPlayConnectionFailed;
+
+  /// No description provided for @syncPlayOriginRejected.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器拒绝了此 Origin。请让服务器管理员允许你的合法网页来源。'**
+  String get syncPlayOriginRejected;
+
+  /// No description provided for @syncPlayRoomNotFound.
+  ///
+  /// In zh, this message translates to:
+  /// **'找不到房间。'**
+  String get syncPlayRoomNotFound;
+
+  /// No description provided for @syncPlayInviteRejected.
+  ///
+  /// In zh, this message translates to:
+  /// **'邀请代码或房间成员令牌无效，请检查后重新加入。'**
+  String get syncPlayInviteRejected;
+
+  /// No description provided for @syncPlayRateLimited.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器正在限制请求，请稍后再试。'**
+  String get syncPlayRateLimited;
+
+  /// No description provided for @syncPlayRoomFull.
+  ///
+  /// In zh, this message translates to:
+  /// **'房间已满。'**
+  String get syncPlayRoomFull;
+
+  /// No description provided for @syncPlayProtocolUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器不支持当前协议版本。'**
+  String get syncPlayProtocolUnsupported;
+
+  /// No description provided for @syncPlayInvalidServerMessage.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器返回了无效消息。'**
+  String get syncPlayInvalidServerMessage;
+
+  /// No description provided for @syncPlayServerError.
+  ///
+  /// In zh, this message translates to:
+  /// **'服务器暂时无法完成此请求。'**
+  String get syncPlayServerError;
+
+  /// No description provided for @syncPlayRoomCode.
+  ///
+  /// In zh, this message translates to:
+  /// **'房间：{code}'**
+  String syncPlayRoomCode(String code);
+
+  /// No description provided for @syncPlayCopyInvite.
+  ///
+  /// In zh, this message translates to:
+  /// **'复制邀请'**
+  String get syncPlayCopyInvite;
+
+  /// No description provided for @syncPlayMembers.
+  ///
+  /// In zh, this message translates to:
+  /// **'房间成员'**
+  String get syncPlayMembers;
+
+  /// No description provided for @syncPlayShareCurrentVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'分享当前视频'**
+  String get syncPlayShareCurrentVideo;
+
+  /// No description provided for @syncPlaySharedVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'房间共享视频'**
+  String get syncPlaySharedVideo;
+
+  /// No description provided for @syncPlayOpenSharedVideo.
+  ///
+  /// In zh, this message translates to:
+  /// **'打开共享视频'**
+  String get syncPlayOpenSharedVideo;
+
+  /// No description provided for @syncPlayLeaveRoom.
+  ///
+  /// In zh, this message translates to:
+  /// **'离开房间'**
+  String get syncPlayLeaveRoom;
+
+  /// No description provided for @syncPlayPrivacyNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'只向房间服务器发送公开 B 站视频标识、标题和播放状态；不会发送 B 站 Cookie、accessKey 或视频流地址。房间令牌仅保存在当前内存，离开或重启后需要重新加入。'**
+  String get syncPlayPrivacyNote;
+
+  /// No description provided for @syncPlayVideoOpenFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'无法解析或打开共享视频；请确认它是可访问的普通投稿视频。'**
+  String get syncPlayVideoOpenFailed;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {

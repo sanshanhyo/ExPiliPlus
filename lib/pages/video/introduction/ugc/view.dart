@@ -675,7 +675,7 @@ class _UgcIntroPanelState extends State<UgcIntroPanel> {
                         try {
                           Get.find<VideoDetailController>(
                             tag: widget.heroTag,
-                          ).plPlayerController.seekTo(
+                          ).plPlayerController.seekToFromUser(
                             Duration(
                               seconds: DurationUtils.parseDuration(matchStr),
                             ),

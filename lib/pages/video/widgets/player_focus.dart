@@ -87,6 +87,10 @@ class PlayerFocus extends StatelessWidget {
     }
   }
 
+  void _setPlaybackSpeed(double speed) {
+    unawaited(plPlayerController.setPlaybackSpeedFromUser(speed));
+  }
+
   bool _handleKey(KeyEvent event, BuildContext context) {
     final key = event.logicalKey;
 
@@ -155,7 +159,7 @@ class PlayerFocus extends StatelessWidget {
         if (HardwareKeyboard.instance.isShiftPressed && hasPlayer) {
           final speed = isDigit1 ? 1.0 : 2.0;
           if (speed != plPlayerController.playbackSpeed) {
-            plPlayerController.setPlaybackSpeed(speed);
+            _setPlaybackSpeed(speed);
           }
           SmartDialog.showToast(
             Get.context!.l10n.playerSpeedActive(speed.toString()),
@@ -168,7 +172,7 @@ class PlayerFocus extends StatelessWidget {
         case LogicalKeyboardKey.space:
           if (plPlayerController.isLive || canPlay!()) {
             if (hasPlayer) {
-              plPlayerController.onDoubleTapCenter();
+              unawaited(plPlayerController.onDoubleTapCenter());
             }
           }
           return true;
@@ -251,7 +255,7 @@ class PlayerFocus extends StatelessWidget {
           if (HardwareKeyboard.instance.isShiftPressed && hasPlayer) {
             final speed = isDigit1 ? 1.0 : 2.0;
             if (speed != plPlayerController.playbackSpeed) {
-              plPlayerController.setPlaybackSpeed(speed);
+              _setPlaybackSpeed(speed);
             }
             SmartDialog.showToast(context.l10n.playerSpeedActive('$speed'));
           }

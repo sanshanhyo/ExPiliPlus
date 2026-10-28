@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ex_piliplus/common/widgets/progress_bar/audio_video_progress_bar.dart';
 import 'package:ex_piliplus/common/widgets/progress_bar/segment_progress_bar.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
@@ -40,8 +42,11 @@ class BottomControl extends StatelessWidget {
   void onSeek(int milliseconds) {
     controller
       ..position.value = milliseconds ~/ 1000
-      ..onSeekEnd()
-      ..seekTo(Duration(milliseconds: milliseconds), isSeek: false);
+      ..onSeekEnd();
+    unawaited(controller.seekToFromUser(
+      Duration(milliseconds: milliseconds),
+      isSeek: false,
+    ));
   }
 
   @override
@@ -103,8 +108,12 @@ class BottomControl extends StatelessWidget {
                         child: ViewPointSegmentProgressBar(
                           segments: videoDetailController.viewPointList,
                           onSeek: PlatformUtils.isDesktop
-                              ? (position) =>
-                                    controller.seekTo(position, isSeek: false)
+                              ? (position) {
+                                  unawaited(controller.seekToFromUser(
+                                    position,
+                                    isSeek: false,
+                                  ));
+                                }
                               : null,
                         ),
                       ),

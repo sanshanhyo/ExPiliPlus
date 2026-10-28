@@ -53,6 +53,7 @@ import 'package:ex_piliplus/pages/root/view.dart';
 import 'package:ex_piliplus/pages/search/view.dart';
 import 'package:ex_piliplus/pages/search_result/view.dart';
 import 'package:ex_piliplus/pages/search_trending/view.dart';
+import 'package:ex_piliplus/pages/sync_play/view.dart';
 import 'package:ex_piliplus/pages/setting/pages/bar_set.dart';
 import 'package:ex_piliplus/pages/setting/pages/color_select.dart';
 import 'package:ex_piliplus/pages/setting/pages/display_mode.dart';
@@ -84,6 +85,7 @@ class Routes {
     GetPage(name: '/hot', page: () => const HotPage()),
     // 视频详情
     GetPage(name: '/videoV', page: () => const VideoDetailPageV()),
+    GetPage(name: '/syncPlay', page: () => const SyncPlayPage()),
     //
     GetPage(name: '/webview', page: () => const WebviewPage()),
     // 设置

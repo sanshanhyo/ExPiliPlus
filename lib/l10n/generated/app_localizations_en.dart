@@ -7715,4 +7715,117 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsEnableEmoteTooltipDescription =>
       'Show an emote preview on long press or hover';
+
+  @override
+  String get syncPlayTitle => 'Bili-SyncPlay';
+
+  @override
+  String get syncPlaySettingsSubtitle => 'Create or join a room to sync a public UGC video';
+
+  @override
+  String get syncPlayDescription => 'Sync ordinary Bilibili UGC videos with a Bili-SyncPlay v5 compatible room server.';
+
+  @override
+  String get syncPlayServerUrl => 'Sync server URL';
+
+  @override
+  String get syncPlayAllowedOrigin => 'Server-allowed Origin';
+
+  @override
+  String get syncPlayOriginHelp => 'Enter a web origin that the server operator has explicitly allowed. Do not impersonate an extension. Use wss:// for remote servers; ws:// is limited to localhost.';
+
+  @override
+  String get syncPlayNickname => 'Room nickname';
+
+  @override
+  String get syncPlayDisconnected => 'Disconnected';
+
+  @override
+  String get syncPlayConnecting => 'Connecting…';
+
+  @override
+  String get syncPlayConnected => 'Connected';
+
+  @override
+  String get syncPlayReconnecting => 'Reconnecting…';
+
+  @override
+  String get syncPlayCreateRoom => 'Create room';
+
+  @override
+  String get syncPlayJoinRoom => 'Join room';
+
+  @override
+  String get syncPlayInviteCode => 'Invite code';
+
+  @override
+  String get syncPlayInviteCopied => 'Invite copied';
+
+  @override
+  String get syncPlayInvalidServer => 'Enter a valid server URL. Remote servers must use wss://.';
+
+  @override
+  String get syncPlayInvalidOrigin => 'Origin must be an http(s) origin explicitly allowed by the server.';
+
+  @override
+  String get syncPlayInvalidName => 'Enter a nickname of 1–32 characters.';
+
+  @override
+  String get syncPlayInvalidInvite => 'Enter an invite as ROOMCODE:JOIN_TOKEN.';
+
+  @override
+  String get syncPlayConnectionFailed => 'Could not connect, or the connection was lost. Check the server URL and network.';
+
+  @override
+  String get syncPlayOriginRejected => 'The server rejected this Origin. Ask its operator to allow your legitimate web origin.';
+
+  @override
+  String get syncPlayRoomNotFound => 'Room not found.';
+
+  @override
+  String get syncPlayInviteRejected => 'The invite or room membership token was rejected. Check the invite and try joining again.';
+
+  @override
+  String get syncPlayRateLimited => 'The server is rate limiting requests. Wait before trying again.';
+
+  @override
+  String get syncPlayRoomFull => 'This room is full.';
+
+  @override
+  String get syncPlayProtocolUnsupported => 'The server does not support this protocol version.';
+
+  @override
+  String get syncPlayInvalidServerMessage => 'The server sent an invalid message.';
+
+  @override
+  String get syncPlayServerError => 'The server could not complete this request.';
+
+  @override
+  String syncPlayRoomCode(String code) {
+    return 'Room: $code';
+  }
+
+  @override
+  String get syncPlayCopyInvite => 'Copy invite';
+
+  @override
+  String get syncPlayMembers => 'Members';
+
+  @override
+  String get syncPlayShareCurrentVideo => 'Share current video';
+
+  @override
+  String get syncPlaySharedVideo => 'Shared room video';
+
+  @override
+  String get syncPlayOpenSharedVideo => 'Open shared video';
+
+  @override
+  String get syncPlayLeaveRoom => 'Leave room';
+
+  @override
+  String get syncPlayPrivacyNote => 'Only the public Bilibili video ID, title, and playback state are sent to the room server. Bilibili cookies, access keys, and media stream URLs are never sent. Room tokens stay in memory; rejoin after leaving or restarting the app.';
+
+  @override
+  String get syncPlayVideoOpenFailed => 'Could not resolve or open that shared video. It may not be an accessible ordinary UGC video.';
 }

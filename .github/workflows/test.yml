@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/bili-syncplay
   pull_request:
     branches:
       - main
@@ -38,6 +39,9 @@ jobs:
       - name: Generate localizations
         run: flutter gen-l10n
 
+      - name: Format generated localizations
+        run: dart format lib/l10n/generated
+
       - name: Check generated localizations
         run: git diff --exit-code -- lib/l10n/generated
 
@@ -55,5 +59,22 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y pkg-config libgtk-3-dev libx11-dev libxi-dev
 
+      - name: Prepare licensed CJK font for rendered test captures
+        run: |
+          mkdir -p build/test-fonts
+          curl --fail --location --retry 2 --connect-timeout 15 --max-time 90 \
+            https://raw.githubusercontent.com/adobe-fonts/source-han-serif/2.003R/SubsetOTF/CN/SourceHanSerifCN-Regular.otf \
+            --output build/test-fonts/SourceHanSerifCN-Regular.otf
+          echo '3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d  build/test-fonts/SourceHanSerifCN-Regular.otf' | sha256sum --check -
+
       - name: Test
         run: flutter test --no-pub
+
+      - name: Upload rendered SyncPlay UI captures
+        if: always() && github.ref == 'refs/heads/feat/bili-syncplay'
+        uses: actions/upload-artifact@v7
+        with:
+          name: syncplay-rendered-ui-${{ github.run_id }}
+          path: build/test-artifacts/syncplay/
+          if-no-files-found: warn
+          retention-days: 14
