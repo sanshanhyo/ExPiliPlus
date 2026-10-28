@@ -121,6 +121,8 @@ const _settings = SyncPlayConnectionSettings(
 Future<void> _flush() => Future<void>.delayed(Duration.zero);
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('SyncPlay connection configuration', () {
     test('requires secure remote servers and an explicit web Origin', () {
       expect(
