@@ -13474,24 +13474,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'长按或悬停表情时显示预览'**
   String get settingsEnableEmoteTooltipDescription;
-}
-
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
-  const _AppLocalizationsDelegate();
-
-  @override
-  Future<AppLocalizations> load(Locale locale) {
-    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
-  }
-
-  @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'zh'].contains(locale.languageCode);
-
-  @override
-  bool shouldReload(_AppLocalizationsDelegate old) => false;
-
   /// No description provided for @syncPlayTitle.
   ///
   /// In zh, this message translates to:
@@ -13713,6 +13695,23 @@ class _AppLocalizationsDelegate
   /// In zh, this message translates to:
   /// **'无法解析或打开共享视频；请确认它是可访问的普通投稿视频。'**
   String get syncPlayVideoOpenFailed;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'zh'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {

@@ -7478,7 +7478,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlaySettingsSubtitle => '加入房间并同步普通投稿视频';
 
   @override
-  String get syncPlayDescription => '连接兼容 Bili-SyncPlay v5 的房间服务器，同步普通 B 站投稿视频。';
+  String get syncPlayDescription =>
+      '连接兼容 Bili-SyncPlay v5 的房间服务器，同步普通 B 站投稿视频。';
 
   @override
   String get syncPlayServerUrl => '同步服务器地址';
@@ -7487,7 +7488,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayAllowedOrigin => '服务器允许的 Origin';
 
   @override
-  String get syncPlayOriginHelp => '填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。';
+  String get syncPlayOriginHelp =>
+      '填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。';
 
   @override
   String get syncPlayNickname => '房间昵称';
@@ -7579,7 +7581,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayLeaveRoom => '离开房间';
 
   @override
-  String get syncPlayPrivacyNote => '只向房间服务器发送公开 B 站视频标识、标题和播放状态；不会发送 B 站 Cookie、accessKey 或视频流地址。房间令牌仅保存在当前内存，离开或重启后需要重新加入。';
+  String get syncPlayPrivacyNote =>
+      '只向房间服务器发送公开 B 站视频标识、标题和播放状态；不会发送 B 站 Cookie、accessKey 或视频流地址。房间令牌仅保存在当前内存，离开或重启后需要重新加入。';
 
   @override
   String get syncPlayVideoOpenFailed => '无法解析或打开共享视频；请确认它是可访问的普通投稿视频。';
@@ -15060,7 +15063,8 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get syncPlaySettingsSubtitle => '加入房間並同步一般投稿影片';
 
   @override
-  String get syncPlayDescription => '連線至相容 Bili-SyncPlay v5 的房間伺服器，同步一般 B 站投稿影片。';
+  String get syncPlayDescription =>
+      '連線至相容 Bili-SyncPlay v5 的房間伺服器，同步一般 B 站投稿影片。';
 
   @override
   String get syncPlayServerUrl => '同步伺服器位址';
@@ -15069,7 +15073,8 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get syncPlayAllowedOrigin => '伺服器允許的 Origin';
 
   @override
-  String get syncPlayOriginHelp => '填寫伺服器明確允許的網頁來源；不要偽裝瀏覽器擴充功能身分。遠端伺服器請使用 wss://，ws:// 僅限本機 localhost。';
+  String get syncPlayOriginHelp =>
+      '填寫伺服器明確允許的網頁來源；不要偽裝瀏覽器擴充功能身分。遠端伺服器請使用 wss://，ws:// 僅限本機 localhost。';
 
   @override
   String get syncPlayNickname => '房間暱稱';
@@ -15161,7 +15166,8 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get syncPlayLeaveRoom => '離開房間';
 
   @override
-  String get syncPlayPrivacyNote => '只向房間伺服器傳送公開 B 站影片識別碼、標題和播放狀態；不會傳送 B 站 Cookie、accessKey 或影片串流網址。房間權杖僅保存在目前記憶體中，離開或重新啟動後需要重新加入。';
+  String get syncPlayPrivacyNote =>
+      '只向房間伺服器傳送公開 B 站影片識別碼、標題和播放狀態；不會傳送 B 站 Cookie、accessKey 或影片串流網址。房間權杖僅保存在目前記憶體中，離開或重新啟動後需要重新加入。';
 
   @override
   String get syncPlayVideoOpenFailed => '無法解析或開啟共享影片；請確認它是可存取的一般投稿影片。';
