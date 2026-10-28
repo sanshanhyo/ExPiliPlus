@@ -212,7 +212,7 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
     }
     await _resetConnection(clearCredentials: true);
     settings = parsed;
-    _pendingInvite = invite;
+    _pendingInvite = invite.invite;
     _createOnConnect = false;
     lastErrorCode = null;
     status = SyncPlayConnectionStatus.connecting;
@@ -489,8 +489,6 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
     final attempt = _reconnectAttempt++;
     _reconnectTimer = Timer(_reconnectDelay(attempt), _openSocket);
   }
-
-  Duration _monotonicNow() => _watch.elapsed;
 
   int estimatedRemotePositionMs() {
     final playback = room?.playback;
