@@ -199,8 +199,18 @@ void main() {
     expect(find.text('仅用于截图的合成视频标题'), findsOneWidget);
     expect(find.textContaining('render-only-token'), findsOneWidget);
     await _saveCapture(tester, 'active-room-dark-zh.png');
-    await service.leaveRoom().timeout(const Duration(seconds: 5));
-    service.dispose();
-    Get.reset();
+    try {
+      await tester.runAsync(
+        service.leaveRoom,
+      ).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => throw TimeoutException(
+          'SyncPlay leaveRoom did not finish during render-test cleanup',
+        ),
+      );
+    } finally {
+      service.dispose();
+      Get.reset();
+    }
   }, timeout: const Timeout(Duration(minutes: 3)));
 }
