@@ -418,6 +418,12 @@ void main() {
           );
           expect(testWakelockPlatform.isEnabled, isTrue);
 
+          // The pinned upstream protects a member's fresh playback update for
+          // 1.2 seconds so another client does not echo that state back as a
+          // competing control action. Test the guest's independent pause
+          // after this documented authority window has naturally expired.
+          await Future<void>.delayed(const Duration(milliseconds: 1500));
+
           await controller.onDoubleTapCenter();
           await _waitUntil(
             'production player pause action reaches the native player',
