@@ -25,6 +25,9 @@ import 'package:material_ui/material_ui.dart' as mui;
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart' as media_video;
 import 'package:path/path.dart' as path;
+import 'package:wakelock_plus/wakelock_plus.dart'
+    show wakelockPlusPlatformInstance;
+import 'package:wakelock_plus_platform_interface/wakelock_plus_platform_interface.dart';
 import 'package:web_socket_channel/io.dart';
 
 const _upstreamRevision = 'f9258d976570492a1d1e2c469d3da90a8cfade96';
@@ -48,6 +51,19 @@ class _ChannelSocket implements SyncPlaySocket {
 
   @override
   Future<void> close() async => channel.sink.close();
+}
+
+class _TestWakelockPlatform extends WakelockPlusPlatformInterface {
+  bool _enabled = false;
+  bool get isEnabled => _enabled;
+
+  @override
+  Future<void> toggle({required bool enable}) async {
+    _enabled = enable;
+  }
+
+  @override
+  Future<bool> get enabled async => _enabled;
 }
 
 class _IdleOwnerPlayer implements SyncPlayPlayerPort {
@@ -218,6 +234,11 @@ void main() {
       });
       Get.testMode = true;
       SmartDialog.config.toast = SmartConfigToast(displayType: .onlyRefresh);
+      final originalWakelockPlatform = wakelockPlusPlatformInstance;
+      final testWakelockPlatform = _TestWakelockPlatform();
+      // Linux CI runs without a desktop portal service. Keep the player and
+      // libmpv native; isolate only the unrelated OS screen-awake capability.
+      wakelockPlusPlatformInstance = testWakelockPlatform;
 
       // The production player can report native initialization events as soon
       // as its listeners attach. Mount the same SmartDialog hooks as the app
@@ -395,6 +416,7 @@ void main() {
                 (nativePlayer.state.rate - 1.25).abs() < 0.01 &&
                 nativePlayer.state.position >= const Duration(seconds: 4),
           );
+          expect(testWakelockPlatform.isEnabled, isTrue);
 
           await controller.onDoubleTapCenter();
           await _waitUntil(
@@ -499,6 +521,7 @@ void main() {
         owner.dispose();
         Get.reset();
         controller.dispose();
+        wakelockPlusPlatformInstance = originalWakelockPlatform;
         trustedClient.close(force: true);
         await tester.runAsync(() async {
           await Future<void>.delayed(const Duration(milliseconds: 300));
