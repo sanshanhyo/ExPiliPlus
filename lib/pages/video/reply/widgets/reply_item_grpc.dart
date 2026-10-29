@@ -933,7 +933,7 @@ class ReplyItemGrpc extends StatelessWidget {
                           );
                           Get.find<VideoDetailController>(
                             tag: Get.arguments['heroTag'],
-                          ).plPlayerController.seekTo(
+                          ).plPlayerController.seekToFromUser(
                             Duration(
                               seconds: DurationUtils.parseDuration(matchStr),
                             ),

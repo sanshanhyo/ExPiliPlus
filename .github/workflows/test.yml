@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
+      - feat/bili-syncplay
       - feat/comment-plus-one
+      - integration/pr4-pr5
   pull_request:
     branches:
       - main
@@ -18,6 +20,7 @@ jobs:
   quality:
     name: Flutter analyze and test
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -39,12 +42,11 @@ jobs:
       - name: Generate localizations
         run: flutter gen-l10n
 
+      - name: Format generated localizations
+        run: dart format lib/l10n/generated
+
       - name: Check generated localizations
-        run: |
-          if ! git diff --exit-code -- lib/l10n/generated; then
-            git diff -- lib/l10n/generated
-            exit 1
-          fi
+        run: git diff --exit-code -- lib/l10n/generated
 
       - name: Check diff whitespace
         run: git diff --check
@@ -59,6 +61,29 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y pkg-config libgtk-3-dev libx11-dev libxi-dev
+          if [[ "$GITHUB_REF" == "refs/heads/feat/bili-syncplay" || "$GITHUB_REF" == "refs/heads/integration/pr4-pr5" ]]; then
+            sudo apt-get install --no-install-recommends -y \
+              clang cmake ninja-build libglu1-mesa \
+              libayatana-appindicator3-dev webkit2gtk-4.1 libasound2-dev \
+              libmpv-dev xvfb ffmpeg
+            flutter config --enable-linux-desktop
+          fi
+
+      - name: Generate local silent media_kit fixture
+        if: (github.ref == 'refs/heads/feat/bili-syncplay' || github.ref == 'refs/heads/integration/pr4-pr5')
+        run: |
+          mkdir -p build/test-fixtures/syncplay/video
+          ffmpeg -hide_banner -loglevel error -y \
+            -f lavfi -i 'testsrc2=size=640x360:rate=24' \
+            -t 16 -an -c:v libx264 -preset ultrafast -g 24 \
+            -pix_fmt yuv420p -movflags +faststart \
+            build/test-fixtures/syncplay/video/0.mp4
+          ffprobe -v error -select_streams v:0 \
+            -show_entries stream=codec_name,width,height,avg_frame_rate \
+            -show_entries format=duration -of json \
+            build/test-fixtures/syncplay/video/0.mp4
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 build/test-fixtures/syncplay/video/0.mp4)" = h264
+          test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 build/test-fixtures/syncplay/video/0.mp4)" = ''
 
       - name: Prepare licensed CJK font for rendered test captures
         run: |
@@ -71,8 +96,106 @@ jobs:
       - name: Test
         run: flutter test --no-pub
 
+      - name: Checkout pinned Bili-SyncPlay server for Dart integration
+        if: (github.ref == 'refs/heads/feat/bili-syncplay' || github.ref == 'refs/heads/integration/pr4-pr5')
+        uses: actions/checkout@v7
+        with:
+          repository: sky1wu/Bili-SyncPlay
+          ref: f9258d976570492a1d1e2c469d3da90a8cfade96
+          path: build/bili-syncplay-upstream
+
+      - name: Setup Node for pinned SyncPlay server
+        if: (github.ref == 'refs/heads/feat/bili-syncplay' || github.ref == 'refs/heads/integration/pr4-pr5')
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22.22.0
+          cache: npm
+          cache-dependency-path: build/bili-syncplay-upstream/package-lock.json
+
+      - name: Build pinned SyncPlay protocol and server
+        if: (github.ref == 'refs/heads/feat/bili-syncplay' || github.ref == 'refs/heads/integration/pr4-pr5')
+        working-directory: build/bili-syncplay-upstream
+        run: |
+          npm ci
+          npm run build -w @bili-syncplay/protocol
+          npm run build -w @bili-syncplay/server
+
+      - name: Test production Dart SyncPlay services against pinned server
+        if: (github.ref == 'refs/heads/feat/bili-syncplay' || github.ref == 'refs/heads/integration/pr4-pr5')
+        env:
+          SYNCPLAY_UPSTREAM_SERVER_ROOT: ${{ github.workspace }}/build/bili-syncplay-upstream/server
+          SYNCPLAY_UPSTREAM_REVISION: f9258d976570492a1d1e2c469d3da90a8cfade96
+          SYNCPLAY_TEST_SERVER_PORT_FILE: ${{ runner.temp }}/syncplay-integration.port
+          SYNCPLAY_TEST_TLS_PORT_FILE: ${{ runner.temp }}/syncplay-integration-tls.port
+          SYNCPLAY_TEST_TLS_KEY_FILE: ${{ runner.temp }}/syncplay-integration-tls.key
+          SYNCPLAY_TEST_TLS_CERT_FILE: ${{ runner.temp }}/syncplay-integration-tls.pem
+          SYNCPLAY_TEST_TLS_CERT_DER_FILE: ${{ runner.temp }}/syncplay-integration-tls.der
+          SYNCPLAY_MEDIA_FIXTURE: ${{ github.workspace }}/build/test-fixtures/syncplay/video/0.mp4
+        run: |
+          set -euo pipefail
+          rm -f "$SYNCPLAY_TEST_SERVER_PORT_FILE"
+          rm -f "$SYNCPLAY_TEST_TLS_PORT_FILE"
+          openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 1 \
+            -keyout "$SYNCPLAY_TEST_TLS_KEY_FILE" \
+            -out "$SYNCPLAY_TEST_TLS_CERT_FILE" \
+            -subj '/CN=127.0.0.1' \
+            -addext 'subjectAltName=IP:127.0.0.1'
+          openssl x509 -in "$SYNCPLAY_TEST_TLS_CERT_FILE" -outform DER \
+            -out "$SYNCPLAY_TEST_TLS_CERT_DER_FILE"
+          export SYNCPLAY_TEST_TLS_CERT_SHA256="$(sha256sum "$SYNCPLAY_TEST_TLS_CERT_DER_FILE" | cut -d ' ' -f1)"
+          server_log="$RUNNER_TEMP/syncplay-upstream-server.log"
+          node .github/scripts/start_syncplay_upstream_test_server.mjs >"$server_log" 2>&1 &
+          server_pid=$!
+          cleanup() {
+            local result=$?
+            local server_result=0
+            trap - EXIT
+            if kill -0 "$server_pid" 2>/dev/null; then
+              kill -TERM "$server_pid" 2>/dev/null || true
+            fi
+            wait "$server_pid" 2>/dev/null || server_result=$?
+            cat "$server_log"
+            if [[ "$result" -eq 0 && "$server_result" -ne 0 ]]; then
+              result=$server_result
+            fi
+            return "$result"
+          }
+          trap cleanup EXIT
+          for attempt in $(seq 1 120); do
+            if [[ -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" && -s "$SYNCPLAY_TEST_TLS_PORT_FILE" ]]; then
+              break
+            fi
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              echo 'Pinned SyncPlay server exited before readiness.'
+              cat "$server_log"
+              exit 1
+            fi
+            sleep 0.25
+          done
+          if [[ ! -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" || ! -s "$SYNCPLAY_TEST_TLS_PORT_FILE" ]]; then
+            echo 'Timed out waiting for the loopback SyncPlay WS and TLS listeners.'
+            cat "$server_log"
+            exit 1
+          fi
+          export SYNCPLAY_TEST_SERVER_PORT="$(cat "$SYNCPLAY_TEST_SERVER_PORT_FILE")"
+          export SYNCPLAY_TEST_TLS_PORT="$(cat "$SYNCPLAY_TEST_TLS_PORT_FILE")"
+          flutter test --no-pub test/features/sync_play/sync_play_upstream_integration_test.dart
+          xvfb-run -a -s '-screen 0 1280x800x24' \
+            flutter test --no-pub \
+              integration_test/syncplay_media_kit_linux_test.dart \
+              -d linux --reporter expanded
+
+      - name: Upload rendered SyncPlay UI captures
+        if: always() && (github.ref == 'refs/heads/feat/bili-syncplay' || github.ref == 'refs/heads/integration/pr4-pr5')
+        uses: actions/upload-artifact@v7
+        with:
+          name: syncplay-rendered-ui-${{ github.run_id }}
+          path: build/test-artifacts/syncplay/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Upload rendered comment +1 UI captures
-        if: always() && github.ref == 'refs/heads/feat/comment-plus-one'
+        if: always() && (github.ref == 'refs/heads/feat/comment-plus-one' || github.ref == 'refs/heads/integration/pr4-pr5')
         uses: actions/upload-artifact@v7
         with:
           name: comment-plus-one-rendered-${{ github.run_id }}

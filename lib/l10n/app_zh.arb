@@ -319,9 +319,21 @@
   "settingsEnablePermanentDynamicBlockDescription": "开启后，可将指定 UP 加入永久动态屏蔽名单",
   "settingsDynamicBlockedUpList": "动态屏蔽 UP 名单",
   "settingsDynamicBlockedUpCount": "{count} 位 UP",
-  "@settingsDynamicBlockedUpCount": {"placeholders": {"count": {"type": "int"}}},
+  "@settingsDynamicBlockedUpCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "settingsDefaultValue": "默认值：{value}",
-  "@settingsDefaultValue": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsDefaultValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "commonDisabled": "禁用",
   "commonUnavailable": "不可用",
   "commonDeleted": "已删除",
@@ -329,9 +341,21 @@
   "commonDeleting": "正在删除…",
   "commonDeleteSucceeded": "删除成功",
   "commonDeleteFailed": "删除失败：{error}",
-  "@commonDeleteFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@commonDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "commonLoadFailed": "加载失败：{error}",
-  "@commonLoadFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@commonLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "commonReport": "举报",
   "commonFormat": "格式",
   "commonPin": "置顶",
@@ -365,7 +389,13 @@
   "commonSubmitting": "正在提交…",
   "commonSubmitSucceeded": "提交成功",
   "commonSubmitFailed": "提交失败：{error}",
-  "@commonSubmitFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@commonSubmitFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "commonSucceeded": "成功",
   "commonUndo": "撤销",
   "commonUnknown": "未知",
@@ -399,7 +429,13 @@
   "commonMostViewed": "最多播放",
   "downloadHighestQuality": "最高画质",
   "downloadCurrentNetwork": "当前网络：{network}",
-  "@downloadCurrentNetwork": {"placeholders": {"network": {"type": "String"}}},
+  "@downloadCurrentNetwork": {
+    "placeholders": {
+      "network": {
+        "type": "String"
+      }
+    }
+  },
   "downloadCacheAll": "缓存全部",
   "downloadConfirmCacheAll": "确定缓存全部？",
   "downloadViewCached": "查看缓存",
@@ -413,7 +449,16 @@
   "memberSpecialFollow": "特别关注",
   "memberFollow": "关注",
   "memberFollowersAndVideos": "{followers} 粉丝 · {videos} 个视频",
-  "@memberFollowersAndVideos": {"placeholders": {"followers": {"type": "String"}, "videos": {"type": "String"}}},
+  "@memberFollowersAndVideos": {
+    "placeholders": {
+      "followers": {
+        "type": "String"
+      },
+      "videos": {
+        "type": "String"
+      }
+    }
+  },
   "memberEditProfile": "编辑资料",
   "memberViewProfile": "查看主页",
   "playerSuperResolutionEfficiency": "效率",
@@ -446,32 +491,104 @@
   "playerCdnBaseUrl": "主线路",
   "playerCdnBackupUrl": "备用线路",
   "playerCdnAlibaba": "阿里云（{name}）",
-  "@playerCdnAlibaba": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnAlibaba": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnTencent": "腾讯云（{name}）",
-  "@playerCdnTencent": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnTencent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnTencentVod": "腾讯 VOD（{name}）",
-  "@playerCdnTencentVod": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnTencentVod": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnHuaweiFusion": "华为融合（{name}）",
-  "@playerCdnHuaweiFusion": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnHuaweiFusion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnHuawei": "华为云（{name}）",
-  "@playerCdnHuawei": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnHuawei": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnAkamaiInternational": "Akamai 国际（{name}）",
-  "@playerCdnAkamaiInternational": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnAkamaiInternational": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnAlibabaInternational": "阿里云国际（{name}）",
-  "@playerCdnAlibabaInternational": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnAlibabaInternational": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnTencentInternational": "腾讯云国际（{name}）",
-  "@playerCdnTencentInternational": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnTencentInternational": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnHuaweiInternational": "华为云国际（{name}）",
-  "@playerCdnHuaweiInternational": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnHuaweiInternational": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnBilibiliInternational": "哔哩哔哩国际（{name}）",
-  "@playerCdnBilibiliInternational": {"placeholders": {"name": {"type": "String"}}},
+  "@playerCdnBilibiliInternational": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnMayNotWork": "该线路可能不可用",
   "playerCdnSpeedTestFailed": "测速失败",
   "playerCdnSettings": "CDN 设置",
   "playerCurrentCdn": "当前 CDN：{cdn}",
-  "@playerCurrentCdn": {"placeholders": {"cdn": {"type": "String"}}},
+  "@playerCurrentCdn": {
+    "placeholders": {
+      "cdn": {
+        "type": "String"
+      }
+    }
+  },
   "playerCdnSetReloading": "已切换到 {cdn}，正在重新加载",
-  "@playerCdnSetReloading": {"placeholders": {"cdn": {"type": "String"}}},
+  "@playerCdnSetReloading": {
+    "placeholders": {
+      "cdn": {
+        "type": "String"
+      }
+    }
+  },
   "playerMoreSettings": "更多播放设置",
   "playerPlay": "播放",
   "playerSleepTimer": "定时停止播放",
@@ -489,13 +606,31 @@
   "playerBackgroundPlayback": "后台播放",
   "playerSelectVideoQuality": "选择视频画质",
   "playerCurrentVideoQuality": "当前画质：{quality}",
-  "@playerCurrentVideoQuality": {"placeholders": {"quality": {"type": "String"}}},
+  "@playerCurrentVideoQuality": {
+    "placeholders": {
+      "quality": {
+        "type": "String"
+      }
+    }
+  },
   "playerSelectAudioQuality": "选择音质",
   "playerCurrentAudioQuality": "当前音质：{quality}",
-  "@playerCurrentAudioQuality": {"placeholders": {"quality": {"type": "String"}}},
+  "@playerCurrentAudioQuality": {
+    "placeholders": {
+      "quality": {
+        "type": "String"
+      }
+    }
+  },
   "playerCodec": "编码格式",
   "playerCurrentCodec": "当前编码：{codec}",
-  "@playerCurrentCodec": {"placeholders": {"codec": {"type": "String"}}},
+  "@playerCurrentCodec": {
+    "placeholders": {
+      "codec": {
+        "type": "String"
+      }
+    }
+  },
   "playerPlaybackOrder": "播放顺序",
   "playerDanmakuList": "弹幕列表",
   "playerDanmakuSettings": "弹幕设置",
@@ -514,31 +649,103 @@
   "playerVideoQualityNotSupported": "当前视频不支持选择画质",
   "playerPremiumQualityHint": "此画质需要大会员或登录后使用",
   "playerVideoQualityChanged": "画质已切换为 {quality}",
-  "@playerVideoQualityChanged": {"placeholders": {"quality": {"type": "String"}}},
+  "@playerVideoQualityChanged": {
+    "placeholders": {
+      "quality": {
+        "type": "String"
+      }
+    }
+  },
   "playerAudioQualityChanged": "音质已切换为 {quality}",
-  "@playerAudioQualityChanged": {"placeholders": {"quality": {"type": "String"}}},
+  "@playerAudioQualityChanged": {
+    "placeholders": {
+      "quality": {
+        "type": "String"
+      }
+    }
+  },
   "playerCodecNotSupported": "当前视频不支持切换编码",
   "playerSelectCodec": "选择编码格式",
   "playerCodecChanged": "编码已切换为 {codec}",
-  "@playerCodecChanged": {"placeholders": {"codec": {"type": "String"}}},
+  "@playerCodecChanged": {
+    "placeholders": {
+      "codec": {
+        "type": "String"
+      }
+    }
+  },
   "playerFontSize": "字号：{value}",
-  "@playerFontSize": {"placeholders": {"value": {"type": "String"}}},
+  "@playerFontSize": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerFullscreenFontSize": "全屏字号：{value}",
-  "@playerFullscreenFontSize": {"placeholders": {"value": {"type": "String"}}},
+  "@playerFullscreenFontSize": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerFontWeightMayVary": "字重：{value}（效果因字体而异）",
-  "@playerFontWeightMayVary": {"placeholders": {"value": {"type": "String"}}},
+  "@playerFontWeightMayVary": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerStrokeWidth": "描边宽度：{value}",
-  "@playerStrokeWidth": {"placeholders": {"value": {"type": "String"}}},
+  "@playerStrokeWidth": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerHorizontalMargin": "水平边距：{value}",
-  "@playerHorizontalMargin": {"placeholders": {"value": {"type": "String"}}},
+  "@playerHorizontalMargin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerBottomMargin": "底部边距：{value}",
-  "@playerBottomMargin": {"placeholders": {"value": {"type": "String"}}},
+  "@playerBottomMargin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerBackgroundOpacity": "背景不透明度：{value}",
-  "@playerBackgroundOpacity": {"placeholders": {"value": {"type": "String"}}},
+  "@playerBackgroundOpacity": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerOpacity": "不透明度：{value}",
-  "@playerOpacity": {"placeholders": {"value": {"type": "String"}}},
+  "@playerOpacity": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerWatchingNow": "{count} 人正在看",
-  "@playerWatchingNow": {"placeholders": {"count": {"type": "String"}}},
+  "@playerWatchingNow": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "playerCast": "投屏",
   "playerCastingNotSupported": "不支持投屏",
   "playerSubmitSegment": "提交片段",
@@ -552,21 +759,57 @@
   "playerDanmakuColored": "彩色",
   "playerDanmakuAdvanced": "高级",
   "playerDanmakuCloudFilterLevel": "云屏蔽等级：{level}",
-  "@playerDanmakuCloudFilterLevel": {"placeholders": {"level": {"type": "int"}}},
+  "@playerDanmakuCloudFilterLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "playerDanmakuFilterManagement": "{count, plural, =0{屏蔽管理} other{屏蔽管理（{count}）}}",
-  "@playerDanmakuFilterManagement": {"placeholders": {"count": {"type": "int"}}},
+  "@playerDanmakuFilterManagement": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "playerDanmakuFilterByType": "按类型屏蔽",
   "playerDanmakuMassiveMode": "海量模式",
   "playerDanmakuConvertStaticToScrolling": "固定弹幕转滚动弹幕",
   "playerDanmakuFixedSpeed": "固定速度",
   "playerDanmakuDisplayArea": "显示区域：{value}",
-  "@playerDanmakuDisplayArea": {"placeholders": {"value": {"type": "String"}}},
+  "@playerDanmakuDisplayArea": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerScrollingDanmakuDuration": "滚动弹幕时长：{value} 秒",
-  "@playerScrollingDanmakuDuration": {"placeholders": {"value": {"type": "String"}}},
+  "@playerScrollingDanmakuDuration": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerStaticDanmakuDuration": "固定弹幕时长：{value} 秒",
-  "@playerStaticDanmakuDuration": {"placeholders": {"value": {"type": "String"}}},
+  "@playerStaticDanmakuDuration": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerDanmakuLineHeight": "弹幕行高：{value}",
-  "@playerDanmakuLineHeight": {"placeholders": {"value": {"type": "String"}}},
+  "@playerDanmakuLineHeight": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "playerPreviousEpisode": "上一集",
   "playerNextEpisode": "下一集",
   "playerAlreadyFirstEpisode": "已经是第一集了",
@@ -581,13 +824,25 @@
   "playerTurnOffSubtitles": "关闭字幕",
   "playerPlaybackSpeed": "播放速度",
   "playerSpeedSemantic": "{speed} 倍速",
-  "@playerSpeedSemantic": {"placeholders": {"speed": {"type": "String"}}},
+  "@playerSpeedSemantic": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "playerVideoQuality": "视频画质",
   "playerExitFullScreen": "退出全屏",
   "playerFullScreen": "全屏",
   "playerReleaseToCancelSeeking": "松开以取消定位",
   "playerSpeedActive": "{speed} 倍速播放",
-  "@playerSpeedActive": {"placeholders": {"speed": {"type": "String"}}},
+  "@playerSpeedActive": {
+    "placeholders": {
+      "speed": {
+        "type": "String"
+      }
+    }
+  },
   "playerResetView": "重置画面",
   "playerUnlock": "解锁",
   "playerLock": "锁定",
@@ -623,19 +878,49 @@
   "playerDanmakuInputHint": "输入弹幕内容",
   "playerNowPlaying": "正在播放",
   "playerNowPlayingTitle": "正在播放：{title}",
-  "@playerNowPlayingTitle": {"placeholders": {"title": {"type": "String"}}},
+  "@playerNowPlayingTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "playerPlayInOrder": "顺序播放",
   "playerPlayInReverse": "倒序播放",
   "playerSkipSegment": "跳过：{segment}",
-  "@playerSkipSegment": {"placeholders": {"segment": {"type": "String"}}},
+  "@playerSkipSegment": {
+    "placeholders": {
+      "segment": {
+        "type": "String"
+      }
+    }
+  },
   "playerUploaderDisabledDanmaku": "UP 主已关闭弹幕",
   "playerRewindSeconds": "快退 {seconds} 秒",
-  "@playerRewindSeconds": {"placeholders": {"seconds": {"type": "int"}}},
+  "@playerRewindSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "playerForwardSeconds": "快进 {seconds} 秒",
-  "@playerForwardSeconds": {"placeholders": {"seconds": {"type": "int"}}},
+  "@playerForwardSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "playerVideoOpenFailedRetrying": "视频链接打开失败，正在重试",
   "playerDecoderLoadFailed": "无法加载解码器：{error}，可能会切换至软解",
-  "@playerDecoderLoadFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@playerDecoderLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "playerTakingScreenshot": "正在截图",
   "playerTapPreviewToSaveScreenshot": "点击预览图保存截图",
   "playerScreenshotFailed": "截图失败",
@@ -647,26 +932,68 @@
   "replyInsertContent": "插入内容",
   "replyVideoProgress": "视频进度",
   "replyMaxImages": "{limit, plural, other{最多可添加 {limit} 张图片}}",
-  "@replyMaxImages": {"placeholders": {"limit": {"type": "int"}}},
+  "@replyMaxImages": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "replyVideoScreenshot": "视频截图",
   "replyVoteRedSide": "红方",
   "replyVoteBlueSide": "蓝方",
   "replyVoteParticipants": "{count} 人参与",
-  "@replyVoteParticipants": {"placeholders": {"count": {"type": "String"}}},
+  "@replyVoteParticipants": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "replyTranslationEmpty": "翻译结果为空",
   "replyTranslationFailed": "翻译失败：{error}",
-  "@replyTranslationFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@replyTranslationFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "replyViewConversation": "查看对话",
   "replyJumpToReply": "跳转回复",
   "replyUploaderAndOthers": "UP 主等人",
   "replyCount": "{count, plural, =0{暂无回复} other{共 {count} 条回复}}",
-  "@replyCount": {"placeholders": {"count": {"type": "int"}}},
+  "@replyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "replyVoteTitle": "投票：{title}",
-  "@replyVoteTitle": {"placeholders": {"title": {"type": "String"}}},
+  "@replyVoteTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "replyJumpTo": "跳转至：{time}",
-  "@replyJumpTo": {"placeholders": {"time": {"type": "String"}}},
+  "@replyJumpTo": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "replyJumpFailed": "跳转失败：{error}",
-  "@replyJumpFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@replyJumpFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "replyDeleteComment": "删除评论",
   "replyConfirmDeleteComment": "确定删除这条评论吗？",
   "replyCopyAll": "复制全部",
@@ -676,7 +1003,13 @@
   "replyDetails": "评论详情",
   "replyConversation": "对话列表",
   "replyRelatedCount": "相关回复共 {count} 条",
-  "@replyRelatedCount": {"placeholders": {"count": {"type": "String"}}},
+  "@replyRelatedCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "replyMayHaveBeenDeleted": "评论可能已被删除",
   "replyDislikeSucceeded": "点踩成功",
   "replyRemoveDislikeSucceeded": "已取消踩",
@@ -745,22 +1078,61 @@
   "sponsorBlockCategoryMusicOfftopic": "音乐：非音乐部分",
   "sponsorBlockCategoryMusicOfftopicShort": "非音乐",
   "sponsorBlockSkipped": "已跳过{segment}片段",
-  "@sponsorBlockSkipped": {"placeholders": {"segment": {"type": "String"}}},
+  "@sponsorBlockSkipped": {
+    "placeholders": {
+      "segment": {
+        "type": "String"
+      }
+    }
+  },
   "sponsorBlockJumpedTo": "已跳至{segment}",
-  "@sponsorBlockJumpedTo": {"placeholders": {"segment": {"type": "String"}}},
+  "@sponsorBlockJumpedTo": {
+    "placeholders": {
+      "segment": {
+        "type": "String"
+      }
+    }
+  },
   "sponsorBlockSkipFailed": "{segment}片段跳过失败",
-  "@sponsorBlockSkipFailed": {"placeholders": {"segment": {"type": "String"}}},
+  "@sponsorBlockSkipFailed": {
+    "placeholders": {
+      "segment": {
+        "type": "String"
+      }
+    }
+  },
   "sponsorBlockUpvote": "赞成票",
   "sponsorBlockDownvote": "反对票",
   "sponsorBlockChangeCategory": "更改类别",
   "sponsorBlockVoteSucceeded": "投票成功",
   "sponsorBlockVoteFailed": "投票失败：{error}",
-  "@sponsorBlockVoteFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@sponsorBlockVoteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "sponsorBlockCategoryChangeSucceeded": "类别更改成功",
   "sponsorBlockCategoryChangeFailed": "类别更改失败：{error}",
-  "@sponsorBlockCategoryChangeFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@sponsorBlockCategoryChangeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "sponsorBlockSegmentRange": "{start} 至 {end}",
-  "@sponsorBlockSegmentRange": {"placeholders": {"start": {"type": "String"}, "end": {"type": "String"}}},
+  "@sponsorBlockSegmentRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "sponsorBlockJumpToSegment": "跳至此片段",
   "sponsorBlockSkipSegment": "跳过此片段",
   "videoPlayNow": "立即播放",
@@ -777,7 +1149,13 @@
   "videoComments": "评论",
   "videoPlaylist": "播放列表",
   "videoCommentsCount": "评论 {count}",
-  "@videoCommentsCount": {"placeholders": {"count": {"type": "String"}}},
+  "@videoCommentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "videoSendDanmaku": "发送弹幕",
   "videoSeriesReverseNotSupported": "当前系列不支持倒序播放",
   "videoLikeSucceeded": "点赞成功",
@@ -788,16 +1166,40 @@
   "videoInteractive": "互动视频",
   "videoSponsorBlockSourceSync": "同步 SponsorBlock 视频来源",
   "videoSponsorBlockAlreadyLinked": "已关联 YouTube 视频 {videoId}",
-  "@videoSponsorBlockAlreadyLinked": {"placeholders": {"videoId": {"type": "String"}}},
+  "@videoSponsorBlockAlreadyLinked": {
+    "placeholders": {
+      "videoId": {
+        "type": "String"
+      }
+    }
+  },
   "videoSponsorBlockConfirmLink": "确认将本视频关联到 YouTube 视频 {videoId}？",
-  "@videoSponsorBlockConfirmLink": {"placeholders": {"videoId": {"type": "String"}}},
+  "@videoSponsorBlockConfirmLink": {
+    "placeholders": {
+      "videoId": {
+        "type": "String"
+      }
+    }
+  },
   "videoSponsorBlockLinkSucceeded": "来源关联成功",
   "videoSponsorBlockLinkFailed": "来源关联失败：{error}",
-  "@videoSponsorBlockLinkFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@videoSponsorBlockLinkFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "videoAiSummaryNotSupported": "当前视频暂不支持 AI 总结",
   "videoAiSummary": "AI 总结",
   "videoBgmPrefix": "BGM：{content}",
-  "@videoBgmPrefix": {"placeholders": {"content": {"type": "String"}}},
+  "@videoBgmPrefix": {
+    "placeholders": {
+      "content": {
+        "type": "String"
+      }
+    }
+  },
   "videoGreatCoined": "已完成 Great Coined",
   "videoCoinFailed": "投币失败",
   "videoGreatCoinedSucceeded": "Great Coined 成功",
@@ -806,7 +1208,19 @@
   "videoShareAtCurrentTime": "从当前时间开始分享",
   "videoShareVideo": "分享视频",
   "videoShareText": "{title}\nUP 主：{uploader}\n{url}",
-  "@videoShareText": {"placeholders": {"title": {"type": "String"}, "uploader": {"type": "String"}, "url": {"type": "String"}}},
+  "@videoShareText": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "uploader": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
   "videoShareToFeed": "分享到动态",
   "videoShareToMessages": "分享到消息",
   "videoNoRelatedVideosStopAutoplay": "没有更多相关视频，已停止自动播放",
@@ -815,24 +1229,66 @@
   "videoFollowAnime": "追番",
   "videoFollowSeries": "追剧",
   "videoRating": "评分 {score}",
-  "@videoRating": {"placeholders": {"score": {"type": "String"}}},
+  "@videoRating": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
   "videoAlreadyFollowing": "已{type}",
-  "@videoAlreadyFollowing": {"placeholders": {"type": {"type": "String"}}},
+  "@videoAlreadyFollowing": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "videoDescriptionWithContent": "简介：{description}",
-  "@videoDescriptionWithContent": {"placeholders": {"description": {"type": "String"}}},
+  "@videoDescriptionWithContent": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
   "videoRemovedFromFavorites": "已取消收藏",
   "videoAddedToFavorites": "已收藏",
   "videoMarkAs": "标记为{status}",
-  "@videoMarkAs": {"placeholders": {"status": {"type": "String"}}},
+  "@videoMarkAs": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "videoStatusWatched": "看过",
   "videoStatusWatching": "在看",
   "videoStatusWantToWatch": "想看",
   "videoCancelFollowingType": "取消{type}",
-  "@videoCancelFollowingType": {"placeholders": {"type": {"type": "String"}}},
+  "@videoCancelFollowingType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "videoSegmentStart": "开始：{value}",
-  "@videoSegmentStart": {"placeholders": {"value": {"type": "String"}}},
+  "@videoSegmentStart": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "videoSegmentEnd": "结束：{value}",
-  "@videoSegmentEnd": {"placeholders": {"value": {"type": "String"}}},
+  "@videoSegmentEnd": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "videoSegmentSetCurrent": "设为当前",
   "videoSegmentVideoStart": "视频开头",
   "videoSegmentVideoEnd": "视频结尾",
@@ -843,72 +1299,222 @@
   "videoSegmentAction": "行为类别",
   "videoSegmentProgressBar": "分段进度条",
   "videoResumeAtPart": "上次看到第 {part}P，点击跳转",
-  "@videoResumeAtPart": {"placeholders": {"part": {"type": "int"}}},
+  "@videoResumeAtPart": {
+    "placeholders": {
+      "part": {
+        "type": "int"
+      }
+    }
+  },
   "videoJumpedToPart": "已跳至第 {part}P",
-  "@videoJumpedToPart": {"placeholders": {"part": {"type": "int"}}},
+  "@videoJumpedToPart": {
+    "placeholders": {
+      "part": {
+        "type": "int"
+      }
+    }
+  },
   "videoExclusiveTrial": "该视频为专属视频，仅提供试看",
   "videoResourceUnavailable": "视频资源不存在",
   "videoCoinLimitReached": "已达到投币上限",
   "videoNotEnoughCoins": "硬币不足",
   "videoCoinBalance": "硬币余额：{balance}",
-  "@videoCoinBalance": {"placeholders": {"balance": {"type": "String"}}},
+  "@videoCoinBalance": {
+    "placeholders": {
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
   "videoAlreadyCoinedOne": "已投 1 枚硬币",
   "videoCoinBalanceAndCoined": "硬币余额：{balance}，已投 1 枚硬币",
-  "@videoCoinBalanceAndCoined": {"placeholders": {"balance": {"type": "String"}}},
+  "@videoCoinBalanceAndCoined": {
+    "placeholders": {
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
   "videoCoinAndLike": "同时点赞",
   "videoEpisodes": "视频选集",
   "videoNoEpisodes": "暂无可用剧集",
   "videoEpisodeCount": "{count, plural, other{共 {count} 集}}",
-  "@videoEpisodeCount": {"placeholders": {"count": {"type": "int"}}},
+  "@videoEpisodeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "videoCollection": "合集：{title}",
-  "@videoCollection": {"placeholders": {"title": {"type": "String"}}},
+  "@videoCollection": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoCollectionLabel": "合集",
   "videoEpisodePosition": "第 {current} 集，共 {total} 集",
-  "@videoEpisodePosition": {"placeholders": {"current": {"type": "int"}, "total": {"type": "int"}}},
+  "@videoEpisodePosition": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "videoOngoingUpdatedTo": "连载中，更新至{episode}",
-  "@videoOngoingUpdatedTo": {"placeholders": {"episode": {"type": "String"}}},
+  "@videoOngoingUpdatedTo": {
+    "placeholders": {
+      "episode": {
+        "type": "String"
+      }
+    }
+  },
   "videoEpisodeNumber": "第 {number} 话",
-  "@videoEpisodeNumber": {"placeholders": {"number": {"type": "int"}}},
+  "@videoEpisodeNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "videoReviews": "点评",
   "videoSummary": "简介",
   "videoCastAndCrew": "演职人员",
   "videoCount": "{count, plural, other{共 {count} 个视频}}",
-  "@videoCount": {"placeholders": {"count": {"type": "int"}}},
+  "@videoCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "videoTypePlaybackNotSupported": "不支持播放该类型视频",
   "videoConfirmRemove": "确定移除该视频？",
   "videoNotesCount": "笔记（{count}）",
-  "@videoNotesCount": {"placeholders": {"count": {"type": "int"}}},
+  "@videoNotesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "videoStartTakingNotes": "开始记笔记",
   "videoVisitUploader": "访问：{name}",
-  "@videoVisitUploader": {"placeholders": {"name": {"type": "String"}}},
+  "@videoVisitUploader": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "videoNotInterested": "不感兴趣",
   "videoDoNotWantToSee": "我不想看",
   "videoWebFineSelectionUnsupported": "Web 端暂不支持精细选择",
   "videoBlockUploader": "拉黑：{name}",
-  "@videoBlockUploader": {"placeholders": {"name": {"type": "String"}}},
+  "@videoBlockUploader": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "videoConfirmBlockUploader": "确定拉黑 {name}（{id}）？\n\n被拉黑的 UP 主可在隐私设置的黑名单管理中解除。",
-  "@videoConfirmBlockUploader": {"placeholders": {"name": {"type": "String"}, "id": {"type": "String"}}},
+  "@videoConfirmBlockUploader": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "timeJustNow": "刚刚",
   "timeMinutesAgo": "{count} 分钟前",
-  "@timeMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "timeHoursAgo": "{count} 小时前",
-  "@timeHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@timeHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "timeYesterdayAt": "昨天 {time}",
-  "@timeYesterdayAt": {"placeholders": {"time": {"type": "String"}}},
+  "@timeYesterdayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "timeDaysAgo": "{count} 天前",
   "durationYears": "{count}年",
-  "@durationYears": {"placeholders": {"count": {"type": "int"}}},
+  "@durationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationMonths": "{count}个月",
-  "@durationMonths": {"placeholders": {"count": {"type": "int"}}},
+  "@durationMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationDays": "{count}天",
-  "@durationDays": {"placeholders": {"count": {"type": "int"}}},
+  "@durationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationHours": "{count}小时",
-  "@durationHours": {"placeholders": {"count": {"type": "int"}}},
+  "@durationHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationMinutes": "{count}分钟",
-  "@durationMinutes": {"placeholders": {"count": {"type": "int"}}},
-  "@timeDaysAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@durationMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "timeTodayAt": "今天 {time}",
-  "@timeTodayAt": {"placeholders": {"time": {"type": "String"}}},
+  "@timeTodayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "weekdayMondayShort": "一",
   "weekdayTuesdayShort": "二",
   "weekdayWednesdayShort": "三",
@@ -919,7 +1525,13 @@
   "homePgcSchedule": "追番时间表",
   "homeToday": "今天",
   "homeWeekday": "周{weekday}",
-  "@homeWeekday": {"placeholders": {"weekday": {"type": "String"}}},
+  "@homeWeekday": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
   "homeRecommendations": "推荐",
   "homeMediaIndex": "索引",
   "homeAllMedia": "全部",
@@ -928,9 +1540,21 @@
   "homeDocumentaries": "纪录片",
   "homeVarietyShows": "综艺",
   "homeRecentAnime": "最近追番{count}",
-  "@homeRecentAnime": {"placeholders": {"count": {"type": "String"}}},
+  "@homeRecentAnime": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "homeRecentSeries": "最近追剧{count}",
-  "@homeRecentSeries": {"placeholders": {"count": {"type": "String"}}},
+  "@homeRecentSeries": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "homeNoAnime": "还没有追番",
   "homeNoSeries": "还没有追剧",
   "feedAll": "全部",
@@ -943,17 +1567,50 @@
   "feedMe": "我",
   "feedLiveEnded": "直播结束",
   "feedVoteWithTitle": "投票：{title}",
-  "@feedVoteWithTitle": {"placeholders": {"title": {"type": "String"}}},
+  "@feedVoteWithTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "feedPlayCount": "{count}播放",
-  "@feedPlayCount": {"placeholders": {"count": {"type": "String"}}},
+  "@feedPlayCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "feedDanmakuCount": "{count}弹幕",
-  "@feedDanmakuCount": {"placeholders": {"count": {"type": "String"}}},
+  "@feedDanmakuCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "feedExpired": "已失效",
   "feedUnsupportedType": "暂未支持的类型：\n{id}\n{type}",
-  "@feedUnsupportedType": {"placeholders": {"id": {"type": "String"}, "type": {"type": "String"}}},
+  "@feedUnsupportedType": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "followMyFollowing": "我的关注",
   "followUserFollowing": "{name}的关注",
-  "@followUserFollowing": {"placeholders": {"name": {"type": "String"}}},
+  "@followUserFollowing": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followNewGroup": "新建分组",
   "followSortGroups": "分组排序",
   "followBlockedUsers": "黑名单管理",
@@ -975,9 +1632,21 @@
   "feedFollowedPeopleVotes": "关注的人的投票",
   "feedVotedFor": "投给了",
   "feedPollEndsAt": "至 {time}",
-  "@feedPollEndsAt": {"placeholders": {"time": {"type": "String"}}},
+  "@feedPollEndsAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "feedParticipantCount": "{count}人参与",
-  "@feedParticipantCount": {"placeholders": {"count": {"type": "String"}}},
+  "@feedParticipantCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "feedShowPercentage": "显示比例",
   "feedAnonymous": "匿名",
   "feedMoreActions": "更多",
@@ -986,26 +1655,92 @@
   "feedSharePost": "分享动态",
   "feedShareToMessages": "分享至消息",
   "feedTemporarilyBlock": "临时屏蔽 {name} 的动态",
-  "@feedTemporarilyBlock": {"placeholders": {"name": {"type": "String"}}},
+  "@feedTemporarilyBlock": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "feedTemporarilyBlocked": "已临时屏蔽 {name}（{id}）的动态，重启后恢复",
-  "@feedTemporarilyBlocked": {"placeholders": {"name": {"type": "String"}, "id": {"type": "String"}}},
+  "@feedTemporarilyBlocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "feedPermanentlyBlockAuthorPosts": "永久屏蔽 {name} 的动态",
-  "@feedPermanentlyBlockAuthorPosts": {"placeholders": {"name": {"type": "String"}}},
+  "@feedPermanentlyBlockAuthorPosts": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "feedAuthorPostsPermanentlyBlocked": "已永久屏蔽 {name}（{id}）的动态",
-  "@feedAuthorPostsPermanentlyBlocked": {"placeholders": {"name": {"type": "String"}, "id": {"type": "String"}}},
+  "@feedAuthorPostsPermanentlyBlocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "feedUnblockAuthorPosts": "取消屏蔽 {name} 的动态",
-  "@feedUnblockAuthorPosts": {"placeholders": {"name": {"type": "String"}}},
+  "@feedUnblockAuthorPosts": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "feedAuthorPostsUnblocked": "已取消屏蔽 {name} 的动态",
-  "@feedAuthorPostsUnblocked": {"placeholders": {"name": {"type": "String"}}},
+  "@feedAuthorPostsUnblocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dynamicBlockedUpListTitle": "动态屏蔽 UP 名单（{count}）",
-  "@dynamicBlockedUpListTitle": {"placeholders": {"count": {"type": "int"}}},
+  "@dynamicBlockedUpListTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dynamicBlockedUpListEmpty": "名单中暂无 UP",
   "dynamicBlockedUpUnknownName": "UP {id}",
-  "@dynamicBlockedUpUnknownName": {"placeholders": {"id": {"type": "String"}}},
+  "@dynamicBlockedUpUnknownName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "dynamicBlockedUpUid": "UID：{id}",
-  "@dynamicBlockedUpUid": {"placeholders": {"id": {"type": "String"}}},
+  "@dynamicBlockedUpUid": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "dynamicBlockedUpRemoveConfirm": "确定将 {name} 移出动态屏蔽名单？",
-  "@dynamicBlockedUpRemoveConfirm": {"placeholders": {"name": {"type": "String"}}},
+  "@dynamicBlockedUpRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "dynamicBlockedUpRemoved": "已移出动态屏蔽名单",
   "feedCheckPost": "检查动态",
   "feedPinPost": "置顶",
@@ -1028,12 +1763,27 @@
   "followGroupSortTitle": "关注分组排序",
   "followSortCompleted": "排序完成",
   "followAlsoFollowed": "我关注的 {count} 人也关注了 {name}",
-  "@followAlsoFollowed": {"placeholders": {"count": {"type": "int"}, "name": {"type": "String"}}},
+  "@followAlsoFollowed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followUnknownPerson": "TA",
   "followActionFollow": "关注",
   "followActionFollowing": "已关注",
   "followSharedWithUser": "我与 {name} 的共同关注",
-  "@followSharedWithUser": {"placeholders": {"name": {"type": "String"}}},
+  "@followSharedWithUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "settingsSignInRequired": "登录后查看",
   "settingsBlockedUsersManagement": "黑名单管理",
   "settingsBlockedUsersDescription": "已拉黑用户",
@@ -1063,20 +1813,71 @@
   "settingsKeywordSeparatorHelp": "使用 | 隔开，例如：尝试|测试",
   "settingsSaved": "已保存",
   "settingsFilterTitle": "{title}过滤",
-  "@settingsFilterTitle": {"placeholders": {"title": {"type": "String"}}},
+  "@settingsFilterTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFilterBelow": "过滤掉{title}小于「{value}{suffix}」的视频",
-  "@settingsFilterBelow": {"placeholders": {"title": {"type": "String"}, "value": {"type": "int"}, "suffix": {"type": "String"}}},
+  "@settingsFilterBelow": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      },
+      "suffix": {
+        "type": "String"
+      }
+    }
+  },
   "settingsCurrentNamedValue": "当前{title}：「{value}{suffix}」",
-  "@settingsCurrentNamedValue": {"placeholders": {"title": {"type": "String"}, "value": {"type": "int"}, "suffix": {"type": "String"}}},
+  "@settingsCurrentNamedValue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      },
+      "suffix": {
+        "type": "String"
+      }
+    }
+  },
   "settingsChooseFilterValue": "选择{title}{filterHint}",
-  "@settingsChooseFilterValue": {"placeholders": {"title": {"type": "String"}, "filterHint": {"type": "String"}}},
+  "@settingsChooseFilterValue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "filterHint": {
+        "type": "String"
+      }
+    }
+  },
   "settingsZeroDisablesFilter": "（0 即不过滤）",
   "settingsCustomValue": "自定义",
   "settingsCustomNamedValue": "自定义{title}",
-  "@settingsCustomNamedValue": {"placeholders": {"title": {"type": "String"}}},
+  "@settingsCustomNamedValue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "settingsChooseAccountsToSignOut": "选择要登出的账号 UID",
   "settingsConfirmSignOutAccounts": "确认要退出以下账号登录吗？\n\n{accounts}",
-  "@settingsConfirmSignOutAccounts": {"placeholders": {"accounts": {"type": "String"}}},
+  "@settingsConfirmSignOutAccounts": {
+    "placeholders": {
+      "accounts": {
+        "type": "String"
+      }
+    }
+  },
   "settingsSignOutCancel": "点错了",
   "settingsSignOutOnly": "仅登出",
   "settingsDanmakuEnabled": "弹幕开关",
@@ -1106,7 +1907,13 @@
   "settingsSlideSeekDurationDescription": "从播放器一端滑到另一端的快进／快退时长",
   "settingsAutomaticSubtitles": "自动启用字幕",
   "settingsCurrentPreference": "当前选择偏好：{value}",
-  "@settingsCurrentPreference": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentPreference": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPauseWhenMinimized": "最小化时暂停／还原时播放",
   "settingsKeyboardControls": "启用键盘控制",
   "settingsSuperChatDisplay": "SuperChat（醒目留言）显示类型",
@@ -1134,10 +1941,22 @@
   "settingsOnlineViewerCountDescription": "展示同时在看人数",
   "settingsDefaultFullscreenOrientation": "默认全屏方向",
   "settingsCurrentFullscreenOrientation": "当前全屏方向：{value}",
-  "@settingsCurrentFullscreenOrientation": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentFullscreenOrientation": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBottomProgressBar": "底部进度条展示",
   "settingsCurrentBottomProgressBar": "当前展示方式：{value}",
-  "@settingsCurrentBottomProgressBar": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentBottomProgressBar": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBackgroundAudioService": "后台音频服务",
   "settingsBackgroundAudioServiceDescription": "避免画中画没有播放暂停功能",
   "settingsMixAudioWithOtherApps": "与其他应用同时播放声音",
@@ -1158,7 +1977,13 @@
   "settingsFullscreenOrientationPortrait": "强制竖屏",
   "settingsFullscreenOrientationLandscape": "强制横屏",
   "settingsFullscreenOrientationRatio": "屏幕长宽比小于 {ratio} 或为竖屏视频时竖屏，否则横屏",
-  "@settingsFullscreenOrientationRatio": {"placeholders": {"ratio": {"type": "double"}}},
+  "@settingsFullscreenOrientationRatio": {
+    "placeholders": {
+      "ratio": {
+        "type": "double"
+      }
+    }
+  },
   "settingsFullscreenOrientationGravity": "忽略系统方向锁定，强制按重力转屏（仅 Android）",
   "settingsProgressAlwaysShow": "始终展示",
   "settingsProgressAlwaysHide": "始终隐藏",
@@ -1172,10 +1997,22 @@
   "settingsBilibiliDataPlanDescription": "若套餐含 B 站定向流量则会自动使用，可查阅运营商的流量记录确认",
   "settingsCdn": "CDN 设置",
   "settingsCurrentCdn": "当前使用：{value}。部分 CDN 可能失效，如无法播放请尝试切换",
-  "@settingsCurrentCdn": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentCdn": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsLiveCdn": "直播 CDN 设置",
   "settingsCurrentSource": "当前使用：{value}",
-  "@settingsCurrentSource": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentSource": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsCdnSpeedTest": "CDN 测速",
   "settingsCdnSpeedTestDescription": "测速通过模拟加载视频实现，请注意流量消耗，结果仅供参考",
   "settingsSeparateAudioCdn": "音频不跟随 CDN 设置",
@@ -1187,28 +2024,76 @@
   "settingsDefaultLiveQuality": "直播默认画质",
   "settingsCellularLiveQuality": "蜂窝网络直播默认画质",
   "settingsCurrentVideoQuality": "当前画质：{value}",
-  "@settingsCurrentVideoQuality": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentVideoQuality": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsCurrentAudioQuality": "当前音质：{value}",
-  "@settingsCurrentAudioQuality": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentAudioQuality": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPreferredCodecs": "首选解码格式",
   "settingsPreferredCodecsDescription": "首选解码格式：{value}。请根据设备支持情况与需求调整",
-  "@settingsPreferredCodecsDescription": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsPreferredCodecsDescription": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsAudioOutput": "音频输出设备",
   "settingsBufferSize": "缓冲大小",
   "settingsBufferSizeDescription": "当前：{value} MB。此值同时作为前向和后向缓冲区大小；直播流会全部用于前向缓冲（mpv：--demuxer-max-bytes、--demuxer-max-back-bytes）",
-  "@settingsBufferSizeDescription": {"placeholders": {"value": {"type": "double"}}},
+  "@settingsBufferSizeDescription": {
+    "placeholders": {
+      "value": {
+        "type": "double"
+      }
+    }
+  },
   "settingsBufferDuration": "缓冲时长",
   "settingsBufferDurationDescription": "当前：{value} 秒。实际缓冲取大小与时长限制中的较小值；直播流不使用此项（mpv：--cache-secs）",
-  "@settingsBufferDurationDescription": {"placeholders": {"value": {"type": "double"}}},
+  "@settingsBufferDurationDescription": {
+    "placeholders": {
+      "value": {
+        "type": "double"
+      }
+    }
+  },
   "settingsAutoSync": "自动同步",
   "settingsAutoSyncDescription": "当前：{value}（mpv：--autosync）",
-  "@settingsAutoSyncDescription": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsAutoSyncDescription": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsVideoSync": "视频同步",
   "settingsVideoSyncDescription": "当前：{value}（mpv：--video-sync）",
-  "@settingsVideoSyncDescription": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsVideoSyncDescription": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsHardwareDecodingMode": "硬解模式",
   "settingsHardwareDecodingModeDescription": "当前：{value}（mpv：--hwdec）",
-  "@settingsHardwareDecodingModeDescription": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsHardwareDecodingModeDescription": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsEnterCdnHost": "输入 CDN Host",
   "settingsLiveQualityDolby": "杜比",
   "settingsLiveQuality4kOriginal": "4K 原画",
@@ -1225,7 +2110,13 @@
   "settingsHwdecBestCopy": "启用带拷贝功能的最佳解码器",
   "settingsHwdecNonDirect": "非直通",
   "settingsHwdecExclusive": "{vendor} 独占",
-  "@settingsHwdecExclusive": {"placeholders": {"vendor": {"type": "String"}}},
+  "@settingsHwdecExclusive": {
+    "placeholders": {
+      "vendor": {
+        "type": "String"
+      }
+    }
+  },
   "settingsHwdecExperimental": "实验性",
   "settingsHwdecDeprecated": "已过时",
   "settingsHwdecAllPlatforms": "全平台",
@@ -1238,7 +2129,13 @@
   "settingsUseSidebarDescription": "开启后底栏与顶栏会被替换，相关设置将失效",
   "settingsUiScale": "界面缩放",
   "settingsCurrentUiScale": "当前缩放比例：{value}",
-  "@settingsCurrentUiScale": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentUiScale": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPageTransition": "页面过渡动画",
   "settingsOptimizeTabletNavigation": "优化平板导航栏",
   "settingsMaterialYouBottomBar": "MD3 样式底栏",
@@ -1246,7 +2143,19 @@
   "settingsFloatingBottomBar": "悬浮底栏",
   "settingsListWidthLimit": "列表宽度（dp）限制",
   "settingsListWidthDescription": "当前：主页 {home} dp，其他 {other} dp，屏幕宽度 {screen} dp。宽度越小，列数越多。",
-  "@settingsListWidthDescription": {"placeholders": {"home": {"type": "int"}, "other": {"type": "int"}, "screen": {"type": "String"}}},
+  "@settingsListWidthDescription": {
+    "placeholders": {
+      "home": {
+        "type": "int"
+      },
+      "other": {
+        "type": "int"
+      },
+      "screen": {
+        "type": "String"
+      }
+    }
+  },
   "settingsRemovePlayerSafeArea": "播放页移除安全边距",
   "settingsDarkVideoPage": "视频播放页使用深色主题",
   "settingsFeedWaterfall": "动态页启用瀑布流",
@@ -1257,10 +2166,22 @@
   "settingsFeedUnreadBadge": "动态未读标记",
   "settingsMessageUnreadBadge": "消息未读标记",
   "settingsCurrentBadgeStyle": "当前标记样式：{value}",
-  "@settingsCurrentBadgeStyle": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentBadgeStyle": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsMessageUnreadTypes": "消息未读类型",
   "settingsCurrentMessageTypes": "当前消息类型：{value}",
-  "@settingsCurrentMessageTypes": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentMessageTypes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBarCollapseBehavior": "顶／底栏收起类型",
   "settingsCollapseHomeTopBar": "首页顶栏收起",
   "settingsCollapseHomeTopBarDescription": "首页列表滑动时收起顶栏",
@@ -1275,17 +2196,35 @@
   "settingsToastOpacityDescription": "自定义气泡提示（Toast）不透明度",
   "settingsThemeMode": "主题模式",
   "settingsCurrentMode": "当前模式：{value}",
-  "@settingsCurrentMode": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentMode": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPureBlackTheme": "纯黑主题",
   "settingsAppTheme": "应用主题",
   "settingsCurrentTheme": "当前主题：{value}",
-  "@settingsCurrentTheme": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentTheme": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsDynamicColor": "动态取色",
   "settingsExPiliPlusCustomColor": "ExPiliPlus 自定义颜色",
   "settingsSpecifiedColor": "指定颜色",
   "settingsDefaultStartPage": "默认启动页",
   "settingsCurrentStartPage": "当前启动页：{value}",
-  "@settingsCurrentStartPage": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentStartPage": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsSpringParameters": "滑动动画弹簧参数",
   "settingsFontSize": "字体大小",
   "settingsHomeTabs": "首页标签页",
@@ -1307,7 +2246,13 @@
   "settingsListMaxColumnWidth": "列表最大列宽度（默认 240 dp）",
   "settingsHomeRecommendationFeed": "主页推荐流",
   "settingsConfirmDarkColor": "确认使用 {color}？",
-  "@settingsConfirmDarkColor": {"placeholders": {"color": {"type": "String"}}},
+  "@settingsConfirmDarkColor": {
+    "placeholders": {
+      "color": {
+        "type": "String"
+      }
+    }
+  },
   "settingsDarkColorWarning": "所选颜色过于昏暗，可能会影响图片观看",
   "settingsUseServerSideDecoration": "使用 SSD（Server-Side Decoration）",
   "settingsUpPositionTop": "顶部",
@@ -1343,10 +2288,22 @@
   "settingsCommentFoldLines": "评论折叠行数",
   "settingsZeroLinesDoNotFold": "0 行时不折叠",
   "settingsLineCount": "{count} 行",
-  "@settingsLineCount": {"placeholders": {"count": {"type": "String"}}},
+  "@settingsLineCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "settingsDanmakuLineHeight": "弹幕行高",
   "settingsDefaultNumber": "默认 {value}",
-  "@settingsDefaultNumber": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsDefaultNumber": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsVideoWarnings": "显示视频警告／争议信息",
   "settingsFeedWarnings": "显示动态警告／争议信息",
   "settingsReverseEpisodesFromFirst": "分 P／合集：倒序播放从首集开始",
@@ -1359,10 +2316,25 @@
   "settingsExternalBrowser": "使用外部浏览器打开链接",
   "settingsHorizontalSwipeThreshold": "横向滑动阈值",
   "settingsCurrentAndSystemDefault": "当前：{current}；系统默认值：{defaultValue}",
-  "@settingsCurrentAndSystemDefault": {"placeholders": {"current": {"type": "String"}, "defaultValue": {"type": "String"}}},
+  "@settingsCurrentAndSystemDefault": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "defaultValue": {
+        "type": "String"
+      }
+    }
+  },
   "settingsRefreshDragDistance": "刷新滑动距离",
   "settingsCurrentMultiplier": "当前：{value}×",
-  "@settingsCurrentMultiplier": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentMultiplier": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsRefreshIndicatorHeight": "刷新指示器高度",
   "settingsVipDanmaku": "显示会员彩色弹幕",
   "settingsMergeDanmaku": "合并弹幕",
@@ -1372,7 +2344,13 @@
   "settingsAudioNormalization": "音量均衡",
   "settingsFallbackNormalization": "服务器无 loudnorm 配置时使用",
   "settingsFallbackValue": "无参数时：{value}",
-  "@settingsFallbackValue": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsFallbackValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsAudioNormalizationDisabled": "禁用",
   "settingsAudioNormalizationDynaudnorm": "预设 dynaudnorm",
   "settingsAudioNormalizationLoudnorm": "预设 loudnorm",
@@ -1380,7 +2358,13 @@
   "settingsAudioNormalizationParameterHelp": "等同于 --lavfi-complex=\"[aid1] 参数 [ao]\"",
   "settingsSuperResolution": "超分辨率",
   "settingsSuperResolutionDescription": "当前：{value}\n默认设置对番剧生效，其它视频默认关闭\n超分辨率需要启用硬件解码；若仍未生效，请尝试将硬件解码器切换为 auto-copy",
-  "@settingsSuperResolutionDescription": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsSuperResolutionDescription": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsPreinitializePlayer": "提前初始化播放器",
   "settingsPreinitializePlayerDescription": "相对减少手动播放的加载时间",
   "settingsHomePageAnimation": "首页切换页面动画",
@@ -1434,7 +2418,13 @@
   "settingsRetryDelayDescription": "实际间隔＝间隔 × 第 n 次重试",
   "settingsCommentDisplay": "评论展示",
   "settingsCurrentlyPrioritize": "当前优先展示“{value}”",
-  "@settingsCurrentlyPrioritize": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentlyPrioritize": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFeedDisplay": "动态展示",
   "settingsFeedInteractions": "显示动态互动内容",
   "settingsFeedInteractionsDescription": "在动态卡片底部显示互动内容，例如关注的人点赞、热评等",
@@ -1446,7 +2436,13 @@
   "settingsProxyPortHint": "请输入 Port",
   "settingsMaximumCacheSize": "最大缓存大小",
   "settingsCurrentMaximumCacheSize": "当前最大缓存大小：{value}",
-  "@settingsCurrentMaximumCacheSize": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentMaximumCacheSize": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsCheckForUpdates": "检查更新",
   "settingsCheckForUpdatesDescription": "每次启动时检查是否需要更新",
   "settingsSetNewPath": "设置新路径",
@@ -1484,7 +2480,13 @@
   "logsAppInformation": "应用信息",
   "logsBuildInformation": "编译信息",
   "logsCopiedTimestamp": "已将 {time} 复制至剪贴板",
-  "@logsCopiedTimestamp": {"placeholders": {"time": {"type": "String"}}},
+  "@logsCopiedTimestamp": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "logsErrorDetails": "错误详情",
   "logsStackTrace": "堆栈跟踪",
   "settingsPlaybackSpeedSetDefault": "设置为默认倍速",
@@ -1504,11 +2506,23 @@
   "settingsSavedNextLaunch": "保存成功，下次启动时生效",
   "settingsResetNextLaunch": "重置成功，下次启动时生效",
   "settingsEditTitle": "{title}编辑",
-  "@settingsEditTitle": {"placeholders": {"title": {"type": "String"}}},
+  "@settingsEditTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "settingsSave": "保存",
   "settingsLongPressToReorder": "长按拖动排序",
   "settingsCurrentFontSize": "当前字体大小：{value}",
-  "@settingsCurrentFontSize": {"placeholders": {"value": {"type": "String"}}},
+  "@settingsCurrentFontSize": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "settingsSmall": "小",
   "settingsLarge": "大",
   "settingsScreenRefreshRateTitle": "屏幕帧率设置",
@@ -1519,22 +2533,52 @@
   "settingsPaletteStyle": "调色板风格",
   "settingsDynamicColorUnsupported": "设备可能不支持动态取色",
   "settingsUseFont": "使用 {font}",
-  "@settingsUseFont": {"placeholders": {"font": {"type": "String"}}},
+  "@settingsUseFont": {
+    "placeholders": {
+      "font": {
+        "type": "String"
+      }
+    }
+  },
   "settingsViewLicense": "查看许可协议",
   "settingsAgreeAndDownload": "同意并下载",
   "settingsFontDownloaded": "{font} 下载完成",
-  "@settingsFontDownloaded": {"placeholders": {"font": {"type": "String"}}},
+  "@settingsFontDownloaded": {
+    "placeholders": {
+      "font": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFontDownloading": "正在下载 {progress}%",
-  "@settingsFontDownloading": {"placeholders": {"progress": {"type": "int"}}},
+  "@settingsFontDownloading": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
   "settingsFontConnecting": "正在连接下载源",
   "settingsDownloadedWithSize": "已下载 · {size}",
-  "@settingsDownloadedWithSize": {"placeholders": {"size": {"type": "String"}}},
+  "@settingsDownloadedWithSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "settingsDownloaded": "已下载",
   "settingsDownloadFont": "下载字体",
   "settingsFontErrorIncompleteFile": "字体文件不完整，请重新下载",
   "settingsFontErrorLoadFailed": "字体加载失败，请重新下载",
   "settingsFontErrorHttp": "字体下载失败（HTTP {status}）",
-  "@settingsFontErrorHttp": {"placeholders": {"status": {"type": "String"}}},
+  "@settingsFontErrorHttp": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFontErrorLicenseExtraction": "字体许可文件提取失败，请重试",
   "settingsFontErrorDownloadFailed": "字体下载失败，请稍后重试",
   "settingsFontErrorSizeMismatch": "字体文件大小校验失败，请重试",
@@ -1551,7 +2595,13 @@
   "settingsFontSourceHanSerif": "思源宋体",
   "settingsFontFusionPixel": "缝合像素字体",
   "settingsFontLicenseNotice": "本软件将使用 {font}。下载和使用即表示你同意其官方许可协议。",
-  "@settingsFontLicenseNotice": {"placeholders": {"font": {"type": "String"}}},
+  "@settingsFontLicenseNotice": {
+    "placeholders": {
+      "font": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFullscreenSuperChatSizeTitle": "全屏 SC 大小设置",
   "themeColorDefaultGreen": "默认绿",
   "themeColorPink": "粉红色",
@@ -1584,7 +2634,13 @@
   "homeAllLiveCategories": "全部标签",
   "homeMyLiveFollowing": "我的关注",
   "homeLiveFollowingCount": "{count} 人正在直播",
-  "@homeLiveFollowingCount": {"placeholders": {"count": {"type": "String"}}},
+  "@homeLiveFollowingCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "aboutAppDescription": "使用 Flutter 开发的 B 站第三方客户端",
   "aboutAppSemantics": "与你一起，发现不一样的世界",
   "aboutAccessibilityAdapted": "无障碍适配",
@@ -1791,8 +2847,12 @@
   "statisticsActivityRecords": "{date} · {count} 条记录",
   "@statisticsActivityRecords": {
     "placeholders": {
-      "date": {"type": "String"},
-      "count": {"type": "int"}
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statisticsRecordTime": "活跃时段",
@@ -2058,7 +3118,13 @@
   "networkSendTimeout": "发送请求超时，请检查网络设置",
   "networkTransformTimeout": "转换响应数据超时",
   "networkUnknownError": "网络异常：{error}",
-  "@networkUnknownError": {"placeholders": {"error": {"type": "String"}}},
+  "@networkUnknownError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "searchSecurityCheckTriggered": "触发风控校验",
   "loginVerificationTitle": "验证码",
   "loginVerificationLoadFailed": "验证码加载失败",
@@ -2092,15 +3158,46 @@
   "memberGuardCount": "{count} 人加入大航海",
   "memberMyRecommendations": "我的推荐",
   "memberRecommendationsBy": "{name}的推荐",
-  "@memberRecommendationsBy": {"placeholders": {"name": {"type": "String"}}},
+  "@memberRecommendationsBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberCollectionCount": "合集：{count}",
-  "@memberCollectionCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberCollectionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberListCount": "列表：{count}",
-  "@memberListCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberListCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberGuardTitle": "{name}的舰队",
-  "@memberGuardTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@memberGuardTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberGuardTitleWithCount": "{name}的舰队（{count}）",
-  "@memberGuardTitleWithCount": {"placeholders": {"name": {"type": "String"}, "count": {}}},
+  "@memberGuardTitleWithCount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {}
+    }
+  },
   "memberAlsoFollowed": "也关注了 TA",
   "memberAlsoFollowedWithOthers": "等 {count} 人也关注了 TA",
   "memberLikesReceived": "获赞",
@@ -2386,17 +3483,41 @@
   "favoriteFolderSortTitle": "收藏夹排序",
   "favoriteDefaultFolderSortUnsupported": "默认收藏夹不支持排序",
   "favoriteSortFolderTitle": "排序：{folder}",
-  "@favoriteSortFolderTitle": {"placeholders": {"folder": {"type": "String"}}},
+  "@favoriteSortFolderTitle": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
   "followSaveToDefaultGroup": "保存至默认分组",
   "commonVideo": "视频",
   "commonLongImage": "长图",
   "imagePositionSemantics": "图片，第 {position} 张，共 {total} 张",
-  "@imagePositionSemantics": {"placeholders": {"position": {"type": "int"}, "total": {"type": "int"}}},
+  "@imagePositionSemantics": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "downloadVideoCachedNotification": "视频已缓存完成",
   "topicJoin": "参与话题",
   "topicStarted": "发起",
   "topicStats": "{views} 浏览 · {discussions} 讨论",
-  "@topicStats": {"placeholders": {"views": {"type": "String"}, "discussions": {"type": "String"}}},
+  "@topicStats": {
+    "placeholders": {
+      "views": {
+        "type": "String"
+      },
+      "discussions": {
+        "type": "String"
+      }
+    }
+  },
   "replyPinned": "评论置顶成功",
   "replyUnpinned": "已取消评论置顶",
   "webRefresh": "刷新",
@@ -2408,32 +3529,92 @@
   "webCacheCleared": "已清理",
   "webCookieResetSucceeded": "设置成功，请刷新或重新打开网页",
   "webDownloadFileConfirm": "下载文件：{filename}？",
-  "@webDownloadFileConfirm": {"placeholders": {"filename": {"type": "String"}}},
+  "@webDownloadFileConfirm": {
+    "placeholders": {
+      "filename": {
+        "type": "String"
+      }
+    }
+  },
   "webConfirmWithFileSize": "确定（{size}）",
-  "@webConfirmWithFileSize": {"placeholders": {"size": {"type": "String"}}},
+  "@webConfirmWithFileSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "webExternalLinkConfirm": "当前网页将要打开外部链接，是否打开？",
   "webOpen": "打开",
   "commonUnliked": "已取消点赞",
   "articleShareTitle": "哔哩哔哩专栏",
   "articleCount": "{count} 篇专栏",
-  "@articleCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleWordCount": "{count} 个字",
-  "@articleWordCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleWordCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleReadCount": "{count} 次阅读",
-  "@articleReadCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleReadCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleUpdatedAt": "{date} 更新",
-  "@articleUpdatedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@articleUpdatedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "articleCollectionId": "文集号：{id}",
-  "@articleCollectionId": {"placeholders": {"id": {"type": "int"}}},
+  "@articleCollectionId": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
   "followUserFollowers": "{name} 的粉丝",
-  "@followUserFollowers": {"placeholders": {"name": {"type": "String"}}},
+  "@followUserFollowers": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followRemoveFollowerConfirm": "确定移除 {name}？",
-  "@followRemoveFollowerConfirm": {"placeholders": {"name": {"type": "String"}}},
+  "@followRemoveFollowerConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followFollowerRemoved": "移除成功",
   "matchDetails": "比赛详情",
   "matchWatchLive": "看直播",
   "matchEndedAt": "{date} · 已结束",
-  "@matchEndedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@matchEndedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "castNoDevices": "没有找到投屏设备",
   "liveSearchHint": "搜索房间或主播",
   "liveContributionRankOnline": "在线榜",
@@ -2441,9 +3622,21 @@
   "liveContributionRankWeekly": "周榜",
   "liveContributionRankMonthly": "月榜",
   "liveSearchRooms": "正在直播 {count}",
-  "@liveSearchRooms": {"placeholders": {"count": {"type": "String"}}},
+  "@liveSearchRooms": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveSearchUploaders": "主播 {count}",
-  "@liveSearchUploaders": {"placeholders": {"count": {"type": "String"}}},
+  "@liveSearchUploaders": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveAllTags": "全部标签",
   "liveFavoriteTags": "我的常用标签",
   "liveTapTagHint": "点击进入标签",
@@ -2459,16 +3652,40 @@
   "memberPageNumber": "页数",
   "memberLocateLastWatched": "定位至上次观看",
   "audioTrackCount": "{count, plural, other{共 {count} 首}}",
-  "@audioTrackCount": {"placeholders": {"count": {"type": "int"}}},
+  "@audioTrackCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberMyRecentCoinedVideos": "我的最近投币",
   "memberUserRecentCoinedVideos": "{name} 的最近投币",
-  "@memberUserRecentCoinedVideos": {"placeholders": {"name": {"type": "String"}}},
+  "@memberUserRecentCoinedVideos": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberFanMedalWall": "粉丝勋章墙",
   "memberFanMedalCount": "{count, plural, other{共拥有 {count} 枚粉丝勋章}}",
-  "@memberFanMedalCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberFanMedalCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberMedalWearing": "佩戴中",
   "favoriteAddedAt": "收藏于 {date}",
-  "@favoriteAddedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@favoriteAddedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "memberLastWatched": "上次观看",
   "reviewLong": "长评",
   "reviewShort": "短评",
@@ -2485,16 +3702,46 @@
   "reviewPublished": "点评成功",
   "reviewDeleteConfirm": "删除短评，同时删除评分？",
   "reviewCount": "{count} 条点评",
-  "@reviewCount": {"placeholders": {"count": {"type": "String"}}},
+  "@reviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "searchFilter": "筛选",
   "searchFilteredBy": "“{filter}”的筛选结果",
-  "@searchFilteredBy": {"placeholders": {"filter": {"type": "String"}}},
+  "@searchFilteredBy": {
+    "placeholders": {
+      "filter": {
+        "type": "String"
+      }
+    }
+  },
   "searchSortValue": "排序：{value}",
-  "@searchSortValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchSortValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchZoneValue": "分区：{value}",
-  "@searchZoneValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchZoneValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchUserTypeValue": "用户类型：{value}",
-  "@searchUserTypeValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchUserTypeValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchZone": "分区",
   "searchUserSort": "用户粉丝数及等级排序顺序",
   "searchUserType": "用户分类",
@@ -2557,21 +3804,51 @@
   "commonArticle": "专栏",
   "messagesAutoReply": "此条消息为自动回复",
   "messagesLiveBy": "{author} · 直播",
-  "@messagesLiveBy": {"placeholders": {"author": {"type": "String"}}},
+  "@messagesLiveBy": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
   "liveNow": "直播中",
   "memberFollowerCount": "{count} 粉丝",
-  "@memberFollowerCount": {"placeholders": {"count": {"type": "String"}}},
+  "@memberFollowerCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "commonViewMore": "查看更多内容",
   "commonExit": "退出",
   "audioWatchMv": "看 MV",
   "liveHighEnergyAudience": "高能观众（{count}）",
-  "@liveHighEnergyAudience": {"placeholders": {"count": {"type": "String"}}},
+  "@liveHighEnergyAudience": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveJustStarted": "刚刚开播",
   "liveStartedFor": "开播 {duration}",
-  "@liveStartedFor": {"placeholders": {"duration": {"type": "String"}}},
+  "@liveStartedFor": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
   "livePlaybackUrlUnavailable": "无法获取播放地址",
   "liveVisitUser": "访问：{name}",
-  "@liveVisitUser": {"placeholders": {"name": {"type": "String"}}},
+  "@liveVisitUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "liveCopySuperChatInfo": "复制 SC 信息",
   "commonExpand": "展开",
   "commonCollapse": "收起",
@@ -2586,48 +3863,156 @@
   "saveContent": "内容",
   "saveCollection": "合集",
   "saveScanQrToOpen": "识别二维码，{action}{item}",
-  "@saveScanQrToOpen": {"placeholders": {"action": {"type": "String"}, "item": {"type": "String"}}},
+  "@saveScanQrToOpen": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "musicReleaseDate": "发行日期：{date}",
-  "@musicReleaseDate": {"placeholders": {"date": {"type": "String"}}},
+  "@musicReleaseDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "musicOriginalArtist": "原唱：{artist}",
-  "@musicOriginalArtist": {"placeholders": {"artist": {"type": "String"}}},
+  "@musicOriginalArtist": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
   "musicAlbum": "专辑：{album}",
-  "@musicAlbum": {"placeholders": {"album": {"type": "String"}}},
+  "@musicAlbum": {
+    "placeholders": {
+      "album": {
+        "type": "String"
+      }
+    }
+  },
   "musicSource": "出处：{source}",
-  "@musicSource": {"placeholders": {"source": {"type": "String"}}},
+  "@musicSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "musicHotSongRanking": "热歌榜排名",
   "musicPopularity": "热度",
   "musicTotalPlays": "总播放量",
   "musicVideosUsingTrack": "使用稿件量",
   "musicRecentPopularityTrend": "近 {days} 日热度趋势",
-  "@musicRecentPopularityTrend": {"placeholders": {"days": {"type": "int"}}},
+  "@musicRecentPopularityTrend": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "articleAuthorReads": "{author} · {count} 阅读",
-  "@articleAuthorReads": {"placeholders": {"author": {"type": "String"}, "count": {"type": "int"}}},
+  "@articleAuthorReads": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "articlePriceFrom": "{price} 起",
-  "@articlePriceFrom": {"placeholders": {"price": {"type": "String"}}},
+  "@articlePriceFrom": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "articleFeedOrArticle": "动态 / 专栏",
   "articleUnsupportedType": "不支持的类型（{type}）",
-  "@articleUnsupportedType": {"placeholders": {"type": {"type": "String"}}},
+  "@articleUnsupportedType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "articleInvalidType": "错误的类型：{error}",
-  "@articleInvalidType": {"placeholders": {"error": {"type": "String"}}},
+  "@articleInvalidType": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "memberShopFrom": "来自 {source}",
-  "@memberShopFrom": {"placeholders": {"source": {"type": "String"}}},
+  "@memberShopFrom": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "loginMainAccountSucceeded": "主账号登录成功",
   "loginCookieFailed": "登录失败，请检查 Cookie 是否正确。{error}",
-  "@loginCookieFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@loginCookieFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "memberAllCollectionsAndLists": "全部合集 / 列表",
   "memberAllPosts": "全部图文",
   "memberPosts": "图文",
   "memberSupportRanking": "{name} 的充电排行榜 {count}",
-  "@memberSupportRanking": {"placeholders": {"name": {"type": "String"}, "count": {"type": "String"}}},
+  "@memberSupportRanking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "memberSupport": "充电",
   "memberSupportDaysSuffix": " 天",
   "liveSearchUserStats": "分区：{area} · 关注数：{followers}",
-  "@liveSearchUserStats": {"placeholders": {"area": {"type": "String"}, "followers": {"type": "String"}}},
+  "@liveSearchUserStats": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "followers": {
+        "type": "String"
+      }
+    }
+  },
   "bubbleSiteTitle": "{name} 小站",
-  "@bubbleSiteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@bubbleSiteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "liveSwitchPreviewTo": "切换至{target}",
-  "@liveSwitchPreviewTo": {"placeholders": {"target": {"type": "String"}}},
+  "@liveSwitchPreviewTo": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "liveCover": "封面",
   "liveFirstFrame": "首帧",
   "liveShowMenu": "显示菜单",
@@ -2639,9 +4024,21 @@
   "avatarVipBadge": "大会员",
   "avatarVerifiedIndividual": "认证个人",
   "avatarVerifiedOrganization": "认证机构",
-  "@memberUserLevelSemantics": {"placeholders": {"level": {"type": "int"}}},
+  "@memberUserLevelSemantics": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "memberHardcoreUserLevelSemantics": "硬核 {level} 级",
-  "@memberHardcoreUserLevelSemantics": {"placeholders": {"level": {"type": "int"}}},
+  "@memberHardcoreUserLevelSemantics": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "playerProgressBar": "进度条",
   "commonPlay": "播放",
   "settingsSpeedTestTimeout": "测速超时",
@@ -2685,13 +4082,66 @@
   "commentPlusOneRemoveUploaderConfirm": "从 +1 名单中移除 UID {uid}？",
   "@commentPlusOneRemoveUploaderConfirm": {
     "placeholders": {
-      "uid": { "type": "String" }
+      "uid": {
+        "type": "String"
+      }
     }
   },
   "commentPlusOneUploaderCount": "已选 {count} 位 UP 主",
   "@commentPlusOneUploaderCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPlayTitle": "Bili-SyncPlay",
+  "syncPlaySettingsSubtitle": "加入房间并同步普通投稿视频",
+  "syncPlayDescription": "连接兼容 Bili-SyncPlay v5 的房间服务器，同步普通 B 站投稿视频。",
+  "syncPlayServerUrl": "同步服务器地址",
+  "syncPlayWebSocketUrl": "WebSocket 连接地址",
+  "syncPlayAdvancedMode": "高级模式",
+  "syncPlayAllowedOrigin": "服务器允许的 Origin",
+  "syncPlayOriginHelp": "填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。",
+  "syncPlayNickname": "房间昵称",
+  "syncPlayDisconnected": "未连接",
+  "syncPlayConnecting": "正在连接…",
+  "syncPlayConnected": "已连接",
+  "syncPlayNetworkOffline": "设备网络不可用",
+  "syncPlayNetworkDisconnected": "尚未连接到房间",
+  "syncPlayNetworkConnected": "已连接到 SyncPlay",
+  "syncPlayReconnecting": "正在重连…",
+  "syncPlayCreateRoom": "创建房间",
+  "syncPlayJoinRoom": "加入房间",
+  "syncPlayInviteCode": "邀请代码",
+  "syncPlayInviteCopied": "已复制邀请代码",
+  "syncPlayInvalidServer": "服务器地址无效；远程服务器必须使用 wss://。",
+  "syncPlayInvalidOrigin": "Origin 必须是服务器明确允许的 HTTPS 来源。",
+  "syncPlayInvalidName": "昵称需为 1–32 个字符。",
+  "syncPlayInvalidInvite": "请输入 ROOMCODE:JOIN_TOKEN 格式的邀请代码。",
+  "syncPlayConnectionFailed": "连接失败或已断开，请检查服务器地址和网络。",
+  "syncPlayOriginRejected": "服务器拒绝了此 Origin。请让服务器管理员允许你的合法网页来源。",
+  "syncPlayRoomNotFound": "找不到房间。",
+  "syncPlayInviteRejected": "邀请代码或房间成员令牌无效，请检查后重新加入。",
+  "syncPlayRateLimited": "服务器正在限制请求，请稍后再试。",
+  "syncPlayRoomFull": "房间已满。",
+  "syncPlayProtocolUnsupported": "服务器不支持当前协议版本。",
+  "syncPlayInvalidServerMessage": "服务器返回了无效消息。",
+  "syncPlayServerError": "服务器暂时无法完成此请求。",
+  "syncPlayRoomCode": "房间：{code}",
+  "syncPlayCopyInvite": "复制邀请",
+  "syncPlayMembers": "房间成员",
+  "syncPlayShareCurrentVideo": "分享当前视频",
+  "syncPlaySharedVideo": "房间共享视频",
+  "syncPlayOpenSharedVideo": "打开共享视频",
+  "syncPlayLeaveRoom": "离开房间",
+  "syncPlayPrivacyNote": "只向房间服务器发送公开 B 站视频标识、标题和播放状态；不会发送 B 站 Cookie、accessKey 或视频流地址。房间令牌仅保存在当前内存，离开或重启后需要重新加入。",
+  "syncPlayVideoOpenFailed": "无法解析或打开共享视频；请确认它是可访问的普通投稿视频。",
+  "@syncPlayRoomCode": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
     }
   }
 }
