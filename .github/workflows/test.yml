@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/comment-plus-one
   pull_request:
     branches:
       - main
@@ -39,7 +40,11 @@ jobs:
         run: flutter gen-l10n
 
       - name: Check generated localizations
-        run: git diff --exit-code -- lib/l10n/generated
+        run: |
+          if ! git diff --exit-code -- lib/l10n/generated; then
+            git diff -- lib/l10n/generated
+            exit 1
+          fi
 
       - name: Check diff whitespace
         run: git diff --check
@@ -55,5 +60,22 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y pkg-config libgtk-3-dev libx11-dev libxi-dev
 
+      - name: Prepare licensed CJK font for rendered test captures
+        run: |
+          mkdir -p build/test-fonts
+          curl --fail --location --retry 2 --connect-timeout 15 --max-time 90 \
+            https://raw.githubusercontent.com/adobe-fonts/source-han-serif/2.003R/SubsetOTF/CN/SourceHanSerifCN-Regular.otf \
+            --output build/test-fonts/SourceHanSerifCN-Regular.otf
+          echo '3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d  build/test-fonts/SourceHanSerifCN-Regular.otf' | sha256sum --check -
+
       - name: Test
         run: flutter test --no-pub
+
+      - name: Upload rendered comment +1 UI captures
+        if: always() && github.ref == 'refs/heads/feat/comment-plus-one'
+        uses: actions/upload-artifact@v7
+        with:
+          name: comment-plus-one-rendered-${{ github.run_id }}
+          path: build/test-artifacts/comment-plus-one/
+          if-no-files-found: warn
+          retention-days: 14

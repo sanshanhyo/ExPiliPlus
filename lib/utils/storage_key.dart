@@ -248,6 +248,7 @@ abstract final class SettingBoxKey {
       tempPlayerConf = 'tempPlayerConf',
       reduceLuxColor = 'reduceLuxColor',
       liveCdnUrl = 'liveCdnUrl',
+      commentPlusOneMode = 'commentPlusOneMode',
       saveReply = 'saveReply';
 }
 
@@ -257,6 +258,7 @@ abstract final class LocalCacheKey {
       blackMids = 'blackMids',
       dynamicBannedMids = 'dynamicBannedMids',
       dynamicBannedUpList = 'dynamicBannedUpList',
+      commentPlusOneUpMids = 'commentPlusOneUpMids',
       danmakuFilterRules = 'danmakuFilterRules',
       mixinKey = 'mixinKey',
       timeStamp = 'timeStamp',
