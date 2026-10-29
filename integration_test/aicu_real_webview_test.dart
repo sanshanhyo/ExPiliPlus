@@ -16,6 +16,14 @@ void main() {
   testWidgets(
     'loads AICU UID 2 in the Android WebView and closes the page safely',
     (tester) async {
+      // The Android integration-test binding can start with a zero-sized
+      // Flutter view in the headless emulator. Match the runner's 320x640
+      // display so real hit-testing and the platform WebView have a viewport.
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(320, 640);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       final target = AicuUrlPolicy.replyForUid(2)!;
       final controllerReady = Completer<InAppWebViewController>();
       final pageLoaded = Completer<Uri?>();
