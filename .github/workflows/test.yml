@@ -111,7 +111,10 @@ jobs:
       - name: Run the real AICU page in Android WebView
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
+          # API 35 produced a system-phone ANR during the WebView run. Retest
+          # the real page on API 34 to separate emulator-image instability from
+          # app/WebView behavior.
+          api-level: 34
           arch: x86_64
           # The renderer was killed or crashed while loading the full site;
           # give Chromium more headroom and retain logcat diagnostics.

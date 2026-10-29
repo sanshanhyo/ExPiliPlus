@@ -28,7 +28,9 @@ flutter drive \
     # Capture the emulator display directly while the production WebView is
     # still open. This avoids asking Flutter's integration binding to convert
     # a platform WebView surface after Chromium has become unstable.
-    sleep 1
+    # onLoadStop can precede the first fully painted WebView frame. Give the
+    # real page a brief render interval before capturing the visible app.
+    sleep 6
     if adb -s emulator-5554 exec-out screencap -p >"$screenshot_file"; then
       signature=$(od -An -tx1 -N8 "$screenshot_file" | tr -d ' \n')
       if [[ "$signature" == "89504e470d0a1a0a" ]]; then
