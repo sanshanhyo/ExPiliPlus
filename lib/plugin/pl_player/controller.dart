@@ -1,4 +1,4 @@
-import 'dart:async' show StreamSubscription, Timer;
+import 'dart:async' show StreamSubscription, Timer, unawaited;
 import 'dart:convert' show ascii, utf8;
 import 'dart:io' show Platform;
 import 'dart:math' show max, min;
@@ -78,7 +78,25 @@ import 'package:window_manager/window_manager.dart';
 typedef PlayCallback = Future<void>? Function();
 typedef PlayOwner = ({String tag, Type type});
 
+enum PlPlayerExplicitAction { playback, seek, playbackRate }
+
 class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
+  final Set<void Function(PlPlayerExplicitAction)> _explicitActionListeners = {};
+
+  void addExplicitActionListener(
+    void Function(PlPlayerExplicitAction action) listener,
+  ) => _explicitActionListeners.add(listener);
+
+  void removeExplicitActionListener(
+    void Function(PlPlayerExplicitAction action) listener,
+  ) => _explicitActionListeners.remove(listener);
+
+  void notifyExplicitAction(PlPlayerExplicitAction action) {
+    for (final listener in _explicitActionListeners.toList()) {
+      listener(action);
+    }
+  }
+
   Player? _videoPlayerController;
   VideoController? _videoController;
   double _audioFocusVolumeMultiplier = 1.0;
@@ -1198,7 +1216,11 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   }
 
   /// 跳转至指定位置
-  Future<void> seekTo(Duration position, {bool isSeek = true}) async {
+  Future<void> seekTo(
+    Duration position, {
+    bool isSeek = true,
+    bool notifySync = false,
+  }) async {
     if (_playerCount == 0) {
       return;
     }
@@ -1208,15 +1230,26 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
     _heartDuration = position.inSeconds;
 
     if (duration.value != 0) {
-      seek(position, isSeek: isSeek);
+      await seek(position, isSeek: isSeek);
+      if (notifySync) notifyExplicitAction(PlPlayerExplicitAction.seek);
     } else {
       // if (kDebugMode) debugPrint('seek duration else');
       _subForSeek?.cancel();
       _subForSeek = duration.listen((_) {
-        seek(position, isSeek: isSeek);
+        if (duration.value <= 0) return;
+        unawaited(
+          seek(position, isSeek: isSeek).then((_) {
+            if (notifySync) notifyExplicitAction(PlPlayerExplicitAction.seek);
+          }),
+        );
         _cancelSubForSeek();
       });
     }
+  }
+
+  /// Seek after a direct user action and publish it to any active room binding.
+  Future<void> seekToFromUser(Duration position, {bool isSeek = true}) async {
+    await seekTo(position, isSeek: isSeek, notifySync: true);
   }
 
   /// 设置倍速
@@ -1237,6 +1270,15 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
           ),
         );
       } catch (_) {}
+    }
+  }
+
+  /// Change speed from a user control and publish the stable selected rate.
+  Future<void> setPlaybackSpeedFromUser(double speed) async {
+    final previousSpeed = playbackSpeed;
+    await setPlaybackSpeed(speed);
+    if (playbackSpeed != previousSpeed) {
+      notifyExplicitAction(PlPlayerExplicitAction.playbackRate);
     }
   }
 
@@ -1412,10 +1454,11 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   Future<void> onDoubleTapCenter() async {
     if (!isLive && isCompleted) {
       await videoPlayerController!.seek(Duration.zero);
-      videoPlayerController!.play();
+      await videoPlayerController!.play();
     } else {
-      videoPlayerController!.playOrPause();
+      await videoPlayerController!.playOrPause();
     }
+    notifyExplicitAction(PlPlayerExplicitAction.playback);
   }
 
   final RxBool mountSeekBackwardButton = false.obs;
@@ -1430,23 +1473,25 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
   }
 
   void onForward(Duration duration) {
-    onForwardBackward(videoPlayerController!.state.position + duration);
+    unawaited(onForwardBackward(videoPlayerController!.state.position + duration));
   }
 
   void onBackward(Duration duration) {
-    onForwardBackward(videoPlayerController!.state.position - duration);
+    unawaited(onForwardBackward(videoPlayerController!.state.position - duration));
   }
 
-  void onForwardBackward(Duration duration) {
-    seekTo(
+  Future<void> onForwardBackward(Duration duration) async {
+    await seekTo(
       duration.clamp(Duration.zero, videoPlayerController!.state.duration),
       isSeek: false,
-    ).whenComplete(play);
+    );
+    await play();
+    notifyExplicitAction(PlPlayerExplicitAction.seek);
   }
 
   void doubleTapFuc(DoubleTapType type) {
     if (!enableQuickDouble) {
-      onDoubleTapCenter();
+      unawaited(onDoubleTapCenter());
       return;
     }
     switch (type) {
@@ -1455,7 +1500,7 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
         onDoubleTapSeekBackward();
         break;
       case DoubleTapType.center:
-        onDoubleTapCenter();
+        unawaited(onDoubleTapCenter());
         break;
       case DoubleTapType.right:
         // 双击右边区域 👈

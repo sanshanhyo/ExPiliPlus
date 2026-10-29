@@ -671,15 +671,45 @@
   "timeYesterdayAt": "Yesterday at {time}",
   "timeDaysAgo": "{count} days ago",
   "durationYears": "{count} yr ",
-  "@durationYears": {"placeholders": {"count": {"type": "int"}}},
+  "@durationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationMonths": "{count} mo ",
-  "@durationMonths": {"placeholders": {"count": {"type": "int"}}},
+  "@durationMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationDays": "{count} d ",
-  "@durationDays": {"placeholders": {"count": {"type": "int"}}},
+  "@durationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationHours": "{count} hr ",
-  "@durationHours": {"placeholders": {"count": {"type": "int"}}},
+  "@durationHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationMinutes": "{count} min",
-  "@durationMinutes": {"placeholders": {"count": {"type": "int"}}},
+  "@durationMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "timeTodayAt": "Today at {time}",
   "weekdayMondayShort": "Mon",
   "weekdayTuesdayShort": "Tue",
@@ -1240,7 +1270,13 @@
   "settingsFontErrorIncompleteFile": "The font file is incomplete. Download it again",
   "settingsFontErrorLoadFailed": "Couldn't load the font. Download it again",
   "settingsFontErrorHttp": "Couldn't download the font (HTTP {status})",
-  "@settingsFontErrorHttp": {"placeholders": {"status": {"type": "String"}}},
+  "@settingsFontErrorHttp": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFontErrorLicenseExtraction": "Couldn't extract the font license. Try again",
   "settingsFontErrorDownloadFailed": "Couldn't download the font. Try again later",
   "settingsFontErrorSizeMismatch": "The font file size didn't match. Try again",
@@ -1455,8 +1491,12 @@
   "statisticsActivityRecords": "{date} · {count, plural, =1{{count} record} other{{count} records}}",
   "@statisticsActivityRecords": {
     "placeholders": {
-      "date": {"type": "String"},
-      "count": {"type": "int"}
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statisticsRecordTime": "Active hours",
@@ -1686,7 +1726,13 @@
   "networkSendTimeout": "Request timed out. Check your network settings",
   "networkTransformTimeout": "Response processing timed out",
   "networkUnknownError": "Network error: {error}",
-  "@networkUnknownError": {"placeholders": {"error": {"type": "String"}}},
+  "@networkUnknownError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "searchSecurityCheckTriggered": "A security check is required",
   "loginVerificationTitle": "Verification",
   "loginCompleteVerificationWindow": "Complete verification in the new window",
@@ -1719,15 +1765,46 @@
   "memberGuardCount": "{count} members joined the guard",
   "memberMyRecommendations": "My recommendations",
   "memberRecommendationsBy": "{name}'s recommendations",
-  "@memberRecommendationsBy": {"placeholders": {"name": {"type": "String"}}},
+  "@memberRecommendationsBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberCollectionCount": "Collection: {count}",
-  "@memberCollectionCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberCollectionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberListCount": "List: {count}",
-  "@memberListCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberListCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberGuardTitle": "{name}'s guard",
-  "@memberGuardTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@memberGuardTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberGuardTitleWithCount": "{name}'s guard ({count})",
-  "@memberGuardTitleWithCount": {"placeholders": {"name": {"type": "String"}, "count": {}}},
+  "@memberGuardTitleWithCount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {}
+    }
+  },
   "memberAlsoFollowed": "Also followed",
   "memberAlsoFollowedWithOthers": "and {count} others also followed",
   "memberLikesReceived": "Likes",
@@ -2013,17 +2090,41 @@
   "favoriteFolderSortTitle": "Sort favorites",
   "favoriteDefaultFolderSortUnsupported": "The default favorites folder can't be reordered",
   "favoriteSortFolderTitle": "Sort: {folder}",
-  "@favoriteSortFolderTitle": {"placeholders": {"folder": {"type": "String"}}},
+  "@favoriteSortFolderTitle": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
   "followSaveToDefaultGroup": "Save to default group",
   "commonVideo": "Video",
   "commonLongImage": "Long image",
   "imagePositionSemantics": "Image {position} of {total}",
-  "@imagePositionSemantics": {"placeholders": {"position": {"type": "int"}, "total": {"type": "int"}}},
+  "@imagePositionSemantics": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "downloadVideoCachedNotification": "Video downloaded",
   "topicJoin": "Join topic",
   "topicStarted": "Started this topic",
   "topicStats": "{views} views · {discussions} discussions",
-  "@topicStats": {"placeholders": {"views": {"type": "String"}, "discussions": {"type": "String"}}},
+  "@topicStats": {
+    "placeholders": {
+      "views": {
+        "type": "String"
+      },
+      "discussions": {
+        "type": "String"
+      }
+    }
+  },
   "replyPinned": "Comment pinned",
   "replyUnpinned": "Comment unpinned",
   "webRefresh": "Refresh",
@@ -2035,32 +2136,92 @@
   "webCacheCleared": "Cache cleared",
   "webCookieResetSucceeded": "Cookies reset. Refresh or reopen the page.",
   "webDownloadFileConfirm": "Download {filename}?",
-  "@webDownloadFileConfirm": {"placeholders": {"filename": {"type": "String"}}},
+  "@webDownloadFileConfirm": {
+    "placeholders": {
+      "filename": {
+        "type": "String"
+      }
+    }
+  },
   "webConfirmWithFileSize": "Confirm ({size})",
-  "@webConfirmWithFileSize": {"placeholders": {"size": {"type": "String"}}},
+  "@webConfirmWithFileSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "webExternalLinkConfirm": "This page wants to open an external link.",
   "webOpen": "Open",
   "commonUnliked": "Like removed",
   "articleShareTitle": "Bilibili article",
   "articleCount": "{count} articles",
-  "@articleCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleWordCount": "{count} words",
-  "@articleWordCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleWordCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleReadCount": "{count} reads",
-  "@articleReadCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleReadCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleUpdatedAt": "Updated {date}",
-  "@articleUpdatedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@articleUpdatedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "articleCollectionId": "Collection ID: {id}",
-  "@articleCollectionId": {"placeholders": {"id": {"type": "int"}}},
+  "@articleCollectionId": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
   "followUserFollowers": "{name}'s followers",
-  "@followUserFollowers": {"placeholders": {"name": {"type": "String"}}},
+  "@followUserFollowers": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followRemoveFollowerConfirm": "Remove {name} from your followers?",
-  "@followRemoveFollowerConfirm": {"placeholders": {"name": {"type": "String"}}},
+  "@followRemoveFollowerConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followFollowerRemoved": "Follower removed",
   "matchDetails": "Match details",
   "matchWatchLive": "Watch live",
   "matchEndedAt": "{date} · Ended",
-  "@matchEndedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@matchEndedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "castNoDevices": "No casting devices found",
   "liveSearchHint": "Search rooms or Uploaders",
   "liveContributionRankOnline": "Online rank",
@@ -2068,9 +2229,21 @@
   "liveContributionRankWeekly": "Weekly rank",
   "liveContributionRankMonthly": "Monthly rank",
   "liveSearchRooms": "Live {count}",
-  "@liveSearchRooms": {"placeholders": {"count": {"type": "String"}}},
+  "@liveSearchRooms": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveSearchUploaders": "Uploaders {count}",
-  "@liveSearchUploaders": {"placeholders": {"count": {"type": "String"}}},
+  "@liveSearchUploaders": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveAllTags": "All tags",
   "liveFavoriteTags": "My favorite tags",
   "liveTapTagHint": "Tap a tag to open it",
@@ -2086,16 +2259,40 @@
   "memberPageNumber": "Page",
   "memberLocateLastWatched": "Go to last watched",
   "audioTrackCount": "{count, plural, =1{1 track} other{{count} tracks}}",
-  "@audioTrackCount": {"placeholders": {"count": {"type": "int"}}},
+  "@audioTrackCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberMyRecentCoinedVideos": "My recently supported videos",
   "memberUserRecentCoinedVideos": "{name}'s recently supported videos",
-  "@memberUserRecentCoinedVideos": {"placeholders": {"name": {"type": "String"}}},
+  "@memberUserRecentCoinedVideos": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberFanMedalWall": "Fan medal wall",
   "memberFanMedalCount": "{count, plural, =1{1 fan medal} other{{count} fan medals}}",
-  "@memberFanMedalCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberFanMedalCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberMedalWearing": "Wearing",
   "favoriteAddedAt": "Saved {date}",
-  "@favoriteAddedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@favoriteAddedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "memberLastWatched": "Last watched",
   "reviewLong": "Long reviews",
   "reviewShort": "Short reviews",
@@ -2112,16 +2309,46 @@
   "reviewPublished": "Review published",
   "reviewDeleteConfirm": "Delete this short review and its rating?",
   "reviewCount": "{count} reviews",
-  "@reviewCount": {"placeholders": {"count": {"type": "String"}}},
+  "@reviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "searchFilter": "Filter",
   "searchFilteredBy": "Filtered by “{filter}”",
-  "@searchFilteredBy": {"placeholders": {"filter": {"type": "String"}}},
+  "@searchFilteredBy": {
+    "placeholders": {
+      "filter": {
+        "type": "String"
+      }
+    }
+  },
   "searchSortValue": "Sort: {value}",
-  "@searchSortValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchSortValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchZoneValue": "Category: {value}",
-  "@searchZoneValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchZoneValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchUserTypeValue": "User type: {value}",
-  "@searchUserTypeValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchUserTypeValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchZone": "Category",
   "searchUserSort": "Followers and level order",
   "searchUserType": "User type",
@@ -2184,21 +2411,51 @@
   "commonArticle": "Article",
   "messagesAutoReply": "This is an automated reply",
   "messagesLiveBy": "{author} · Live",
-  "@messagesLiveBy": {"placeholders": {"author": {"type": "String"}}},
+  "@messagesLiveBy": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
   "liveNow": "LIVE",
   "memberFollowerCount": "{count} followers",
-  "@memberFollowerCount": {"placeholders": {"count": {"type": "String"}}},
+  "@memberFollowerCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "commonViewMore": "View more",
   "commonExit": "Exit",
   "audioWatchMv": "Watch MV",
   "liveHighEnergyAudience": "Top viewers ({count})",
-  "@liveHighEnergyAudience": {"placeholders": {"count": {"type": "String"}}},
+  "@liveHighEnergyAudience": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveJustStarted": "Just started",
   "liveStartedFor": "Live for {duration}",
-  "@liveStartedFor": {"placeholders": {"duration": {"type": "String"}}},
+  "@liveStartedFor": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
   "livePlaybackUrlUnavailable": "Couldn't get the playback URL",
   "liveVisitUser": "View {name}",
-  "@liveVisitUser": {"placeholders": {"name": {"type": "String"}}},
+  "@liveVisitUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "liveCopySuperChatInfo": "Copy Super Chat info",
   "commonExpand": "Expand",
   "commonCollapse": "Collapse",
@@ -2213,48 +2470,156 @@
   "saveContent": "content",
   "saveCollection": "collection",
   "saveScanQrToOpen": "Scan the QR code to {action} this {item}",
-  "@saveScanQrToOpen": {"placeholders": {"action": {"type": "String"}, "item": {"type": "String"}}},
+  "@saveScanQrToOpen": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "musicReleaseDate": "Released: {date}",
-  "@musicReleaseDate": {"placeholders": {"date": {"type": "String"}}},
+  "@musicReleaseDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "musicOriginalArtist": "Original artist: {artist}",
-  "@musicOriginalArtist": {"placeholders": {"artist": {"type": "String"}}},
+  "@musicOriginalArtist": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
   "musicAlbum": "Album: {album}",
-  "@musicAlbum": {"placeholders": {"album": {"type": "String"}}},
+  "@musicAlbum": {
+    "placeholders": {
+      "album": {
+        "type": "String"
+      }
+    }
+  },
   "musicSource": "Source: {source}",
-  "@musicSource": {"placeholders": {"source": {"type": "String"}}},
+  "@musicSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "musicHotSongRanking": "Hot song ranking",
   "musicPopularity": "Popularity",
   "musicTotalPlays": "Total plays",
   "musicVideosUsingTrack": "Videos using this track",
   "musicRecentPopularityTrend": "Popularity over the past {days} days",
-  "@musicRecentPopularityTrend": {"placeholders": {"days": {"type": "int"}}},
+  "@musicRecentPopularityTrend": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "articleAuthorReads": "{author} · {count} reads",
-  "@articleAuthorReads": {"placeholders": {"author": {"type": "String"}, "count": {"type": "int"}}},
+  "@articleAuthorReads": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "articlePriceFrom": "From {price}",
-  "@articlePriceFrom": {"placeholders": {"price": {"type": "String"}}},
+  "@articlePriceFrom": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "articleFeedOrArticle": "Post / article",
   "articleUnsupportedType": "Unsupported type ({type})",
-  "@articleUnsupportedType": {"placeholders": {"type": {"type": "String"}}},
+  "@articleUnsupportedType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "articleInvalidType": "Invalid type: {error}",
-  "@articleInvalidType": {"placeholders": {"error": {"type": "String"}}},
+  "@articleInvalidType": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "memberShopFrom": "From {source}",
-  "@memberShopFrom": {"placeholders": {"source": {"type": "String"}}},
+  "@memberShopFrom": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "loginMainAccountSucceeded": "Main account signed in",
   "loginCookieFailed": "Sign-in failed. Check your cookies. {error}",
-  "@loginCookieFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@loginCookieFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "memberAllCollectionsAndLists": "All collections / lists",
   "memberAllPosts": "All posts",
   "memberPosts": "Posts",
   "memberSupportRanking": "{name}'s supporter ranking {count}",
-  "@memberSupportRanking": {"placeholders": {"name": {"type": "String"}, "count": {"type": "String"}}},
+  "@memberSupportRanking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "memberSupport": "Support",
   "memberSupportDaysSuffix": " days",
   "liveSearchUserStats": "Category: {area} · {followers} followers",
-  "@liveSearchUserStats": {"placeholders": {"area": {"type": "String"}, "followers": {"type": "String"}}},
+  "@liveSearchUserStats": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "followers": {
+        "type": "String"
+      }
+    }
+  },
   "bubbleSiteTitle": "{name} community",
-  "@bubbleSiteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@bubbleSiteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "liveSwitchPreviewTo": "Switch to {target}",
-  "@liveSwitchPreviewTo": {"placeholders": {"target": {"type": "String"}}},
+  "@liveSwitchPreviewTo": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "liveCover": "cover",
   "liveFirstFrame": "first frame",
   "liveShowMenu": "Show menu",
@@ -2266,9 +2631,21 @@
   "avatarVipBadge": "Premium member",
   "avatarVerifiedIndividual": "Verified individual",
   "avatarVerifiedOrganization": "Verified organization",
-  "@memberUserLevelSemantics": {"placeholders": {"level": {"type": "int"}}},
+  "@memberUserLevelSemantics": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "memberHardcoreUserLevelSemantics": "Hardcore Level {level}",
-  "@memberHardcoreUserLevelSemantics": {"placeholders": {"level": {"type": "int"}}},
+  "@memberHardcoreUserLevelSemantics": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "playerProgressBar": "Progress bar",
   "commonPlay": "Play",
   "settingsSpeedTestTimeout": "Speed test timed out",
@@ -2312,13 +2689,59 @@
   "commentPlusOneRemoveUploaderConfirm": "Remove UID {uid} from the +1 list?",
   "@commentPlusOneRemoveUploaderConfirm": {
     "placeholders": {
-      "uid": {"type": "String"}
+      "uid": {
+        "type": "String"
+      }
     }
   },
   "commentPlusOneUploaderCount": "{count} selected uploaders",
   "@commentPlusOneUploaderCount": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
-  }
+  },
+  "syncPlayTitle": "Bili-SyncPlay",
+  "syncPlaySettingsSubtitle": "Create or join a room to sync a public UGC video",
+  "syncPlayDescription": "Sync ordinary Bilibili UGC videos with a Bili-SyncPlay v5 compatible room server.",
+  "syncPlayServerUrl": "Sync server URL",
+  "syncPlayWebSocketUrl": "WebSocket URL",
+  "syncPlayAdvancedMode": "Advanced mode",
+  "syncPlayAllowedOrigin": "Server-allowed Origin",
+  "syncPlayOriginHelp": "Enter a web origin that the server operator has explicitly allowed. Do not impersonate an extension. Use wss:// for remote servers; ws:// is limited to localhost.",
+  "syncPlayNickname": "Room nickname",
+  "syncPlayDisconnected": "Disconnected",
+  "syncPlayConnecting": "Connecting…",
+  "syncPlayConnected": "Connected",
+  "syncPlayNetworkOffline": "Device network unavailable",
+  "syncPlayNetworkDisconnected": "Not connected to a room",
+  "syncPlayNetworkConnected": "Connected to SyncPlay",
+  "syncPlayReconnecting": "Reconnecting…",
+  "syncPlayCreateRoom": "Create room",
+  "syncPlayJoinRoom": "Join room",
+  "syncPlayInviteCode": "Invite code",
+  "syncPlayInviteCopied": "Invite copied",
+  "syncPlayInvalidServer": "Enter a valid server URL. Remote servers must use wss://.",
+  "syncPlayInvalidOrigin": "Enter a secure HTTPS Origin explicitly allowed by the server.",
+  "syncPlayInvalidName": "Enter a nickname of 1–32 characters.",
+  "syncPlayInvalidInvite": "Enter an invite as ROOMCODE:JOIN_TOKEN.",
+  "syncPlayConnectionFailed": "Could not connect, or the connection was lost. Check the server URL and network.",
+  "syncPlayOriginRejected": "The server rejected this Origin. Ask its operator to allow your legitimate web origin.",
+  "syncPlayRoomNotFound": "Room not found.",
+  "syncPlayInviteRejected": "The invite or room membership token was rejected. Check the invite and try joining again.",
+  "syncPlayRateLimited": "The server is rate limiting requests. Wait before trying again.",
+  "syncPlayRoomFull": "This room is full.",
+  "syncPlayProtocolUnsupported": "The server does not support this protocol version.",
+  "syncPlayInvalidServerMessage": "The server sent an invalid message.",
+  "syncPlayServerError": "The server could not complete this request.",
+  "syncPlayRoomCode": "Room: {code}",
+  "syncPlayCopyInvite": "Copy invite",
+  "syncPlayMembers": "Members",
+  "syncPlayShareCurrentVideo": "Share current video",
+  "syncPlaySharedVideo": "Shared room video",
+  "syncPlayOpenSharedVideo": "Open shared video",
+  "syncPlayLeaveRoom": "Leave room",
+  "syncPlayPrivacyNote": "Only the public Bilibili video ID, title, and playback state are sent to the room server. Bilibili cookies, access keys, and media stream URLs are never sent. Room tokens stay in memory; rejoin after leaving or restarting the app.",
+  "syncPlayVideoOpenFailed": "Could not resolve or open that shared video. It may not be an accessible ordinary UGC video."
 }

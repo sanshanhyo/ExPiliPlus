@@ -33,6 +33,13 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       onTap: _showAppLanguageDialog,
     ),
     NormalModel(
+      getTitle: () => l10n.syncPlayTitle,
+      getSubtitle: () => l10n.syncPlaySettingsSubtitle,
+      leading: const Icon(Icons.groups_2_outlined),
+      getTrailing: (_) => const Icon(Icons.chevron_right),
+      onTap: (context, _) => Get.toNamed('/syncPlay'),
+    ),
+    NormalModel(
       getTitle: () => l10n.settingsOpenOnboarding,
       getSubtitle: () => l10n.settingsOpenOnboardingDescription,
       leading: const Icon(Icons.auto_awesome_outlined),

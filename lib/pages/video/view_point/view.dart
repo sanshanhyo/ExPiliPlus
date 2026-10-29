@@ -134,7 +134,7 @@ class _ViewPointsPageState extends State<ViewPointsPage>
         onTap: segment.from != null
             ? () {
                 Get.back();
-                plPlayerController?.seekTo(
+                plPlayerController?.seekToFromUser(
                   Duration(seconds: segment.from!),
                   isSeek: false,
                 );

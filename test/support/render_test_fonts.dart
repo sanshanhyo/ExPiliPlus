@@ -37,4 +37,3 @@ Future<void> loadRenderTestFonts() async {
     ..addFont(Future.value(ByteData.sublistView(cjkFont)));
   await cjkLoader.load();
 }
-
