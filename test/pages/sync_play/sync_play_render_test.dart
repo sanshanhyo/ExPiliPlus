@@ -58,6 +58,16 @@ class _ScreenshotSocket implements SyncPlaySocket {
   Future<void> close() => controller.close();
 }
 
+void _setTestViewSize(WidgetTester tester, Size size) {
+  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = size;
+}
+
+void _resetTestViewSize(WidgetTester tester) {
+  tester.view.resetPhysicalSize();
+  tester.view.resetDevicePixelRatio();
+}
+
 Future<void> _saveCapture(WidgetTester tester, String filename) async {
   final boundary = tester.renderObject<RenderRepaintBoundary>(
     find.byKey(_captureKey),
@@ -112,8 +122,8 @@ void main() {
   testWidgets('renders the single secure server-address form', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(440, 820));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    _setTestViewSize(tester, const Size(440, 820));
+    addTearDown(() => _resetTestViewSize(tester));
     final service = SyncPlayService(reconnectEnabled: false);
     Get.put(service, permanent: true);
 
@@ -147,8 +157,8 @@ void main() {
   testWidgets('renders an active room and shared public-video card', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(440, 900));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    _setTestViewSize(tester, const Size(440, 900));
+    addTearDown(() => _resetTestViewSize(tester));
     final socket = _ScreenshotSocket();
     final service = SyncPlayService(
       reconnectEnabled: false,
@@ -232,8 +242,8 @@ void main() {
   testWidgets(
     'player panel overlays video, adapts orientation, and preserves the room on close',
     (tester) async {
-      await tester.binding.setSurfaceSize(const Size(420, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+      _setTestViewSize(tester, const Size(420, 900));
+      addTearDown(() => _resetTestViewSize(tester));
       final socket = _ScreenshotSocket();
       var socketConnections = 0;
       final service = SyncPlayService(
@@ -335,7 +345,7 @@ void main() {
       expect(service.credentials?.roomCode, 'ROOM42');
       expect(find.text('测试成员'), findsOneWidget);
 
-      await tester.binding.setSurfaceSize(const Size(900, 560));
+      _setTestViewSize(tester, const Size(900, 560));
       await tester.pumpAndSettle();
       final landscapeRect = tester.getRect(
         find.byKey(const ValueKey('syncplay-player-panel')),
@@ -383,8 +393,8 @@ void main() {
   testWidgets('portrait panel stays readable on a narrow phone viewport', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(360, 800));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    _setTestViewSize(tester, const Size(360, 800));
+    addTearDown(() => _resetTestViewSize(tester));
     final service = SyncPlayService(reconnectEnabled: false);
     Get.put(service, permanent: true);
     late BuildContext playerContext;
@@ -443,8 +453,8 @@ void main() {
   testWidgets('playback menu SyncPlay action opens the same player overlay', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(420, 900));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    _setTestViewSize(tester, const Size(420, 900));
+    addTearDown(() => _resetTestViewSize(tester));
     final service = SyncPlayService(reconnectEnabled: false);
     Get.put(service, permanent: true);
     final launcher = SyncPlayPanelLauncher();
@@ -566,8 +576,8 @@ void main() {
   testWidgets('shows a clear error for an explicitly insecure public address', (
     tester,
   ) async {
-    await tester.binding.setSurfaceSize(const Size(440, 820));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    _setTestViewSize(tester, const Size(440, 820));
+    addTearDown(() => _resetTestViewSize(tester));
     var socketAttempts = 0;
     final service = SyncPlayService(
       reconnectEnabled: false,
