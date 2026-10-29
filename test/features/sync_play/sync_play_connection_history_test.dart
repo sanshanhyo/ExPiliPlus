@@ -56,7 +56,8 @@ void main() {
 
     test('deduplicates newest entries and keeps the history bounded', () {
       final older = _entry('Same', 'wss://sync.example.test/ws', 1);
-      final newer = _entry('Same', 'wss://sync.example.test/ws', 2);
+      // The newest duplicate must outrank every other fixture timestamp.
+      final newer = _entry('Same', 'wss://sync.example.test/ws', 23);
       final many = [
         for (var index = 0; index < 20; index++)
           _entry('Room $index', 'wss://host$index.example.test/ws', index + 3),
@@ -68,7 +69,7 @@ void main() {
       );
 
       expect(result, hasLength(SyncPlayConnectionHistoryEntry.maxEntries));
-      expect(result.first.connectedAtEpochMs, 2);
+      expect(result.first.connectedAtEpochMs, 23);
       expect(
         result.where((item) => item.displayName == 'Same'),
         hasLength(1),

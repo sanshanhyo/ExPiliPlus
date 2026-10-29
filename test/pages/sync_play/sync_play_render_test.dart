@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:ex_piliplus/features/sync_play/sync_play_connection_history.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_network_status.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
 import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
@@ -81,6 +80,12 @@ class _FakeNetworkStatusSource implements SyncPlayNetworkStatusSource {
   Future<void> close() => _changes.close();
 }
 
+_FakeNetworkStatusSource _networkForTest() {
+  final source = _FakeNetworkStatusSource(false);
+  addTearDown(source.close);
+  return source;
+}
+
 void _setTestViewSize(WidgetTester tester, Size size) {
   tester.view.devicePixelRatio = 1;
   tester.view.physicalSize = size;
@@ -148,9 +153,12 @@ void main() {
     _setTestViewSize(tester, const Size(440, 820));
     addTearDown(() => _resetTestViewSize(tester));
     final service = SyncPlayService(reconnectEnabled: false);
+    final network = _networkForTest();
     Get.put(service, permanent: true);
 
-    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Bili-SyncPlay'), findsOneWidget);
@@ -249,9 +257,12 @@ void main() {
     _setTestViewSize(tester, const Size(900, 720));
     addTearDown(() => _resetTestViewSize(tester));
     final service = SyncPlayService(reconnectEnabled: false);
+    final network = _networkForTest();
     Get.put(service, permanent: true);
 
-    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
     await tester.pumpAndSettle();
     final nicknameRect = tester.getRect(
       find.byKey(const ValueKey('syncplay-display-name')),
@@ -300,6 +311,7 @@ void main() {
     _setTestViewSize(tester, const Size(440, 900));
     addTearDown(() => _resetTestViewSize(tester));
     final observed = <(Uri, String)>[];
+    final network = _networkForTest();
     final service = SyncPlayService(
       reconnectEnabled: false,
       socketFactory: (endpoint, origin) async {
@@ -309,7 +321,9 @@ void main() {
     );
     Get.put(service, permanent: true);
 
-    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
     await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('syncplay-server-address')),
@@ -370,7 +384,9 @@ void main() {
     expect(GStorage.setting.get(SyncPlayPreferenceKeys.advancedMode), isFalse);
 
     await tester.pumpWidget(const SizedBox.shrink());
-    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
     await tester.pumpAndSettle();
     expect(
       tester.widget<SwitchListTile>(
@@ -410,13 +426,16 @@ void main() {
     _setTestViewSize(tester, const Size(440, 900));
     addTearDown(() => _resetTestViewSize(tester));
     final socket = _ScreenshotSocket();
+    final network = _networkForTest();
     final service = SyncPlayService(
       reconnectEnabled: false,
       socketFactory: (_, __) async => socket,
     );
     Get.put(service, permanent: true);
 
-    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
     await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('syncplay-server-address')),
@@ -1056,6 +1075,7 @@ void main() {
     _setTestViewSize(tester, const Size(440, 820));
     addTearDown(() => _resetTestViewSize(tester));
     var socketAttempts = 0;
+    final network = _networkForTest();
     final service = SyncPlayService(
       reconnectEnabled: false,
       socketFactory: (_, __) async {
@@ -1065,7 +1085,9 @@ void main() {
     );
     Get.put(service, permanent: true);
 
-    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
     await tester.pumpAndSettle();
     await tester.enterText(
       find.byKey(const ValueKey('syncplay-server-address')),
