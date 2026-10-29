@@ -78,3 +78,49 @@ jobs:
           path: build/test-artifacts/aicu/
           if-no-files-found: warn
           retention-days: 14
+
+  android-real-webview:
+    if: github.ref == 'refs/heads/feat/aicu-comment-lookup'
+    name: Android real AICU WebView
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Apply Android Flutter patches
+        shell: pwsh
+        run: lib/scripts/patch.ps1 Android
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Check generated localizations
+        run: git diff --exit-code -- lib/l10n/generated
+
+      - name: Run the real AICU page in Android WebView
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          disable-animations: true
+          script: flutter drive --driver=integration_test/aicu_real_webview_driver.dart --target=integration_test/aicu_real_webview_test.dart --no-pub -d emulator-5554
+
+      - name: Upload real Android WebView capture
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: aicu-real-android-webview-${{ github.run_id }}
+          path: build/test-artifacts/aicu-real-webview/
+          if-no-files-found: warn
+          retention-days: 14

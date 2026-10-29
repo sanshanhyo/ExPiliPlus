@@ -4,7 +4,8 @@ import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
 import 'package:ex_piliplus/utils/aicu_url_policy.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
-import 'package:flutter/foundation.dart' show visibleForTesting;
+import 'package:flutter/foundation.dart'
+    show ValueChanged, visibleForTesting;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -15,11 +16,17 @@ class AicuLookupPage extends StatefulWidget {
     super.key,
     required this.initialUri,
     @visibleForTesting this.contentBuilder,
+    @visibleForTesting this.onWebViewCreatedForTesting,
+    @visibleForTesting this.onPageLoadedForTesting,
   });
 
   final Uri initialUri;
   @visibleForTesting
   final AicuContentBuilder? contentBuilder;
+  @visibleForTesting
+  final ValueChanged<InAppWebViewController>? onWebViewCreatedForTesting;
+  @visibleForTesting
+  final ValueChanged<Uri?>? onPageLoadedForTesting;
 
   @override
   State<AicuLookupPage> createState() => _AicuLookupPageState();
@@ -137,7 +144,10 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
       javaScriptCanOpenWindowsAutomatically: false,
     ),
     initialUrlRequest: URLRequest(url: WebUri.uri(widget.initialUri)),
-    onWebViewCreated: (controller) => _controller = controller,
+    onWebViewCreated: (controller) {
+      _controller = controller;
+      widget.onWebViewCreatedForTesting?.call(controller);
+    },
     onProgressChanged: (_, progress) {
       if (mounted) setState(() => _progress = progress / 100);
     },
@@ -155,6 +165,7 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
         _loadFailed = false;
         _progress = 1;
       });
+      widget.onPageLoadedForTesting?.call(uri?.uriValue);
     },
     onReceivedError: (_, request, __) {
       if (request.isForMainFrame == true && mounted) {
