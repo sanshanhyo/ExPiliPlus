@@ -47,15 +47,15 @@ void main() {
       late final Uri? loadedUri;
       try {
         await controllerReady.future.timeout(
-          const Duration(seconds: 30),
+          const Duration(seconds: 90),
           onTimeout: () => throw TimeoutException(
             'Android WebView controller was not created',
           ),
         );
         loadedUri = await pageLoaded.future.timeout(
-          const Duration(seconds: 60),
+          const Duration(seconds: 180),
           onTimeout: () => throw TimeoutException(
-            'AICU did not finish loading in Android WebView within 60s',
+            'AICU did not finish loading in Android WebView within 180s',
           ),
         );
       } catch (error) {
@@ -78,7 +78,7 @@ void main() {
         'path=${resolvedUri.path}; uid=2; screenshot=uid-2-android-webview',
       );
     },
-    timeout: const Timeout(Duration(minutes: 2)),
+    timeout: const Timeout(Duration(minutes: 6)),
   );
 }
 

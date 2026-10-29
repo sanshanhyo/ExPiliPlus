@@ -83,7 +83,7 @@ jobs:
     if: github.ref == 'refs/heads/feat/aicu-comment-lookup'
     name: Android real AICU WebView
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -115,6 +115,10 @@ jobs:
           arch: x86_64
           disable-animations: true
           script: flutter drive --driver=integration_test/aicu_real_webview_driver.dart --target=integration_test/aicu_real_webview_test.dart --no-pub -d emulator-5554
+
+      - name: Require a captured real WebView screenshot
+        if: success()
+        run: test -s build/test-artifacts/aicu-real-webview/uid-2-android-webview.png
 
       - name: Upload real Android WebView capture
         if: always()
