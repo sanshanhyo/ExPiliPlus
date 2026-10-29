@@ -2297,6 +2297,7 @@
   "syncPlaySettingsSubtitle": "加入房間並同步一般投稿影片",
   "syncPlayDescription": "連線至相容 Bili-SyncPlay v5 的房間伺服器，同步一般 B 站投稿影片。",
   "syncPlayServerUrl": "同步伺服器位址",
+  "syncPlayWebSocketUrl": "WebSocket 連線位址",
   "syncPlayAllowedOrigin": "伺服器允許的 Origin",
   "syncPlayOriginHelp": "填寫伺服器明確允許的網頁來源；不要偽裝瀏覽器擴充功能身分。遠端伺服器請使用 wss://，ws:// 僅限本機 localhost。",
   "syncPlayNickname": "房間暱稱",

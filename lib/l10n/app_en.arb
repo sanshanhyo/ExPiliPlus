@@ -2297,6 +2297,7 @@
   "syncPlaySettingsSubtitle": "Create or join a room to sync a public UGC video",
   "syncPlayDescription": "Sync ordinary Bilibili UGC videos with a Bili-SyncPlay v5 compatible room server.",
   "syncPlayServerUrl": "Sync server URL",
+  "syncPlayWebSocketUrl": "WebSocket URL",
   "syncPlayAllowedOrigin": "Server-allowed Origin",
   "syncPlayOriginHelp": "Enter a web origin that the server operator has explicitly allowed. Do not impersonate an extension. Use wss:// for remote servers; ws:// is limited to localhost.",
   "syncPlayNickname": "Room nickname",

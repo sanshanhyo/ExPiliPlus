@@ -149,7 +149,193 @@ void main() {
           .text,
       isEmpty,
     );
+    final nicknameRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-display-name')),
+    );
+    final createRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-create-room')),
+    );
+    final inviteRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-invite-code')),
+    );
+    final joinRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-join-room')),
+    );
+    expect(createRect.top, greaterThan(nicknameRect.bottom));
+    expect(joinRect.top, greaterThan(inviteRect.bottom));
     await _saveCapture(tester, 'connection-form-dark-zh.png');
+
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'sync.example.test:9443/ws',
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<SwitchListTile>(
+        find.byKey(const ValueKey('syncplay-advanced-mode')),
+      ).value,
+      isTrue,
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-server-address')),
+          )
+          .enabled,
+      isFalse,
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+          )
+          .controller!
+          .text,
+      'wss://sync.example.test:9443/ws',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-advanced-origin')),
+          )
+          .controller!
+          .text,
+      'https://sync.example.test:9443',
+    );
+    expect(find.text('WebSocket 连接地址'), findsOneWidget);
+    expect(find.text('服务器允许的 Origin'), findsOneWidget);
+    await _saveCapture(tester, 'connection-form-advanced-dark-zh.png');
+    service.dispose();
+    Get.reset();
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('landscape connection form places each action beside its field', (
+    tester,
+  ) async {
+    _setTestViewSize(tester, const Size(900, 720));
+    addTearDown(() => _resetTestViewSize(tester));
+    final service = SyncPlayService(reconnectEnabled: false);
+    Get.put(service, permanent: true);
+
+    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpAndSettle();
+    final nicknameRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-display-name')),
+    );
+    final createRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-create-room')),
+    );
+    final inviteRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-invite-code')),
+    );
+    final joinRect = tester.getRect(
+      find.byKey(const ValueKey('syncplay-join-room')),
+    );
+    expect(createRect.left, greaterThan(nicknameRect.right));
+    expect(joinRect.left, greaterThan(inviteRect.right));
+    expect(createRect.center.dy, greaterThan(nicknameRect.top));
+    expect(createRect.center.dy, lessThan(nicknameRect.bottom));
+    expect(joinRect.center.dy, greaterThan(inviteRect.top));
+    expect(joinRect.center.dy, lessThan(inviteRect.bottom));
+    expect(tester.takeException(), isNull);
+    await _saveCapture(tester, 'connection-form-landscape-dark-zh.png');
+
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'sync.example.test:9443/ws',
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+    await _saveCapture(
+      tester,
+      'connection-form-landscape-advanced-dark-zh.png',
+    );
+
+    service.dispose();
+    Get.reset();
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('advanced values persist across mode changes but off derives Origin', (
+    tester,
+  ) async {
+    _setTestViewSize(tester, const Size(440, 900));
+    addTearDown(() => _resetTestViewSize(tester));
+    final observed = <(Uri, String)>[];
+    final service = SyncPlayService(
+      reconnectEnabled: false,
+      socketFactory: (endpoint, origin) async {
+        observed.add((endpoint, origin));
+        return _ScreenshotSocket();
+      },
+    );
+    Get.put(service, permanent: true);
+
+    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'simple.example.test:9443/path',
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+      'wss://socket.example.test:9444/room',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-advanced-origin')),
+      'https://client.example.test:8443',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+      findsNothing,
+    );
+    expect(
+      GStorage.setting.get(SyncPlayPreferenceKeys.advancedWebSocketUrl),
+      'wss://socket.example.test:9444/room',
+    );
+    expect(
+      GStorage.setting.get(SyncPlayPreferenceKeys.advancedOrigin),
+      'https://client.example.test:8443',
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+          )
+          .controller!
+          .text,
+      'wss://socket.example.test:9444/room',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-advanced-origin')),
+          )
+          .controller!
+          .text,
+      'https://client.example.test:8443',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('syncplay-create-room')));
+    await tester.pumpAndSettle();
+    expect(observed.single.$1.toString(), 'wss://simple.example.test:9443/path');
+    expect(observed.single.$2, 'https://simple.example.test:9443');
+    expect(GStorage.setting.get(SyncPlayPreferenceKeys.advancedMode), isFalse);
+
     service.dispose();
     Get.reset();
   }, timeout: const Timeout(Duration(minutes: 3)));
@@ -318,6 +504,29 @@ void main() {
         find.byKey(const ValueKey('syncplay-server-address')),
       );
       serverAddressField.controller!.text = 'sync.example.test:9443/ws';
+      await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+      await tester.pumpAndSettle();
+      await _saveCapture(tester, 'player-panel-portrait-advanced-dark-zh.png');
+      await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+      await tester.pumpAndSettle();
+      _setTestViewSize(tester, const Size(900, 560));
+      await tester.pumpAndSettle();
+      final landscapeNicknameRect = tester.getRect(
+        find.byKey(const ValueKey('syncplay-display-name')),
+      );
+      final landscapeCreateRect = tester.getRect(
+        find.byKey(const ValueKey('syncplay-create-room')),
+      );
+      final landscapeInviteRect = tester.getRect(
+        find.byKey(const ValueKey('syncplay-invite-code')),
+      );
+      final landscapeJoinRect = tester.getRect(
+        find.byKey(const ValueKey('syncplay-join-room')),
+      );
+      expect(landscapeCreateRect.left, greaterThan(landscapeNicknameRect.right));
+      expect(landscapeJoinRect.left, greaterThan(landscapeInviteRect.right));
+      expect(tester.takeException(), isNull);
+      await _saveCapture(tester, 'player-panel-landscape-form-dark-zh.png');
       await tester.tap(find.text('创建房间'));
       await tester.pumpAndSettle();
       expect(socketConnections, 1);

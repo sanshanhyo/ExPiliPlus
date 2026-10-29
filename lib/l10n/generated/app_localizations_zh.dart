@@ -7485,6 +7485,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayServerUrl => '同步服务器地址';
 
   @override
+  String get syncPlayWebSocketUrl => 'WebSocket 连接地址';
+
+  @override
   String get syncPlayAllowedOrigin => '服务器允许的 Origin';
 
   @override
@@ -15068,6 +15071,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get syncPlayServerUrl => '同步伺服器位址';
+
+  @override
+  String get syncPlayWebSocketUrl => 'WebSocket 連線位址';
 
   @override
   String get syncPlayAllowedOrigin => '伺服器允許的 Origin';

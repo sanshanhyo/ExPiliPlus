@@ -162,6 +162,100 @@ void main() {
       }
     });
 
+    test('validates independent secure endpoint and origin in advanced mode', () {
+      final advanced = SyncPlayServerAddress.tryParseAdvanced(
+        webSocketUrl: 'wss://socket.example.test:9443/realtime',
+        origin: 'https://app.example.test:8443/',
+      );
+      expect(
+        advanced?.endpoint.toString(),
+        'wss://socket.example.test:9443/realtime',
+      );
+      expect(advanced?.origin.toString(), 'https://app.example.test:8443');
+
+      for (final values in [
+        ('ws://socket.example.test/realtime', 'https://app.example.test'),
+        ('wss://socket.example.test/realtime', 'http://app.example.test'),
+        ('wss://user:pass@socket.example.test', 'https://app.example.test'),
+        ('wss://socket.example.test?token=secret', 'https://app.example.test'),
+        ('wss://socket.example.test', 'https://app.example.test/path'),
+        ('wss://socket.example.test', 'https://user@app.example.test'),
+        ('wss://socket.example.test:70000', 'https://app.example.test'),
+        ('wss://socket.example.test', 'https://app.example.test#fragment'),
+      ]) {
+        expect(
+          SyncPlayServerAddress.tryParseAdvanced(
+            webSocketUrl: values.$1,
+            origin: values.$2,
+          ),
+          isNull,
+          reason: 'Should reject endpoint/origin $values',
+        );
+      }
+    });
+
+    test('advanced mode uses explicit secure values; disabled mode derives both', () async {
+      final observed = <(Uri, String)>[];
+      final service = SyncPlayService(
+        reconnectEnabled: false,
+        socketFactory: (endpoint, origin) async {
+          observed.add((endpoint, origin));
+          return _FakeSocket();
+        },
+      );
+      addTearDown(service.dispose);
+
+      await service.createRoom(
+        const SyncPlayConnectionSettings(
+          serverAddress: 'simple.example.test:9443/simple',
+          displayName: 'Tester',
+          advancedMode: false,
+          advancedWebSocketUrl: 'wss://old-custom.example.test/socket',
+          advancedOrigin: 'https://old-custom.example.test',
+        ),
+      );
+      expect(observed.single.$1.toString(), 'wss://simple.example.test:9443/simple');
+      expect(observed.single.$2, 'https://simple.example.test:9443');
+
+      await service.leaveRoom();
+      await service.createRoom(
+        const SyncPlayConnectionSettings(
+          serverAddress: 'ignored.example.test',
+          displayName: 'Tester',
+          advancedMode: true,
+          advancedWebSocketUrl: 'wss://custom.example.test:9444/room',
+          advancedOrigin: 'https://client.example.test:8443',
+        ),
+      );
+      expect(observed.last.$1.toString(), 'wss://custom.example.test:9444/room');
+      expect(observed.last.$2, 'https://client.example.test:8443');
+    });
+
+    test('rejects an insecure advanced Origin before opening a socket', () async {
+      var opened = false;
+      final service = SyncPlayService(
+        reconnectEnabled: false,
+        socketFactory: (_, __) async {
+          opened = true;
+          return _FakeSocket();
+        },
+      );
+      addTearDown(service.dispose);
+
+      await service.createRoom(
+        const SyncPlayConnectionSettings(
+          serverAddress: 'simple.example.test',
+          displayName: 'Tester',
+          advancedMode: true,
+          advancedWebSocketUrl: 'wss://socket.example.test/room',
+          advancedOrigin: 'http://client.example.test',
+        ),
+      );
+
+      expect(opened, isFalse);
+      expect(service.lastErrorCode, 'invalid_origin');
+    });
+
     test('does not send Origin as a query or persist room tokens', () async {
       final socket = _FakeSocket();
       String? observedOrigin;

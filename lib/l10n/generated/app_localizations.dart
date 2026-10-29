@@ -13499,6 +13499,12 @@ abstract class AppLocalizations {
   /// **'同步服务器地址'**
   String get syncPlayServerUrl;
 
+  /// No description provided for @syncPlayWebSocketUrl.
+  ///
+  /// In zh, this message translates to:
+  /// **'WebSocket 连接地址'**
+  String get syncPlayWebSocketUrl;
+
   /// No description provided for @syncPlayAllowedOrigin.
   ///
   /// In zh, this message translates to:

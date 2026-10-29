@@ -7731,6 +7731,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncPlayServerUrl => 'Sync server URL';
 
   @override
+  String get syncPlayWebSocketUrl => 'WebSocket URL';
+
+  @override
   String get syncPlayAllowedOrigin => 'Server-allowed Origin';
 
   @override

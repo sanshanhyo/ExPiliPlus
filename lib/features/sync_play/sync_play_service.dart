@@ -71,7 +71,7 @@ class SyncPlayServerAddress {
 
   /// Accepts a host (optionally with a scheme, port and WebSocket path) and
   /// derives both values from the same authority. Public plaintext endpoints
-  /// are rejected; the request Origin is never user-supplied.
+  /// are rejected. Advanced mode uses [tryParseAdvanced] instead.
   static SyncPlayServerAddress? tryParse(String raw) {
     final value = raw.trim();
     if (value.isEmpty || value.contains(RegExp(r'\s'))) return null;
@@ -118,21 +118,92 @@ class SyncPlayServerAddress {
       return null;
     }
   }
+
+  /// Validates an explicitly configured secure WebSocket endpoint and HTTPS
+  /// Origin. The Origin is deliberately independent of the endpoint host, but
+  /// remains a plain origin (no path, credentials, query, or fragment).
+  static SyncPlayServerAddress? tryParseAdvanced({
+    required String webSocketUrl,
+    required String origin,
+  }) {
+    final endpoint = tryParseAdvancedWebSocketUrl(webSocketUrl);
+    final parsedOrigin = tryParseAdvancedOrigin(origin);
+    if (endpoint == null || parsedOrigin == null) return null;
+    return SyncPlayServerAddress._(endpoint: endpoint, origin: parsedOrigin);
+  }
+
+  static Uri? tryParseAdvancedWebSocketUrl(String raw) {
+    final value = raw.trim();
+    if (value.isEmpty || value.contains(RegExp(r'\s'))) return null;
+    final uri = Uri.tryParse(value);
+    if (uri == null ||
+        !uri.hasAuthority ||
+        uri.scheme.toLowerCase() != 'wss' ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
+        uri.hasQuery ||
+        uri.hasFragment) {
+      return null;
+    }
+    try {
+      if (uri.hasPort && (uri.port < 1 || uri.port > 65535)) return null;
+      return uri.replace(scheme: 'wss', host: uri.host.toLowerCase());
+    } on FormatException {
+      return null;
+    }
+  }
+
+  static Uri? tryParseAdvancedOrigin(String raw) {
+    final value = raw.trim();
+    if (value.isEmpty || value.contains(RegExp(r'\s'))) return null;
+    final uri = Uri.tryParse(value);
+    if (uri == null ||
+        !uri.hasAuthority ||
+        uri.scheme.toLowerCase() != 'https' ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
+        uri.hasQuery ||
+        uri.hasFragment ||
+        (uri.path.isNotEmpty && uri.path != '/')) {
+      return null;
+    }
+    try {
+      if (uri.hasPort && (uri.port < 1 || uri.port > 65535)) return null;
+      return Uri(
+        scheme: 'https',
+        host: uri.host.toLowerCase(),
+        port: uri.hasPort ? uri.port : null,
+      );
+    } on FormatException {
+      return null;
+    }
+  }
 }
 
 class SyncPlayConnectionSettings {
   const SyncPlayConnectionSettings({
     required this.serverAddress,
     required this.displayName,
+    this.advancedMode = false,
+    this.advancedWebSocketUrl = '',
+    this.advancedOrigin = '',
   });
 
   final String serverAddress;
   final String displayName;
+  final bool advancedMode;
+  final String advancedWebSocketUrl;
+  final String advancedOrigin;
 
-  String get endpoint =>
-      SyncPlayServerAddress.tryParse(serverAddress)?.endpoint.toString() ?? '';
-  String get origin =>
-      SyncPlayServerAddress.tryParse(serverAddress)?.origin.toString() ?? '';
+  SyncPlayServerAddress? get parsedAddress => advancedMode
+      ? SyncPlayServerAddress.tryParseAdvanced(
+          webSocketUrl: advancedWebSocketUrl,
+          origin: advancedOrigin,
+        )
+      : SyncPlayServerAddress.tryParse(serverAddress);
+
+  String get endpoint => parsedAddress?.endpoint.toString() ?? '';
+  String get origin => parsedAddress?.origin.toString() ?? '';
 
   static String? validateDisplayName(String raw) {
     final value = raw.trim();
@@ -248,12 +319,18 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
   SyncPlayConnectionSettings? _validateSettings(
     SyncPlayConnectionSettings value,
   ) {
-    final address = SyncPlayServerAddress.tryParse(value.serverAddress);
+    final address = value.parsedAddress;
     final name = SyncPlayConnectionSettings.validateDisplayName(
       value.displayName,
     );
     if (address == null) {
-      lastErrorCode = 'invalid_server';
+      final endpointIsValid =
+          value.advancedMode &&
+          SyncPlayServerAddress.tryParseAdvancedWebSocketUrl(
+                value.advancedWebSocketUrl,
+              ) !=
+              null;
+      lastErrorCode = endpointIsValid ? 'invalid_origin' : 'invalid_server';
       notifyListeners();
       return null;
     }
@@ -263,8 +340,15 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
       return null;
     }
     return SyncPlayConnectionSettings(
-      serverAddress: address.endpoint.toString(),
+      serverAddress: value.advancedMode
+          ? value.serverAddress
+          : address.endpoint.toString(),
       displayName: name,
+      advancedMode: value.advancedMode,
+      advancedWebSocketUrl: value.advancedMode
+          ? address.endpoint.toString()
+          : '',
+      advancedOrigin: value.advancedMode ? address.origin.toString() : '',
     );
   }
 

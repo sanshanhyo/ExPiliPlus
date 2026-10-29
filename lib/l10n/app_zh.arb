@@ -2670,6 +2670,7 @@
   "syncPlaySettingsSubtitle": "加入房间并同步普通投稿视频",
   "syncPlayDescription": "连接兼容 Bili-SyncPlay v5 的房间服务器，同步普通 B 站投稿视频。",
   "syncPlayServerUrl": "同步服务器地址",
+  "syncPlayWebSocketUrl": "WebSocket 连接地址",
   "syncPlayAllowedOrigin": "服务器允许的 Origin",
   "syncPlayOriginHelp": "填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。",
   "syncPlayNickname": "房间昵称",
