@@ -43,6 +43,8 @@ void main() {
                   () => AicuLookupPage(
                     initialUri: target,
                     onWebViewCreatedForTesting: (controller) {
+                      // ignore: avoid_print
+                      print('AICU Android WebView controller created');
                       if (!controllerReady.isCompleted) {
                         controllerReady.complete(controller);
                       }
@@ -79,10 +81,6 @@ void main() {
       );
 
       await tester.tap(find.byKey(const ValueKey('open-aicu-uid-2')));
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('AICU 评论查询'), findsOneWidget);
-      expect(find.byType(InAppWebView), findsOneWidget);
-
       late final Uri? loadedUri;
       late final InAppWebViewController controller;
       try {
@@ -92,6 +90,8 @@ void main() {
             'Android WebView controller was not created',
           ),
         );
+        expect(find.byType(AicuLookupPage), findsOneWidget);
+        expect(find.byType(InAppWebView), findsOneWidget);
         loadedUri = await pageLoaded.future.timeout(
           const Duration(seconds: 180),
           onTimeout: () => throw TimeoutException(
@@ -107,6 +107,7 @@ void main() {
       final resolvedUri = pageUri!;
       expect(AicuUrlPolicy.isAllowedTopLevel(resolvedUri), isTrue);
       expect(resolvedUri.queryParameters['uid'], '2');
+      expect(find.text('AICU 评论查询'), findsOneWidget);
 
       // Let the host-side screenshot command capture the loaded application
       // before exercising scrolling or navigating away.
@@ -132,7 +133,7 @@ void main() {
       print('AICU real WebView scroll metrics: $scrollMetrics');
 
       final backTooltip = MaterialLocalizations.of(
-        tester.element(find.text('AICU 评论查询')),
+        tester.element(find.byType(AicuLookupPage)),
       ).backButtonTooltip;
       expect(find.byTooltip(backTooltip), findsOneWidget);
       await tester.tap(find.byTooltip(backTooltip));
