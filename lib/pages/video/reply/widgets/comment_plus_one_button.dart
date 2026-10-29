@@ -36,6 +36,7 @@ class _CommentPlusOneButtonState extends State<CommentPlusOneButton> {
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
     return Padding(
+      key: const ValueKey('comment-plus-one-offset'),
       padding: const EdgeInsets.only(left: 6),
       child: Tooltip(
         message: widget.isSupported

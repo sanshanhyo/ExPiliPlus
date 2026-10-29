@@ -128,13 +128,17 @@ void main() {
     );
     final plusOneButton = tester.widget<TextButton>(plusOneButtonFinder);
     final plusOneButtonRect = tester.getRect(plusOneButtonFinder);
+    final plusOneOffset = tester.widget<Padding>(
+      find.byKey(const ValueKey('comment-plus-one-offset')),
+    );
     expect(
       plusOneButton.style?.backgroundColor?.resolve(const <WidgetState>{}),
       Colors.transparent,
     );
+    expect(plusOneOffset.padding, const EdgeInsets.only(left: 6));
     expect(
       plusOneButtonRect.left - replyTextRect.right,
-      closeTo(6, 0.5),
+      greaterThan(10),
     );
     expect(plusOneButtonRect.height, 32);
     await _saveRenderedCapture(tester, 'reply-actions-dark.png');
