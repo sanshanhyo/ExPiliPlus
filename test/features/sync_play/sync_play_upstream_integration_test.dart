@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
+import 'package:ex_piliplus/plugin/pl_player/controller.dart'
+    show PlPlayerExplicitAction;
 import 'package:flutter_test/flutter_test.dart';
 
 const _upstreamRevision = 'f9258d976570492a1d1e2c469d3da90a8cfade96';
@@ -253,13 +255,13 @@ void main() {
             if (guest.isInRoom || guest.isConnected) {
               await guest.leaveRoom().timeout(
                 const Duration(seconds: 8),
-                onTimeout: () async {},
+                onTimeout: () {},
               );
             }
             if (owner.isInRoom || owner.isConnected) {
               await owner.leaveRoom().timeout(
                 const Duration(seconds: 8),
-                onTimeout: () async {},
+                onTimeout: () {},
               );
             }
             guest.dispose();
@@ -305,5 +307,5 @@ void main() {
 }
 
 HttpClient _createLoopbackOnlyHttpClient(SecurityContext? context) =>
-    HttpClient(context)
+    HttpClient(context: context)
       ..badCertificateCallback = (_, host, __) => host == '127.0.0.1';
