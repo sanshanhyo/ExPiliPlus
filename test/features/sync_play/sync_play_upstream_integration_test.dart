@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
@@ -7,6 +7,7 @@ import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart'
     show PlPlayerExplicitAction;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:web_socket_channel/io.dart';
 
 const _upstreamRevision = 'f9258d976570492a1d1e2c469d3da90a8cfade96';
 
@@ -23,6 +24,21 @@ class _TrackedSocket implements SyncPlaySocket {
 
   @override
   Future<void> close() => delegate.close();
+}
+
+class _LoopbackTestSocket implements SyncPlaySocket {
+  _LoopbackTestSocket(this._channel);
+
+  final IOWebSocketChannel _channel;
+
+  @override
+  Stream<Object?> get stream => _channel.stream;
+
+  @override
+  void send(String text) => _channel.sink.add(text);
+
+  @override
+  Future<void> close() async => _channel.sink.close();
 }
 
 class _IdlePlayer implements SyncPlayPlayerPort {
@@ -79,11 +95,40 @@ class _IdlePlayer implements SyncPlayPlayerPort {
   Future<void> pause() async => isPlaying = false;
 }
 
-SyncPlayConnectionSettings _settings(int port, String displayName) =>
+SyncPlayConnectionSettings _settings(String displayName) =>
     SyncPlayConnectionSettings(
-      serverAddress: 'https://127.0.0.1:$port',
+      serverAddress: 'https://syncplay-integration.test',
       displayName: displayName,
     );
+
+Future<SyncPlaySocket> _connectToPinnedServer(
+  Uri endpoint,
+  String origin,
+  int loopbackPort,
+) async {
+  expect(endpoint.scheme, 'wss');
+  expect(endpoint.host, 'syncplay-integration.test');
+  expect(endpoint.port, 443);
+  expect(endpoint.path, isEmpty);
+
+  // Keep the production service's secure endpoint/origin derivation in the
+  // assertion, while using plain WebSocket only on this private loopback
+  // transport. TLS certificate negotiation is deliberately not covered here.
+  final loopback = Uri(
+    scheme: 'ws',
+    host: '127.0.0.1',
+    port: loopbackPort,
+    path: endpoint.path,
+  );
+  final channel = IOWebSocketChannel.connect(
+    loopback,
+    headers: {'Origin': origin},
+    connectTimeout: const Duration(seconds: 12),
+    pingInterval: const Duration(seconds: 25),
+  );
+  await channel.ready;
+  return _LoopbackTestSocket(channel);
+}
 
 Future<void> _waitUntil(
   String description,
@@ -118,156 +163,179 @@ void main() {
           Platform.environment['SYNCPLAY_UPSTREAM_REVISION'],
           _upstreamRevision,
         );
-        await HttpOverrides.runZoned(() async {
-          final ownerSockets = <_TrackedSocket>[];
-          final guestSockets = <_TrackedSocket>[];
-          final reconnectGate = Completer<void>();
-          final reconnectAttempted = Completer<void>();
-          var guestSocketCalls = 0;
+        final ownerSockets = <_TrackedSocket>[];
+        final guestSockets = <_TrackedSocket>[];
+        final reconnectGate = Completer<void>();
+        final reconnectAttempted = Completer<void>();
+        var guestSocketCalls = 0;
+        Object? ownerTransportError;
+        Object? guestTransportError;
 
-          Future<SyncPlaySocket> connect(
-            List<_TrackedSocket> observed,
-            Uri endpoint,
-            String origin,
-          ) async {
-            expect(endpoint.scheme, 'wss');
-            expect(endpoint.host, '127.0.0.1');
-            expect(endpoint.port, port);
-            expect(origin, 'https://127.0.0.1:$port');
+        Future<SyncPlaySocket> connect(
+          List<_TrackedSocket> observed,
+          Uri endpoint,
+          String origin,
+          void Function(Object) recordError,
+        ) async {
+          try {
+            expect(origin, 'https://syncplay-integration.test');
             final socket = _TrackedSocket(
-              await IoSyncPlaySocket.connect(endpoint, origin),
+              await _connectToPinnedServer(endpoint, origin, port),
             );
             observed.add(socket);
             return socket;
+          } catch (error) {
+            recordError(error);
+            rethrow;
           }
+        }
 
-          final owner = SyncPlayService(
-            socketFactory: (endpoint, origin) =>
-                connect(ownerSockets, endpoint, origin),
-          );
-          final guest = SyncPlayService(
-            reconnectDelay: (_) => Duration.zero,
-            socketFactory: (endpoint, origin) async {
-              guestSocketCalls++;
-              if (guestSocketCalls > 1) {
-                if (!reconnectAttempted.isCompleted) {
-                  reconnectAttempted.complete();
-                }
-                await reconnectGate.future;
+        final owner = SyncPlayService(
+          socketFactory: (endpoint, origin) => connect(
+            ownerSockets,
+            endpoint,
+            origin,
+            (error) => ownerTransportError = error,
+          ),
+        );
+        final guest = SyncPlayService(
+          reconnectDelay: (_) => Duration.zero,
+          socketFactory: (endpoint, origin) async {
+            guestSocketCalls++;
+            if (guestSocketCalls > 1) {
+              if (!reconnectAttempted.isCompleted) {
+                reconnectAttempted.complete();
               }
-              return connect(guestSockets, endpoint, origin);
-            },
+              await reconnectGate.future;
+            }
+            return connect(
+              guestSockets,
+              endpoint,
+              origin,
+              (error) => guestTransportError = error,
+            );
+          },
+        );
+
+        try {
+          await owner.createRoom(_settings('Dart host'));
+          expect(
+            owner.status,
+            SyncPlayConnectionStatus.connected,
+            reason: 'Allowed Origin socket failed: $ownerTransportError',
+          );
+          await _waitUntil(
+            'host room creation (${_serviceState(owner)})',
+            () => owner.credentials != null && owner.room != null,
+          );
+          final invite = owner.invite;
+          expect(owner.status, SyncPlayConnectionStatus.connected);
+          expect(invite, isNotNull);
+          expect(invite, matches(RegExp(r'^[A-Z0-9]{6}:.{16,128}$')));
+
+          await guest.joinRoom(_settings('Dart guest'), invite!);
+          expect(
+            guest.status,
+            SyncPlayConnectionStatus.connected,
+            reason: 'Allowed Origin guest socket failed: $guestTransportError',
+          );
+          await _waitUntil(
+            'guest join and two-member room (${_serviceState(guest)})',
+            () =>
+                guest.memberId != null &&
+                guest.room?.members.length == 2 &&
+                owner.room?.members.length == 2,
+          );
+          final guestMemberId = guest.memberId;
+
+          final video = SyncPlayVideoRef.fromPlayer(
+            bvid: 'BV1gA411M7RN',
+            cid: 2002,
+            part: 1,
+          );
+          expect(
+            await owner.shareCurrentVideo(
+              video: video,
+              title: 'Synthetic integration video',
+              player: _IdlePlayer(),
+            ),
+            isTrue,
+          );
+          await _waitUntil(
+            'shared video reached guest (${_serviceState(guest)})',
+            () => guest.room?.sharedVideo?.videoId == video.videoId,
           );
 
-          try {
-            await owner.createRoom(_settings(port, 'Dart host'));
-            await _waitUntil(
-              'host room creation (${_serviceState(owner)})',
-              () => owner.credentials != null && owner.room != null,
-            );
-            final invite = owner.invite;
-            expect(invite, isNotNull);
-            expect(invite, matches(RegExp(r'^[A-Z0-9]{6}:.{16,128}$')));
+          final playback = SyncPlayPlayback(
+            url: video.url,
+            currentTimeSeconds: 42,
+            state: SyncPlayPlaybackState.paused,
+            playbackRate: 1.5,
+            updatedAt: DateTime.now().millisecondsSinceEpoch,
+            serverTime: 0,
+            actorId: owner.memberId!,
+            seq: owner.nextPlaybackSequence(),
+            syncIntent: 'explicit-seek',
+            userInitiated: true,
+          );
+          owner.sendPlayback(playback);
+          await _waitUntil(
+            'playback update reached guest (${_serviceState(guest)})',
+            () => guest.room?.playback?.seq == playback.seq,
+          );
+          expect(guest.room?.playback?.state, SyncPlayPlaybackState.paused);
+          expect(guest.room?.playback?.currentTimeSeconds, 42);
+          expect(guest.room?.playback?.playbackRate, 1.5);
+          expect(guest.room?.playback?.syncIntent, 'explicit-seek');
 
-            await guest.joinRoom(_settings(port, 'Dart guest'), invite!);
-            await _waitUntil(
-              'guest join and two-member room (${_serviceState(guest)})',
-              () =>
-                  guest.memberId != null &&
-                  guest.room?.members.length == 2 &&
-                  owner.room?.members.length == 2,
-            );
-            final guestMemberId = guest.memberId;
+          await guestSockets.single.close();
+          await reconnectAttempted.future.timeout(
+            const Duration(seconds: 8),
+            onTimeout: () => throw TimeoutException(
+              'Guest service never scheduled a reconnect.',
+            ),
+          );
+          await _waitUntil(
+            'upstream server to release disconnected guest seat (${_serviceState(owner)})',
+            () => owner.room?.members.length == 1,
+          );
+          reconnectGate.complete();
+          await _waitUntil(
+            'guest service to reclaim its room member (${_serviceState(guest)})',
+            () =>
+                guest.status == SyncPlayConnectionStatus.connected &&
+                guestSockets.length == 2 &&
+                guest.memberId == guestMemberId &&
+                owner.room?.members.length == 2 &&
+                owner.room?.members.any((member) => member.id == guestMemberId) ==
+                    true,
+          );
 
-            final video = SyncPlayVideoRef.fromPlayer(
-              bvid: 'BV1gA411M7RN',
-              cid: 2002,
-              part: 1,
-            );
-            expect(
-              await owner.shareCurrentVideo(
-                video: video,
-                title: 'Synthetic integration video',
-                player: _IdlePlayer(),
-              ),
-              isTrue,
-            );
-            await _waitUntil(
-              'shared video reached guest (${_serviceState(guest)})',
-              () => guest.room?.sharedVideo?.videoId == video.videoId,
-            );
-
-            final playback = SyncPlayPlayback(
-              url: video.url,
-              currentTimeSeconds: 42,
-              state: SyncPlayPlaybackState.paused,
-              playbackRate: 1.5,
-              updatedAt: DateTime.now().millisecondsSinceEpoch,
-              serverTime: 0,
-              actorId: owner.memberId!,
-              seq: owner.nextPlaybackSequence(),
-              syncIntent: 'explicit-seek',
-              userInitiated: true,
-            );
-            owner.sendPlayback(playback);
-            await _waitUntil(
-              'playback update reached guest (${_serviceState(guest)})',
-              () => guest.room?.playback?.seq == playback.seq,
-            );
-            expect(guest.room?.playback?.state, SyncPlayPlaybackState.paused);
-            expect(guest.room?.playback?.currentTimeSeconds, 42);
-            expect(guest.room?.playback?.playbackRate, 1.5);
-            expect(guest.room?.playback?.syncIntent, 'explicit-seek');
-
-            await guestSockets.single.close();
-            await reconnectAttempted.future.timeout(
+          await guest.leaveRoom().timeout(const Duration(seconds: 8));
+          await _waitUntil(
+            'upstream server to observe explicit guest leave (${_serviceState(owner)})',
+            () => owner.room?.members.length == 1,
+          );
+          expect(guest.credentials, isNull);
+          await owner.leaveRoom().timeout(const Duration(seconds: 8));
+          expect(owner.status, SyncPlayConnectionStatus.disconnected);
+        } finally {
+          if (!reconnectGate.isCompleted) reconnectGate.complete();
+          if (guest.isInRoom || guest.isConnected) {
+            await guest.leaveRoom().timeout(
               const Duration(seconds: 8),
-              onTimeout: () => throw TimeoutException(
-                'Guest service never scheduled a reconnect.',
-              ),
+              onTimeout: () {},
             );
-            await _waitUntil(
-              'upstream server to release disconnected guest seat (${_serviceState(owner)})',
-              () => owner.room?.members.length == 1,
-            );
-            reconnectGate.complete();
-            await _waitUntil(
-              'guest service to reclaim its room member (${_serviceState(guest)})',
-              () =>
-                  guest.status == SyncPlayConnectionStatus.connected &&
-                  guestSockets.length == 2 &&
-                  guest.memberId == guestMemberId &&
-                  owner.room?.members.length == 2 &&
-                  owner.room?.members.any((member) => member.id == guestMemberId) ==
-                      true,
-            );
-
-            await guest.leaveRoom().timeout(const Duration(seconds: 8));
-            await _waitUntil(
-              'upstream server to observe explicit guest leave (${_serviceState(owner)})',
-              () => owner.room?.members.length == 1,
-            );
-            expect(guest.credentials, isNull);
-            await owner.leaveRoom().timeout(const Duration(seconds: 8));
-            expect(owner.status, SyncPlayConnectionStatus.disconnected);
-          } finally {
-            if (!reconnectGate.isCompleted) reconnectGate.complete();
-            if (guest.isInRoom || guest.isConnected) {
-              await guest.leaveRoom().timeout(
-                const Duration(seconds: 8),
-                onTimeout: () {},
-              );
-            }
-            if (owner.isInRoom || owner.isConnected) {
-              await owner.leaveRoom().timeout(
-                const Duration(seconds: 8),
-                onTimeout: () {},
-              );
-            }
-            guest.dispose();
-            owner.dispose();
           }
-        }, createHttpClient: _createLoopbackOnlyHttpClient);
+          if (owner.isInRoom || owner.isConnected) {
+            await owner.leaveRoom().timeout(
+              const Duration(seconds: 8),
+              onTimeout: () {},
+            );
+          }
+          guest.dispose();
+          owner.dispose();
+        }
       },
       skip: configuredPort == null,
       timeout: const Timeout(Duration(seconds: 55)),
@@ -277,35 +345,35 @@ void main() {
       'upstream rejects a service connection with an unapproved Origin',
       () async {
         final port = configuredPort!;
-        await HttpOverrides.runZoned(() async {
-          final service = SyncPlayService();
-          try {
-            await service.createRoom(
-              SyncPlayConnectionSettings(
-                serverAddress: '',
-                displayName: 'Origin check',
-                advancedMode: true,
-                advancedWebSocketUrl: 'wss://127.0.0.1:$port',
-                advancedOrigin: 'https://not-allowed.integration.test',
-              ),
-            );
-            await _waitUntil(
-              'Origin rejection (${_serviceState(service)})',
-              () => service.status == SyncPlayConnectionStatus.disconnected,
-            );
-            expect(service.credentials, isNull);
-            expect(service.lastErrorCode, 'connection_failed');
-          } finally {
-            service.dispose();
-          }
-        }, createHttpClient: _createLoopbackOnlyHttpClient);
+        final service = SyncPlayService(
+          socketFactory: (endpoint, origin) {
+            expect(origin, 'https://not-allowed.integration.test');
+            return _connectToPinnedServer(endpoint, origin, port);
+          },
+          );
+        try {
+          await service.createRoom(
+            SyncPlayConnectionSettings(
+              serverAddress: '',
+              displayName: 'Origin check',
+              advancedMode: true,
+              advancedWebSocketUrl: 'wss://syncplay-integration.test',
+              advancedOrigin: 'https://not-allowed.integration.test',
+            ),
+          );
+          expect(
+            service.status,
+            SyncPlayConnectionStatus.disconnected,
+            reason: 'Unapproved Origin was accepted by the upstream server.',
+          );
+          expect(service.credentials, isNull);
+          expect(service.lastErrorCode, 'connection_failed');
+        } finally {
+          service.dispose();
+        }
       },
       skip: configuredPort == null,
       timeout: const Timeout(Duration(seconds: 20)),
     );
   });
 }
-
-HttpClient _createLoopbackOnlyHttpClient(SecurityContext? context) =>
-    HttpClient(context: context)
-      ..badCertificateCallback = (_, host, __) => host == '127.0.0.1';

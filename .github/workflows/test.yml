@@ -99,16 +99,9 @@ jobs:
         env:
           SYNCPLAY_UPSTREAM_SERVER_ROOT: ${{ github.workspace }}/build/bili-syncplay-upstream/server
           SYNCPLAY_UPSTREAM_REVISION: f9258d976570492a1d1e2c469d3da90a8cfade96
-          SYNCPLAY_TEST_TLS_CERT: ${{ runner.temp }}/syncplay-integration.crt
-          SYNCPLAY_TEST_TLS_KEY: ${{ runner.temp }}/syncplay-integration.key
           SYNCPLAY_TEST_SERVER_PORT_FILE: ${{ runner.temp }}/syncplay-integration.port
         run: |
           set -euo pipefail
-          openssl req -x509 -newkey rsa:2048 -nodes \
-            -keyout "$SYNCPLAY_TEST_TLS_KEY" \
-            -out "$SYNCPLAY_TEST_TLS_CERT" \
-            -days 1 -subj '/CN=127.0.0.1' \
-            -addext 'subjectAltName=IP:127.0.0.1'
           rm -f "$SYNCPLAY_TEST_SERVER_PORT_FILE"
           server_log="$RUNNER_TEMP/syncplay-upstream-server.log"
           node .github/scripts/start_syncplay_upstream_test_server.mjs >"$server_log" 2>&1 &
