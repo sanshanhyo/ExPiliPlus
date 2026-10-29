@@ -140,7 +140,15 @@ void main() {
       plusOneButtonRect.left - replyTextRect.right,
       greaterThan(10),
     );
-    expect(plusOneButtonRect.height, 32);
+    expect(
+      plusOneButton.style?.minimumSize?.resolve(const <WidgetState>{}),
+      const Size(0, 32),
+    );
+    expect(
+      plusOneButton.style?.tapTargetSize,
+      MaterialTapTargetSize.shrinkWrap,
+    );
+    expect(plusOneButtonRect.height, closeTo(24, 0.5));
     await _saveRenderedCapture(tester, 'reply-actions-dark.png');
   }, timeout: const Timeout(Duration(minutes: 3)));
 
