@@ -1233,7 +1233,7 @@ class ReplyItemGrpc extends StatelessWidget {
           if (AicuLookupMenuTile.shouldShow(
             enabled: GStorage.setting.get(
               SettingBoxKey.enableAicuCommentLookup,
-              defaultValue: true,
+              defaultValue: false,
             ) == true,
             authorUid: item.mid.toInt(),
           ))

@@ -31,7 +31,7 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       getSubtitle: () => l10n.settingsAicuLookupEnabledDescription,
       leading: const Icon(Icons.auto_awesome_outlined),
       setKey: SettingBoxKey.enableAicuCommentLookup,
-      defaultVal: true,
+      defaultVal: false,
     ),
     NormalModel(
       getTitle: () => l10n.settingsAicuProbe,

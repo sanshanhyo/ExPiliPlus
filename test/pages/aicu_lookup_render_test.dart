@@ -48,6 +48,8 @@ class _MemoryBox implements Box<dynamic> {
 
   void reset() => _values.clear();
 
+  void seed(dynamic key, dynamic value) => _values[key] = value;
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -86,6 +88,68 @@ Widget _app(Widget child) {
   );
 }
 
+ReplyInfo _syntheticReply() => ReplyInfo(
+  id: Int64(9001),
+  oid: Int64(5001),
+  type: Int64(1),
+  mid: Int64(987654321012345),
+  content: Content(message: '只用于菜单渲染的虚构评论'),
+);
+
+Widget _replyMenuHarness(ReplyInfo reply) {
+  final replyWidget = ReplyItemGrpc(
+    replyItem: reply,
+    replyLevel: 1,
+    upMid: Int64(1001),
+  );
+  return Scaffold(
+    body: Center(
+      child: Builder(
+        builder: (context) => GestureDetector(
+          onLongPress: () => showModalBottomSheet<void>(
+            context: context,
+            useSafeArea: true,
+            isScrollControlled: true,
+            builder: (sheetContext) => Material(
+              child: replyWidget.morePanel(
+                context: sheetContext,
+                item: reply,
+                onDelete: () {},
+                isSubReply: false,
+              ),
+            ),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(24),
+            child: Text('长按虚构评论打开菜单'),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _settingsHarness() => Builder(
+  builder: (context) => Scaffold(
+    body: ListView(
+      children: exFeatureSettings(context)
+          .take(2)
+          .map((setting) => setting.widget)
+          .toList(),
+    ),
+  ),
+);
+
+void _useSyntheticLoggedInAccount() {
+  // This in-memory synthetic account only selects the same report row shown
+  // to signed-in users; it is never persisted or used for network requests.
+  Accounts.accountMode[AccountType.main.index] = LoginAccount(
+    BiliCookieJar.fromJson({'DedeUserID': '123456789', 'bili_jct': 'test'}),
+    null,
+    null,
+  );
+}
+
 void main() {
   final settingBox = _MemoryBox();
   final localCacheBox = _MemoryBox();
@@ -112,55 +176,12 @@ void main() {
   ) async {
     await tester.binding.setSurfaceSize(const Size(420, 720));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    const syntheticAuthorUid = 987654321012345;
-    final reply = ReplyInfo(
-      id: Int64(9001),
-      oid: Int64(5001),
-      type: Int64(1),
-      mid: Int64(syntheticAuthorUid),
-      content: Content(message: '只用于菜单渲染的虚构评论'),
-    );
-    final replyWidget = ReplyItemGrpc(
-      replyItem: reply,
-      replyLevel: 1,
-      upMid: Int64(1001),
-    );
-    // This in-memory synthetic account only selects the same report row shown
-    // to signed-in users; it is never persisted or used for network requests.
-    Accounts.accountMode[AccountType.main.index] = LoginAccount(
-      BiliCookieJar.fromJson({'DedeUserID': '123456789', 'bili_jct': 'test'}),
-      null,
-      null,
-    );
-    await tester.pumpWidget(
-      _app(
-        Scaffold(
-          body: Center(
-            child: Builder(
-              builder: (context) => GestureDetector(
-                onLongPress: () => showModalBottomSheet<void>(
-                  context: context,
-                  useSafeArea: true,
-                  isScrollControlled: true,
-                  builder: (sheetContext) => Material(
-                    child: replyWidget.morePanel(
-                      context: sheetContext,
-                      item: reply,
-                      onDelete: () {},
-                      isSubReply: false,
-                    ),
-                  ),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Text('长按虚构评论打开菜单'),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    // This explicit true simulates a user who enabled the feature before the
+    // preference default changed. Existing choices must remain respected.
+    settingBox.seed(SettingBoxKey.enableAicuCommentLookup, true);
+    _useSyntheticLoggedInAccount();
+    final reply = _syntheticReply();
+    await tester.pumpWidget(_app(_replyMenuHarness(reply)));
     await tester.pumpAndSettle();
     await tester.longPress(find.text('长按虚构评论打开菜单'));
     await tester.pumpAndSettle();
@@ -175,37 +196,72 @@ void main() {
     expect(find.text('此平台不支持应用内网页，请选择外部浏览器打开。'), findsOneWidget);
   }, timeout: const Timeout(Duration(minutes: 3)));
 
-  testWidgets('settings starts enabled and exposes a manual probe status', (
+  testWidgets('AICU lookup is hidden by default without loading the service', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(420, 720));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    _useSyntheticLoggedInAccount();
+    await tester.pumpWidget(_app(_replyMenuHarness(_syntheticReply())));
+    await tester.pumpAndSettle();
+    await tester.longPress(find.text('长按虚构评论打开菜单'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('在 AICU 中查询'), findsNothing);
+    expect(find.byType(AicuLookupPage), findsNothing);
+    expect(
+      GStorage.setting.get(SettingBoxKey.enableAicuCommentLookup),
+      isNull,
+    );
+    expect(AicuProbeService.instance.status.value, AicuProbeStatus.notChecked);
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('settings defaults off and preserves explicit user choices', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(440, 260));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(
-      _app(
-        Builder(
-          builder: (context) => Scaffold(
-            body: ListView(
-              children: exFeatureSettings(context)
-                  .take(2)
-                  .map((setting) => setting.widget)
-                  .toList(),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(_app(_settingsHarness()));
     await tester.pumpAndSettle();
 
     final toggle = tester.widget<Switch>(find.byType(Switch));
-    expect(toggle.value, isTrue);
+    expect(toggle.value, isFalse);
+    expect(
+      GStorage.setting.get(SettingBoxKey.enableAicuCommentLookup),
+      isNull,
+      reason: 'Reading the new default must not persist over user settings.',
+    );
     expect(find.text('AICU 服务状态'), findsOneWidget);
     expect(find.text('尚未检测，点击检测'), findsOneWidget);
     await _saveCapture(tester, 'settings-status-dark.png');
-    await tester.tap(find.text('启用 AICU 评论查询'));
+    await tester.tap(find.byType(Switch));
+    await tester.pumpAndSettle();
+    expect(
+      GStorage.setting.get(SettingBoxKey.enableAicuCommentLookup),
+      isTrue,
+    );
+    expect(AicuProbeService.instance.status.value, AicuProbeStatus.notChecked);
+
+    await tester.tap(find.byType(Switch));
     await tester.pumpAndSettle();
     expect(
       GStorage.setting.get(SettingBoxKey.enableAicuCommentLookup),
       isFalse,
+    );
+    expect(AicuProbeService.instance.status.value, AicuProbeStatus.notChecked);
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('an explicitly saved enabled preference still starts enabled', (
+    tester,
+  ) async {
+    settingBox.seed(SettingBoxKey.enableAicuCommentLookup, true);
+    await tester.pumpWidget(_app(_settingsHarness()));
+    await tester.pumpAndSettle();
+
+    expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
+    expect(
+      GStorage.setting.get(SettingBoxKey.enableAicuCommentLookup),
+      isTrue,
     );
   }, timeout: const Timeout(Duration(minutes: 3)));
 
