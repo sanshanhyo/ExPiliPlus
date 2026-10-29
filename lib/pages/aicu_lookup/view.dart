@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:ex_piliplus/common/widgets/view_safe_area.dart';
+import 'package:ex_piliplus/pages/aicu_lookup/aicu_webview_session.dart';
 import 'package:ex_piliplus/utils/aicu_url_policy.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
@@ -36,7 +37,7 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
   InAppWebViewController? _controller;
   Uri? _currentUri;
   double _progress = 0;
-  bool _loadFailed = false;
+  final AicuWebViewSession _webViewSession = AicuWebViewSession();
 
   @override
   void initState() {
@@ -59,6 +60,17 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
         ),
       ),
     );
+  }
+
+  void _retryLoad() {
+    // The failed view is replaced by _MessagePanel, so its controller is no
+    // longer attached. Recreate the WebView rather than reloading a stale
+    // controller (especially after Android kills the renderer process).
+    _controller = null;
+    setState(() {
+      _webViewSession.retry();
+      _progress = 0;
+    });
   }
 
   Future<void> _openCurrentPageExternally() async {
@@ -84,14 +96,11 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
             actionLabel: l10n.aicuOpenInBrowser,
             onAction: _openCurrentPageExternally,
           )
-        : _loadFailed
+        : _webViewSession.loadFailed
         ? _MessagePanel(
             message: l10n.aicuLookupLoadFailed,
             actionLabel: l10n.commonRefresh,
-            onAction: () {
-              setState(() => _loadFailed = false);
-              _controller?.reload();
-            },
+            onAction: _retryLoad,
           )
         : _buildWebView();
 
@@ -104,10 +113,7 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
             tooltip: l10n.commonRefresh,
             onPressed: widget.contentBuilder != null || !validInitialUri
                 ? null
-                : () {
-                    setState(() => _loadFailed = false);
-                    _controller?.reload();
-                  },
+                : _retryLoad,
             icon: const Icon(Icons.refresh),
           ),
           IconButton(
@@ -136,14 +142,18 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
   }
 
   Widget _buildWebView() => InAppWebView(
+    key: ValueKey('aicu-webview-${_webViewSession.generation}'),
     initialSettings: InAppWebViewSettings(
       javaScriptEnabled: true,
       useShouldOverrideUrlLoading: true,
+      useOnRenderProcessGone: true,
       mixedContentMode: MixedContentMode.MIXED_CONTENT_NEVER_ALLOW,
       supportMultipleWindows: false,
       javaScriptCanOpenWindowsAutomatically: false,
     ),
-    initialUrlRequest: URLRequest(url: WebUri.uri(widget.initialUri)),
+    initialUrlRequest: URLRequest(
+      url: WebUri.uri(_safeCurrentUri ?? widget.initialUri),
+    ),
     onWebViewCreated: (controller) {
       _controller = controller;
       widget.onWebViewCreatedForTesting?.call(controller);
@@ -155,22 +165,33 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
       if (!mounted) return;
       setState(() {
         _currentUri = uri?.uriValue ?? _currentUri;
-        _loadFailed = false;
+        _webViewSession.markLoadStarted();
       });
     },
     onLoadStop: (_, uri) {
       if (!mounted) return;
       setState(() {
         _currentUri = uri?.uriValue ?? _currentUri;
-        _loadFailed = false;
+        _webViewSession.markLoadStarted();
         _progress = 1;
       });
       widget.onPageLoadedForTesting?.call(uri?.uriValue);
     },
     onReceivedError: (_, request, __) {
       if (request.isForMainFrame == true && mounted) {
-        setState(() => _loadFailed = true);
+        setState(_webViewSession.markLoadFailed);
       }
+    },
+    onRenderProcessGone: (_, __) {
+      if (!mounted) return;
+      // Android WebView documents that the renderer may be killed under
+      // resource pressure. Remove the dead platform view and offer an
+      // explicit retry instead of letting the host app fail with it.
+      _controller = null;
+      setState(() {
+        _webViewSession.markRendererProcessGone();
+        _progress = 0;
+      });
     },
     shouldOverrideUrlLoading: (_, action) async {
       final uri = action.request.url?.uriValue;
@@ -185,6 +206,11 @@ class _AicuLookupPageState extends State<AicuLookupPage> {
       return NavigationActionPolicy.ALLOW;
     },
   );
+
+  Uri? get _safeCurrentUri {
+    final uri = _currentUri;
+    return uri != null && AicuUrlPolicy.isAllowedTopLevel(uri) ? uri : null;
+  }
 }
 
 class _ThirdPartyNotice extends StatelessWidget {
