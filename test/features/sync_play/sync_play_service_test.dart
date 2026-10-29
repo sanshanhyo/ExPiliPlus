@@ -583,9 +583,9 @@ void main() {
       'videoId': 'BV1gA411M7RN:2002',
       'url': 'https://www.bilibili.com/video/BV1gA411M7RN?cid=2002',
       'title': 'Synthetic title',
-      'sharedByMemberId': 'local',
-      'sharedByDisplayName': 'Tester',
     });
+    expect(service.room?.sharedVideo?.sharedByMemberId, 'local');
+    expect(service.room?.sharedVideo?.sharedByDisplayName, 'Tester');
     final serialized = jsonEncode(payload);
     expect(serialized, isNot(contains('DedeUserID')));
     expect(serialized, isNot(contains('accessKey')));

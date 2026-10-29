@@ -153,6 +153,17 @@ class SyncPlaySharedVideo {
       'sharedByDisplayName': sharedByDisplayName,
   };
 
+  /// Fields accepted from a client in `video:share`.
+  ///
+  /// The server assigns the sharing member from the authenticated socket, so
+  /// client-supplied owner metadata is unnecessary and can be rejected by
+  /// upstream guards before it reaches the handler.
+  Map<String, Object?> toShareRequestJson() => {
+    'videoId': videoId,
+    'url': url,
+    'title': title,
+  };
+
   static SyncPlaySharedVideo? tryParse(Object? value) {
     if (value is! Map) return null;
     final videoId = value['videoId'];

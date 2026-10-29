@@ -640,7 +640,7 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
       'type': 'video:share',
       'payload': {
         'memberToken': token,
-        'video': shared.toJson(),
+        'video': shared.toShareRequestJson(),
         'playback': initial.toJson(),
       },
     });
