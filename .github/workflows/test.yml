@@ -113,8 +113,11 @@ jobs:
         with:
           api-level: 35
           arch: x86_64
+          # The renderer was killed or crashed while loading the full site;
+          # give Chromium more headroom and retain logcat diagnostics.
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 3072
           disable-animations: true
-          script: flutter drive --driver=integration_test/aicu_real_webview_driver.dart --target=integration_test/aicu_real_webview_test.dart --no-pub -d emulator-5554
+          script: bash .github/scripts/run_aicu_real_webview_android.sh
 
       - name: Require a captured real WebView screenshot
         if: success()

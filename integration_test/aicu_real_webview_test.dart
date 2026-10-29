@@ -35,6 +35,15 @@ void main() {
               }
             },
             onPageLoadedForTesting: (uri) {
+              // Log only the public host/path and the explicitly authorized
+              // test UID; never log page text, cookies, or Bilibili data.
+              // ignore: avoid_print
+              print(
+                'AICU real WebView load stop: '
+                'host=${uri?.host ?? "<null>"}; '
+                'path=${uri?.path ?? "<null>"}; '
+                'uid=${uri?.queryParameters["uid"] ?? "<none>"}',
+              );
               if (!pageLoaded.isCompleted) pageLoaded.complete(uri);
             },
           ),
