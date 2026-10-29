@@ -2299,7 +2299,6 @@
   "syncPlayServerUrl": "Sync server URL",
   "syncPlayWebSocketUrl": "WebSocket URL",
   "syncPlayAdvancedMode": "Advanced mode",
-  "syncPlayAdvancedModeHelp": "When off, the single server address is used; saved advanced values stay inactive.",
   "syncPlayAllowedOrigin": "Server-allowed Origin",
   "syncPlayOriginHelp": "Enter a web origin that the server operator has explicitly allowed. Do not impersonate an extension. Use wss:// for remote servers; ws:// is limited to localhost.",
   "syncPlayNickname": "Room nickname",

@@ -2299,7 +2299,6 @@
   "syncPlayServerUrl": "同步伺服器位址",
   "syncPlayWebSocketUrl": "WebSocket 連線位址",
   "syncPlayAdvancedMode": "進階模式",
-  "syncPlayAdvancedModeHelp": "關閉時僅使用上方伺服器位址，已儲存的進階值會保留但不生效。",
   "syncPlayAllowedOrigin": "伺服器允許的 Origin",
   "syncPlayOriginHelp": "填寫伺服器明確允許的網頁來源；不要偽裝瀏覽器擴充功能身分。遠端伺服器請使用 wss://，ws:// 僅限本機 localhost。",
   "syncPlayNickname": "房間暱稱",

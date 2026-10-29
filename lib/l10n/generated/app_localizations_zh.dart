@@ -7491,9 +7491,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayAdvancedMode => '高级模式';
 
   @override
-  String get syncPlayAdvancedModeHelp => '关闭时仅使用上方服务器地址，已保存的高级值会保留但不生效。';
-
-  @override
   String get syncPlayAllowedOrigin => '服务器允许的 Origin';
 
   @override
@@ -15083,9 +15080,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get syncPlayAdvancedMode => '進階模式';
-
-  @override
-  String get syncPlayAdvancedModeHelp => '關閉時僅使用上方伺服器位址，已儲存的進階值會保留但不生效。';
 
   @override
   String get syncPlayAllowedOrigin => '伺服器允許的 Origin';

@@ -13511,12 +13511,6 @@ abstract class AppLocalizations {
   /// **'高级模式'**
   String get syncPlayAdvancedMode;
 
-  /// No description provided for @syncPlayAdvancedModeHelp.
-  ///
-  /// In zh, this message translates to:
-  /// **'关闭时仅使用上方服务器地址，已保存的高级值会保留但不生效。'**
-  String get syncPlayAdvancedModeHelp;
-
   /// No description provided for @syncPlayAllowedOrigin.
   ///
   /// In zh, this message translates to:

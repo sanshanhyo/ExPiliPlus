@@ -408,7 +408,6 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
                 key: const ValueKey('syncplay-advanced-mode'),
                 contentPadding: EdgeInsets.zero,
                 title: Text(l10n.syncPlayAdvancedMode),
-                subtitle: Text(l10n.syncPlayAdvancedModeHelp),
                 value: advancedMode,
                 onChanged: service.status == SyncPlayConnectionStatus.connecting
                     ? null

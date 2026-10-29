@@ -7737,10 +7737,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncPlayAdvancedMode => 'Advanced mode';
 
   @override
-  String get syncPlayAdvancedModeHelp =>
-      'When off, the single server address is used; saved advanced values stay inactive.';
-
-  @override
   String get syncPlayAllowedOrigin => 'Server-allowed Origin';
 
   @override

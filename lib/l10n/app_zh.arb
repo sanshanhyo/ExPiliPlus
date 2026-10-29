@@ -2672,7 +2672,6 @@
   "syncPlayServerUrl": "同步服务器地址",
   "syncPlayWebSocketUrl": "WebSocket 连接地址",
   "syncPlayAdvancedMode": "高级模式",
-  "syncPlayAdvancedModeHelp": "关闭时仅使用上方服务器地址，已保存的高级值会保留但不生效。",
   "syncPlayAllowedOrigin": "服务器允许的 Origin",
   "syncPlayOriginHelp": "填写服务器明确允许的网页来源；不要伪装浏览器扩展身份。远程服务器使用 wss://，ws:// 仅限本机 localhost。",
   "syncPlayNickname": "房间昵称",
