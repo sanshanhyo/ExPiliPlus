@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io' show HttpClient, Platform;
+import 'dart:io' show HttpClient, HttpOverrides, Platform;
 
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
@@ -66,6 +66,8 @@ class _LoopbackTestSocket implements SyncPlaySocket {
   @override
   Future<void> close() async => _channel.sink.close();
 }
+
+class _RealHttpOverrides extends HttpOverrides {}
 
 class _IdlePlayer implements SyncPlayPlayerPort {
   @override
@@ -435,84 +437,95 @@ void main() {
         final endpoint = Uri(scheme: 'wss', host: '127.0.0.1', port: port);
         const origin = 'https://syncplay-integration.test';
 
-        final defaultChannel = IOWebSocketChannel.connect(
-          endpoint,
-          headers: const {'Origin': origin},
-          connectTimeout: const Duration(seconds: 8),
-        );
-        Object? defaultTrustFailure;
-        final defaultSubscription = defaultChannel.stream.listen(
-          (_) {},
-          onError: (Object error) => defaultTrustFailure = error,
-        );
-        try {
-          await defaultChannel.ready.timeout(const Duration(seconds: 8));
-        } catch (error) {
-          defaultTrustFailure ??= error;
-        } finally {
-          await defaultSubscription.cancel();
-        }
-        expect(
-          defaultTrustFailure,
-          isNotNull,
-          reason:
-              'The ephemeral self-signed test certificate was trusted by default.',
-        );
-
-        final trustedClient = HttpClient()
-          ..badCertificateCallback =
-              (certificate, host, certificatePort) =>
-                  host == '127.0.0.1' &&
-                  certificatePort == port &&
-                  crypto.sha256.convert(certificate.der).toString() ==
-                      certSha256;
-        final service = SyncPlayService(
-          socketFactory: (uri, requestedOrigin) async {
-            expect(uri, endpoint);
-            expect(requestedOrigin, origin);
-            final channel = IOWebSocketChannel.connect(
-              uri,
-              headers: {'Origin': requestedOrigin},
+        await HttpOverrides.runWithHttpOverrides(
+          () async {
+            final defaultChannel = IOWebSocketChannel.connect(
+              endpoint,
+              headers: const {'Origin': origin},
               connectTimeout: const Duration(seconds: 8),
-              pingInterval: const Duration(seconds: 25),
-              customClient: trustedClient,
             );
-            await channel.ready;
-            return _LoopbackTestSocket(channel);
-          },
-        );
+            Object? defaultTrustFailure;
+            final defaultSubscription = defaultChannel.stream.listen(
+              (_) {},
+              onError: (Object error) => defaultTrustFailure = error,
+            );
+            try {
+              await defaultChannel.ready.timeout(const Duration(seconds: 8));
+            } catch (error) {
+              defaultTrustFailure ??= error;
+            } finally {
+              await defaultSubscription.cancel();
+            }
+            expect(
+              defaultTrustFailure,
+              isNotNull,
+              reason:
+                  'The ephemeral self-signed test certificate was trusted by default.',
+            );
+            expect(
+              defaultTrustFailure.toString().toLowerCase(),
+              contains('certificate'),
+              reason:
+                  'Default WSS rejection was not caused by certificate validation.',
+            );
 
-        try {
-          await service.createRoom(
-            SyncPlayConnectionSettings(
-              serverAddress: '',
-              displayName: 'TLS Dart client',
-              advancedMode: true,
-              advancedWebSocketUrl: endpoint.toString(),
-              advancedOrigin: origin,
-            ),
-          );
-          expect(
-            service.status,
-            SyncPlayConnectionStatus.connected,
-            reason:
-                'Pinned certificate WSS connection failed: ${service.lastErrorCode}',
-          );
-          await _waitUntil(
-            'TLS client room creation (${_serviceState(service)})',
-            () => service.credentials != null && service.room != null,
-          );
-          expect(service.room?.members, hasLength(1));
-        } finally {
-          if (service.isInRoom || service.isConnected) {
-            await service.leaveRoom().timeout(
-              const Duration(seconds: 8),
-              onTimeout: () {},
+            final trustedClient = HttpClient()
+              ..badCertificateCallback =
+                  (certificate, host, certificatePort) =>
+                      host == '127.0.0.1' &&
+                      certificatePort == port &&
+                      crypto.sha256.convert(certificate.der).toString() ==
+                          certSha256;
+            final service = SyncPlayService(
+              socketFactory: (uri, requestedOrigin) async {
+                expect(uri, endpoint);
+                expect(requestedOrigin, origin);
+                final channel = IOWebSocketChannel.connect(
+                  uri,
+                  headers: {'Origin': requestedOrigin},
+                  connectTimeout: const Duration(seconds: 8),
+                  pingInterval: const Duration(seconds: 25),
+                  customClient: trustedClient,
+                );
+                await channel.ready;
+                return _LoopbackTestSocket(channel);
+              },
             );
-          }
-          service.dispose();
-          trustedClient.close(force: true);
-        }
+
+            try {
+              await service.createRoom(
+                SyncPlayConnectionSettings(
+                  serverAddress: '',
+                  displayName: 'TLS Dart client',
+                  advancedMode: true,
+                  advancedWebSocketUrl: endpoint.toString(),
+                  advancedOrigin: origin,
+                ),
+              );
+              expect(
+                service.status,
+                SyncPlayConnectionStatus.connected,
+                reason:
+                    'Pinned certificate WSS connection failed: ${service.lastErrorCode}',
+              );
+              await _waitUntil(
+                'TLS client room creation (${_serviceState(service)})',
+                () => service.credentials != null && service.room != null,
+              );
+              expect(service.room?.members, hasLength(1));
+            } finally {
+              if (service.isInRoom || service.isConnected) {
+                await service.leaveRoom().timeout(
+                  const Duration(seconds: 8),
+                  onTimeout: () {},
+                );
+              }
+              service.dispose();
+              trustedClient.close(force: true);
+            }
+          },
+          _RealHttpOverrides(),
+        );
       },
       skip: configuredTlsPort == null,
       timeout: const Timeout(Duration(seconds: 30)),
