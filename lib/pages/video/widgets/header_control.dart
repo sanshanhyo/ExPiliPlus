@@ -41,7 +41,8 @@ import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart'
     show PlPlayerSyncPort;
 import 'package:ex_piliplus/pages/sync_play/view.dart'
-    show SyncPlayLaunchContext, showSyncPlayPanel;
+    show SyncPlayLaunchContext, SyncPlayPanelLauncher,
+        SyncPlayPlayerMenuAction;
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -400,7 +401,7 @@ class HeaderControlState extends State<HeaderControl>
   late final horizontalScreen = videoDetailCtr.horizontalScreen;
 
   Box setting = GStorage.setting;
-  bool _syncPlayPanelOpening = false;
+  final _syncPlayPanelLauncher = SyncPlayPanelLauncher();
 
   @override
   void initState() {
@@ -654,6 +655,16 @@ class HeaderControlState extends State<HeaderControl>
                               idleLabel: action.title,
                               iconSize: iconSize,
                               labelFontSize: labelFontSize,
+                              onPressed: onPressed,
+                            )
+                          : id == PlayerQuickActionId.syncPlay
+                          ? SyncPlayPlayerMenuAction(
+                              title: action.title,
+                              icon: action.icon,
+                              iconSize: iconSize,
+                              labelFontSize: labelFontSize,
+                              available: action.available,
+                              active: active,
                               onPressed: onPressed,
                             )
                           : Column(
@@ -950,8 +961,6 @@ class HeaderControlState extends State<HeaderControl>
           cid: videoDetailCtr.cid.value,
         );
         final title = ugcIntroController.videoDetail.value.title ?? video.bvid;
-        if (_syncPlayPanelOpening) return;
-        _syncPlayPanelOpening = true;
         final launchContext = SyncPlayLaunchContext(
           video: video,
           title: title,
@@ -970,19 +979,13 @@ class HeaderControlState extends State<HeaderControl>
             return null;
           },
         );
-        Get.back();
         unawaited(
-          Future<void>.delayed(Duration.zero, () {
-            if (!mounted) {
-              _syncPlayPanelOpening = false;
-              return;
-            }
-            showSyncPlayPanel(
-              context,
-              launchContext: launchContext,
-              panelTheme: theme,
-            ).whenComplete(() => _syncPlayPanelOpening = false);
-          }),
+          _syncPlayPanelLauncher.openFromPlayerMenu(
+            playerContext: context,
+            closeMenu: () => Get.back<void>(),
+            launchContext: launchContext,
+            panelTheme: theme,
+          ),
         );
         return;
       case PlayerQuickActionId.playbackUrl:

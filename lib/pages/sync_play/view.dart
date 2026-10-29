@@ -52,6 +52,109 @@ class SyncPlayPage extends StatefulWidget {
   State<SyncPlayPage> createState() => _SyncPlayPageState();
 }
 
+/// Renders the SyncPlay quick action using the player's existing circular
+/// shortcut style. The widget is shared with the actual player menu so its
+/// label, icon, and touch target can be covered by rendered UI tests.
+class SyncPlayPlayerMenuAction extends StatelessWidget {
+  const SyncPlayPlayerMenuAction({
+    required this.title,
+    required this.icon,
+    required this.iconSize,
+    required this.labelFontSize,
+    required this.onPressed,
+    this.available = true,
+    this.active = false,
+    super.key,
+  });
+
+  final String title;
+  final IconData icon;
+  final double iconSize;
+  final double labelFontSize;
+  final VoidCallback? onPressed;
+  final bool available;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          key: const ValueKey('syncplay-player-menu-button'),
+          tooltip: title,
+          iconSize: iconSize,
+          constraints: BoxConstraints.tightFor(
+            width: iconSize + 16,
+            height: iconSize + 16,
+          ),
+          padding: const EdgeInsets.all(8),
+          onPressed: available ? onPressed : null,
+          icon: Icon(icon),
+          style: IconButton.styleFrom(
+            shape: const CircleBorder(),
+            backgroundColor: active
+                ? theme.colorScheme.secondaryContainer
+                : theme.colorScheme.surfaceContainerHighest,
+            foregroundColor: active
+                ? theme.colorScheme.onSecondaryContainer
+                : available
+                ? theme.colorScheme.onSurfaceVariant
+                : theme.colorScheme.outline,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Flexible(
+          child: Text(
+            title,
+            key: const ValueKey('syncplay-player-menu-label'),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontSize: labelFontSize,
+              height: 1.15,
+              color: available ? null : theme.colorScheme.outline,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Opens the player overlay only after the More settings sheet has closed.
+/// Keeping this flow in one place lets the player and its menu regression test
+/// exercise the same route transition and duplicate-open guard.
+class SyncPlayPanelLauncher {
+  bool _isOpening = false;
+
+  bool get isOpening => _isOpening;
+
+  Future<void> openFromPlayerMenu({
+    required BuildContext playerContext,
+    required VoidCallback closeMenu,
+    SyncPlayLaunchContext? launchContext,
+    ThemeData? panelTheme,
+  }) async {
+    if (_isOpening) return;
+    _isOpening = true;
+    try {
+      closeMenu();
+      await Future<void>.delayed(Duration.zero);
+      if (!playerContext.mounted) return;
+      await showSyncPlayPanel(
+        playerContext,
+        launchContext: launchContext,
+        panelTheme: panelTheme,
+      );
+    } finally {
+      _isOpening = false;
+    }
+  }
+}
+
 class _SyncPlayPageState extends State<SyncPlayPage> {
   late final SyncPlayService service;
   late final SyncPlayLaunchContext? launchContext;
@@ -447,7 +550,6 @@ Future<void> showSyncPlayPanel(
     useSafeArea: false,
     builder: (dialogContext) {
       final media = MediaQuery.of(dialogContext);
-      final landscape = media.size.width > media.size.height;
       return AnimatedPadding(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOut,
@@ -455,6 +557,10 @@ Future<void> showSyncPlayPanel(
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
+              // Reserve a minimum usable width for the form and room controls.
+              // Compact landscape windows use the full-width sheet layout too.
+              final landscape = media.size.width > media.size.height &&
+                  constraints.maxWidth * 0.46 >= 400;
               final panelWidth = landscape
                   ? math.min(constraints.maxWidth * 0.46, 440.0)
                   : constraints.maxWidth;

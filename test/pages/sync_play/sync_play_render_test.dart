@@ -232,7 +232,7 @@ void main() {
   testWidgets(
     'player panel overlays video, adapts orientation, and preserves the room on close',
     (tester) async {
-      await tester.binding.setSurfaceSize(const Size(440, 820));
+      await tester.binding.setSurfaceSize(const Size(420, 900));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       final socket = _ScreenshotSocket();
       var socketConnections = 0;
@@ -289,6 +289,19 @@ void main() {
         find.byKey(const ValueKey('syncplay-video-stays-mounted')),
         findsOneWidget,
       );
+      final portraitSize = MediaQuery.sizeOf(
+        tester.element(find.byKey(const ValueKey('syncplay-video-stays-mounted'))),
+      );
+      final portraitPanelRect = tester.getRect(
+        find.byKey(const ValueKey('syncplay-player-panel')),
+      );
+      expect(portraitSize.height, greaterThan(portraitSize.width));
+      expect(portraitPanelRect.width, greaterThan(portraitSize.width * 0.95));
+      expect(find.text('房间昵称'), findsOneWidget);
+      expect(find.text('邀请代码'), findsOneWidget);
+      expect(find.text('创建房间'), findsOneWidget);
+      expect(find.text('加入房间'), findsOneWidget);
+      expect(tester.takeException(), isNull);
       await _saveCapture(tester, 'player-panel-portrait-dark-zh.png');
 
       final serverAddressField = tester.widget<TextField>(
@@ -366,6 +379,189 @@ void main() {
     },
     timeout: const Timeout(Duration(minutes: 3)),
   );
+
+  testWidgets('portrait panel stays readable on a narrow phone viewport', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final service = SyncPlayService(reconnectEnabled: false);
+    Get.put(service, permanent: true);
+    late BuildContext playerContext;
+
+    await tester.pumpWidget(
+      _app(
+        Scaffold(
+          body: Stack(
+            children: [
+              const Positioned.fill(
+                child: ColoredBox(
+                  color: Color(0xff151515),
+                  child: Center(child: Text('模拟视频')),
+                ),
+              ),
+              Builder(
+                builder: (context) {
+                  playerContext = context;
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: FilledButton(
+                      onPressed: () => showSyncPlayPanel(playerContext),
+                      child: const Text('Open SyncPlay'),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Open SyncPlay'));
+    await tester.pumpAndSettle();
+
+    final viewport = MediaQuery.sizeOf(tester.element(find.text('模拟视频')));
+    final panel = tester.getRect(
+      find.byKey(const ValueKey('syncplay-player-panel')),
+    );
+    expect(viewport, const Size(360, 800));
+    expect(panel.width, greaterThan(viewport.width * 0.95));
+    expect(find.text('房间昵称'), findsOneWidget);
+    expect(find.text('邀请代码'), findsOneWidget);
+    expect(find.text('创建房间'), findsOneWidget);
+    expect(find.text('加入房间'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await _saveCapture(tester, 'player-panel-narrow-portrait-dark-zh.png');
+
+    await tester.tap(find.byTooltip('关闭'));
+    await tester.pumpAndSettle();
+    service.dispose();
+    Get.reset();
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('playback menu SyncPlay action opens the same player overlay', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(420, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final service = SyncPlayService(reconnectEnabled: false);
+    Get.put(service, permanent: true);
+    final launcher = SyncPlayPanelLauncher();
+    late BuildContext playerContext;
+
+    await tester.pumpWidget(
+      _app(
+        Scaffold(
+          body: Stack(
+            children: [
+              const Positioned.fill(
+                child: ColoredBox(
+                  color: Color(0xff151515),
+                  child: Center(
+                    child: Text(
+                      '模拟视频画面',
+                      key: ValueKey('syncplay-video-stays-mounted'),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+              Builder(
+                builder: (context) {
+                  playerContext = context;
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: FilledButton(
+                      onPressed: () {
+                        unawaited(
+                          showModalBottomSheet<void>(
+                            context: playerContext,
+                            builder: (menuContext) => SafeArea(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 18, 16, 24),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(menuContext).pop(),
+                                        child: const Text('编辑快捷操作'),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: SyncPlayPlayerMenuAction(
+                                            title: 'Bili-SyncPlay',
+                                            icon: Icons.groups_2_outlined,
+                                            iconSize: 28,
+                                            labelFontSize: 13,
+                                            onPressed: () => unawaited(
+                                              launcher.openFromPlayerMenu(
+                                                playerContext: playerContext,
+                                                closeMenu: () =>
+                                                    Navigator.of(menuContext)
+                                                        .pop(),
+                                                panelTheme: Theme.of(
+                                                  playerContext,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text('播放页菜单'),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('播放页菜单'));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('syncplay-player-menu-button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('syncplay-player-menu-label')),
+      findsOneWidget,
+    );
+    expect(find.text('Bili-SyncPlay'), findsOneWidget);
+    await _saveCapture(tester, 'playback-menu-syncplay-dark-zh.png');
+
+    await tester.tap(find.byKey(const ValueKey('syncplay-player-menu-button')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('syncplay-player-panel')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('syncplay-video-stays-mounted')),
+      findsOneWidget,
+    );
+    expect(launcher.isOpening, isTrue);
+    await tester.tap(find.byTooltip('关闭'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('syncplay-player-panel')), findsNothing);
+    expect(launcher.isOpening, isFalse);
+    expect(Get.find<SyncPlayService>(), same(service));
+
+    service.dispose();
+    Get.reset();
+  }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets('shows a clear error for an explicitly insecure public address', (
     tester,
