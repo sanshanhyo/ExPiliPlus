@@ -35,41 +35,42 @@ class _CommentPlusOneButtonState extends State<CommentPlusOneButton> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
-    return Tooltip(
-      message: widget.isSupported
-          ? context.l10n.commentPlusOneTooltip
-          : context.l10n.commentPlusOneUnsupported,
-      child: TextButton(
-        onPressed: _isSending || !widget.isSupported ? null : _send,
-        style: TextButton.styleFrom(
-          foregroundColor: widget.isSupported
-              ? colorScheme.onPrimaryContainer
-              : colorScheme.outline,
-          backgroundColor: widget.isSupported
-              ? colorScheme.primaryContainer.withValues(alpha: 0.52)
-              : colorScheme.surfaceContainerHighest.withValues(alpha: 0.55),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          minimumSize: const Size(0, 32),
-          visualDensity: VisualDensity.compact,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: const StadiumBorder(),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 3,
-          children: [
-            if (_isSending)
-              const SizedBox.square(
-                dimension: 14,
-                child: CircularProgressIndicator(strokeWidth: 1.8),
-              )
-            else
-              const Icon(Icons.add_reaction_outlined, size: 16),
-            const Text(
-              '+1',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 6),
+      child: Tooltip(
+        message: widget.isSupported
+            ? context.l10n.commentPlusOneTooltip
+            : context.l10n.commentPlusOneUnsupported,
+        child: TextButton(
+          onPressed: _isSending || !widget.isSupported ? null : _send,
+          style: TextButton.styleFrom(
+            foregroundColor: widget.isSupported
+                ? colorScheme.onPrimaryContainer
+                : colorScheme.outline,
+            backgroundColor: Colors.transparent,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            minimumSize: const Size(0, 32),
+            visualDensity: VisualDensity.compact,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: const StadiumBorder(),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 3,
+            children: [
+              if (_isSending)
+                const SizedBox.square(
+                  dimension: 14,
+                  child: CircularProgressIndicator(strokeWidth: 1.8),
+                )
+              else
+                const Icon(Icons.add_reaction_outlined, size: 16),
+              const Text(
+                '+1',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
         ),
       ),
     );

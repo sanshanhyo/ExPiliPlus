@@ -121,9 +121,22 @@ void main() {
 
     expect(find.text('回复'), findsOneWidget);
     expect(find.text('+1'), findsOneWidget);
-    final replyTextX = tester.getTopLeft(find.text('回复')).dx;
-    final plusOneX = tester.getTopLeft(find.text('+1')).dx;
-    expect(plusOneX, greaterThan(replyTextX));
+    final replyTextRect = tester.getRect(find.text('回复'));
+    final plusOneButtonFinder = find.ancestor(
+      of: find.text('+1'),
+      matching: find.byType(TextButton),
+    );
+    final plusOneButton = tester.widget<TextButton>(plusOneButtonFinder);
+    final plusOneButtonRect = tester.getRect(plusOneButtonFinder);
+    expect(
+      plusOneButton.style?.backgroundColor?.resolve(const <WidgetState>{}),
+      Colors.transparent,
+    );
+    expect(
+      plusOneButtonRect.left - replyTextRect.right,
+      closeTo(6, 0.5),
+    );
+    expect(plusOneButtonRect.height, 32);
     await _saveRenderedCapture(tester, 'reply-actions-dark.png');
   }, timeout: const Timeout(Duration(minutes: 3)));
 
