@@ -70,6 +70,83 @@ jobs:
       - name: Test
         run: flutter test --no-pub
 
+      - name: Checkout pinned Bili-SyncPlay server for Dart integration
+        if: github.ref == 'refs/heads/feat/bili-syncplay'
+        uses: actions/checkout@v7
+        with:
+          repository: sky1wu/Bili-SyncPlay
+          ref: f9258d976570492a1d1e2c469d3da90a8cfade96
+          path: build/bili-syncplay-upstream
+
+      - name: Setup Node for pinned SyncPlay server
+        if: github.ref == 'refs/heads/feat/bili-syncplay'
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22.22.0
+          cache: npm
+          cache-dependency-path: build/bili-syncplay-upstream/package-lock.json
+
+      - name: Build pinned SyncPlay protocol and server
+        if: github.ref == 'refs/heads/feat/bili-syncplay'
+        working-directory: build/bili-syncplay-upstream
+        run: |
+          npm ci
+          npm run build -w @bili-syncplay/protocol
+          npm run build -w @bili-syncplay/server
+
+      - name: Test production Dart SyncPlay services against pinned server
+        if: github.ref == 'refs/heads/feat/bili-syncplay'
+        env:
+          SYNCPLAY_UPSTREAM_SERVER_ROOT: ${{ github.workspace }}/build/bili-syncplay-upstream/server
+          SYNCPLAY_UPSTREAM_REVISION: f9258d976570492a1d1e2c469d3da90a8cfade96
+          SYNCPLAY_TEST_TLS_CERT: ${{ runner.temp }}/syncplay-integration.crt
+          SYNCPLAY_TEST_TLS_KEY: ${{ runner.temp }}/syncplay-integration.key
+          SYNCPLAY_TEST_SERVER_PORT_FILE: ${{ runner.temp }}/syncplay-integration.port
+        run: |
+          set -euo pipefail
+          openssl req -x509 -newkey rsa:2048 -nodes \
+            -keyout "$SYNCPLAY_TEST_TLS_KEY" \
+            -out "$SYNCPLAY_TEST_TLS_CERT" \
+            -days 1 -subj '/CN=127.0.0.1' \
+            -addext 'subjectAltName=IP:127.0.0.1'
+          rm -f "$SYNCPLAY_TEST_SERVER_PORT_FILE"
+          server_log="$RUNNER_TEMP/syncplay-upstream-server.log"
+          node .github/scripts/start_syncplay_upstream_test_server.mjs >"$server_log" 2>&1 &
+          server_pid=$!
+          cleanup() {
+            local result=$?
+            local server_result=0
+            trap - EXIT
+            if kill -0 "$server_pid" 2>/dev/null; then
+              kill -TERM "$server_pid" 2>/dev/null || true
+            fi
+            wait "$server_pid" 2>/dev/null || server_result=$?
+            cat "$server_log"
+            if [[ "$result" -eq 0 && "$server_result" -ne 0 ]]; then
+              result=$server_result
+            fi
+            return "$result"
+          }
+          trap cleanup EXIT
+          for attempt in $(seq 1 120); do
+            if [[ -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" ]]; then
+              break
+            fi
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              echo 'Pinned SyncPlay server exited before readiness.'
+              cat "$server_log"
+              exit 1
+            fi
+            sleep 0.25
+          done
+          if [[ ! -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" ]]; then
+            echo 'Timed out waiting for the loopback SyncPlay server.'
+            cat "$server_log"
+            exit 1
+          fi
+          export SYNCPLAY_TEST_SERVER_PORT="$(cat "$SYNCPLAY_TEST_SERVER_PORT_FILE")"
+          flutter test --no-pub test/features/sync_play/sync_play_upstream_integration_test.dart
+
       - name: Upload rendered SyncPlay UI captures
         if: always() && github.ref == 'refs/heads/feat/bili-syncplay'
         uses: actions/upload-artifact@v7
