@@ -21,11 +21,13 @@ import 'package:ex_piliplus/grpc/reply.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/http/reply.dart';
 import 'package:ex_piliplus/http/video.dart';
+import 'package:ex_piliplus/models/common/comment_plus_one_request.dart';
 import 'package:ex_piliplus/models/common/image_type.dart';
 import 'package:ex_piliplus/pages/dynamics/widgets/vote.dart';
 import 'package:ex_piliplus/pages/member/widget/medal_widget.dart';
 import 'package:ex_piliplus/pages/save_panel/view.dart';
 import 'package:ex_piliplus/pages/video/controller.dart';
+import 'package:ex_piliplus/pages/video/reply/widgets/comment_plus_one_button.dart';
 import 'package:ex_piliplus/pages/video/reply/widgets/zan_grpc.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/app_scheme.dart';
@@ -75,6 +77,7 @@ class ReplyItemGrpc extends StatelessWidget {
     this.replyReply,
     this.needDivider = true,
     this.onReply,
+    this.onCommentPlusOne,
     this.onDelete,
     this.upMid,
     this.showDialogue,
@@ -89,6 +92,7 @@ class ReplyItemGrpc extends StatelessWidget {
   final Function(ReplyInfo replyItem, int? rpid)? replyReply;
   final bool needDivider;
   final ValueChanged<ReplyInfo>? onReply;
+  final Future<void> Function(ReplyInfo replyItem)? onCommentPlusOne;
   final Function(ReplyInfo replyItem, int? subIndex)? onDelete;
   final Int64? upMid;
   final VoidCallback? showDialogue;
@@ -551,6 +555,23 @@ class ReplyItemGrpc extends StatelessWidget {
             ),
           ),
         ),
+        if (onCommentPlusOne != null)
+          Obx(() {
+            final settingsRevision =
+                Pref.commentPlusOneSettingsRevision.value;
+            final mode = Pref.commentPlusOneMode;
+            final enabled = mode.isEnabledForOwner(
+              ownerMid: upMid?.toInt(),
+              selectedOwnerMids: Pref.commentPlusOneUpMids,
+            );
+            if (!enabled) return const SizedBox.shrink();
+            return CommentPlusOneButton(
+              key: ValueKey(settingsRevision),
+              replyItem: replyItem,
+              onPressed: onCommentPlusOne!,
+              isSupported: CommentPlusOneRequest.fromReply(replyItem) != null,
+            );
+          }),
         const SizedBox(width: 2),
         if (replyControl.translationSwitch ==
             .TRANSLATION_SWITCH_SHOW_TRANSLATION) ...[

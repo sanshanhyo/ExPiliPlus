@@ -7717,6 +7717,70 @@ class AppLocalizationsEn extends AppLocalizations {
       'Show an emote preview on long press or hover';
 
   @override
+  String get commentPlusOneTooltip => 'Reply with this comment';
+
+  @override
+  String get commentPlusOneUnsupported =>
+      'This comment has media or structured content and can\'t be safely repeated.';
+
+  @override
+  String get commentPlusOneUnconfirmed =>
+      'The reply result is unknown. Check the thread before deciding whether to try again.';
+
+  @override
+  String get commentPlusOneSent => 'Replied to this comment';
+
+  @override
+  String get settingsCommentPlusOneMode => 'Comment +1';
+
+  @override
+  String get settingsCommentPlusOneModeOff => 'Off';
+
+  @override
+  String get settingsCommentPlusOneModeAll => 'All videos';
+
+  @override
+  String get settingsCommentPlusOneModeSelectedUploaders =>
+      'Selected uploaders';
+
+  @override
+  String get settingsCommentPlusOneUploaderList => 'Manage selected uploaders';
+
+  @override
+  String get commentPlusOneUploaderListTitle => 'Selected uploaders';
+
+  @override
+  String get commentPlusOneUploaderListEmpty =>
+      'No uploaders selected. Tap the add button above.';
+
+  @override
+  String get commentPlusOneAddUploader => 'Add uploader';
+
+  @override
+  String get commentPlusOneUploaderUid => 'Uploader UID';
+
+  @override
+  String get commentPlusOneEnterUploaderUid =>
+      'Enter the video\'s uploader UID';
+
+  @override
+  String get commentPlusOneInvalidUid => 'Enter a valid positive integer UID';
+
+  @override
+  String get commentPlusOneUploaderAlreadySelected =>
+      'This uploader is already selected';
+
+  @override
+  String commentPlusOneRemoveUploaderConfirm(String uid) {
+    return 'Remove UID $uid from the +1 list?';
+  }
+
+  @override
+  String commentPlusOneUploaderCount(int count) {
+    return '$count selected uploaders';
+  }
+
+  @override
   String get syncPlayTitle => 'Bili-SyncPlay';
 
   @override

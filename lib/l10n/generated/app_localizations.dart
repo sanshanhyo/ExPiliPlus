@@ -13475,6 +13475,114 @@ abstract class AppLocalizations {
   /// **'长按或悬停表情时显示预览'**
   String get settingsEnableEmoteTooltipDescription;
 
+  /// No description provided for @commentPlusOneTooltip.
+  ///
+  /// In zh, this message translates to:
+  /// **'直接回复这条评论'**
+  String get commentPlusOneTooltip;
+
+  /// No description provided for @commentPlusOneUnsupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'这条评论含有图片或结构化内容，无法安全复用'**
+  String get commentPlusOneUnsupported;
+
+  /// No description provided for @commentPlusOneUnconfirmed.
+  ///
+  /// In zh, this message translates to:
+  /// **'回复结果未确认，请先检查评论区再决定是否重试'**
+  String get commentPlusOneUnconfirmed;
+
+  /// No description provided for @commentPlusOneSent.
+  ///
+  /// In zh, this message translates to:
+  /// **'已回复这条评论'**
+  String get commentPlusOneSent;
+
+  /// No description provided for @settingsCommentPlusOneMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'评论 +1'**
+  String get settingsCommentPlusOneMode;
+
+  /// No description provided for @settingsCommentPlusOneModeOff.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭'**
+  String get settingsCommentPlusOneModeOff;
+
+  /// No description provided for @settingsCommentPlusOneModeAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全部视频开启'**
+  String get settingsCommentPlusOneModeAll;
+
+  /// No description provided for @settingsCommentPlusOneModeSelectedUploaders.
+  ///
+  /// In zh, this message translates to:
+  /// **'指定 UP 主开启'**
+  String get settingsCommentPlusOneModeSelectedUploaders;
+
+  /// No description provided for @settingsCommentPlusOneUploaderList.
+  ///
+  /// In zh, this message translates to:
+  /// **'管理指定 UP 主'**
+  String get settingsCommentPlusOneUploaderList;
+
+  /// No description provided for @commentPlusOneUploaderListTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'指定 UP 主名单'**
+  String get commentPlusOneUploaderListTitle;
+
+  /// No description provided for @commentPlusOneUploaderListEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'名单为空，点击右上角添加 UP 主'**
+  String get commentPlusOneUploaderListEmpty;
+
+  /// No description provided for @commentPlusOneAddUploader.
+  ///
+  /// In zh, this message translates to:
+  /// **'添加 UP 主'**
+  String get commentPlusOneAddUploader;
+
+  /// No description provided for @commentPlusOneUploaderUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'UP 主 UID'**
+  String get commentPlusOneUploaderUid;
+
+  /// No description provided for @commentPlusOneEnterUploaderUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入视频所属 UP 主的 UID'**
+  String get commentPlusOneEnterUploaderUid;
+
+  /// No description provided for @commentPlusOneInvalidUid.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入有效的正整数 UID'**
+  String get commentPlusOneInvalidUid;
+
+  /// No description provided for @commentPlusOneUploaderAlreadySelected.
+  ///
+  /// In zh, this message translates to:
+  /// **'该 UP 主已在名单中'**
+  String get commentPlusOneUploaderAlreadySelected;
+
+  /// No description provided for @commentPlusOneRemoveUploaderConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'从 +1 名单中移除 UID {uid}？'**
+  String commentPlusOneRemoveUploaderConfirm(String uid);
+
+  /// No description provided for @commentPlusOneUploaderCount.
+  ///
+  /// In zh, this message translates to:
+  /// **'已选 {count} 位 UP 主'**
+  String commentPlusOneUploaderCount(int count);
+
   /// No description provided for @syncPlayTitle.
   ///
   /// In zh, this message translates to:

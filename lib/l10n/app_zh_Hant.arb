@@ -671,15 +671,45 @@
   "timeYesterdayAt": "昨天 {time}",
   "timeDaysAgo": "{count} 天前",
   "durationYears": "{count}年",
-  "@durationYears": {"placeholders": {"count": {"type": "int"}}},
+  "@durationYears": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationMonths": "{count}個月",
-  "@durationMonths": {"placeholders": {"count": {"type": "int"}}},
+  "@durationMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationDays": "{count}天",
-  "@durationDays": {"placeholders": {"count": {"type": "int"}}},
+  "@durationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationHours": "{count}小時",
-  "@durationHours": {"placeholders": {"count": {"type": "int"}}},
+  "@durationHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationMinutes": "{count}分鐘",
-  "@durationMinutes": {"placeholders": {"count": {"type": "int"}}},
+  "@durationMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "timeTodayAt": "今天 {time}",
   "weekdayMondayShort": "一",
   "weekdayTuesdayShort": "二",
@@ -1240,7 +1270,13 @@
   "settingsFontErrorIncompleteFile": "字型檔案不完整，請重新下載",
   "settingsFontErrorLoadFailed": "字型載入失敗，請重新下載",
   "settingsFontErrorHttp": "字型下載失敗（HTTP {status}）",
-  "@settingsFontErrorHttp": {"placeholders": {"status": {"type": "String"}}},
+  "@settingsFontErrorHttp": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
   "settingsFontErrorLicenseExtraction": "字型授權檔案擷取失敗，請重試",
   "settingsFontErrorDownloadFailed": "字型下載失敗，請稍後再試",
   "settingsFontErrorSizeMismatch": "字型檔案大小驗證失敗，請重試",
@@ -1455,8 +1491,12 @@
   "statisticsActivityRecords": "{date} · {count} 筆記錄",
   "@statisticsActivityRecords": {
     "placeholders": {
-      "date": {"type": "String"},
-      "count": {"type": "int"}
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
     }
   },
   "statisticsRecordTime": "活躍時段",
@@ -1685,7 +1725,13 @@
   "networkSendTimeout": "傳送請求逾時，請檢查網路設定",
   "networkTransformTimeout": "處理回應資料逾時",
   "networkUnknownError": "網路異常：{error}",
-  "@networkUnknownError": {"placeholders": {"error": {"type": "String"}}},
+  "@networkUnknownError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "searchSecurityCheckTriggered": "需要進行安全驗證",
   "loginVerificationTitle": "驗證",
   "loginVerificationLoadFailed": "驗證碼載入失敗",
@@ -1719,15 +1765,46 @@
   "memberGuardCount": "{count} 人加入大航海",
   "memberMyRecommendations": "我的推薦",
   "memberRecommendationsBy": "{name}的推薦",
-  "@memberRecommendationsBy": {"placeholders": {"name": {"type": "String"}}},
+  "@memberRecommendationsBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberCollectionCount": "合集：{count}",
-  "@memberCollectionCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberCollectionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberListCount": "清單：{count}",
-  "@memberListCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberListCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberGuardTitle": "{name}的艦隊",
-  "@memberGuardTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@memberGuardTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberGuardTitleWithCount": "{name}的艦隊（{count}）",
-  "@memberGuardTitleWithCount": {"placeholders": {"name": {"type": "String"}, "count": {}}},
+  "@memberGuardTitleWithCount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {}
+    }
+  },
   "memberAlsoFollowed": "也關注了 TA",
   "memberAlsoFollowedWithOthers": "等 {count} 人也關注了 TA",
   "memberLikesReceived": "獲讚",
@@ -2013,17 +2090,41 @@
   "favoriteFolderSortTitle": "收藏夾排序",
   "favoriteDefaultFolderSortUnsupported": "預設收藏夾不支援排序",
   "favoriteSortFolderTitle": "排序：{folder}",
-  "@favoriteSortFolderTitle": {"placeholders": {"folder": {"type": "String"}}},
+  "@favoriteSortFolderTitle": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
   "followSaveToDefaultGroup": "儲存至預設分組",
   "commonVideo": "影片",
   "commonLongImage": "長圖",
   "imagePositionSemantics": "圖片，第 {position} 張，共 {total} 張",
-  "@imagePositionSemantics": {"placeholders": {"position": {"type": "int"}, "total": {"type": "int"}}},
+  "@imagePositionSemantics": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "downloadVideoCachedNotification": "影片已快取完成",
   "topicJoin": "參與話題",
   "topicStarted": "發起",
   "topicStats": "{views} 次瀏覽 · {discussions} 則討論",
-  "@topicStats": {"placeholders": {"views": {"type": "String"}, "discussions": {"type": "String"}}},
+  "@topicStats": {
+    "placeholders": {
+      "views": {
+        "type": "String"
+      },
+      "discussions": {
+        "type": "String"
+      }
+    }
+  },
   "replyPinned": "留言置頂成功",
   "replyUnpinned": "已取消留言置頂",
   "webRefresh": "重新整理",
@@ -2035,32 +2136,92 @@
   "webCacheCleared": "已清理",
   "webCookieResetSucceeded": "設定成功，請重新整理或重新開啟網頁",
   "webDownloadFileConfirm": "下載檔案：{filename}？",
-  "@webDownloadFileConfirm": {"placeholders": {"filename": {"type": "String"}}},
+  "@webDownloadFileConfirm": {
+    "placeholders": {
+      "filename": {
+        "type": "String"
+      }
+    }
+  },
   "webConfirmWithFileSize": "確定（{size}）",
-  "@webConfirmWithFileSize": {"placeholders": {"size": {"type": "String"}}},
+  "@webConfirmWithFileSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "webExternalLinkConfirm": "目前網頁將要開啟外部連結，是否開啟？",
   "webOpen": "開啟",
   "commonUnliked": "已取消按讚",
   "articleShareTitle": "bilibili 專欄",
   "articleCount": "{count} 篇專欄",
-  "@articleCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleWordCount": "{count} 個字",
-  "@articleWordCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleWordCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleReadCount": "{count} 次閱讀",
-  "@articleReadCount": {"placeholders": {"count": {"type": "String"}}},
+  "@articleReadCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "articleUpdatedAt": "{date} 更新",
-  "@articleUpdatedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@articleUpdatedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "articleCollectionId": "文集編號：{id}",
-  "@articleCollectionId": {"placeholders": {"id": {"type": "int"}}},
+  "@articleCollectionId": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
   "followUserFollowers": "{name} 的粉絲",
-  "@followUserFollowers": {"placeholders": {"name": {"type": "String"}}},
+  "@followUserFollowers": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followRemoveFollowerConfirm": "確定移除 {name}？",
-  "@followRemoveFollowerConfirm": {"placeholders": {"name": {"type": "String"}}},
+  "@followRemoveFollowerConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "followFollowerRemoved": "移除成功",
   "matchDetails": "比賽詳情",
   "matchWatchLive": "觀看直播",
   "matchEndedAt": "{date} · 已結束",
-  "@matchEndedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@matchEndedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "castNoDevices": "找不到投放裝置",
   "liveSearchHint": "搜尋直播間或實況主",
   "liveContributionRankOnline": "線上榜",
@@ -2068,9 +2229,21 @@
   "liveContributionRankWeekly": "週榜",
   "liveContributionRankMonthly": "月榜",
   "liveSearchRooms": "正在直播 {count}",
-  "@liveSearchRooms": {"placeholders": {"count": {"type": "String"}}},
+  "@liveSearchRooms": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveSearchUploaders": "實況主 {count}",
-  "@liveSearchUploaders": {"placeholders": {"count": {"type": "String"}}},
+  "@liveSearchUploaders": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveAllTags": "全部標籤",
   "liveFavoriteTags": "我的常用標籤",
   "liveTapTagHint": "點擊進入標籤",
@@ -2086,16 +2259,40 @@
   "memberPageNumber": "頁數",
   "memberLocateLastWatched": "定位至上次觀看",
   "audioTrackCount": "{count, plural, other{共 {count} 首}}",
-  "@audioTrackCount": {"placeholders": {"count": {"type": "int"}}},
+  "@audioTrackCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberMyRecentCoinedVideos": "我的最近投幣",
   "memberUserRecentCoinedVideos": "{name} 的最近投幣",
-  "@memberUserRecentCoinedVideos": {"placeholders": {"name": {"type": "String"}}},
+  "@memberUserRecentCoinedVideos": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "memberFanMedalWall": "粉絲勳章牆",
   "memberFanMedalCount": "{count, plural, other{共擁有 {count} 枚粉絲勳章}}",
-  "@memberFanMedalCount": {"placeholders": {"count": {"type": "int"}}},
+  "@memberFanMedalCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "memberMedalWearing": "佩戴中",
   "favoriteAddedAt": "收藏於 {date}",
-  "@favoriteAddedAt": {"placeholders": {"date": {"type": "String"}}},
+  "@favoriteAddedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "memberLastWatched": "上次觀看",
   "reviewLong": "長評",
   "reviewShort": "短評",
@@ -2112,16 +2309,46 @@
   "reviewPublished": "點評成功",
   "reviewDeleteConfirm": "刪除短評，同時刪除評分？",
   "reviewCount": "{count} 則點評",
-  "@reviewCount": {"placeholders": {"count": {"type": "String"}}},
+  "@reviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "searchFilter": "篩選",
   "searchFilteredBy": "「{filter}」的篩選結果",
-  "@searchFilteredBy": {"placeholders": {"filter": {"type": "String"}}},
+  "@searchFilteredBy": {
+    "placeholders": {
+      "filter": {
+        "type": "String"
+      }
+    }
+  },
   "searchSortValue": "排序：{value}",
-  "@searchSortValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchSortValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchZoneValue": "分區：{value}",
-  "@searchZoneValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchZoneValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchUserTypeValue": "使用者類型：{value}",
-  "@searchUserTypeValue": {"placeholders": {"value": {"type": "String"}}},
+  "@searchUserTypeValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "searchZone": "分區",
   "searchUserSort": "依粉絲數與等級排序",
   "searchUserType": "使用者分類",
@@ -2184,21 +2411,51 @@
   "commonArticle": "專欄",
   "messagesAutoReply": "此訊息為自動回覆",
   "messagesLiveBy": "{author} · 直播",
-  "@messagesLiveBy": {"placeholders": {"author": {"type": "String"}}},
+  "@messagesLiveBy": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
   "liveNow": "直播中",
   "memberFollowerCount": "{count} 位粉絲",
-  "@memberFollowerCount": {"placeholders": {"count": {"type": "String"}}},
+  "@memberFollowerCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "commonViewMore": "查看更多內容",
   "commonExit": "退出",
   "audioWatchMv": "看 MV",
   "liveHighEnergyAudience": "高能觀眾（{count}）",
-  "@liveHighEnergyAudience": {"placeholders": {"count": {"type": "String"}}},
+  "@liveHighEnergyAudience": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "liveJustStarted": "剛剛開播",
   "liveStartedFor": "開播 {duration}",
-  "@liveStartedFor": {"placeholders": {"duration": {"type": "String"}}},
+  "@liveStartedFor": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
   "livePlaybackUrlUnavailable": "無法取得播放位址",
   "liveVisitUser": "造訪：{name}",
-  "@liveVisitUser": {"placeholders": {"name": {"type": "String"}}},
+  "@liveVisitUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "liveCopySuperChatInfo": "複製 SC 資訊",
   "commonExpand": "展開",
   "commonCollapse": "收起",
@@ -2213,48 +2470,156 @@
   "saveContent": "內容",
   "saveCollection": "合集",
   "saveScanQrToOpen": "掃描 QR Code，{action}{item}",
-  "@saveScanQrToOpen": {"placeholders": {"action": {"type": "String"}, "item": {"type": "String"}}},
+  "@saveScanQrToOpen": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      },
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "musicReleaseDate": "發行日期：{date}",
-  "@musicReleaseDate": {"placeholders": {"date": {"type": "String"}}},
+  "@musicReleaseDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "musicOriginalArtist": "原唱：{artist}",
-  "@musicOriginalArtist": {"placeholders": {"artist": {"type": "String"}}},
+  "@musicOriginalArtist": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
   "musicAlbum": "專輯：{album}",
-  "@musicAlbum": {"placeholders": {"album": {"type": "String"}}},
+  "@musicAlbum": {
+    "placeholders": {
+      "album": {
+        "type": "String"
+      }
+    }
+  },
   "musicSource": "出處：{source}",
-  "@musicSource": {"placeholders": {"source": {"type": "String"}}},
+  "@musicSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "musicHotSongRanking": "熱門歌曲排行",
   "musicPopularity": "熱度",
   "musicTotalPlays": "總播放量",
   "musicVideosUsingTrack": "使用稿件數",
   "musicRecentPopularityTrend": "近 {days} 日熱度趨勢",
-  "@musicRecentPopularityTrend": {"placeholders": {"days": {"type": "int"}}},
+  "@musicRecentPopularityTrend": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "articleAuthorReads": "{author} · {count} 次閱讀",
-  "@articleAuthorReads": {"placeholders": {"author": {"type": "String"}, "count": {"type": "int"}}},
+  "@articleAuthorReads": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "articlePriceFrom": "{price} 起",
-  "@articlePriceFrom": {"placeholders": {"price": {"type": "String"}}},
+  "@articlePriceFrom": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "articleFeedOrArticle": "動態 / 專欄",
   "articleUnsupportedType": "不支援的類型（{type}）",
-  "@articleUnsupportedType": {"placeholders": {"type": {"type": "String"}}},
+  "@articleUnsupportedType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "articleInvalidType": "錯誤的類型：{error}",
-  "@articleInvalidType": {"placeholders": {"error": {"type": "String"}}},
+  "@articleInvalidType": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "memberShopFrom": "來自 {source}",
-  "@memberShopFrom": {"placeholders": {"source": {"type": "String"}}},
+  "@memberShopFrom": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
   "loginMainAccountSucceeded": "主帳號登入成功",
   "loginCookieFailed": "登入失敗，請檢查 Cookie 是否正確。{error}",
-  "@loginCookieFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@loginCookieFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "memberAllCollectionsAndLists": "全部合集 / 清單",
   "memberAllPosts": "全部圖文",
   "memberPosts": "圖文",
   "memberSupportRanking": "{name} 的充電排行榜 {count}",
-  "@memberSupportRanking": {"placeholders": {"name": {"type": "String"}, "count": {"type": "String"}}},
+  "@memberSupportRanking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
   "memberSupport": "充電",
   "memberSupportDaysSuffix": " 天",
   "liveSearchUserStats": "分區：{area} · 關注數：{followers}",
-  "@liveSearchUserStats": {"placeholders": {"area": {"type": "String"}, "followers": {"type": "String"}}},
+  "@liveSearchUserStats": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "followers": {
+        "type": "String"
+      }
+    }
+  },
   "bubbleSiteTitle": "{name} 小站",
-  "@bubbleSiteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@bubbleSiteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "liveSwitchPreviewTo": "切換至{target}",
-  "@liveSwitchPreviewTo": {"placeholders": {"target": {"type": "String"}}},
+  "@liveSwitchPreviewTo": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "liveCover": "封面",
   "liveFirstFrame": "首幀",
   "liveShowMenu": "顯示選單",
@@ -2266,9 +2631,21 @@
   "avatarVipBadge": "大會員",
   "avatarVerifiedIndividual": "個人認證",
   "avatarVerifiedOrganization": "機構認證",
-  "@memberUserLevelSemantics": {"placeholders": {"level": {"type": "int"}}},
+  "@memberUserLevelSemantics": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "memberHardcoreUserLevelSemantics": "硬核 {level} 級",
-  "@memberHardcoreUserLevelSemantics": {"placeholders": {"level": {"type": "int"}}},
+  "@memberHardcoreUserLevelSemantics": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "playerProgressBar": "進度條",
   "commonPlay": "播放",
   "settingsSpeedTestTimeout": "測速逾時",
@@ -2293,6 +2670,38 @@
   "settingsEnableDocProviderDescription": "允許第三方 APP 透過外部儲存空間存取應用程式私有檔案",
   "settingsEnableEmoteTooltip": "點擊表情顯示 Tooltip",
   "settingsEnableEmoteTooltipDescription": "長按或懸停表情時顯示預覽",
+  "commentPlusOneTooltip": "直接回覆這則留言",
+  "commentPlusOneUnsupported": "這則留言含有圖片或結構化內容，無法安全重用",
+  "commentPlusOneUnconfirmed": "回覆結果未確認，請先檢查留言區再決定是否重試",
+  "commentPlusOneSent": "已回覆這則留言",
+  "settingsCommentPlusOneMode": "留言 +1",
+  "settingsCommentPlusOneModeOff": "關閉",
+  "settingsCommentPlusOneModeAll": "所有影片開啟",
+  "settingsCommentPlusOneModeSelectedUploaders": "指定 UP 主開啟",
+  "settingsCommentPlusOneUploaderList": "管理指定 UP 主",
+  "commentPlusOneUploaderListTitle": "指定 UP 主名單",
+  "commentPlusOneUploaderListEmpty": "名單為空，點擊右上角新增 UP 主",
+  "commentPlusOneAddUploader": "新增 UP 主",
+  "commentPlusOneUploaderUid": "UP 主 UID",
+  "commentPlusOneEnterUploaderUid": "輸入影片所屬 UP 主的 UID",
+  "commentPlusOneInvalidUid": "請輸入有效的正整數 UID",
+  "commentPlusOneUploaderAlreadySelected": "此 UP 主已在名單中",
+  "commentPlusOneRemoveUploaderConfirm": "從 +1 名單移除 UID {uid}？",
+  "@commentPlusOneRemoveUploaderConfirm": {
+    "placeholders": {
+      "uid": {
+        "type": "String"
+      }
+    }
+  },
+  "commentPlusOneUploaderCount": "已選 {count} 位 UP 主",
+  "@commentPlusOneUploaderCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "syncPlayTitle": "Bili-SyncPlay",
   "syncPlaySettingsSubtitle": "加入房間並同步一般投稿影片",
   "syncPlayDescription": "連線至相容 Bili-SyncPlay v5 的房間伺服器，同步一般 B 站投稿影片。",

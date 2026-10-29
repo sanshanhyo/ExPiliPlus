@@ -1,4 +1,5 @@
 import 'package:ex_piliplus/models/common/app_language.dart';
+import 'package:ex_piliplus/models/common/comment_plus_one_mode.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 
 abstract final class SettingsBackup {
@@ -12,13 +13,14 @@ abstract final class SettingsBackup {
     SettingBoxKey.showRandomVideoButton,
     SettingBoxKey.autoLikeOpenedVideo,
     SettingBoxKey.showFsGifBtn,
+    SettingBoxKey.commentPlusOneMode,
   };
 
   /// Keeps the custom theme color field in every new backup.
   ///
   /// `null` means that the user is using dynamic color or a PiliPlus preset.
   static Map<String, dynamic> prepareForExport(Map<dynamic, dynamic> source) {
-    return _stringKeyed(source)
+    final result = _stringKeyed(source)
       ..putIfAbsent(
         SettingBoxKey.appLanguage,
         () => AppLanguage.simplifiedChinese.storageValue,
@@ -27,7 +29,12 @@ abstract final class SettingsBackup {
       ..putIfAbsent(SettingBoxKey.enablePermanentDynamicBlock, () => false)
       ..putIfAbsent(SettingBoxKey.showRandomVideoButton, () => false)
       ..putIfAbsent(SettingBoxKey.autoLikeOpenedVideo, () => false)
-      ..putIfAbsent(SettingBoxKey.showFsGifBtn, () => true);
+      ..putIfAbsent(SettingBoxKey.showFsGifBtn, () => true)
+      ..putIfAbsent(
+        SettingBoxKey.commentPlusOneMode,
+        () => CommentPlusOneMode.disabled.index,
+      );
+    return result;
   }
 
   static Map<String, dynamic> prepareExPiliPlusForExport(
@@ -43,6 +50,9 @@ abstract final class SettingsBackup {
       ),
       LocalCacheKey.dynamicBannedUpList: _dynamicBannedUpList(
         localCache[LocalCacheKey.dynamicBannedUpList],
+      ),
+      LocalCacheKey.commentPlusOneUpMids: _intList(
+        localCache[LocalCacheKey.commentPlusOneUpMids],
       ),
     };
   }
@@ -63,6 +73,12 @@ abstract final class SettingsBackup {
           result[key] = exPiliPlusSetting[key];
         }
       }
+    }
+    if (result.containsKey(SettingBoxKey.commentPlusOneMode)) {
+      result[SettingBoxKey.commentPlusOneMode] =
+          CommentPlusOneMode.fromStorage(
+            result[SettingBoxKey.commentPlusOneMode],
+          ).index;
     }
     result[SettingBoxKey.appLanguage] = AppLanguage.fromStorage(
       result[SettingBoxKey.appLanguage],
@@ -101,6 +117,9 @@ abstract final class SettingsBackup {
       LocalCacheKey.dynamicBannedUpList: _dynamicBannedUpList(
         exPiliPlus[LocalCacheKey.dynamicBannedUpList],
       ),
+      LocalCacheKey.commentPlusOneUpMids: _intList(
+        exPiliPlus[LocalCacheKey.commentPlusOneUpMids],
+      ).toSet(),
     };
   }
 

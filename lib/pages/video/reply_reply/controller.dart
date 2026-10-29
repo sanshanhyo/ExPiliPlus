@@ -1,9 +1,10 @@
 import 'package:ex_piliplus/grpc/bilibili/main/community/reply/v1.pb.dart'
-    show ReplyInfo, DetailListReply, Mode;
+    show ReplyInfo, DetailListReply, DialogListReply, Mode;
 import 'package:ex_piliplus/grpc/reply.dart';
 import 'package:ex_piliplus/http/loading_state.dart';
 import 'package:ex_piliplus/pages/common/publish/publish_route.dart';
 import 'package:ex_piliplus/pages/common/reply_controller.dart';
+import 'package:ex_piliplus/pages/video/reply/comment_plus_one_reply_mixin.dart';
 import 'package:ex_piliplus/pages/video/reply_new/view.dart';
 import 'package:ex_piliplus/utils/id_utils.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
@@ -12,13 +13,16 @@ import 'package:ex_piliplus/models_new/dynamic/dyn_mention/item.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:protobuf/protobuf.dart' show GeneratedMessage;
 
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
-class VideoReplyReplyController extends ReplyController
-    with GetSingleTickerProviderStateMixin {
+class VideoReplyReplyController extends ReplyController<GeneratedMessage>
+    with
+        GetSingleTickerProviderStateMixin,
+        CommentPlusOneReplyMixin<GeneratedMessage> {
   VideoReplyReplyController({
     required this.hasRoot,
     required this.id,
@@ -61,21 +65,29 @@ class VideoReplyReplyController extends ReplyController
   }
 
   @override
-  List<ReplyInfo>? getDataList(response) {
-    return dialog != null ? response.replies : response.root.replies;
+  List<ReplyInfo>? getDataList(GeneratedMessage response) {
+    if (response is DialogListReply) return response.replies;
+    if (response is DetailListReply) return response.root.replies;
+    return null;
   }
 
   @override
-  bool customHandleResponse(bool isRefresh, Success response) {
+  bool customHandleResponse(
+    bool isRefresh,
+    Success<GeneratedMessage> response,
+  ) {
     final data = response.response;
 
-    subjectControl = data.subjectControl;
-    upMid ??= data.subjectControl.upMid;
-    paginationReply = data.paginationReply;
-    isEnd = data.cursor.isEnd;
-
-    // reply2Reply // isDialogue.not
-    if (data is DetailListReply) {
+    if (data is DialogListReply) {
+      subjectControl = data.subjectControl;
+      upMid ??= data.subjectControl.upMid;
+      paginationReply = data.paginationReply;
+      isEnd = data.cursor.isEnd;
+    } else if (data is DetailListReply) {
+      subjectControl = data.subjectControl;
+      upMid ??= data.subjectControl.upMid;
+      paginationReply = data.paginationReply;
+      isEnd = data.cursor.isEnd;
       count.value = data.root.count.toInt();
       if (isRefresh && !hasRoot) {
         firstFloor.value ??= data.root;
@@ -122,15 +134,15 @@ class VideoReplyReplyController extends ReplyController
   }
 
   @override
-  Future<LoadingState> customGetData() => dialog != null
-      ? ReplyGrpc.dialogList(
+  Future<LoadingState<GeneratedMessage>> customGetData() async => dialog != null
+      ? await ReplyGrpc.dialogList(
           type: replyType,
           oid: oid,
           root: rpid,
           dialog: dialog!,
           offset: paginationReply?.nextOffset,
         )
-      : ReplyGrpc.detailList(
+      : await ReplyGrpc.detailList(
           type: replyType,
           oid: oid,
           root: rpid,
