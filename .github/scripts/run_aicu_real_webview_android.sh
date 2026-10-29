@@ -6,10 +6,11 @@ mkdir -p "$evidence_dir"
 logcat_file="$evidence_dir/android-logcat.txt"
 flutter_log="$evidence_dir/flutter-drive.log"
 screenshot_file="$evidence_dir/uid-2-android-webview.png"
+diagnostic_screenshot_file="$evidence_dir/uid-2-webview-diagnostic.png"
 capture_status_file="$evidence_dir/screenshot-capture-status.txt"
 app_id="io.github.sanshanhyo.expiliplus.debug"
 ack_prefix="/data/user/0/$app_id/cache/aicu-webview-capture-ack-"
-rm -f "$screenshot_file" "$capture_status_file"
+rm -f "$screenshot_file" "$diagnostic_screenshot_file" "$capture_status_file"
 
 is_valid_ack_path() {
   local candidate="$1"
@@ -43,35 +44,44 @@ flutter drive \
   --no-pub \
   -d emulator-5554 2>&1 | tee "$flutter_log" | while IFS= read -r line; do
   printf '%s\n' "$line"
-  if [[ "$line" == *AICU_REAL_WEBVIEW_CAPTURE_REQUESTED* && ! -s "$screenshot_file" ]]; then
+  if [[ "$line" == *AICU_REAL_WEBVIEW_CAPTURE_REQUESTED* ]]; then
     # Capture the emulator display directly while the production WebView is
     # still open. The integration test waits for the acknowledgement below
     # before it scrolls or pops the route, so capture cannot race with teardown.
-    ack_path="${line#*AICU_REAL_WEBVIEW_CAPTURE_REQUESTED path=}"
-    if ! is_valid_ack_path "$ack_path"; then
+    request="${line#*AICU_REAL_WEBVIEW_CAPTURE_REQUESTED }"
+    purpose="${request%% path=*}"
+    ack_path="${request#* path=}"
+    case "$purpose" in
+      purpose=verified) capture_target="$screenshot_file" ;;
+      purpose=diagnostic) capture_target="$diagnostic_screenshot_file" ;;
+      *) capture_target="" ;;
+    esac
+    if [[ -z "$capture_target" ]] || ! is_valid_ack_path "$ack_path"; then
       echo "AICU_REAL_WEBVIEW_CAPTURE_FAILED invalid app cache acknowledgement path"
-    elif adb -s emulator-5554 exec-out screencap -p >"$screenshot_file"; then
-      signature=$(od -An -tx1 -N8 "$screenshot_file" | tr -d ' \n')
+    elif [[ -s "$capture_target" ]]; then
+      echo "AICU_REAL_WEBVIEW_CAPTURE_FAILED duplicate screenshot request for $purpose"
+    elif adb -s emulator-5554 exec-out screencap -p >"$capture_target"; then
+      signature=$(od -An -tx1 -N8 "$capture_target" | tr -d ' \n')
       if [[ "$signature" == "89504e470d0a1a0a" ]]; then
-        echo "Captured real Android emulator screen with AICU UID 2 in-app WebView: $screenshot_file"
+        echo "Captured Android WebView $purpose screenshot: $capture_target"
         if adb -s emulator-5554 shell run-as "$app_id" touch "$ack_path"; then
-          echo "AICU_REAL_WEBVIEW_CAPTURE_ACKNOWLEDGED"
-          printf 'acknowledged\n' >"$capture_status_file"
+          echo "AICU_REAL_WEBVIEW_CAPTURE_ACKNOWLEDGED purpose=$purpose"
+          printf '%s acknowledged\n' "$purpose" >>"$capture_status_file"
         else
           echo "AICU_REAL_WEBVIEW_CAPTURE_FAILED could not acknowledge screenshot to app"
-          printf 'failed: app acknowledgement\n' >"$capture_status_file"
+          printf '%s failed: app acknowledgement\n' "$purpose" >>"$capture_status_file"
         fi
       else
         echo "Android screen capture did not produce a PNG signature"
-        rm -f "$screenshot_file"
+        rm -f "$capture_target"
         echo "AICU_REAL_WEBVIEW_CAPTURE_FAILED invalid PNG signature"
-        printf 'failed: invalid PNG signature\n' >"$capture_status_file"
+        printf '%s failed: invalid PNG signature\n' "$purpose" >>"$capture_status_file"
       fi
     else
       echo "adb screencap failed while the AICU page was open"
-      rm -f "$screenshot_file"
+      rm -f "$capture_target"
       echo "AICU_REAL_WEBVIEW_CAPTURE_FAILED adb screencap failed"
-      printf 'failed: adb screencap\n' >"$capture_status_file"
+      printf '%s failed: adb screencap\n' "$purpose" >>"$capture_status_file"
     fi
   fi
 done
@@ -98,7 +108,7 @@ for marker in \
   fi
 done
 
-if [[ "$(cat "$capture_status_file" 2>/dev/null || true)" != acknowledged ]]; then
+if ! grep -Fxq 'verified acknowledged' "$capture_status_file" 2>/dev/null; then
   echo 'The native emulator screenshot handshake failed.'
   cat "$capture_status_file" 2>/dev/null || true
   status=1

@@ -102,6 +102,27 @@ void main() {
       expect(resolvedUri.queryParameters['uid'], '2');
       expect(find.text('AICU 评论查询'), findsOneWidget);
 
+      Future<bool> captureWithRunner(String purpose) async {
+        final captureAck = File(
+          '${Directory.systemTemp.path}/aicu-webview-capture-ack-'
+          '${DateTime.now().microsecondsSinceEpoch}',
+        );
+        // ignore: avoid_print
+        print(
+          'AICU_REAL_WEBVIEW_CAPTURE_REQUESTED '
+          'purpose=$purpose path=${captureAck.path}',
+        );
+        final captured = await tester.runAsync(() async {
+          final deadline = DateTime.now().add(const Duration(seconds: 20));
+          while (DateTime.now().isBefore(deadline)) {
+            if (await captureAck.exists()) return true;
+            await Future<void>.delayed(const Duration(milliseconds: 100));
+          }
+          return false;
+        });
+        return captured == true;
+      }
+
       // A load-stop callback alone can also happen on a Cloudflare challenge
       // page. Wait for the site's own title before asking the runner to save
       // the screenshot. Do not log the title because it may contain account
@@ -122,38 +143,35 @@ void main() {
         }
         return false;
       });
-      expect(
-        hasAicuPageTitle,
-        isTrue,
-        reason:
-            'The real WebView did not expose the AICU result-page title; '
-            'a load-stop URL alone is not sufficient.',
-      );
+      if (!hasAicuPageTitle) {
+        // Preserve a diagnostic image of the still-open WebView to distinguish
+        // a real result page from an intermediary/challenge page. This image
+        // is not treated as a successful AICU screenshot and no challenge is
+        // clicked or bypassed.
+        final diagnosticCaptured = await captureWithRunner('diagnostic');
+        // ignore: avoid_print
+        print(
+          'AICU_REAL_WEBVIEW_DIAGNOSTIC_CAPTURED '
+          'captured=$diagnosticCaptured',
+        );
+        fail(
+          'The real WebView did not expose the AICU result-page title; '
+          'a load-stop URL alone is not sufficient. '
+          'Diagnostic screenshot captured: $diagnosticCaptured.',
+        );
+      }
       // ignore: avoid_print
       print('AICU_REAL_WEBVIEW_PAGE_TITLE_VERIFIED');
 
       // The host runner captures the native emulator display. Keep this route
       // mounted until it acknowledges that capture, so the screenshot cannot
       // race with the subsequent scroll/back actions and show the test home.
-      final captureAck = File(
-        '${Directory.systemTemp.path}/aicu-webview-capture-ack-'
-        '${DateTime.now().microsecondsSinceEpoch}',
-      );
       // ignore: avoid_print
       print(
         'AICU_REAL_WEBVIEW_SCREENSHOT_READY '
         'host=${resolvedUri.host} path=${resolvedUri.path} uid=2',
       );
-      // ignore: avoid_print
-      print('AICU_REAL_WEBVIEW_CAPTURE_REQUESTED path=${captureAck.path}');
-      final screenshotCaptured = await tester.runAsync(() async {
-        final deadline = DateTime.now().add(const Duration(seconds: 20));
-        while (DateTime.now().isBefore(deadline)) {
-          if (await captureAck.exists()) return true;
-          await Future<void>.delayed(const Duration(milliseconds: 100));
-        }
-        return false;
-      });
+      final screenshotCaptured = await captureWithRunner('verified');
       expect(
         screenshotCaptured,
         isTrue,
