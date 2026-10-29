@@ -718,6 +718,7 @@ void main() {
       _setTestViewSize(tester, const Size(420, 900));
       addTearDown(() => _resetTestViewSize(tester));
       final socket = _ScreenshotSocket();
+      final network = _networkForTest();
       var socketConnections = 0;
       final service = SyncPlayService(
         reconnectEnabled: false,
@@ -752,7 +753,10 @@ void main() {
                 ),
                 Builder(
                   builder: (context) => FilledButton(
-                    onPressed: () => showSyncPlayPanel(context),
+                    onPressed: () => showSyncPlayPanel(
+                      context,
+                      networkStatusSource: network,
+                    ),
                     child: const Text('Open SyncPlay'),
                   ),
                 ),
@@ -891,6 +895,7 @@ void main() {
   ) async {
     _setTestViewSize(tester, const Size(360, 800));
     addTearDown(() => _resetTestViewSize(tester));
+    final network = _networkForTest();
     final service = SyncPlayService(reconnectEnabled: false);
     Get.put(service, permanent: true);
     late BuildContext playerContext;
@@ -912,7 +917,10 @@ void main() {
                   return Align(
                     alignment: Alignment.bottomCenter,
                     child: FilledButton(
-                      onPressed: () => showSyncPlayPanel(playerContext),
+                      onPressed: () => showSyncPlayPanel(
+                        playerContext,
+                        networkStatusSource: network,
+                      ),
                       child: const Text('Open SyncPlay'),
                     ),
                   );
@@ -951,6 +959,7 @@ void main() {
   ) async {
     _setTestViewSize(tester, const Size(420, 900));
     addTearDown(() => _resetTestViewSize(tester));
+    final network = _networkForTest();
     final service = SyncPlayService(reconnectEnabled: false);
     Get.put(service, permanent: true);
     final launcher = SyncPlayPanelLauncher();
@@ -1014,6 +1023,7 @@ void main() {
                                                 panelTheme: Theme.of(
                                                   playerContext,
                                                 ),
+                                                networkStatusSource: network,
                                               ),
                                             ),
                                           ),

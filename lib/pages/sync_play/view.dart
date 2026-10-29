@@ -147,6 +147,7 @@ class SyncPlayPanelLauncher {
     required VoidCallback closeMenu,
     SyncPlayLaunchContext? launchContext,
     ThemeData? panelTheme,
+    SyncPlayNetworkStatusSource? networkStatusSource,
   }) async {
     if (_isOpening) return;
     _isOpening = true;
@@ -158,6 +159,7 @@ class SyncPlayPanelLauncher {
         playerContext,
         launchContext: launchContext,
         panelTheme: panelTheme,
+        networkStatusSource: networkStatusSource,
       );
     } finally {
       _isOpening = false;
@@ -770,6 +772,7 @@ Future<void> showSyncPlayPanel(
   BuildContext context, {
   SyncPlayLaunchContext? launchContext,
   ThemeData? panelTheme,
+  SyncPlayNetworkStatusSource? networkStatusSource,
 }) async {
   final l10n = context.l10n;
   await showDialog<void>(
@@ -823,6 +826,7 @@ Future<void> showSyncPlayPanel(
                         embedded: true,
                         launchContext: launchContext,
                         onClose: () => Navigator.of(dialogContext).pop(),
+                        networkStatusSource: networkStatusSource,
                       ),
                     ),
                   ),
