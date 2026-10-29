@@ -1,4 +1,4 @@
-import 'dart:async' show Timer;
+import 'dart:async' show Timer, unawaited;
 import 'dart:convert' show jsonDecode, utf8;
 import 'dart:io' show Platform, File;
 import 'dart:typed_data' show Uint8List;
@@ -40,7 +40,8 @@ import 'package:ex_piliplus/pages/video/widgets/shutdown_timer_indicators.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart'
     show PlPlayerSyncPort;
-import 'package:ex_piliplus/pages/sync_play/view.dart' show SyncPlayLaunchContext;
+import 'package:ex_piliplus/pages/sync_play/view.dart'
+    show SyncPlayLaunchContext, showSyncPlayPanel;
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/play_repeat.dart';
@@ -399,6 +400,7 @@ class HeaderControlState extends State<HeaderControl>
   late final horizontalScreen = videoDetailCtr.horizontalScreen;
 
   Box setting = GStorage.setting;
+  bool _syncPlayPanelOpening = false;
 
   @override
   void initState() {
@@ -948,27 +950,39 @@ class HeaderControlState extends State<HeaderControl>
           cid: videoDetailCtr.cid.value,
         );
         final title = ugcIntroController.videoDetail.value.title ?? video.bvid;
+        if (_syncPlayPanelOpening) return;
+        _syncPlayPanelOpening = true;
+        final launchContext = SyncPlayLaunchContext(
+          video: video,
+          title: title,
+          player: PlPlayerSyncPort(plPlayerController),
+          currentVideoId: () => SyncPlayVideoRef.fromPlayer(
+            bvid: videoDetailCtr.bvid,
+            cid: videoDetailCtr.cid.value,
+          ).videoId,
+          currentPart: () {
+            final cid = videoDetailCtr.cid.value;
+            final pages = ugcIntroController.videoDetail.value.pages;
+            if (cid <= 0 || pages == null) return null;
+            for (final page in pages) {
+              if (page.cid == cid) return page.page;
+            }
+            return null;
+          },
+        );
         Get.back();
-        Get.toNamed(
-          '/syncPlay',
-          arguments: SyncPlayLaunchContext(
-            video: video,
-            title: title,
-            player: PlPlayerSyncPort(plPlayerController),
-            currentVideoId: () => SyncPlayVideoRef.fromPlayer(
-              bvid: videoDetailCtr.bvid,
-              cid: videoDetailCtr.cid.value,
-            ).videoId,
-            currentPart: () {
-              final cid = videoDetailCtr.cid.value;
-              final pages = ugcIntroController.videoDetail.value.pages;
-              if (cid <= 0 || pages == null) return null;
-              for (final page in pages) {
-                if (page.cid == cid) return page.page;
-              }
-              return null;
-            },
-          ),
+        unawaited(
+          Future<void>.delayed(Duration.zero, () {
+            if (!mounted) {
+              _syncPlayPanelOpening = false;
+              return;
+            }
+            showSyncPlayPanel(
+              context,
+              launchContext: launchContext,
+              panelTheme: theme,
+            ).whenComplete(() => _syncPlayPanelOpening = false);
+          }),
         );
         return;
       case PlayerQuickActionId.playbackUrl:

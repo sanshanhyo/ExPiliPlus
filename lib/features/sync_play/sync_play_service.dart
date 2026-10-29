@@ -63,51 +63,76 @@ enum SyncPlayConnectionStatus {
   reconnecting,
 }
 
-class SyncPlayConnectionSettings {
-  const SyncPlayConnectionSettings({
-    required this.endpoint,
-    required this.origin,
-    required this.displayName,
-  });
+class SyncPlayServerAddress {
+  const SyncPlayServerAddress._({required this.endpoint, required this.origin});
 
-  final String endpoint;
-  final String origin;
-  final String displayName;
+  final Uri endpoint;
+  final Uri origin;
 
-  static Uri? validateEndpoint(String raw) {
-    final uri = Uri.tryParse(raw.trim());
-    final scheme = uri?.scheme.toLowerCase();
-    if (uri == null ||
-        !const {'ws', 'wss'}.contains(scheme) ||
-        uri.host.isEmpty ||
-        uri.userInfo.isNotEmpty ||
-        uri.hasFragment ||
-        (scheme == 'ws' &&
-            !const {'localhost', '127.0.0.1', '::1'}.contains(
-              uri.host.toLowerCase(),
-            ))) {
+  /// Accepts a host (optionally with a scheme, port and WebSocket path) and
+  /// derives both values from the same authority. Public plaintext endpoints
+  /// are rejected; the request Origin is never user-supplied.
+  static SyncPlayServerAddress? tryParse(String raw) {
+    final value = raw.trim();
+    if (value.isEmpty || value.contains(RegExp(r'\s'))) return null;
+
+    final hasAuthorityScheme = RegExp(
+      r'^[a-z][a-z0-9+.-]*://',
+      caseSensitive: false,
+    ).hasMatch(value);
+    final hasBareHostAndPort = RegExp(
+      r'^[a-z0-9.-]+:\d+(?:/.*)?$',
+      caseSensitive: false,
+    ).hasMatch(value);
+    final hasMalformedScheme = RegExp(
+      r'^[a-z][a-z0-9+.-]*:',
+      caseSensitive: false,
+    ).hasMatch(value);
+    if (!hasAuthorityScheme && hasMalformedScheme && !hasBareHostAndPort) {
       return null;
     }
-    return uri;
-  }
 
-  static Uri? validateOrigin(String raw) {
-    final uri = Uri.tryParse(raw.trim());
+    final input = hasAuthorityScheme ? value : 'wss://$value';
+    final uri = Uri.tryParse(input);
     if (uri == null ||
-        !const {'http', 'https'}.contains(uri.scheme.toLowerCase()) ||
+        !uri.hasAuthority ||
+        !const {'https', 'wss'}.contains(uri.scheme.toLowerCase()) ||
         uri.host.isEmpty ||
         uri.userInfo.isNotEmpty ||
         uri.hasQuery ||
-        uri.hasFragment ||
-        (uri.path.isNotEmpty && uri.path != '/')) {
+        uri.hasFragment) {
       return null;
     }
-    return Uri(
-      scheme: uri.scheme.toLowerCase(),
-      host: uri.host.toLowerCase(),
-      port: uri.hasPort ? uri.port : null,
-    );
+
+    try {
+      if (uri.hasPort && (uri.port < 1 || uri.port > 65535)) return null;
+      final host = uri.host.toLowerCase();
+      final endpoint = uri.replace(scheme: 'wss', host: host);
+      final origin = Uri(
+        scheme: 'https',
+        host: host,
+        port: uri.hasPort ? uri.port : null,
+      );
+      return SyncPlayServerAddress._(endpoint: endpoint, origin: origin);
+    } on FormatException {
+      return null;
+    }
   }
+}
+
+class SyncPlayConnectionSettings {
+  const SyncPlayConnectionSettings({
+    required this.serverAddress,
+    required this.displayName,
+  });
+
+  final String serverAddress;
+  final String displayName;
+
+  String get endpoint =>
+      SyncPlayServerAddress.tryParse(serverAddress)?.endpoint.toString() ?? '';
+  String get origin =>
+      SyncPlayServerAddress.tryParse(serverAddress)?.origin.toString() ?? '';
 
   static String? validateDisplayName(String raw) {
     final value = raw.trim();
@@ -223,20 +248,12 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
   SyncPlayConnectionSettings? _validateSettings(
     SyncPlayConnectionSettings value,
   ) {
-    final endpoint = SyncPlayConnectionSettings.validateEndpoint(
-      value.endpoint,
-    );
-    final origin = SyncPlayConnectionSettings.validateOrigin(value.origin);
+    final address = SyncPlayServerAddress.tryParse(value.serverAddress);
     final name = SyncPlayConnectionSettings.validateDisplayName(
       value.displayName,
     );
-    if (endpoint == null) {
+    if (address == null) {
       lastErrorCode = 'invalid_server';
-      notifyListeners();
-      return null;
-    }
-    if (origin == null) {
-      lastErrorCode = 'invalid_origin';
       notifyListeners();
       return null;
     }
@@ -246,8 +263,7 @@ class SyncPlayService extends ChangeNotifier with WidgetsBindingObserver {
       return null;
     }
     return SyncPlayConnectionSettings(
-      endpoint: endpoint.toString(),
-      origin: origin.toString(),
+      serverAddress: address.endpoint.toString(),
       displayName: name,
     );
   }

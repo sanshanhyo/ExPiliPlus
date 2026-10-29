@@ -113,8 +113,7 @@ class _FakePlayer implements SyncPlayPlayerPort {
 }
 
 const _settings = SyncPlayConnectionSettings(
-  endpoint: 'wss://sync.example.test/ws',
-  origin: 'https://expiliplus.example.test',
+  serverAddress: 'sync.example.test:9443/ws',
   displayName: 'Tester',
 );
 
@@ -124,39 +123,43 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('SyncPlay connection configuration', () {
-    test('requires secure remote servers and an explicit web Origin', () {
-      expect(
-        SyncPlayConnectionSettings.validateEndpoint('wss://sync.example.test'),
-        isNotNull,
+    test('derives WSS endpoint and HTTPS Origin from one server address', () {
+      final bare = SyncPlayServerAddress.tryParse('sync.example.test:9443/ws');
+      expect(bare?.endpoint.toString(), 'wss://sync.example.test:9443/ws');
+      expect(bare?.origin.toString(), 'https://sync.example.test:9443');
+
+      final https = SyncPlayServerAddress.tryParse(
+        'https://Sync.Example.test:8443/realtime',
       );
-      expect(
-        SyncPlayConnectionSettings.validateEndpoint('ws://localhost:8787'),
-        isNotNull,
+      expect(https?.endpoint.toString(), 'wss://sync.example.test:8443/realtime');
+      expect(https?.origin.toString(), 'https://sync.example.test:8443');
+
+      final wss = SyncPlayServerAddress.tryParse(
+        'wss://sync.example.test/socket',
       );
-      expect(
-        SyncPlayConnectionSettings.validateEndpoint('ws://sync.example.test'),
-        isNull,
-      );
-      expect(
-        SyncPlayConnectionSettings.validateEndpoint('https://sync.example.test'),
-        isNull,
-      );
-      expect(
-        SyncPlayConnectionSettings.validateOrigin('https://expiliplus.example'),
-        isNotNull,
-      );
-      expect(
-        SyncPlayConnectionSettings.validateOrigin(
-          'chrome-extension://extension-id',
-        ),
-        isNull,
-      );
-      expect(
-        SyncPlayConnectionSettings.validateOrigin(
-          'https://expiliplus.example/path',
-        ),
-        isNull,
-      );
+      expect(wss?.endpoint.toString(), 'wss://sync.example.test/socket');
+      expect(wss?.origin.toString(), 'https://sync.example.test');
+    });
+
+    test('rejects plaintext, unsafe, and malformed server addresses', () {
+      for (final invalid in [
+        '',
+        'http://sync.example.test',
+        'ws://sync.example.test',
+        'javascript://sync.example.test',
+        'https://user:pass@sync.example.test',
+        'sync.example.test:70000',
+        'sync.example.test:not-a-port',
+        'https://sync.example.test/path?token=secret',
+        'https://sync.example.test/#fragment',
+        '//sync.example.test',
+      ]) {
+        expect(
+          SyncPlayServerAddress.tryParse(invalid),
+          isNull,
+          reason: 'Should reject $invalid',
+        );
+      }
     });
 
     test('does not send Origin as a query or persist room tokens', () async {
@@ -165,7 +168,7 @@ void main() {
       final service = SyncPlayService(
         reconnectEnabled: false,
         socketFactory: (endpoint, origin) async {
-          expect(endpoint.toString(), _settings.endpoint);
+          expect(endpoint.toString(), 'wss://sync.example.test:9443/ws');
           observedOrigin = origin;
           return socket;
         },
@@ -173,7 +176,7 @@ void main() {
       addTearDown(service.dispose);
 
       await service.createRoom(_settings);
-      expect(observedOrigin, _settings.origin);
+      expect(observedOrigin, 'https://sync.example.test:9443');
       expect(socket.sent.single, {
         'type': 'room:create',
         'payload': {'displayName': 'Tester', 'protocolVersion': 5},
@@ -192,7 +195,7 @@ void main() {
 
       expect(service.invite, 'ROOM42:fake-join-token-123');
       expect(service.credentials?.memberToken, 'fake-member-token');
-      expect(service.settings?.endpoint, _settings.endpoint);
+      expect(service.settings?.endpoint, 'wss://sync.example.test:9443/ws');
     });
 
     test('rejects malformed room codes and undersized invite tokens', () async {

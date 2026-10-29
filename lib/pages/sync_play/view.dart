@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
@@ -30,13 +32,21 @@ class SyncPlayLaunchContext {
 }
 
 abstract final class SyncPlayPreferenceKeys {
-  static const endpoint = 'syncPlayServerUrl';
-  static const origin = 'syncPlayAllowedOrigin';
+  static const serverAddress = 'syncPlayServerUrl';
   static const displayName = 'syncPlayDisplayName';
 }
 
 class SyncPlayPage extends StatefulWidget {
-  const SyncPlayPage({super.key});
+  const SyncPlayPage({
+    super.key,
+    this.launchContext,
+    this.embedded = false,
+    this.onClose,
+  });
+
+  final SyncPlayLaunchContext? launchContext;
+  final bool embedded;
+  final VoidCallback? onClose;
 
   @override
   State<SyncPlayPage> createState() => _SyncPlayPageState();
@@ -45,8 +55,7 @@ class SyncPlayPage extends StatefulWidget {
 class _SyncPlayPageState extends State<SyncPlayPage> {
   late final SyncPlayService service;
   late final SyncPlayLaunchContext? launchContext;
-  late final TextEditingController endpointController;
-  late final TextEditingController originController;
+  late final TextEditingController serverAddressController;
   late final TextEditingController nameController;
   final inviteController = TextEditingController();
   bool isOpeningVideo = false;
@@ -54,24 +63,23 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
   @override
   void initState() {
     super.initState();
-    launchContext = Get.arguments is SyncPlayLaunchContext
-        ? Get.arguments as SyncPlayLaunchContext
-        : null;
+    final routeArguments = Get.arguments;
+    launchContext = widget.launchContext ??
+        (routeArguments is SyncPlayLaunchContext ? routeArguments : null);
     if (!Get.isRegistered<SyncPlayService>()) {
       Get.put(SyncPlayService(), permanent: true);
     }
     service = Get.find<SyncPlayService>();
-    endpointController = TextEditingController(
-      text: GStorage.setting.get(
-        SyncPlayPreferenceKeys.endpoint,
-        defaultValue: 'ws://localhost:8787',
-      ),
+    final savedAddress = GStorage.setting.get(
+      SyncPlayPreferenceKeys.serverAddress,
+      defaultValue: '',
     );
-    originController = TextEditingController(
-      text: GStorage.setting.get(
-        SyncPlayPreferenceKeys.origin,
-        defaultValue: '',
-      ),
+    serverAddressController = TextEditingController(
+      // Earlier builds used this only as a placeholder. Do not treat it as a
+      // real user-selected server after moving to the single-address form.
+      text: savedAddress is String && savedAddress != 'ws://localhost:8787'
+          ? savedAddress
+          : '',
     );
     nameController = TextEditingController(
       text: GStorage.setting.get(
@@ -83,28 +91,22 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
 
   @override
   void dispose() {
-    endpointController.dispose();
-    originController.dispose();
+    serverAddressController.dispose();
     nameController.dispose();
     inviteController.dispose();
     super.dispose();
   }
 
   SyncPlayConnectionSettings _settings() => SyncPlayConnectionSettings(
-    endpoint: endpointController.text,
-    origin: originController.text,
+    serverAddress: serverAddressController.text,
     displayName: nameController.text,
   );
 
   Future<void> _saveSettings() async {
     await Future.wait([
       GStorage.setting.put(
-        SyncPlayPreferenceKeys.endpoint,
-        endpointController.text.trim(),
-      ),
-      GStorage.setting.put(
-        SyncPlayPreferenceKeys.origin,
-        originController.text.trim(),
+        SyncPlayPreferenceKeys.serverAddress,
+        serverAddressController.text.trim(),
       ),
       GStorage.setting.put(
         SyncPlayPreferenceKeys.displayName,
@@ -133,7 +135,7 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
       currentVideoId: launch.currentVideoId,
     );
     if (!mounted) return;
-    if (shared) Get.back<void>();
+    if (shared && !widget.embedded) Get.back<void>();
   }
 
   Future<void> _copyInvite() async {
@@ -216,105 +218,144 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.syncPlayTitle)),
-      body: AnimatedBuilder(
-        animation: service,
-        builder: (context, _) => ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text(l10n.syncPlayDescription),
-            const SizedBox(height: 16),
-            _field(
-              controller: endpointController,
-              label: l10n.syncPlayServerUrl,
-              hint: 'wss://your-syncplay-server.example',
-            ),
-            const SizedBox(height: 12),
-            _field(
-              controller: originController,
-              label: l10n.syncPlayAllowedOrigin,
-              hint: 'https://your-app.example',
-            ),
-            const SizedBox(height: 6),
-            Text(
-              l10n.syncPlayOriginHelp,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-            _field(
-              controller: nameController,
-              label: l10n.syncPlayNickname,
-              maxLength: 32,
-            ),
-            const SizedBox(height: 16),
+    final content = AnimatedBuilder(
+      animation: service,
+      builder: (context, _) => ListView(
+        key: const ValueKey('syncplay-content'),
+        padding: EdgeInsets.all(widget.embedded ? 12 : 16),
+        children: [
+          _field(
+            key: const ValueKey('syncplay-server-address'),
+            controller: serverAddressController,
+            label: l10n.syncPlayServerUrl,
+            hint: 'server.example:443/sync',
+          ),
+          const SizedBox(height: 12),
+          if (service.credentials == null) ...[
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  service.isConnected ? Icons.cloud_done : Icons.cloud_off,
-                  color: service.isConnected
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline,
+                Expanded(
+                  child: _field(
+                    key: const ValueKey('syncplay-display-name'),
+                    controller: nameController,
+                    label: l10n.syncPlayNickname,
+                    maxLength: 32,
+                  ),
                 ),
                 const SizedBox(width: 8),
-                Text(_statusLabel(l10n)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: FilledButton.icon(
+                    onPressed:
+                        service.status == SyncPlayConnectionStatus.connecting
+                        ? null
+                        : _createRoom,
+                    icon: const Icon(Icons.add_link),
+                    label: Text(l10n.syncPlayCreateRoom),
+                  ),
+                ),
               ],
             ),
-            if (_errorLabel(l10n, service.lastErrorCode) case final error?) ...[
-              const SizedBox(height: 8),
-              Text(
-                error,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+            const SizedBox(height: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _field(
+                    key: const ValueKey('syncplay-invite-code'),
+                    controller: inviteController,
+                    label: l10n.syncPlayInviteCode,
+                    hint: 'ROOMCODE:JOIN_TOKEN',
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: OutlinedButton.icon(
+                    onPressed:
+                        service.status == SyncPlayConnectionStatus.connecting
+                        ? null
+                        : _joinRoom,
+                    icon: const Icon(Icons.login),
+                    label: Text(l10n.syncPlayJoinRoom),
+                  ),
+                ),
+              ],
+            ),
+          ] else ...[
+            const Divider(height: 24),
+            _roomSection(context, l10n),
+          ],
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(
+                service.isConnected ? Icons.cloud_done : Icons.cloud_off,
+                color: service.isConnected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.outline,
               ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(_statusLabel(l10n))),
             ],
-            if (service.credentials == null) ...[
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: service.status == SyncPlayConnectionStatus.connecting
-                    ? null
-                    : _createRoom,
-                icon: const Icon(Icons.add_link),
-                label: Text(l10n.syncPlayCreateRoom),
-              ),
-              const SizedBox(height: 12),
-              _field(
-                controller: inviteController,
-                label: l10n.syncPlayInviteCode,
-                hint: 'ROOMCODE:JOIN_TOKEN',
-              ),
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: service.status == SyncPlayConnectionStatus.connecting
-                    ? null
-                    : _joinRoom,
-                icon: const Icon(Icons.login),
-                label: Text(l10n.syncPlayJoinRoom),
-              ),
-            ] else ...[
-              const Divider(height: 28),
-              _roomSection(context, l10n),
-            ],
-            const SizedBox(height: 12),
+          ),
+          if (_errorLabel(l10n, service.lastErrorCode) case final error?) ...[
+            const SizedBox(height: 8),
             Text(
-              l10n.syncPlayPrivacyNote,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              error,
+              key: const ValueKey('syncplay-connection-error'),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ],
-        ),
+        ],
+      ),
+    );
+
+    if (!widget.embedded) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.syncPlayTitle)),
+        body: content,
+      );
+    }
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 56,
+            child: Row(
+              children: [
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    l10n.syncPlayTitle,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.commonClose,
+                  onPressed: widget.onClose,
+                  icon: const Icon(Icons.close),
+                ),
+                const SizedBox(width: 4),
+              ],
+            ),
+          ),
+          Expanded(child: content),
+        ],
       ),
     );
   }
 
   Widget _field({
+    Key? key,
     required TextEditingController controller,
     required String label,
     String? hint,
     int? maxLength,
   }) => TextField(
+    key: key,
     controller: controller,
     maxLength: maxLength,
     decoration: InputDecoration(labelText: label, hintText: hint),
@@ -389,4 +430,73 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
       ],
     );
   }
+}
+
+/// Opens SyncPlay over the player instead of pushing another page. The
+/// persistent service remains registered when this route is dismissed.
+Future<void> showSyncPlayPanel(
+  BuildContext context, {
+  SyncPlayLaunchContext? launchContext,
+  ThemeData? panelTheme,
+}) async {
+  final l10n = context.l10n;
+  await showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: l10n.syncPlayTitle,
+    useSafeArea: false,
+    builder: (dialogContext) {
+      final media = MediaQuery.of(dialogContext);
+      final landscape = media.size.width > media.size.height;
+      return AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final panelWidth = landscape
+                  ? math.min(constraints.maxWidth * 0.46, 440.0)
+                  : constraints.maxWidth;
+              final panelHeight = landscape
+                  ? constraints.maxHeight
+                  : constraints.maxHeight * 0.9;
+              final theme = panelTheme ?? Theme.of(dialogContext);
+              return Align(
+                alignment: landscape
+                    ? Alignment.centerRight
+                    : Alignment.bottomCenter,
+                child: Theme(
+                  data: theme,
+                  child: Material(
+                    key: const ValueKey('syncplay-player-panel'),
+                    color: theme.colorScheme.surface,
+                    clipBehavior: Clip.antiAlias,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(20),
+                      topRight: landscape
+                          ? Radius.zero
+                          : const Radius.circular(20),
+                      bottomLeft: landscape
+                          ? const Radius.circular(20)
+                          : Radius.zero,
+                    ),
+                    child: SizedBox(
+                      width: panelWidth,
+                      height: panelHeight,
+                      child: SyncPlayPage(
+                        embedded: true,
+                        launchContext: launchContext,
+                        onClose: () => Navigator.of(dialogContext).pop(),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    },
+  );
 }

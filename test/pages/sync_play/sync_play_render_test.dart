@@ -109,7 +109,7 @@ void main() {
     Get.reset();
   });
 
-  testWidgets('renders the connection form with safe Origin guidance', (
+  testWidgets('renders the single secure server-address form', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(440, 820));
@@ -121,9 +121,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Bili-SyncPlay'), findsOneWidget);
-    expect(find.text('服务器允许的 Origin'), findsOneWidget);
-    expect(find.textContaining('不要伪装浏览器扩展身份'), findsOneWidget);
-    expect(find.textContaining('不会发送 B 站 Cookie'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      findsOneWidget,
+    );
+    expect(find.text('服务器允许的 Origin'), findsNothing);
+    expect(find.textContaining('不要伪装浏览器扩展身份'), findsNothing);
+    expect(find.textContaining('不会发送 B 站 Cookie'), findsNothing);
+    expect(find.text('创建房间'), findsOneWidget);
+    expect(find.text('加入房间'), findsOneWidget);
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-server-address')),
+          )
+          .controller!
+          .text,
+      isEmpty,
+    );
     await _saveCapture(tester, 'connection-form-dark-zh.png');
     service.dispose();
     Get.reset();
@@ -144,8 +159,8 @@ void main() {
     await tester.pumpWidget(_app(const SyncPlayPage()));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.byType(TextField).at(1),
-      'https://expiliplus.example.test',
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'sync.example.test:9443/ws',
     );
     await tester.tap(find.text('创建房间'));
     await tester.pumpAndSettle();
@@ -212,5 +227,174 @@ void main() {
       service.dispose();
       Get.reset();
     }
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets(
+    'player panel overlays video, adapts orientation, and preserves the room on close',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(440, 820));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final socket = _ScreenshotSocket();
+      var socketConnections = 0;
+      final service = SyncPlayService(
+        reconnectEnabled: false,
+        socketFactory: (_, __) async {
+          socketConnections++;
+          return socket;
+        },
+      );
+      Get.put(service, permanent: true);
+
+      Future<void> openPanel() async {
+        await tester.tap(find.text('Open SyncPlay'));
+        await tester.pumpAndSettle();
+      }
+
+      await tester.pumpWidget(
+        _app(
+          Scaffold(
+            body: Column(
+              children: [
+                const Expanded(
+                  child: ColoredBox(
+                    color: Color(0xff151515),
+                    child: Center(
+                      child: Text(
+                        '模拟视频画面',
+                        key: ValueKey('syncplay-video-stays-mounted'),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Builder(
+                  builder: (context) => FilledButton(
+                    onPressed: () => showSyncPlayPanel(context),
+                    child: const Text('Open SyncPlay'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await openPanel();
+      expect(
+        find.byKey(const ValueKey('syncplay-player-panel')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('syncplay-video-stays-mounted')),
+        findsOneWidget,
+      );
+      await _saveCapture(tester, 'player-panel-portrait-dark-zh.png');
+
+      final serverAddressField = tester.widget<TextField>(
+        find.byKey(const ValueKey('syncplay-server-address')),
+      );
+      serverAddressField.controller!.text = 'sync.example.test:9443/ws';
+      await tester.tap(find.text('创建房间'));
+      await tester.pumpAndSettle();
+      expect(socketConnections, 1);
+      socket.emit({
+        'type': 'room:created',
+        'payload': {
+          'roomCode': 'ROOM42',
+          'memberId': 'render-member',
+          'joinToken': 'render-only-token',
+          'memberToken': 'render-member-token',
+        },
+      });
+      await tester.pump();
+      socket.emit({
+        'type': 'room:state',
+        'payload': {
+          'roomCode': 'ROOM42',
+          'members': [
+            {'id': 'render-member', 'name': '测试成员'},
+            {'id': 'synthetic-peer', 'name': '虚构成员'},
+          ],
+        },
+      });
+      await tester.pumpAndSettle();
+      expect(service.credentials?.roomCode, 'ROOM42');
+      expect(find.text('测试成员'), findsOneWidget);
+
+      await tester.binding.setSurfaceSize(const Size(900, 560));
+      await tester.pumpAndSettle();
+      final landscapeRect = tester.getRect(
+        find.byKey(const ValueKey('syncplay-player-panel')),
+      );
+      expect(landscapeRect.left, greaterThan(440));
+      expect(landscapeRect.right, greaterThan(850));
+      expect(
+        find.byKey(const ValueKey('syncplay-video-stays-mounted')),
+        findsOneWidget,
+      );
+      expect(find.text('虚构成员'), findsOneWidget);
+      await _saveCapture(tester, 'player-panel-landscape-room-dark-zh.png');
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('syncplay-player-panel')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('syncplay-video-stays-mounted')),
+        findsOneWidget,
+      );
+      expect(Get.find<SyncPlayService>(), same(service));
+      expect(service.credentials?.roomCode, 'ROOM42');
+      expect(socketConnections, 1);
+
+      await tester.tap(find.text('Open SyncPlay'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('关闭'));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('syncplay-player-panel')),
+        findsNothing,
+      );
+      expect(Get.find<SyncPlayService>(), same(service));
+      expect(service.credentials?.roomCode, 'ROOM42');
+      expect(socketConnections, 1);
+      service.dispose();
+      Get.reset();
+    },
+    timeout: const Timeout(Duration(minutes: 3)),
+  );
+
+  testWidgets('shows a clear error for an explicitly insecure public address', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(440, 820));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    var socketAttempts = 0;
+    final service = SyncPlayService(
+      reconnectEnabled: false,
+      socketFactory: (_, __) async {
+        socketAttempts++;
+        throw StateError('Should not attempt an insecure public endpoint');
+      },
+    );
+    Get.put(service, permanent: true);
+
+    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'ws://sync.example.test',
+    );
+    await tester.tap(find.text('创建房间'));
+    await tester.pumpAndSettle();
+
+    expect(socketAttempts, 0);
+    expect(find.byKey(const ValueKey('syncplay-connection-error')), findsOneWidget);
+    expect(find.textContaining('wss://'), findsOneWidget);
+    service.dispose();
+    Get.reset();
   }, timeout: const Timeout(Duration(minutes: 3)));
 }
