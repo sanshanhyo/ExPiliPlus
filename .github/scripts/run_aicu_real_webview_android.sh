@@ -28,7 +28,7 @@ trap - EXIT
 if (( status != 0 )); then
   echo "AICU Android WebView test failed with exit code $status. Recent renderer/app diagnostics:"
   if [[ -f "$logcat_file" ]]; then
-    rg -n -i -C 2 'chromium|webview|crash|fatal|oom|killed|lowmemory|xpiliplus|flutter|signal' "$logcat_file" | tail -n 240 || true
+    grep -n -i -E -C 2 'chromium|webview|crash|fatal|oom|killed|lowmemory|xpiliplus|flutter|signal' "$logcat_file" | tail -n 240 || true
   fi
   exit "$status"
 fi
