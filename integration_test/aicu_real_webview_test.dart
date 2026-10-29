@@ -143,7 +143,7 @@ void main() {
         }
         return false;
       });
-      if (!hasAicuPageTitle) {
+      if (hasAicuPageTitle != true) {
         // Preserve a diagnostic image of the still-open WebView to distinguish
         // a real result page from an intermediary/challenge page. This image
         // is not treated as a successful AICU screenshot and no challenge is
