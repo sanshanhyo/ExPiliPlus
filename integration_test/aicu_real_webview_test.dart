@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
@@ -61,14 +62,6 @@ void main() {
                       );
                       if (!pageLoaded.isCompleted) {
                         pageLoaded.complete(uri);
-                        // The runner takes an Android emulator screenshot while
-                        // this production page is still on screen.
-                        // ignore: avoid_print
-                        print(
-                          'AICU_REAL_WEBVIEW_SCREENSHOT_READY '
-                          'host=${uri?.host ?? "<null>"} '
-                          'path=${uri?.path ?? "<null>"} uid=2',
-                        );
                       }
                     },
                   ),
@@ -109,10 +102,69 @@ void main() {
       expect(resolvedUri.queryParameters['uid'], '2');
       expect(find.text('AICU 评论查询'), findsOneWidget);
 
-      // Capture is triggered by the load-stop marker above. Scroll through the
-      // native Android WebView API instead of executing JavaScript in the
-      // third-party page; a renderer crash must fail promptly rather than hold
-      // flutter drive until the entire test timeout.
+      // A load-stop callback alone can also happen on a Cloudflare challenge
+      // page. Wait for the site's own title before asking the runner to save
+      // the screenshot. Do not log the title because it may contain account
+      // display data.
+      final hasAicuPageTitle = await tester.runAsync(() async {
+        final deadline = DateTime.now().add(const Duration(seconds: 45));
+        while (DateTime.now().isBefore(deadline)) {
+          final title = await controller.getTitle().timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => null,
+          );
+          final normalizedTitle = title?.toLowerCase() ?? '';
+          if (normalizedTitle.contains('aicu') ||
+              (title?.contains('查评论') ?? false)) {
+            return true;
+          }
+          await Future<void>.delayed(const Duration(seconds: 1));
+        }
+        return false;
+      });
+      expect(
+        hasAicuPageTitle,
+        isTrue,
+        reason:
+            'The real WebView did not expose the AICU result-page title; '
+            'a load-stop URL alone is not sufficient.',
+      );
+      // ignore: avoid_print
+      print('AICU_REAL_WEBVIEW_PAGE_TITLE_VERIFIED');
+
+      // The host runner captures the native emulator display. Keep this route
+      // mounted until it acknowledges that capture, so the screenshot cannot
+      // race with the subsequent scroll/back actions and show the test home.
+      final captureAck = File(
+        '${Directory.systemTemp.path}/aicu-webview-capture-ack-'
+        '${DateTime.now().microsecondsSinceEpoch}',
+      );
+      // ignore: avoid_print
+      print(
+        'AICU_REAL_WEBVIEW_SCREENSHOT_READY '
+        'host=${resolvedUri.host} path=${resolvedUri.path} uid=2',
+      );
+      // ignore: avoid_print
+      print('AICU_REAL_WEBVIEW_CAPTURE_REQUESTED path=${captureAck.path}');
+      final screenshotCaptured = await tester.runAsync(() async {
+        final deadline = DateTime.now().add(const Duration(seconds: 20));
+        while (DateTime.now().isBefore(deadline)) {
+          if (await captureAck.exists()) return true;
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+        }
+        return false;
+      });
+      expect(
+        screenshotCaptured,
+        isTrue,
+        reason: 'The Android runner did not acknowledge the in-WebView capture.',
+      );
+      // ignore: avoid_print
+      print('AICU_REAL_WEBVIEW_SCREENSHOT_CAPTURED');
+
+      // Scroll through the native Android WebView API instead of executing
+      // JavaScript in the third-party page; a renderer crash must fail promptly
+      // rather than hold flutter drive until the entire test timeout.
       Object? scrollFailure;
       try {
         final contentHeight = await tester.runAsync(
