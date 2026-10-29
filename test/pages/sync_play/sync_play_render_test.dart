@@ -579,6 +579,7 @@ void main() {
           .label,
       '设备网络不可用',
     );
+    await _saveCapture(tester, 'connection-offline-red-cloud-dark-zh.png');
 
     network.emit(null);
     await tester.pump();
