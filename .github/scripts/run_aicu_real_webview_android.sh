@@ -8,7 +8,23 @@ flutter_log="$evidence_dir/flutter-drive.log"
 screenshot_file="$evidence_dir/uid-2-android-webview.png"
 capture_status_file="$evidence_dir/screenshot-capture-status.txt"
 app_id="io.github.sanshanhyo.expiliplus.debug"
+ack_prefix="/data/user/0/$app_id/cache/aicu-webview-capture-ack-"
 rm -f "$screenshot_file" "$capture_status_file"
+
+is_valid_ack_path() {
+  local candidate="$1"
+  [[ "$candidate" == "$ack_prefix"* ]] || return 1
+  local nonce="${candidate#"$ack_prefix"}"
+  [[ "$nonce" =~ ^[0-9]+$ ]]
+}
+
+# Exercise the exact path guard before starting an emulator so a quoting
+# regression fails quickly instead of waiting for the app's screenshot timeout.
+if ! is_valid_ack_path "${ack_prefix}123456" || \
+   is_valid_ack_path "${ack_prefix}123/../../outside"; then
+  echo 'AICU screenshot acknowledgement path guard failed its preflight.'
+  exit 2
+fi
 
 adb logcat -c
 adb logcat -v threadtime >"$logcat_file" 2>&1 &
@@ -32,7 +48,7 @@ flutter drive \
     # still open. The integration test waits for the acknowledgement below
     # before it scrolls or pops the route, so capture cannot race with teardown.
     ack_path="${line#*AICU_REAL_WEBVIEW_CAPTURE_REQUESTED path=}"
-    if [[ ! "$ack_path" =~ ^/data/user/0/${app_id//./\\.}/cache/aicu-webview-capture-ack-[0-9]+$ ]]; then
+    if ! is_valid_ack_path "$ack_path"; then
       echo "AICU_REAL_WEBVIEW_CAPTURE_FAILED invalid app cache acknowledgement path"
     elif adb -s emulator-5554 exec-out screencap -p >"$screenshot_file"; then
       signature=$(od -An -tx1 -N8 "$screenshot_file" | tr -d ' \n')
