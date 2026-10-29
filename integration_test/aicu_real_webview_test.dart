@@ -109,28 +109,72 @@ void main() {
       expect(resolvedUri.queryParameters['uid'], '2');
       expect(find.text('AICU 评论查询'), findsOneWidget);
 
-      // Let the host-side screenshot command capture the loaded application
-      // before exercising scrolling or navigating away.
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(seconds: 3)),
-      );
-
-      final scrollMetrics = await controller.evaluateJavascript(
-        source: '''(() => {
-          const page = document.scrollingElement || document.documentElement;
-          const maxScroll = Math.max(0, page.scrollHeight - page.clientHeight);
-          window.scrollTo(0, maxScroll);
-          return JSON.stringify({
-            scrollHeight: page.scrollHeight,
-            clientHeight: page.clientHeight,
-            scrollTop: page.scrollTop
-          });
-        })()''',
-      );
-      expect(scrollMetrics, isNotNull);
-      // This reports only page geometry, not AICU page text or queried data.
-      // ignore: avoid_print
-      print('AICU real WebView scroll metrics: $scrollMetrics');
+      // Capture is triggered by the load-stop marker above. Scroll through the
+      // native Android WebView API instead of executing JavaScript in the
+      // third-party page; a renderer crash must fail promptly rather than hold
+      // flutter drive until the entire test timeout.
+      Object? scrollFailure;
+      try {
+        final contentHeight = await tester.runAsync(
+          () => controller.getContentHeight().timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw TimeoutException(
+              'Timed out reading AICU WebView content height',
+            ),
+          ),
+        );
+        if (contentHeight == null) {
+          throw TimeoutException(
+            'AICU WebView did not return its content height',
+          );
+        }
+        final scrollCompleted = await tester.runAsync(() async {
+          await controller.scrollBy(x: 0, y: 480).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw TimeoutException(
+              'Timed out scrolling the AICU Android WebView',
+            ),
+          );
+          return true;
+        });
+        if (scrollCompleted != true) {
+          throw TimeoutException('AICU WebView scroll did not complete');
+        }
+        final scrollY = await tester.runAsync(
+          () => controller.getScrollY().timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => throw TimeoutException(
+              'Timed out reading AICU WebView scroll position',
+            ),
+          ),
+        );
+        if (scrollY == null) {
+          throw TimeoutException(
+            'AICU WebView did not return its scroll position',
+          );
+        }
+        // This reports only page geometry, not page text or queried data.
+        // ignore: avoid_print
+        print(
+          'AICU real WebView scroll metrics: '
+          'contentHeight=$contentHeight; scrollY=$scrollY',
+        );
+        expect(scrollY, isNotNull);
+        expect(scrollY, greaterThan(0));
+        // ignore: avoid_print
+        print('AICU_REAL_WEBVIEW_SCROLL_VERIFIED scrollY=$scrollY');
+      } catch (error) {
+        scrollFailure = error;
+        // The production page should replace a dead Android renderer with its
+        // retry panel. Log the state before leaving so the captured screenshot
+        // is not mistaken for proof that later browser interactions worked.
+        // ignore: avoid_print
+        print(
+          'AICU_REAL_WEBVIEW_SCROLL_FAILED '
+          'webViewVisible=${find.byType(InAppWebView).evaluate().length == 1}; '
+          'error=$error',
+        );
+      }
 
       final backTooltip = MaterialLocalizations.of(
         tester.element(find.byType(AicuLookupPage)),
@@ -140,7 +184,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.byKey(const ValueKey('open-aicu-uid-2')), findsOneWidget);
       // ignore: avoid_print
-      print('AICU real WebView route returned to the app host screen');
+      print('AICU_REAL_WEBVIEW_ROUTE_CLOSED');
+      if (scrollFailure != null) {
+        fail('AICU WebView scroll failed before route close: $scrollFailure');
+      }
     },
     timeout: const Timeout(Duration(minutes: 6)),
   );

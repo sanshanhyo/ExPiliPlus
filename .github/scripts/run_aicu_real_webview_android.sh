@@ -46,6 +46,24 @@ done
 pipeline_status=("${PIPESTATUS[@]}")
 status="${pipeline_status[0]}"
 
+# flutter drive may surface the integration app's failure only in its streamed
+# test output. Do not let a screenshot alone make a timed-out test look green.
+if grep -Fq 'Some tests failed' "$flutter_log" || \
+   grep -Eq 'TimeoutException after .*Test timed out' "$flutter_log"; then
+  echo "Flutter integration output contains a failed or timed-out test."
+  status=1
+fi
+
+for marker in \
+  'AICU_REAL_WEBVIEW_SCREENSHOT_READY' \
+  'AICU_REAL_WEBVIEW_SCROLL_VERIFIED' \
+  'AICU_REAL_WEBVIEW_ROUTE_CLOSED'; do
+  if ! grep -Fq "$marker" "$flutter_log"; then
+    echo "Missing required real WebView verification marker: $marker"
+    status=1
+  fi
+done
+
 cleanup
 trap - EXIT
 
