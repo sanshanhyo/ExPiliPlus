@@ -108,7 +108,7 @@ Future<SyncPlaySocket> _connectToPinnedServer(
 ) async {
   expect(endpoint.scheme, 'wss');
   expect(endpoint.host, 'syncplay-integration.test');
-  expect(endpoint.port, 443);
+  expect(endpoint.hasPort, isFalse);
   expect(endpoint.path, isEmpty);
 
   // Keep the production service's secure endpoint/origin derivation in the
@@ -345,12 +345,18 @@ void main() {
       'upstream rejects a service connection with an unapproved Origin',
       () async {
         final port = configuredPort!;
+        Object? transportError;
         final service = SyncPlayService(
-          socketFactory: (endpoint, origin) {
+          socketFactory: (endpoint, origin) async {
             expect(origin, 'https://not-allowed.integration.test');
-            return _connectToPinnedServer(endpoint, origin, port);
+            try {
+              return await _connectToPinnedServer(endpoint, origin, port);
+            } catch (error) {
+              transportError = error;
+              rethrow;
+            }
           },
-          );
+        );
         try {
           await service.createRoom(
             SyncPlayConnectionSettings(
@@ -368,6 +374,12 @@ void main() {
           );
           expect(service.credentials, isNull);
           expect(service.lastErrorCode, 'connection_failed');
+          expect(transportError, isNotNull);
+          expect(
+            transportError.toString(),
+            contains('403'),
+            reason: 'Connection failed before upstream Origin validation.',
+          );
         } finally {
           service.dispose();
         }
