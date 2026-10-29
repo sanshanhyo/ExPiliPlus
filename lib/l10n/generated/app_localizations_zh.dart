@@ -7488,6 +7488,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayWebSocketUrl => 'WebSocket 连接地址';
 
   @override
+  String get syncPlayAdvancedMode => '高级模式';
+
+  @override
+  String get syncPlayAdvancedModeHelp =>
+      '关闭时仅使用上方服务器地址，已保存的高级值会保留但不生效。';
+
+  @override
   String get syncPlayAllowedOrigin => '服务器允许的 Origin';
 
   @override
@@ -7525,7 +7532,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayInvalidServer => '服务器地址无效；远程服务器必须使用 wss://。';
 
   @override
-  String get syncPlayInvalidOrigin => 'Origin 必须是服务器明确允许的 http(s) 来源。';
+  String get syncPlayInvalidOrigin => 'Origin 必须是服务器明确允许的 HTTPS 来源。';
 
   @override
   String get syncPlayInvalidName => '昵称需为 1–32 个字符。';
@@ -15076,6 +15083,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get syncPlayWebSocketUrl => 'WebSocket 連線位址';
 
   @override
+  String get syncPlayAdvancedMode => '進階模式';
+
+  @override
+  String get syncPlayAdvancedModeHelp =>
+      '關閉時僅使用上方伺服器位址，已儲存的進階值會保留但不生效。';
+
+  @override
   String get syncPlayAllowedOrigin => '伺服器允許的 Origin';
 
   @override
@@ -15113,7 +15127,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get syncPlayInvalidServer => '伺服器位址無效；遠端伺服器必須使用 wss://。';
 
   @override
-  String get syncPlayInvalidOrigin => 'Origin 必須是伺服器明確允許的 http(s) 來源。';
+  String get syncPlayInvalidOrigin => 'Origin 必須是伺服器明確允許的 HTTPS 來源。';
 
   @override
   String get syncPlayInvalidName => '暱稱需為 1–32 個字元。';

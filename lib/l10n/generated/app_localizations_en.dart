@@ -7734,6 +7734,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncPlayWebSocketUrl => 'WebSocket URL';
 
   @override
+  String get syncPlayAdvancedMode => 'Advanced mode';
+
+  @override
+  String get syncPlayAdvancedModeHelp =>
+      'When off, the single server address is used; saved advanced values stay inactive.';
+
+  @override
   String get syncPlayAllowedOrigin => 'Server-allowed Origin';
 
   @override
@@ -7773,7 +7780,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncPlayInvalidOrigin =>
-      'Origin must be an http(s) origin explicitly allowed by the server.';
+      'Enter a secure HTTPS Origin explicitly allowed by the server.';
 
   @override
   String get syncPlayInvalidName => 'Enter a nickname of 1–32 characters.';

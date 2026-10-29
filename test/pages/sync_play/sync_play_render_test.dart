@@ -132,6 +132,16 @@ void main() {
 
     expect(find.text('Bili-SyncPlay'), findsOneWidget);
     expect(
+      tester.widget<SwitchListTile>(
+        find.byKey(const ValueKey('syncplay-advanced-mode')),
+      ).value,
+      isFalse,
+    );
+    expect(
+      find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+      findsNothing,
+    );
+    expect(
       find.byKey(const ValueKey('syncplay-server-address')),
       findsOneWidget,
     );
@@ -336,6 +346,37 @@ void main() {
     expect(observed.single.$2, 'https://simple.example.test:9443');
     expect(GStorage.setting.get(SyncPlayPreferenceKeys.advancedMode), isFalse);
 
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(_app(const SyncPlayPage()));
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<SwitchListTile>(
+        find.byKey(const ValueKey('syncplay-advanced-mode')),
+      ).value,
+      isFalse,
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-advanced-websocket-url')),
+          )
+          .controller!
+          .text,
+      'wss://socket.example.test:9444/room',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(const ValueKey('syncplay-advanced-origin')),
+          )
+          .controller!
+          .text,
+      'https://client.example.test:8443',
+    );
+
+    await tester.pumpWidget(const SizedBox.shrink());
     service.dispose();
     Get.reset();
   }, timeout: const Timeout(Duration(minutes: 3)));

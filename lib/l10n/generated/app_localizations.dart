@@ -13505,6 +13505,18 @@ abstract class AppLocalizations {
   /// **'WebSocket 连接地址'**
   String get syncPlayWebSocketUrl;
 
+  /// No description provided for @syncPlayAdvancedMode.
+  ///
+  /// In zh, this message translates to:
+  /// **'高级模式'**
+  String get syncPlayAdvancedMode;
+
+  /// No description provided for @syncPlayAdvancedModeHelp.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭时仅使用上方服务器地址，已保存的高级值会保留但不生效。'**
+  String get syncPlayAdvancedModeHelp;
+
   /// No description provided for @syncPlayAllowedOrigin.
   ///
   /// In zh, this message translates to:
@@ -13580,7 +13592,7 @@ abstract class AppLocalizations {
   /// No description provided for @syncPlayInvalidOrigin.
   ///
   /// In zh, this message translates to:
-  /// **'Origin 必须是服务器明确允许的 http(s) 来源。'**
+  /// **'Origin 必须是服务器明确允许的 HTTPS 来源。'**
   String get syncPlayInvalidOrigin;
 
   /// No description provided for @syncPlayInvalidName.
