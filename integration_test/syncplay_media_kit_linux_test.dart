@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:ex_piliplus/common/widgets/custom_toast.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_network_status.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
@@ -16,6 +17,7 @@ import 'package:ex_piliplus/utils/path_utils.dart'
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:integration_test/integration_test.dart';
@@ -155,6 +157,22 @@ SyncPlayConnectionSettings _settings(String name, int tlsPort) =>
       advancedOrigin: _origin,
     );
 
+GetMaterialApp _testApp(Widget home) => GetMaterialApp(
+  debugShowCheckedModeBanner: false,
+  locale: const Locale('en'),
+  localizationsDelegates: appLocalizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  builder: FlutterSmartDialog.init(
+    toastBuilder: CustomToast.new,
+    loadingBuilder: LoadingWidget.new,
+    notifyStyle: const FlutterSmartNotifyStyle(
+      warningBuilder: NotifyWarning.new,
+    ),
+  ),
+  navigatorObservers: [FlutterSmartDialog.observer],
+  home: home,
+);
+
 Future<void> _pumpUntil(
   WidgetTester tester,
   Finder finder, {
@@ -199,6 +217,13 @@ void main() {
         MediaKit.ensureInitialized();
       });
       Get.testMode = true;
+      SmartDialog.config.toast = SmartConfigToast(displayType: .onlyRefresh);
+
+      // The production player can report native initialization events as soon
+      // as its listeners attach. Mount the same SmartDialog hooks as the app
+      // before creating the player so those events have an initialized toast
+      // context instead of failing on an uninitialized test root.
+      await tester.pumpWidget(_testApp(const SizedBox.shrink()));
 
       final fixtureDirectory = path.dirname(path.dirname(fixturePath));
       final fixtureType = path.basename(path.dirname(fixturePath));
@@ -258,12 +283,8 @@ void main() {
         port.addPositionListener(onPosition);
         Get.put(guest, permanent: true);
         await tester.pumpWidget(
-          GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            locale: const Locale('en'),
-            localizationsDelegates: appLocalizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            home: mui.Scaffold(
+          _testApp(
+            mui.Scaffold(
               body: Stack(
                 fit: StackFit.expand,
                 children: [
