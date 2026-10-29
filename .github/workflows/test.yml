@@ -108,6 +108,19 @@ jobs:
       - name: Check generated localizations
         run: git diff --exit-code -- lib/l10n/generated
 
+      - name: Enable KVM for the ephemeral Android runner
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle
+          if [[ ! -r /dev/kvm || ! -w /dev/kvm ]]; then
+            echo 'KVM is unavailable to the ephemeral runner; refusing software emulation.'
+            id
+            ls -l /dev/kvm || true
+            exit 1
+          fi
+
       - name: Run the real AICU page in Android WebView
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -119,6 +132,8 @@ jobs:
           # The renderer was killed or crashed while loading the full site;
           # give Chromium more headroom and retain logcat diagnostics.
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 3072
+          # KVM must be active; don't silently fall back to software x86_64.
+          disable-linux-hw-accel: false
           disable-animations: true
           script: bash .github/scripts/run_aicu_real_webview_android.sh
 
