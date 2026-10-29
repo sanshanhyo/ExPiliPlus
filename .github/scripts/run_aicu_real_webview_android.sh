@@ -9,20 +9,30 @@ screenshot_file="$evidence_dir/uid-2-android-webview.png"
 diagnostic_screenshot_file="$evidence_dir/uid-2-webview-diagnostic.png"
 capture_status_file="$evidence_dir/screenshot-capture-status.txt"
 app_id="io.github.sanshanhyo.expiliplus.debug"
-ack_prefix="/data/user/0/$app_id/cache/aicu-webview-capture-ack-"
+app_data_prefix="/data/user/0/$app_id"
+ack_name_prefix="aicu-webview-capture-ack-"
 rm -f "$screenshot_file" "$diagnostic_screenshot_file" "$capture_status_file"
 
 is_valid_ack_path() {
   local candidate="$1"
-  [[ "$candidate" == "$ack_prefix"* ]] || return 1
-  local nonce="${candidate#"$ack_prefix"}"
+  local nonce
+  local cache_prefix="$app_data_prefix/cache/$ack_name_prefix"
+  local code_cache_prefix="$app_data_prefix/code_cache/$ack_name_prefix"
+  if [[ "$candidate" == "$cache_prefix"* ]]; then
+    nonce="${candidate#"$cache_prefix"}"
+  elif [[ "$candidate" == "$code_cache_prefix"* ]]; then
+    nonce="${candidate#"$code_cache_prefix"}"
+  else
+    return 1
+  fi
   [[ "$nonce" =~ ^[0-9]+$ ]]
 }
 
 # Exercise the exact path guard before starting an emulator so a quoting
 # regression fails quickly instead of waiting for the app's screenshot timeout.
-if ! is_valid_ack_path "${ack_prefix}123456" || \
-   is_valid_ack_path "${ack_prefix}123/../../outside"; then
+if ! is_valid_ack_path "$app_data_prefix/cache/$ack_name_prefix"'123456' || \
+   ! is_valid_ack_path "$app_data_prefix/code_cache/$ack_name_prefix"'123456' || \
+   is_valid_ack_path "$app_data_prefix/code_cache/$ack_name_prefix"'123/../../outside'; then
   echo 'AICU screenshot acknowledgement path guard failed its preflight.'
   exit 2
 fi
