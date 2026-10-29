@@ -236,6 +236,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
             replyLevel: 2,
             needDivider: false,
             onReply: (replyItem) => _controller.onReply(replyItem, index: -1),
+            onCommentPlusOne: _controller.onCommentPlusOne,
             upMid: widget.upMid ?? _controller.upMid,
             onCheckReply: _controller.onCheckReply,
           ),
@@ -352,6 +353,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
       replyItem: replyItem,
       replyLevel: isDialogue ? 3 : 2,
       onReply: (replyItem) => _controller.onReply(replyItem, index: index),
+      onCommentPlusOne: _controller.onCommentPlusOne,
       onDelete: (item, subIndex) => _controller.onRemove(index, item, null),
       upMid: _controller.upMid,
       showDialogue: () => Scaffold.of(context).showBottomSheet(

@@ -7470,6 +7470,64 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsEnableEmoteTooltipDescription => '长按或悬停表情时显示预览';
+
+  @override
+  String get commentPlusOneTooltip => '直接回复这条评论';
+
+  @override
+  String get commentPlusOneUnsupported => '这条评论含有图片或结构化内容，无法安全复用';
+
+  @override
+  String get commentPlusOneUnconfirmed => '回复结果未确认，请先检查评论区再决定是否重试';
+
+  @override
+  String get commentPlusOneSent => '已回复这条评论';
+
+  @override
+  String get settingsCommentPlusOneMode => '评论 +1';
+
+  @override
+  String get settingsCommentPlusOneModeOff => '关闭';
+
+  @override
+  String get settingsCommentPlusOneModeAll => '全部视频开启';
+
+  @override
+  String get settingsCommentPlusOneModeSelectedUploaders => '指定 UP 主开启';
+
+  @override
+  String get settingsCommentPlusOneUploaderList => '管理指定 UP 主';
+
+  @override
+  String get commentPlusOneUploaderListTitle => '指定 UP 主名单';
+
+  @override
+  String get commentPlusOneUploaderListEmpty => '名单为空，点击右上角添加 UP 主';
+
+  @override
+  String get commentPlusOneAddUploader => '添加 UP 主';
+
+  @override
+  String get commentPlusOneUploaderUid => 'UP 主 UID';
+
+  @override
+  String get commentPlusOneEnterUploaderUid => '输入视频所属 UP 主的 UID';
+
+  @override
+  String get commentPlusOneInvalidUid => '请输入有效的正整数 UID';
+
+  @override
+  String get commentPlusOneUploaderAlreadySelected => '该 UP 主已在名单中';
+
+  @override
+  String commentPlusOneRemoveUploaderConfirm(String uid) {
+    return '从 +1 名单中移除 UID $uid？';
+  }
+
+  @override
+  String commentPlusOneUploaderCount(int count) {
+    return '已选 $count 位 UP 主';
+  }
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -14939,4 +14997,62 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsEnableEmoteTooltipDescription => '長按或懸停表情時顯示預覽';
+
+  @override
+  String get commentPlusOneTooltip => '直接回覆這則留言';
+
+  @override
+  String get commentPlusOneUnsupported => '這則留言含有圖片或結構化內容，無法安全重用';
+
+  @override
+  String get commentPlusOneUnconfirmed => '回覆結果未確認，請先檢查留言區再決定是否重試';
+
+  @override
+  String get commentPlusOneSent => '已回覆這則留言';
+
+  @override
+  String get settingsCommentPlusOneMode => '留言 +1';
+
+  @override
+  String get settingsCommentPlusOneModeOff => '關閉';
+
+  @override
+  String get settingsCommentPlusOneModeAll => '所有影片開啟';
+
+  @override
+  String get settingsCommentPlusOneModeSelectedUploaders => '指定 UP 主開啟';
+
+  @override
+  String get settingsCommentPlusOneUploaderList => '管理指定 UP 主';
+
+  @override
+  String get commentPlusOneUploaderListTitle => '指定 UP 主名單';
+
+  @override
+  String get commentPlusOneUploaderListEmpty => '名單為空，點擊右上角新增 UP 主';
+
+  @override
+  String get commentPlusOneAddUploader => '新增 UP 主';
+
+  @override
+  String get commentPlusOneUploaderUid => 'UP 主 UID';
+
+  @override
+  String get commentPlusOneEnterUploaderUid => '輸入影片所屬 UP 主的 UID';
+
+  @override
+  String get commentPlusOneInvalidUid => '請輸入有效的正整數 UID';
+
+  @override
+  String get commentPlusOneUploaderAlreadySelected => '此 UP 主已在名單中';
+
+  @override
+  String commentPlusOneRemoveUploaderConfirm(String uid) {
+    return '從 +1 名單移除 UID $uid？';
+  }
+
+  @override
+  String commentPlusOneUploaderCount(int count) {
+    return '已選 $count 位 UP 主';
+  }
 }

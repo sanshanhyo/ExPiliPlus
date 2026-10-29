@@ -2665,5 +2665,33 @@
   "settingsEnableDocProvider": "允许三方 APP 访问私有存储",
   "settingsEnableDocProviderDescription": "允许三方 APP 通过外部存储访问应用私有文件",
   "settingsEnableEmoteTooltip": "点击表情显示 Tooltip",
-  "settingsEnableEmoteTooltipDescription": "长按或悬停表情时显示预览"
+  "settingsEnableEmoteTooltipDescription": "长按或悬停表情时显示预览",
+  "commentPlusOneTooltip": "直接回复这条评论",
+  "commentPlusOneUnsupported": "这条评论含有图片或结构化内容，无法安全复用",
+  "commentPlusOneUnconfirmed": "回复结果未确认，请先检查评论区再决定是否重试",
+  "commentPlusOneSent": "已回复这条评论",
+  "settingsCommentPlusOneMode": "评论 +1",
+  "settingsCommentPlusOneModeOff": "关闭",
+  "settingsCommentPlusOneModeAll": "全部视频开启",
+  "settingsCommentPlusOneModeSelectedUploaders": "指定 UP 主开启",
+  "settingsCommentPlusOneUploaderList": "管理指定 UP 主",
+  "commentPlusOneUploaderListTitle": "指定 UP 主名单",
+  "commentPlusOneUploaderListEmpty": "名单为空，点击右上角添加 UP 主",
+  "commentPlusOneAddUploader": "添加 UP 主",
+  "commentPlusOneUploaderUid": "UP 主 UID",
+  "commentPlusOneEnterUploaderUid": "输入视频所属 UP 主的 UID",
+  "commentPlusOneInvalidUid": "请输入有效的正整数 UID",
+  "commentPlusOneUploaderAlreadySelected": "该 UP 主已在名单中",
+  "commentPlusOneRemoveUploaderConfirm": "从 +1 名单中移除 UID {uid}？",
+  "@commentPlusOneRemoveUploaderConfirm": {
+    "placeholders": {
+      "uid": { "type": "String" }
+    }
+  },
+  "commentPlusOneUploaderCount": "已选 {count} 位 UP 主",
+  "@commentPlusOneUploaderCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }

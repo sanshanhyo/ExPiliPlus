@@ -2292,5 +2292,33 @@
   "settingsEnableDocProvider": "允許第三方 APP 存取私有儲存空間",
   "settingsEnableDocProviderDescription": "允許第三方 APP 透過外部儲存空間存取應用程式私有檔案",
   "settingsEnableEmoteTooltip": "點擊表情顯示 Tooltip",
-  "settingsEnableEmoteTooltipDescription": "長按或懸停表情時顯示預覽"
+  "settingsEnableEmoteTooltipDescription": "長按或懸停表情時顯示預覽",
+  "commentPlusOneTooltip": "直接回覆這則留言",
+  "commentPlusOneUnsupported": "這則留言含有圖片或結構化內容，無法安全重用",
+  "commentPlusOneUnconfirmed": "回覆結果未確認，請先檢查留言區再決定是否重試",
+  "commentPlusOneSent": "已回覆這則留言",
+  "settingsCommentPlusOneMode": "留言 +1",
+  "settingsCommentPlusOneModeOff": "關閉",
+  "settingsCommentPlusOneModeAll": "所有影片開啟",
+  "settingsCommentPlusOneModeSelectedUploaders": "指定 UP 主開啟",
+  "settingsCommentPlusOneUploaderList": "管理指定 UP 主",
+  "commentPlusOneUploaderListTitle": "指定 UP 主名單",
+  "commentPlusOneUploaderListEmpty": "名單為空，點擊右上角新增 UP 主",
+  "commentPlusOneAddUploader": "新增 UP 主",
+  "commentPlusOneUploaderUid": "UP 主 UID",
+  "commentPlusOneEnterUploaderUid": "輸入影片所屬 UP 主的 UID",
+  "commentPlusOneInvalidUid": "請輸入有效的正整數 UID",
+  "commentPlusOneUploaderAlreadySelected": "此 UP 主已在名單中",
+  "commentPlusOneRemoveUploaderConfirm": "從 +1 名單移除 UID {uid}？",
+  "@commentPlusOneRemoveUploaderConfirm": {
+    "placeholders": {
+      "uid": { "type": "String" }
+    }
+  },
+  "commentPlusOneUploaderCount": "已選 {count} 位 UP 主",
+  "@commentPlusOneUploaderCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }
