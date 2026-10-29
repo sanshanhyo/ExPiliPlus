@@ -860,6 +860,18 @@ void main() {
       expect(find.text('虚构成员'), findsOneWidget);
       await _saveCapture(tester, 'player-panel-landscape-room-dark-zh.png');
 
+      await tester.tap(find.byKey(const ValueKey('syncplay-advanced-mode')));
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(Divider),
+        findsNothing,
+        reason: 'Landscape advanced room panel should not show the white rule',
+      );
+      await _saveCapture(
+        tester,
+        'player-panel-landscape-room-advanced-dark-zh.png',
+      );
+
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       expect(

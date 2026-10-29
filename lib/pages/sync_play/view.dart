@@ -512,7 +512,8 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
                 const SizedBox(height: 8),
                 _inviteEntry(l10n, horizontal: horizontalActions),
               ] else ...[
-                const Divider(height: 24),
+                if (!horizontalActions || !advancedMode)
+                  const Divider(height: 24),
                 _roomSection(context, l10n),
               ],
               const SizedBox(height: 12),
