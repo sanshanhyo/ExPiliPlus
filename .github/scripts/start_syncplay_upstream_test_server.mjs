@@ -43,7 +43,19 @@ const upstream = await createSyncServer(
     instanceId: 'expiliplus-dart-integration-test',
   },
   {
-    logEvent: () => {},
+    logEvent: (event, metadata = {}) => {
+      if (
+        event === 'room_event_consumed' ||
+        event === 'room_event_consume_failed' ||
+        event === 'room_event_publish_failed' ||
+        event === 'video_share_deduplicated'
+      ) {
+        // Deliberately omit room codes, member/session identifiers and tokens.
+        console.log(
+          `SYNCPLAY_EVENT ${event} type=${metadata.eventType ?? ''} result=${metadata.result ?? ''} reason=${metadata.reason ?? ''} error=${metadata.error ?? ''}`,
+        );
+      }
+    },
     serviceVersion: 'expiliplus-dart-integration-test',
     adminUiConfig: { enabled: false },
   },

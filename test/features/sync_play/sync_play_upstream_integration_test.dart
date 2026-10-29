@@ -12,15 +12,40 @@ import 'package:web_socket_channel/io.dart';
 const _upstreamRevision = 'f9258d976570492a1d1e2c469d3da90a8cfade96';
 
 class _TrackedSocket implements SyncPlaySocket {
-  _TrackedSocket(this.delegate);
+  _TrackedSocket(this.delegate, this.frames);
 
   final SyncPlaySocket delegate;
+  final List<String> frames;
 
   @override
-  Stream<Object?> get stream => delegate.stream;
+  Stream<Object?> get stream => delegate.stream.map((raw) {
+    final message = decodeSyncPlayMessage(raw);
+    if (message != null) {
+      final type = message['type'];
+      final payload = message['payload'];
+      if (type == 'room:state' && payload is Map) {
+        final shared = payload['sharedVideo'];
+        final videoId = shared is Map ? shared['videoId'] : null;
+        final playback = payload['playback'];
+        final seq = playback is Map ? playback['seq'] : null;
+        frames.add('room:state(videoId=$videoId,seq=$seq)');
+      } else if (type == 'error' && payload is Map) {
+        frames.add('error(code=${payload['code']})');
+      } else {
+        frames.add('$type');
+      }
+    } else {
+      frames.add('unparseable-frame');
+    }
+    return raw;
+  });
 
   @override
-  void send(String text) => delegate.send(text);
+  void send(String text) {
+    final message = decodeSyncPlayMessage(text);
+    if (message != null) frames.add('send:${message['type']}');
+    delegate.send(text);
+  }
 
   @override
   Future<void> close() => delegate.close();
@@ -143,10 +168,16 @@ Future<void> _waitUntil(
   throw TimeoutException('Timed out waiting for $description.', timeout);
 }
 
-String _serviceState(SyncPlayService service) =>
+String _serviceState(
+  SyncPlayService service, {
+  List<_TrackedSocket> sockets = const [],
+}) =>
     'status=${service.status.name}, error=${service.lastErrorCode}, '
     'member=${service.memberId}, room=${service.room?.roomCode}, '
-    'members=${service.room?.members.map((member) => member.id).toList()}';
+    'members=${service.room?.members.map((member) => member.id).toList()}, '
+    'sharedVideo=${service.room?.sharedVideo?.videoId}, '
+    'playbackSeq=${service.room?.playback?.seq}, '
+    'frames=${sockets.expand((socket) => socket.frames).toList()}';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -181,6 +212,7 @@ void main() {
             expect(origin, 'https://syncplay-integration.test');
             final socket = _TrackedSocket(
               await _connectToPinnedServer(endpoint, origin, port),
+              <String>[],
             );
             observed.add(socket);
             return socket;
@@ -262,7 +294,7 @@ void main() {
             isTrue,
           );
           await _waitUntil(
-            'shared video reached guest (${_serviceState(guest)})',
+            'shared video reached guest (${_serviceState(guest, sockets: guestSockets)})',
             () => guest.room?.sharedVideo?.videoId == video.videoId,
           );
 
