@@ -11,6 +11,8 @@ import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/sync_play/view.dart';
 import 'package:ex_piliplus/plugin/pl_player/controller.dart';
 import 'package:ex_piliplus/plugin/pl_player/models/data_source.dart';
+import 'package:ex_piliplus/utils/path_utils.dart'
+    show appSupportDirPath, tmpDirPath;
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
