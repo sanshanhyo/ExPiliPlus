@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:io' show Platform;
+import 'dart:io' show HttpClient, Platform;
 
+import 'package:crypto/crypto.dart' as crypto;
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
@@ -184,6 +185,9 @@ void main() {
 
   final configuredPort = int.tryParse(
     Platform.environment['SYNCPLAY_TEST_SERVER_PORT'] ?? '',
+  );
+  final configuredTlsPort = int.tryParse(
+    Platform.environment['SYNCPLAY_TEST_TLS_PORT'] ?? '',
   );
   group('Dart SyncPlayService against pinned upstream server', () {
     test(
@@ -418,6 +422,100 @@ void main() {
       },
       skip: configuredPort == null,
       timeout: const Timeout(Duration(seconds: 20)),
+    );
+
+    test(
+      'production IO WebSocket uses normal TLS validation and pinned test trust',
+      () async {
+        final port = configuredTlsPort!;
+        final certSha256 = Platform.environment[
+          'SYNCPLAY_TEST_TLS_CERT_SHA256'
+        ];
+        expect(certSha256, matches(RegExp(r'^[a-f0-9]{64}$')));
+        final endpoint = Uri(scheme: 'wss', host: '127.0.0.1', port: port);
+        const origin = 'https://syncplay-integration.test';
+
+        final defaultChannel = IOWebSocketChannel.connect(
+          endpoint,
+          headers: const {'Origin': origin},
+          connectTimeout: const Duration(seconds: 8),
+        );
+        Object? defaultTrustFailure;
+        final defaultSubscription = defaultChannel.stream.listen(
+          (_) {},
+          onError: (Object error) => defaultTrustFailure = error,
+        );
+        try {
+          await defaultChannel.ready.timeout(const Duration(seconds: 8));
+        } catch (error) {
+          defaultTrustFailure ??= error;
+        } finally {
+          await defaultSubscription.cancel();
+        }
+        expect(
+          defaultTrustFailure,
+          isNotNull,
+          reason:
+              'The ephemeral self-signed test certificate was trusted by default.',
+        );
+
+        final trustedClient = HttpClient()
+          ..badCertificateCallback =
+              (certificate, host, certificatePort) =>
+                  host == '127.0.0.1' &&
+                  certificatePort == port &&
+                  crypto.sha256.convert(certificate.der).toString() ==
+                      certSha256;
+        final service = SyncPlayService(
+          socketFactory: (uri, requestedOrigin) async {
+            expect(uri, endpoint);
+            expect(requestedOrigin, origin);
+            final channel = IOWebSocketChannel.connect(
+              uri,
+              headers: {'Origin': requestedOrigin},
+              connectTimeout: const Duration(seconds: 8),
+              pingInterval: const Duration(seconds: 25),
+              customClient: trustedClient,
+            );
+            await channel.ready;
+            return _LoopbackTestSocket(channel);
+          },
+        );
+
+        try {
+          await service.createRoom(
+            SyncPlayConnectionSettings(
+              serverAddress: '',
+              displayName: 'TLS Dart client',
+              advancedMode: true,
+              advancedWebSocketUrl: endpoint.toString(),
+              advancedOrigin: origin,
+            ),
+          );
+          expect(
+            service.status,
+            SyncPlayConnectionStatus.connected,
+            reason:
+                'Pinned certificate WSS connection failed: ${service.lastErrorCode}',
+          );
+          await _waitUntil(
+            'TLS client room creation (${_serviceState(service)})',
+            () => service.credentials != null && service.room != null,
+          );
+          expect(service.room?.members, hasLength(1));
+        } finally {
+          if (service.isInRoom || service.isConnected) {
+            await service.leaveRoom().timeout(
+              const Duration(seconds: 8),
+              onTimeout: () {},
+            );
+          }
+          service.dispose();
+          trustedClient.close(force: true);
+        }
+      },
+      skip: configuredTlsPort == null,
+      timeout: const Timeout(Duration(seconds: 30)),
     );
   });
 }

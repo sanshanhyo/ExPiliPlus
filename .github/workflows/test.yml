@@ -100,9 +100,22 @@ jobs:
           SYNCPLAY_UPSTREAM_SERVER_ROOT: ${{ github.workspace }}/build/bili-syncplay-upstream/server
           SYNCPLAY_UPSTREAM_REVISION: f9258d976570492a1d1e2c469d3da90a8cfade96
           SYNCPLAY_TEST_SERVER_PORT_FILE: ${{ runner.temp }}/syncplay-integration.port
+          SYNCPLAY_TEST_TLS_PORT_FILE: ${{ runner.temp }}/syncplay-integration-tls.port
+          SYNCPLAY_TEST_TLS_KEY_FILE: ${{ runner.temp }}/syncplay-integration-tls.key
+          SYNCPLAY_TEST_TLS_CERT_FILE: ${{ runner.temp }}/syncplay-integration-tls.pem
+          SYNCPLAY_TEST_TLS_CERT_DER_FILE: ${{ runner.temp }}/syncplay-integration-tls.der
         run: |
           set -euo pipefail
           rm -f "$SYNCPLAY_TEST_SERVER_PORT_FILE"
+          rm -f "$SYNCPLAY_TEST_TLS_PORT_FILE"
+          openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 1 \
+            -keyout "$SYNCPLAY_TEST_TLS_KEY_FILE" \
+            -out "$SYNCPLAY_TEST_TLS_CERT_FILE" \
+            -subj '/CN=127.0.0.1' \
+            -addext 'subjectAltName=IP:127.0.0.1'
+          openssl x509 -in "$SYNCPLAY_TEST_TLS_CERT_FILE" -outform DER \
+            -out "$SYNCPLAY_TEST_TLS_CERT_DER_FILE"
+          export SYNCPLAY_TEST_TLS_CERT_SHA256="$(sha256sum "$SYNCPLAY_TEST_TLS_CERT_DER_FILE" | cut -d ' ' -f1)"
           server_log="$RUNNER_TEMP/syncplay-upstream-server.log"
           node .github/scripts/start_syncplay_upstream_test_server.mjs >"$server_log" 2>&1 &
           server_pid=$!
@@ -122,7 +135,7 @@ jobs:
           }
           trap cleanup EXIT
           for attempt in $(seq 1 120); do
-            if [[ -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" ]]; then
+            if [[ -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" && -s "$SYNCPLAY_TEST_TLS_PORT_FILE" ]]; then
               break
             fi
             if ! kill -0 "$server_pid" 2>/dev/null; then
@@ -132,12 +145,13 @@ jobs:
             fi
             sleep 0.25
           done
-          if [[ ! -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" ]]; then
-            echo 'Timed out waiting for the loopback SyncPlay server.'
+          if [[ ! -s "$SYNCPLAY_TEST_SERVER_PORT_FILE" || ! -s "$SYNCPLAY_TEST_TLS_PORT_FILE" ]]; then
+            echo 'Timed out waiting for the loopback SyncPlay WS and TLS listeners.'
             cat "$server_log"
             exit 1
           fi
           export SYNCPLAY_TEST_SERVER_PORT="$(cat "$SYNCPLAY_TEST_SERVER_PORT_FILE")"
+          export SYNCPLAY_TEST_TLS_PORT="$(cat "$SYNCPLAY_TEST_TLS_PORT_FILE")"
           flutter test --no-pub test/features/sync_play/sync_play_upstream_integration_test.dart
 
       - name: Upload rendered SyncPlay UI captures
