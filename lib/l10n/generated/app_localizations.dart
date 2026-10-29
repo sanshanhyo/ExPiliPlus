@@ -13547,6 +13547,24 @@ abstract class AppLocalizations {
   /// **'已连接'**
   String get syncPlayConnected;
 
+  /// No description provided for @syncPlayNetworkOffline.
+  ///
+  /// In zh, this message translates to:
+  /// **'设备网络不可用'**
+  String get syncPlayNetworkOffline;
+
+  /// No description provided for @syncPlayNetworkDisconnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'尚未连接到房间'**
+  String get syncPlayNetworkDisconnected;
+
+  /// No description provided for @syncPlayNetworkConnected.
+  ///
+  /// In zh, this message translates to:
+  /// **'已连接到 SyncPlay'**
+  String get syncPlayNetworkConnected;
+
   /// No description provided for @syncPlayReconnecting.
   ///
   /// In zh, this message translates to:

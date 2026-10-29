@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:ex_piliplus/features/sync_play/sync_play_connection_history.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_network_status.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
 import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
@@ -56,6 +58,27 @@ class _ScreenshotSocket implements SyncPlaySocket {
 
   @override
   Future<void> close() => controller.close();
+}
+
+class _FakeNetworkStatusSource implements SyncPlayNetworkStatusSource {
+  _FakeNetworkStatusSource(this.offline);
+
+  bool? offline;
+  final StreamController<bool?> _changes =
+      StreamController<bool?>.broadcast(sync: true);
+
+  @override
+  Future<bool?> checkOffline() async => offline;
+
+  @override
+  Stream<bool?> get offlineChanges => _changes.stream;
+
+  void emit(bool? value) {
+    offline = value;
+    _changes.add(value);
+  }
+
+  Future<void> close() => _changes.close();
 }
 
 void _setTestViewSize(WidgetTester tester, Size size) {
@@ -440,6 +463,23 @@ void main() {
     });
     await tester.pumpAndSettle();
 
+    final rawHistory = GStorage.setting.get(
+      SyncPlayPreferenceKeys.connectionHistory,
+    );
+    expect(rawHistory, isA<List>());
+    final storedEntry = (rawHistory as List).single as Map;
+    expect(storedEntry.keys.toSet(), {
+      'displayName',
+      'serverAddress',
+      'connectedAtEpochMs',
+    });
+    expect(jsonEncode(rawHistory), isNot(contains('render-only-token')));
+    expect(jsonEncode(rawHistory), isNot(contains('render-member-token')));
+    expect(
+      storedEntry['serverAddress'],
+      'wss://sync.example.test:9443/ws',
+    );
+    expect(storedEntry['displayName'], 'ExPiliPlus');
     expect(
       find.byWidgetPredicate(
         (widget) => widget is Text && widget.data?.contains('ROOM42') == true,
@@ -464,6 +504,193 @@ void main() {
       service.dispose();
       Get.reset();
     }
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('cloud states are icon-only and successful rooms create safe history', (
+    tester,
+  ) async {
+    _setTestViewSize(tester, const Size(440, 820));
+    addTearDown(() => _resetTestViewSize(tester));
+    final network = _FakeNetworkStatusSource(false);
+    addTearDown(network.close);
+    final socket = _ScreenshotSocket();
+    final service = SyncPlayService(
+      reconnectEnabled: false,
+      socketFactory: (_, __) async => socket,
+    );
+    Get.put(service, permanent: true);
+
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('syncplay-cloud-disconnected')),
+      findsOneWidget,
+    );
+    expect(find.text('未连接'), findsNothing);
+    final disconnectedSemantics = tester.widget<Semantics>(
+      find.byKey(const ValueKey('syncplay-cloud-status')),
+    );
+    expect(disconnectedSemantics.properties.label, '尚未连接到房间');
+    expect(
+      tester
+          .widget<Icon>(
+            find.byKey(const ValueKey('syncplay-cloud-disconnected')),
+          )
+          .color,
+      Colors.white,
+    );
+
+    network.emit(true);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('syncplay-cloud-offline')), findsOneWidget);
+    final offlineIcon = tester.widget<Icon>(
+      find.byKey(const ValueKey('syncplay-cloud-offline')),
+    );
+    expect(offlineIcon.icon, Icons.cloud_off);
+    expect(
+      offlineIcon.color,
+      ThemeData.dark(useMaterial3: true).colorScheme.error,
+    );
+    expect(
+      tester
+          .widget<Semantics>(find.byKey(const ValueKey('syncplay-cloud-status')))
+          .properties
+          .label,
+      '设备网络不可用',
+    );
+
+    network.emit(null);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('syncplay-cloud-offline')), findsNothing);
+    expect(
+      tester
+          .widget<Icon>(find.byKey(const ValueKey('syncplay-cloud-disconnected')))
+          .color,
+      Colors.white,
+    );
+
+    network.emit(false);
+    await tester.pump();
+    service.lastErrorCode = 'origin_not_allowed';
+    service.notifyListeners();
+    await tester.pump();
+    expect(find.byKey(const ValueKey('syncplay-cloud-offline')), findsNothing);
+    expect(
+      tester
+          .widget<Icon>(find.byKey(const ValueKey('syncplay-cloud-disconnected')))
+          .color,
+      Colors.white,
+    );
+    expect(find.byKey(const ValueKey('syncplay-connection-error')), findsOneWidget);
+    service.lastErrorCode = null;
+    service.notifyListeners();
+    await tester.pump();
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'http://insecure.example.test/ws',
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-create-room')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('syncplay-connection-error')), findsOneWidget);
+    expect(find.byKey(const ValueKey('syncplay-cloud-offline')), findsNothing);
+    expect(
+      tester
+          .widget<Icon>(find.byKey(const ValueKey('syncplay-cloud-disconnected')))
+          .color,
+      Colors.white,
+    );
+    expect(
+      GStorage.setting.get(SyncPlayPreferenceKeys.connectionHistory),
+      isNull,
+    );
+
+    await tester.enterText(
+      find.byKey(const ValueKey('syncplay-server-address')),
+      'sync.example.test:9443/ws',
+    );
+    await tester.tap(find.byKey(const ValueKey('syncplay-create-room')));
+    await tester.pumpAndSettle();
+    socket.emit({
+      'type': 'room:created',
+      'payload': {
+        'roomCode': 'ROOM42',
+        'memberId': 'render-member',
+        'joinToken': 'private-join-token-do-not-store',
+        'memberToken': 'private-member-token-do-not-store',
+      },
+    });
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('syncplay-cloud-connected')), findsOneWidget);
+    final connectedIcon = tester.widget<Icon>(
+      find.byKey(const ValueKey('syncplay-cloud-connected')),
+    );
+    expect(connectedIcon.icon, Icons.cloud_done);
+    expect(connectedIcon.color, Colors.white);
+    expect(find.text('ExPiliPlus'), findsOneWidget);
+    expect(find.text('wss://sync.example.test:9443/ws'), findsOneWidget);
+    final stored = GStorage.setting.get(
+      SyncPlayPreferenceKeys.connectionHistory,
+    ) as List;
+    expect(stored, hasLength(1));
+    expect(jsonEncode(stored), isNot(contains('private-join-token')));
+    expect(jsonEncode(stored), isNot(contains('private-member-token')));
+    expect(jsonEncode(stored), isNot(contains('ROOM42')));
+    expect(tester.takeException(), isNull);
+    service.dispose();
+    Get.reset();
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  testWidgets('renders synthetic local history without empty-state placeholder', (
+    tester,
+  ) async {
+    final network = _FakeNetworkStatusSource(false);
+    addTearDown(network.close);
+    _setTestViewSize(tester, const Size(440, 820));
+    addTearDown(() => _resetTestViewSize(tester));
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('syncplay-history-time')), findsNothing);
+    expect(find.textContaining('syncPlayHistory'), findsNothing);
+
+    final connectedAt = DateTime.now().toUtc().millisecondsSinceEpoch;
+    await tester.runAsync(() async {
+      await GStorage.setting.put(
+        SyncPlayPreferenceKeys.connectionHistory,
+        [
+          {
+            'displayName': '海风房间',
+            'serverAddress': 'wss://sync.example.test:9443/ws',
+            'connectedAtEpochMs': connectedAt,
+          },
+        ],
+      );
+    });
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(
+      _app(SyncPlayPage(networkStatusSource: network)),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('海风房间'), findsOneWidget);
+    expect(find.text('wss://sync.example.test:9443/ws'), findsOneWidget);
+    expect(find.byKey(const ValueKey('syncplay-history-time')), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('syncplay-history-time')))
+          .data,
+      matches(RegExp(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}$')),
+    );
+    expect(tester.takeException(), isNull);
+    await _saveCapture(tester, 'connection-history-portrait-dark-zh.png');
+
+    _setTestViewSize(tester, const Size(900, 620));
+    await tester.pumpAndSettle();
+    expect(find.text('海风房间'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await _saveCapture(tester, 'connection-history-landscape-dark-zh.png');
   }, timeout: const Timeout(Duration(minutes: 3)));
 
   testWidgets(

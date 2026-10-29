@@ -7756,6 +7756,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncPlayConnected => 'Connected';
 
   @override
+  String get syncPlayNetworkOffline => 'Device network unavailable';
+
+  @override
+  String get syncPlayNetworkDisconnected => 'Not connected to a room';
+
+  @override
+  String get syncPlayNetworkConnected => 'Connected to SyncPlay';
+
+  @override
   String get syncPlayReconnecting => 'Reconnecting…';
 
   @override

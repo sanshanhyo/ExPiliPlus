@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_connection_history.dart';
+import 'package:ex_piliplus/features/sync_play/sync_play_network_status.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_player_binding.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_protocol.dart';
 import 'package:ex_piliplus/features/sync_play/sync_play_service.dart';
@@ -11,9 +14,9 @@ import 'package:ex_piliplus/models/common/video/video_type.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/storage.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 class SyncPlayLaunchContext {
@@ -38,6 +41,7 @@ abstract final class SyncPlayPreferenceKeys {
   static const advancedMode = 'syncPlayAdvancedMode';
   static const advancedWebSocketUrl = 'syncPlayAdvancedWebSocketUrl';
   static const advancedOrigin = 'syncPlayAdvancedOrigin';
+  static const connectionHistory = 'syncPlayConnectionHistory';
 }
 
 class SyncPlayPage extends StatefulWidget {
@@ -46,11 +50,13 @@ class SyncPlayPage extends StatefulWidget {
     this.launchContext,
     this.embedded = false,
     this.onClose,
+    this.networkStatusSource,
   });
 
   final SyncPlayLaunchContext? launchContext;
   final bool embedded;
   final VoidCallback? onClose;
+  final SyncPlayNetworkStatusSource? networkStatusSource;
 
   @override
   State<SyncPlayPage> createState() => _SyncPlayPageState();
@@ -166,7 +172,12 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
   late final TextEditingController advancedWebSocketController;
   late final TextEditingController advancedOriginController;
   late final TextEditingController nameController;
+  late final SyncPlayNetworkStatusSource _networkStatusSource;
+  StreamSubscription<bool?>? _networkSubscription;
   final inviteController = TextEditingController();
+  List<SyncPlayConnectionHistoryEntry> _history = const [];
+  bool _historyAttemptPending = false;
+  bool _deviceOffline = false;
   bool advancedMode = false;
   bool _advancedValuesInitialized = false;
   bool isOpeningVideo = false;
@@ -181,6 +192,20 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
       Get.put(SyncPlayService(), permanent: true);
     }
     service = Get.find<SyncPlayService>();
+    service.addListener(_onServiceChanged);
+    _networkStatusSource =
+        widget.networkStatusSource ?? DeviceSyncPlayNetworkStatusSource();
+    _networkSubscription = _networkStatusSource.offlineChanges.listen(
+      _onOfflineChanged,
+      onError: (Object _) => _onOfflineChanged(null),
+    );
+    unawaited(_refreshNetworkStatus());
+    _history = SyncPlayConnectionHistoryEntry.parse(
+      GStorage.setting.get(
+        SyncPlayPreferenceKeys.connectionHistory,
+        defaultValue: const <Object?>[],
+      ),
+    );
     final savedAddress = GStorage.setting.get(
       SyncPlayPreferenceKeys.serverAddress,
       defaultValue: '',
@@ -223,12 +248,59 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
 
   @override
   void dispose() {
+    service.removeListener(_onServiceChanged);
+    unawaited(_networkSubscription?.cancel());
     serverAddressController.dispose();
     advancedWebSocketController.dispose();
     advancedOriginController.dispose();
     nameController.dispose();
     inviteController.dispose();
     super.dispose();
+  }
+
+  void _onOfflineChanged(bool? offline) {
+    if (!mounted) return;
+    final isDefinitelyOffline = offline == true;
+    if (_deviceOffline == isDefinitelyOffline) return;
+    setState(() => _deviceOffline = isDefinitelyOffline);
+  }
+
+  Future<void> _refreshNetworkStatus() async {
+    final offline = await _networkStatusSource.checkOffline();
+    _onOfflineChanged(offline);
+  }
+
+  void _onServiceChanged() {
+    if (_historyAttemptPending) {
+      if (service.isInRoom) {
+        _historyAttemptPending = false;
+        final settings = service.settings;
+        if (settings != null) unawaited(_recordSuccessfulConnection(settings));
+      } else if (service.lastErrorCode != null) {
+        _historyAttemptPending = false;
+      }
+    }
+  }
+
+  Future<void> _recordSuccessfulConnection(
+    SyncPlayConnectionSettings settings,
+  ) async {
+    final entry = SyncPlayConnectionHistoryEntry.fromSuccessfulSettings(
+      settings,
+      connectedAtEpochMs: DateTime.now().toUtc().millisecondsSinceEpoch,
+    );
+    if (entry == null) return;
+    final updated = SyncPlayConnectionHistoryEntry.record(_history, entry);
+    if (mounted) setState(() => _history = updated);
+    try {
+      await GStorage.setting.put(
+        SyncPlayPreferenceKeys.connectionHistory,
+        updated.map((item) => item.toJson()).toList(growable: false),
+      );
+    } catch (_) {
+      // A successful room connection remains usable even if local history
+      // storage is unavailable.
+    }
   }
 
   SyncPlayConnectionSettings _settings() => SyncPlayConnectionSettings(
@@ -284,11 +356,13 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
   }
 
   Future<void> _createRoom() async {
+    _historyAttemptPending = true;
     await _saveSettings();
     await service.createRoom(_settings());
   }
 
   Future<void> _joinRoom() async {
+    _historyAttemptPending = true;
     await _saveSettings();
     await service.joinRoom(_settings(), inviteController.text);
   }
@@ -357,13 +431,6 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
       if (mounted) setState(() => isOpeningVideo = false);
     }
   }
-
-  String _statusLabel(AppLocalizations l10n) => switch (service.status) {
-    SyncPlayConnectionStatus.disconnected => l10n.syncPlayDisconnected,
-    SyncPlayConnectionStatus.connecting => l10n.syncPlayConnecting,
-    SyncPlayConnectionStatus.connected => l10n.syncPlayConnected,
-    SyncPlayConnectionStatus.reconnecting => l10n.syncPlayReconnecting,
-  };
 
   String? _errorLabel(AppLocalizations l10n, String? code) => switch (code) {
     'invalid_server' => l10n.syncPlayInvalidServer,
@@ -447,18 +514,56 @@ class _SyncPlayPageState extends State<SyncPlayPage> {
                 _roomSection(context, l10n),
               ],
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(
-                    service.isConnected ? Icons.cloud_done : Icons.cloud_off,
-                    color: service.isConnected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.outline,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Semantics(
+                  key: const ValueKey('syncplay-cloud-status'),
+                  label: _deviceOffline
+                      ? l10n.syncPlayNetworkOffline
+                      : service.isConnected
+                      ? l10n.syncPlayNetworkConnected
+                      : l10n.syncPlayNetworkDisconnected,
+                  liveRegion: true,
+                  child: ExcludeSemantics(
+                    child: Icon(
+                      _deviceOffline || !service.isConnected
+                          ? Icons.cloud_off
+                          : Icons.cloud_done,
+                      key: ValueKey(
+                        _deviceOffline
+                            ? 'syncplay-cloud-offline'
+                            : service.isConnected
+                            ? 'syncplay-cloud-connected'
+                            : 'syncplay-cloud-disconnected',
+                      ),
+                      color: _deviceOffline
+                          ? Theme.of(context).colorScheme.error
+                          : Colors.white,
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(_statusLabel(l10n))),
-                ],
+                ),
               ),
+              if (_history.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                for (final entry in _history)
+                  ListTile(
+                    key: ValueKey(
+                      'syncplay-history-${entry.serverAddress}-${entry.displayName}',
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(entry.displayName),
+                    subtitle: Text(entry.serverAddress),
+                    trailing: Text(
+                      DateFormat('yy/MM/dd HH:mm').format(
+                        DateTime.fromMillisecondsSinceEpoch(
+                          entry.connectedAtEpochMs,
+                          isUtc: true,
+                        ).toLocal(),
+                      ),
+                      key: const ValueKey('syncplay-history-time'),
+                    ),
+                  ),
+              ],
               if (_errorLabel(l10n, service.lastErrorCode) case final error?) ...[
                 const SizedBox(height: 8),
                 Text(

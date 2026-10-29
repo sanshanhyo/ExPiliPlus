@@ -7510,6 +7510,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncPlayConnected => '已连接';
 
   @override
+  String get syncPlayNetworkOffline => '设备网络不可用';
+
+  @override
+  String get syncPlayNetworkDisconnected => '尚未连接到房间';
+
+  @override
+  String get syncPlayNetworkConnected => '已连接到 SyncPlay';
+
+  @override
   String get syncPlayReconnecting => '正在重连…';
 
   @override
@@ -15099,6 +15108,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get syncPlayConnected => '已連線';
+
+  @override
+  String get syncPlayNetworkOffline => '裝置網路無法使用';
+
+  @override
+  String get syncPlayNetworkDisconnected => '尚未連線至房間';
+
+  @override
+  String get syncPlayNetworkConnected => '已連線至 SyncPlay';
 
   @override
   String get syncPlayReconnecting => '正在重新連線…';
