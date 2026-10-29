@@ -129,9 +129,28 @@ try {
         `ws://127.0.0.1:${upstreamPort}${request.url ?? '/'}`,
         { headers: { Origin: allowedOrigin } },
       );
+      const pendingClientFrames = [];
+      let pendingClientBytes = 0;
+      const maxPendingClientBytes = 64 * 1024;
+      upstreamClient.on('open', () => {
+        for (const frame of pendingClientFrames) {
+          upstreamClient.send(frame.data, { binary: frame.isBinary });
+        }
+        pendingClientFrames.length = 0;
+        pendingClientBytes = 0;
+      });
       client.on('message', (data, isBinary) => {
         if (upstreamClient.readyState === WebSocket.OPEN) {
           upstreamClient.send(data, { binary: isBinary });
+        } else if (upstreamClient.readyState === WebSocket.CONNECTING) {
+          const frameBytes = data.length ?? 0;
+          if (pendingClientBytes + frameBytes > maxPendingClientBytes) {
+            client.terminate();
+            upstreamClient.terminate();
+            return;
+          }
+          pendingClientFrames.push({ data, isBinary });
+          pendingClientBytes += frameBytes;
         }
       });
       upstreamClient.on('message', (data, isBinary) => {
