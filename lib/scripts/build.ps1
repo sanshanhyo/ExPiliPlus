@@ -23,7 +23,9 @@ try {
     }
 
     $upstreamVersion = (Get-Content -Path 'UPSTREAM_VERSION' -Raw -Encoding UTF8).Trim()
-    if ($upstreamVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
+    # Upstream uses both three- and four-part versions. Keep its full version
+    # as provenance; ExPiliPlus/native versions remain independently validated.
+    if ($upstreamVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?$') {
         throw "invalid upstream version: $upstreamVersion"
     }
 
