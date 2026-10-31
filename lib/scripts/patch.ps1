@@ -14,7 +14,6 @@ $BottomSheetAndroidPatch = "lib/scripts/bottom_sheet_android.patch"
 
 # https://github.com/bggRGjQaUbCoE/PiliPlus/issues/1906
 $BottomSheetIOSFlutterPatch = "lib/scripts/bottom_sheet_ios_flutter.patch"
-$BottomSheetIOSPiliPlusPatch = "lib/scripts/bottom_sheet_ios_piliplus.patch"
 
 # https://github.com/bggRGjQaUbCoE/PiliPlus/issues/1662
 # handle bottom scroll event
@@ -99,23 +98,10 @@ $ModalBarrierPatch = "lib/scripts/modal_barrier.patch"
 # https://github.com/flutter/flutter/issues/182466
 $MouseCursorPatch = "lib/scripts/mouse_cursor.patch"
 
-$GeetestIOSPatch = "lib/scripts/geetest_ios.patch"
-
 $DoubleTapGesturePatch = "lib/scripts/double_tap_gesture.patch"
 
 if ($platform.ToLower() -eq "ios") {
-    git apply $BottomSheetIOSPiliPlusPatch
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "$BottomSheetIOSPiliPlusPatch applied"
-    } else {
-        throw "$LASTEXITCODE"
-    }
-    git apply $GeetestIOSPatch
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "$GeetestIOSPatch applied"
-    } else {
-        throw "$LASTEXITCODE"
-    }
+    & "$PSScriptRoot/apply_ios_patches.ps1"
 }
 
 Set-Location $env:FLUTTER_ROOT
