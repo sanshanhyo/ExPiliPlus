@@ -1457,6 +1457,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get playerWebpCpuWarning => '生成动态截图会占用较多处理器资源';
 
   @override
+  String get playerGifDownloadingSource => '正在下载临时视频（最多 128 MiB），可取消';
+
+  @override
   String get playerTranscodeFailedOrCanceled => '转码失败或已取消';
 
   @override
@@ -9111,6 +9114,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get playerWebpCpuWarning => '產生動態截圖會使用較多處理器資源';
+
+  @override
+  String get playerGifDownloadingSource => '正在下載暫存影片（最多 128 MiB），可取消';
 
   @override
   String get playerTranscodeFailedOrCanceled => '轉碼失敗或已取消';

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:ex_piliplus/plugin/pl_player/widgets/darwin_gif_converter.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/gif_source_cache.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -251,5 +252,173 @@ void main() {
             : 'https://example.com/video.m4s?token=unchanged',
       );
     });
+  }
+
+  test('successful remote conversion never downloads a source', () async {
+    final output = File('${tempDir.path}/result.gif');
+    var factories = 0;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      await output.writeAsBytes('GIF89a-content'.codeUnits);
+      return output.path;
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s', output.path, 0, 3,
+      width: 480, fps: 10, channel: channel, localSourceFallback: true,
+      sourceCacheFactory: () {
+        factories++;
+        throw StateError('must not download');
+      },
+    );
+    expect(await converter.convert(), isTrue);
+    expect(factories, 0);
+  });
+
+  for (final retryFails in [false, true]) {
+    test('retries unreadable remote asset once locally; failure=$retryFails', () async {
+      final output = File('${tempDir.path}/result.gif');
+      final source = await File('${tempDir.path}/source.mp4').writeAsString('fixture');
+      final cache = _FakeSourceCache(source);
+      var calls = 0;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls++;
+        if (calls == 1) throw PlatformException(code: 'asset_unreadable');
+        expect((call.arguments as Map)['url'], source.uri.toString());
+        expect(source.existsSync(), isTrue);
+        if (retryFails) {
+          throw PlatformException(code: 'asset_unreadable', details: {
+            'stage': 'tracks', 'domain': 'AVFoundationErrorDomain', 'code': -11800,
+            'underlyingDomain': 'NSOSStatusErrorDomain', 'underlyingCode': -12889,
+          });
+        }
+        await output.writeAsBytes('GIF89a-content'.codeUnits);
+        return output.path;
+      });
+      final converter = DarwinGifConverter(
+        'https://example.com/video.m4s', output.path, 0, 3,
+        width: 480, fps: 10, channel: channel, localSourceFallback: true,
+        sourceCacheFactory: () => cache,
+      );
+      expect(await converter.convert(), !retryFails);
+      expect(calls, 2);
+      expect(cache.downloads, 1);
+      expect(cache.disposed, isTrue);
+      expect(source.existsSync(), isFalse);
+      expect(converter.preparingSource, isFalse);
+      if (retryFails) {
+        expect(converter.failureCode,
+          'asset_unreadable/tracks/AVFoundationErrorDomain:-11800/NSOSStatusErrorDomain:-12889');
+      }
+    });
+  }
+
+  for (final code in ['busy', 'cancelled', 'frame_generation_failed']) {
+    test('does not download on $code', () async {
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        throw PlatformException(code: code);
+      });
+      final converter = DarwinGifConverter(
+        'https://example.com/video.m4s', '${tempDir.path}/failed.gif', 0, 3,
+        width: 480, fps: 10, channel: channel, localSourceFallback: true,
+        sourceCacheFactory: () => throw StateError('must not download'),
+      );
+      expect(await converter.convert(), isFalse);
+      expect(converter.failureCode, code == 'cancelled' ? null : code);
+    });
+  }
+
+  test('download failure remains safe and cleans its cache', () async {
+    final cache = _FakeSourceCache(File('${tempDir.path}/source.mp4'),
+      failure: const GifSourceException('source_too_large'));
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      throw PlatformException(code: 'asset_unreadable');
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s', '${tempDir.path}/failed.gif', 0, 3,
+      width: 480, fps: 10, channel: channel, localSourceFallback: true,
+      sourceCacheFactory: () => cache,
+    );
+    expect(await converter.convert(), isFalse);
+    expect(converter.failureCode, 'source_too_large');
+    expect(cache.disposed, isTrue);
+  });
+
+  test('cancelling during source download never retries native generation', () async {
+    final cache = _FakeSourceCache(File('${tempDir.path}/source.mp4'),
+      pending: Completer<File>());
+    var generations = 0;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'cancel') return null;
+      generations++;
+      throw PlatformException(code: 'asset_unreadable');
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s', '${tempDir.path}/failed.gif', 0, 3,
+      width: 480, fps: 10, channel: channel, localSourceFallback: true,
+      sourceCacheFactory: () => cache,
+    );
+    final conversion = converter.convert();
+    await Future<void>.delayed(Duration.zero);
+    expect(converter.preparingSource, isTrue);
+    converter.dispose();
+    expect(await conversion, isFalse);
+    expect(generations, 1);
+    expect(cache.disposed, isTrue);
+    expect(converter.failureCode, isNull);
+  });
+
+  test('asset details never expose unknown stages, domains or URL values', () async {
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      throw PlatformException(code: 'asset_unreadable', details: {
+        'stage': 'tracks', 'domain': 'https://private?token=secret', 'code': -1,
+        'underlyingDomain': 'NSURLErrorDomain', 'underlyingCode': 'private',
+      });
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s', '${tempDir.path}/failed.gif', 0, 3,
+      width: 480, fps: 10, channel: channel, localSourceFallback: false,
+    );
+    expect(await converter.convert(), isFalse);
+    expect(converter.failureCode, 'asset_unreadable/tracks');
+  });
+
+}
+
+
+class _FakeSourceCache extends GifSourceCache {
+  _FakeSourceCache(this.file, {this.failure, this.pending});
+
+  final File file;
+  final GifSourceException? failure;
+  final Completer<File>? pending;
+  int downloads = 0;
+  bool disposed = false;
+
+  @override
+  Future<File> download(Uri source, {
+    required String userAgent,
+    required String referer,
+    void Function(int received, int? total)? onProgress,
+  }) async {
+    downloads++;
+    expect(source.scheme, 'https');
+    expect(userAgent, isNotEmpty);
+    expect(referer, 'https://www.bilibili.com');
+    if (failure != null) throw failure!;
+    if (pending != null) return pending!.future;
+    onProgress?.call(10, 10);
+    return file;
+  }
+
+  @override
+  void cancel() {
+    if (pending != null && !pending!.isCompleted) {
+      pending!.completeError(const GifSourceException('source_cancelled'));
+    }
+  }
+
+  @override
+  Future<void> dispose() async {
+    disposed = true;
+    if (await file.exists()) await file.delete();
   }
 }

@@ -2302,10 +2302,19 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
 
     SmartDialog.showLoading(
       backType: SmartBackType.normal,
-      builder: (_) => LoadingWidget(
-        progress: progress,
-        msg: l10n.commonSavingMayTakeTime,
-      ),
+      builder: (_) => converter is GifConversionDiagnostics
+          ? Obx(
+              () => LoadingWidget(
+                progress: progress,
+                msg: (converter as GifConversionDiagnostics).preparingSource
+                    ? l10n.playerGifDownloadingSource
+                    : l10n.commonSavingMayTakeTime,
+              ),
+            )
+          : LoadingWidget(
+              progress: progress,
+              msg: l10n.commonSavingMayTakeTime,
+            ),
       onDismiss: () {
         if (!completedByConversion) {
           dismissedByUser = true;
