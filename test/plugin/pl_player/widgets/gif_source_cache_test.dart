@@ -232,7 +232,7 @@ class _Request extends Fake implements HttpClientRequest {
 
   final _Response response;
   @override
-  final headers = _Headers();
+  final _Headers headers = _Headers();
   @override
   bool followRedirects = true;
 
@@ -256,7 +256,7 @@ class _Response extends Stream<List<int>> implements HttpClientResponse {
   @override
   final int contentLength;
   @override
-  final headers = _Headers();
+  final _Headers headers = _Headers();
 
   @override
   StreamSubscription<List<int>> listen(

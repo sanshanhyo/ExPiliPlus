@@ -90,10 +90,11 @@ class GifSourceCache {
         request.headers.set(HttpHeaders.userAgentHeader, userAgent);
         request.headers.set(HttpHeaders.refererHeader, referer);
         request.headers.set(HttpHeaders.acceptEncodingHeader, 'identity');
-        response = await _wait(request.close());
-        if (![301, 302, 303, 307, 308].contains(response.statusCode)) break;
-        final location = response.headers.value(HttpHeaders.locationHeader);
-        await response.listen((_) {}).cancel();
+        final currentResponse = await _wait<HttpClientResponse>(request.close());
+        response = currentResponse;
+        if (![301, 302, 303, 307, 308].contains(currentResponse.statusCode)) break;
+        final location = currentResponse.headers.value(HttpHeaders.locationHeader);
+        await currentResponse.listen((_) {}).cancel();
         if (location == null || redirects == 5) {
           throw const GifSourceException('source_download_failed');
         }
