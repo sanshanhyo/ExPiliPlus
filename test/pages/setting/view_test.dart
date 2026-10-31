@@ -38,7 +38,10 @@ void main() {
     testWidgets('ExPiliPlus settings render with saved font weight $value', (
       tester,
     ) async {
-      await GStorage.setting.put(SettingBoxKey.appFontWeight, value);
+      // Hive persists to disk, so keep its I/O outside the fake-async zone.
+      await tester.runAsync(
+        () => GStorage.setting.put(SettingBoxKey.appFontWeight, value),
+      );
       expect(
         Pref.appFontWeight,
         value is int && value >= -1 && value <= 8 ? value : -1,
