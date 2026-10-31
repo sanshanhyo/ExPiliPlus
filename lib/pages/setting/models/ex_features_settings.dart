@@ -17,7 +17,7 @@ import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
 import 'package:ex_piliplus/utils/storage.dart';
 import 'package:ex_piliplus/utils/storage_key.dart';
 import 'package:ex_piliplus/utils/storage_pref.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 
@@ -171,18 +171,11 @@ List<SettingsModel> exFeatureSettings(BuildContext context) {
       leading: const Icon(Icons.font_download_outlined),
       onTap: _showAppFontFamilyDialog,
     ),
-    SplitModel(
-      normalModel: NormalModel.split(
-        getTitle: () => l10n.settingsAppFontWeight,
-        getSubtitle: () => l10n.settingsTapToConfigure,
-        leading: const Icon(Icons.text_fields),
-      ),
-      switchModel: SwitchModel.split(
-        defaultVal: false,
-        setKey: SettingBoxKey.appFontWeight,
-        onChanged: (_) => Get.updateMyAppTheme(),
-        onTap: _showFontWeightDialog,
-      ),
+    NormalModel(
+      getTitle: () => l10n.settingsAppFontWeight,
+      getSubtitle: () => l10n.settingsTapToConfigure,
+      leading: const Icon(Icons.text_fields),
+      onTap: (context, _) => _showFontWeightDialog(context),
     ),
     SwitchModel(
       getTitle: () => l10n.settingsUploaderProfileShuffle,
@@ -271,9 +264,10 @@ Future<void> _showFontWeightDialog(BuildContext context) async {
     builder: (context) => SliderDialog(
       title: Text(context.l10n.settingsAppFontWeight),
       value: Pref.appFontWeight.toDouble() + 1,
-      min: 1,
+      // Zero restores the font default (-1); 1–9 select a weight.
+      min: 0,
       max: FontWeight.values.length.toDouble(),
-      divisions: FontWeight.values.length - 1,
+      divisions: FontWeight.values.length,
     ),
   );
   if (res != null) {

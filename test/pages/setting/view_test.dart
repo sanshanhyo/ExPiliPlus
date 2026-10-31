@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/pages/setting/view.dart';
+import 'package:ex_piliplus/pages/setting/common_setting.dart';
+import 'package:ex_piliplus/models/common/setting_type.dart';
+import 'package:ex_piliplus/utils/storage_key.dart';
+import 'package:ex_piliplus/utils/storage_pref.dart';
 import 'package:ex_piliplus/utils/accounts.dart';
 import 'package:ex_piliplus/utils/accounts/account.dart';
 import 'package:ex_piliplus/utils/storage.dart';
@@ -29,6 +33,37 @@ void main() {
     await Hive.close();
     await tempDirectory.delete(recursive: true);
   });
+
+  for (final value in <dynamic>[-1, 0, 4, 8, true, false, 'bad', 99]) {
+    testWidgets('ExPiliPlus settings render with saved font weight $value', (
+      tester,
+    ) async {
+      await GStorage.setting.put(SettingBoxKey.appFontWeight, value);
+      expect(
+        Pref.appFontWeight,
+        value is int && value >= -1 && value <= 8 ? value : -1,
+      );
+      // Reading legacy values must not silently rewrite user storage.
+      expect(GStorage.setting.get(SettingBoxKey.appFontWeight), value);
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('zh'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: ThemeData.dark(),
+          home: const CommonSetting(settingType: SettingType.exPiliPlusSetting),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -1200));
+      await tester.pumpAndSettle();
+      expect(find.byType(ErrorWidget), findsNothing);
+      expect(tester.takeException(), isNull);
+      expect(GStorage.setting.get(SettingBoxKey.appFontWeight), value);
+    });
+  }
 
   testWidgets('desktop settings body paints below short ExPiliPlus list', (
     tester,

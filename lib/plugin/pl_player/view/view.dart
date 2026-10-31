@@ -49,6 +49,7 @@ import 'package:ex_piliplus/plugin/pl_player/widgets/bottom_control.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/common_btn.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/forward_seek.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter.dart';
+import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter_base.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/mpv_convert_webp.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/play_pause_btn.dart';
@@ -2272,7 +2273,14 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
             needToast: true,
           );
         } else if (!dismissedByUser) {
-          SmartDialog.showToast(l10n.playerTranscodeFailedOrCanceled);
+          final code = converter is GifConversionDiagnostics
+              ? converter.failureCode
+              : null;
+          SmartDialog.showToast(
+            code == null
+                ? l10n.playerTranscodeFailedOrCanceled
+                : '${l10n.playerTranscodeFailedOrCanceled} [$code]',
+          );
         }
       } catch (error, stackTrace) {
         debugPrint('GifExport: failed to finish export: $error\n$stackTrace');

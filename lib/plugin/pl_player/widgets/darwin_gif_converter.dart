@@ -4,12 +4,13 @@ import 'dart:io';
 
 import 'package:ex_piliplus/http/browser_ua.dart';
 import 'package:ex_piliplus/http/constants.dart';
+import 'package:ex_piliplus/utils/extension/string_ext.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_converter_base.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart';
 import 'package:get/get_rx/get_rx.dart';
 
-class DarwinGifConverter implements GifConverter {
+class DarwinGifConverter implements GifConverter, GifConversionDiagnostics {
   static const MethodChannel _defaultChannel = MethodChannel(
     'io.github.sanshanhyo.expiliplus/gif_export',
   );
@@ -22,6 +23,9 @@ class DarwinGifConverter implements GifConverter {
   final int fps;
   final RxDouble? progress;
   final MethodChannel _channel;
+
+  @override
+  String? failureCode;
 
   bool _disposed = false;
   bool _converting = false;
@@ -41,12 +45,15 @@ class DarwinGifConverter implements GifConverter {
   @override
   Future<bool> convert() async {
     if (_disposed || _converting) return false;
+    failureCode = null;
     _converting = true;
     _channel.setMethodCallHandler(_handleNativeCall);
     var success = false;
     try {
       final result = await _channel.invokeMethod<String>('generate', {
-        'url': url,
+        // AVURLAsset uses ATS on iOS, unlike the playback engine. CDN
+        // responses may contain HTTP or protocol-relative URLs.
+        'url': url.http2https,
         'outputPath': outFile,
         'start': start,
         'duration': duration,
@@ -55,18 +62,35 @@ class DarwinGifConverter implements GifConverter {
         'userAgent': BrowserUa.pc,
         'referer': HttpString.baseUrl,
       });
-      if (_disposed || result != outFile) return false;
+      if (_disposed) return false;
+      if (result != outFile) {
+        failureCode = 'output_path_mismatch';
+        return false;
+      }
       success = _hasGifHeader(File(outFile));
+      if (!success) failureCode = 'invalid_gif_output';
       return success;
     } on PlatformException catch (error, stackTrace) {
-      if (error.code != 'cancelled') {
+      if (error.code != 'cancelled' && !_disposed) {
+        failureCode = switch (error.code) {
+          'busy' ||
+          'invalid_arguments' ||
+          'asset_unreadable' ||
+          'output_creation_failed' ||
+          'frame_generation_failed' ||
+          'output_finalize_failed' => error.code,
+          _ => 'native_export_failed',
+        };
         debugPrint(
-          'DarwinGifConvert: ${error.code}: ${error.message}; '
-          'details=${error.details}\n$stackTrace',
+          'DarwinGifConvert: $failureCode\n$stackTrace',
         );
       }
       return false;
+    } on MissingPluginException {
+      if (!_disposed) failureCode = 'native_export_unavailable';
+      return false;
     } catch (error, stackTrace) {
+      if (!_disposed) failureCode = 'export_failed';
       debugPrint('DarwinGifConvert: $error\n$stackTrace');
       return false;
     } finally {
@@ -90,7 +114,16 @@ class DarwinGifConverter implements GifConverter {
     if (_disposed) return;
     _disposed = true;
     if (_converting) {
-      unawaited(_channel.invokeMethod<void>('cancel'));
+      unawaited(_cancel());
+    }
+  }
+
+  Future<void> _cancel() async {
+    try {
+      await _channel.invokeMethod<void>('cancel');
+    } catch (_) {
+      // Cancellation is best effort, including when the native plugin is absent.
+      // convert() still owns cleanup after the outstanding generate call settles.
     }
   }
 

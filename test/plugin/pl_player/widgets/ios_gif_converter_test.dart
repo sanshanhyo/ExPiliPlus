@@ -102,6 +102,7 @@ void main() {
 
     expect(await converter.convert(), isFalse);
     expect(output.existsSync(), isFalse);
+    expect(converter.failureCode, 'invalid_gif_output');
   });
 
   test('does not start a second export while one is running', () async {
@@ -130,4 +131,125 @@ void main() {
     converter.dispose();
     expect(await first, isFalse);
   });
+
+  for (final code in [
+    'asset_unreadable',
+    'frame_generation_failed',
+    'output_creation_failed',
+    'output_finalize_failed',
+    'invalid_arguments',
+    'busy',
+  ]) {
+    test('preserves safe native failure stage $code and cleans output', () async {
+      final output = File('${tempDir.path}/failed.gif');
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        await output.writeAsString('partial');
+        throw PlatformException(
+          code: code,
+          message: 'https://example.com/private-video?token=secret',
+          details: {'url': 'private'},
+        );
+      });
+      final converter = DarwinGifConverter(
+        'https://example.com/video.m4s',
+        output.path,
+        0,
+        3,
+        width: 480,
+        fps: 10,
+        channel: channel,
+      );
+      expect(await converter.convert(), isFalse);
+      expect(converter.failureCode, code);
+      expect(output.existsSync(), isFalse);
+    });
+  }
+
+  test('does not surface arbitrary platform error codes', () async {
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      throw PlatformException(code: 'https://example.com/?token=secret');
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s',
+      '${tempDir.path}/failed.gif',
+      0,
+      3,
+      width: 480,
+      fps: 10,
+      channel: channel,
+    );
+    expect(await converter.convert(), isFalse);
+    expect(converter.failureCode, 'native_export_failed');
+  });
+
+  test('identifies an unavailable native plugin', () async {
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s',
+      '${tempDir.path}/failed.gif',
+      0,
+      3,
+      width: 480,
+      fps: 10,
+      channel: channel,
+    );
+    expect(await converter.convert(), isFalse);
+    expect(converter.failureCode, 'native_export_unavailable');
+  });
+
+  test('cancel channel errors do not escape as conversion failures', () async {
+    final generateResult = Completer<String>();
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'generate') return generateResult.future;
+      throw PlatformException(code: 'cancel_failed');
+    });
+    final converter = DarwinGifConverter(
+      'https://example.com/video.m4s',
+      '${tempDir.path}/failed.gif',
+      0,
+      3,
+      width: 480,
+      fps: 10,
+      channel: channel,
+    );
+    final conversion = converter.convert();
+    await Future<void>.delayed(Duration.zero);
+    converter.dispose();
+    await Future<void>.delayed(Duration.zero);
+    generateResult.completeError(PlatformException(code: 'cancelled'));
+    expect(await conversion, isFalse);
+    expect(converter.failureCode, isNull);
+  });
+
+  for (final source in [
+    'http://example.com/video.m4s?token=unchanged',
+    '//example.com/video.m4s?token=unchanged',
+    'https://example.com/video.m4s?token=unchanged',
+    'file:///tmp/video.mp4',
+  ]) {
+    test('normalizes ATS source URL: $source', () async {
+      final output = File('${tempDir.path}/result.gif');
+      String? receivedUrl;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        receivedUrl = (call.arguments as Map)['url'] as String;
+        await output.writeAsBytes('GIF89a-content'.codeUnits);
+        return output.path;
+      });
+      final converter = DarwinGifConverter(
+        source,
+        output.path,
+        0,
+        3,
+        width: 480,
+        fps: 10,
+        channel: channel,
+      );
+      expect(await converter.convert(), isTrue);
+      expect(
+        receivedUrl,
+        source.startsWith('file:')
+            ? source
+            : 'https://example.com/video.m4s?token=unchanged',
+      );
+    });
+  }
 }
