@@ -2274,7 +2274,7 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
           );
         } else if (!dismissedByUser) {
           final code = converter is GifConversionDiagnostics
-              ? converter.failureCode
+              ? (converter as GifConversionDiagnostics).failureCode
               : null;
           SmartDialog.showToast(
             code == null
