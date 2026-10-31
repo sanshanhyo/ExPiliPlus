@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
+import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/pages/setting/widgets/app_font_family_dialog.dart';
 import 'package:ex_piliplus/utils/path_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -26,7 +27,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         locale: Locale('zh'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: AppFontFamilyDialog(value: AppFontFamily.system),
       ),

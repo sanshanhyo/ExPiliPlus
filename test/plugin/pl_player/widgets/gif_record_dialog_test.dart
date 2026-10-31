@@ -1,7 +1,7 @@
 import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/plugin/pl_player/widgets/gif_record_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -37,21 +37,24 @@ void main() {
     double initialPosition = 4,
     double videoAspectRatio = 16 / 9,
     double? dialogMaxWidth,
+    ThemeData? theme,
   }) {
     return MaterialApp(
       locale: const Locale('zh'),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: appLocalizationsDelegates,
-      theme: dialogMaxWidth == null
-          ? null
-          : ThemeData(
-              dialogTheme: DialogThemeData(
-                constraints: BoxConstraints(
-                  minWidth: 280,
-                  maxWidth: dialogMaxWidth,
-                ),
-              ),
-            ),
+      theme:
+          theme ??
+          (dialogMaxWidth == null
+              ? null
+              : ThemeData(
+                  dialogTheme: DialogThemeData(
+                    constraints: BoxConstraints(
+                      minWidth: 280,
+                      maxWidth: dialogMaxWidth,
+                    ),
+                  ),
+                )),
       home: MediaQuery(
         data: MediaQueryData(size: size),
         child: Scaffold(
@@ -69,6 +72,37 @@ void main() {
         ),
       ),
     );
+  }
+
+  for (final brightness in Brightness.values) {
+    testWidgets('GIF dialog inherits custom $brightness app theme', (
+      tester,
+    ) async {
+      final theme = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xff218c74),
+          brightness: brightness,
+        ),
+        fontFamily: 'regression-font',
+        dialogTheme: const DialogThemeData(backgroundColor: Color(0xff123456)),
+      );
+      await tester.binding.setSurfaceSize(const Size(800, 720));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(host(size: const Size(800, 720), theme: theme));
+      await tester.pump();
+      final dialog = find.byType(Dialog);
+      expect(dialog, findsOneWidget);
+      expect(Theme.of(tester.element(dialog)).colorScheme, theme.colorScheme);
+      expect(
+        tester
+            .widgetList<Material>(
+              find.descendant(of: dialog, matching: find.byType(Material)),
+            )
+            .any((material) => material.color == const Color(0xff123456)),
+        isTrue,
+      );
+      expect(tester.takeException(), isNull);
+    });
   }
 
   testWidgets('uses the wide three-column layout without removed copy', (

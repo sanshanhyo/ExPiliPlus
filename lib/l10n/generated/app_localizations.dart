@@ -2655,6 +2655,12 @@ abstract class AppLocalizations {
   /// **'生成动态截图会占用较多处理器资源'**
   String get playerWebpCpuWarning;
 
+  /// No description provided for @playerGifDownloadingSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在下载临时视频（最多 128 MiB），可取消'**
+  String get playerGifDownloadingSource;
+
   /// No description provided for @playerTranscodeFailedOrCanceled.
   ///
   /// In zh, this message translates to:

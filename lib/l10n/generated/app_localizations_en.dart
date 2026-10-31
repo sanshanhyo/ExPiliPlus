@@ -1481,6 +1481,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Animated screenshots can use significant processing power';
 
   @override
+  String get playerGifDownloadingSource =>
+      'Downloading temporary video (up to 128 MiB). You can cancel.';
+
+  @override
   String get playerTranscodeFailedOrCanceled =>
       'Transcoding failed or was canceled';
 

@@ -101,8 +101,8 @@ private extension GifExportError {
       return FlutterError(code: "invalid_arguments", message: "Invalid GIF export arguments.", details: nil)
     case .cancelled:
       return FlutterError(code: "cancelled", message: "GIF export was cancelled.", details: nil)
-    case .assetUnreadable(let details):
-      return FlutterError(code: "asset_unreadable", message: "The video source cannot be read by iOS.", details: details)
+    case .assetUnreadable(let failure):
+      return FlutterError(code: "asset_unreadable", message: "The video source cannot be read by iOS.", details: failure.details)
     case .outputCreation:
       return FlutterError(code: "output_creation_failed", message: "The GIF output could not be created.", details: nil)
     case .frameGeneration(let message):

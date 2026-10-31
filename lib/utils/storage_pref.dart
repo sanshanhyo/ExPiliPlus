@@ -659,8 +659,14 @@ abstract final class Pref {
     defaultValue: LiveQuality.superHD.code,
   );
 
-  static int get appFontWeight =>
-      _setting.get(SettingBoxKey.appFontWeight, defaultValue: -1);
+  static int get appFontWeight {
+    final value = _setting.get(SettingBoxKey.appFontWeight, defaultValue: -1);
+    // Older settings incorrectly bound a bool switch to this integer key.
+    // Keep valid saved weights and do not overwrite legacy/corrupt data on read.
+    return value is int && value >= -1 && value < FontWeight.values.length
+        ? value
+        : -1;
+  }
 
   static AppFontFamily get appFontFamily => AppFontFamily.fromName(
     _setting.get(SettingBoxKey.appFontFamily),

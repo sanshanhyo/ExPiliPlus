@@ -426,6 +426,7 @@
   "playerAnimatedScreenshot": "動態截圖",
   "playerWebpPreset": "WebP 預設",
   "playerWebpCpuWarning": "產生動態截圖會使用較多處理器資源",
+  "playerGifDownloadingSource": "正在下載暫存影片（最多 128 MiB），可取消",
   "playerTranscodeFailedOrCanceled": "轉碼失敗或已取消",
   "playerWebpPresetNone": "無",
   "playerWebpPresetPicture": "圖片",

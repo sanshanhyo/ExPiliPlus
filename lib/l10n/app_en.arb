@@ -426,6 +426,7 @@
   "playerAnimatedScreenshot": "Animated screenshot",
   "playerWebpPreset": "WebP preset",
   "playerWebpCpuWarning": "Animated screenshots can use significant processing power",
+  "playerGifDownloadingSource": "Downloading temporary video (up to 128 MiB). You can cancel.",
   "playerTranscodeFailedOrCanceled": "Transcoding failed or was canceled",
   "playerWebpPresetNone": "None",
   "playerWebpPresetPicture": "Picture",

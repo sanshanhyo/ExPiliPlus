@@ -2,7 +2,7 @@ import 'package:ex_piliplus/models/common/app_font_family.dart';
 import 'package:ex_piliplus/services/app_font_manager.dart';
 import 'package:ex_piliplus/utils/page_utils.dart';
 import 'package:ex_piliplus/utils/extension/l10n_ext.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class AppFontFamilyDialog extends StatelessWidget {

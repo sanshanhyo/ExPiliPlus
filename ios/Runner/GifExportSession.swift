@@ -7,6 +7,7 @@ final class GifExportSession {
   private let arguments: [String: Any]
   private let cancellationLock = NSLock()
   private var isCancelled = false
+  private var activeAsset: AVAsset?
 
   init(arguments: [String: Any]) {
     self.arguments = arguments
@@ -15,7 +16,9 @@ final class GifExportSession {
   func cancel() {
     cancellationLock.lock()
     isCancelled = true
+    let asset = activeAsset
     cancellationLock.unlock()
+    asset?.cancelLoading()
   }
 
   func generate(
@@ -66,9 +69,18 @@ final class GifExportSession {
         AVURLAssetPreferPreciseDurationAndTimingKey: true,
       ]
     )
+    cancellationLock.lock()
+    activeAsset = asset
+    cancellationLock.unlock()
+    defer {
+      cancellationLock.lock()
+      activeAsset = nil
+      cancellationLock.unlock()
+    }
+    try checkCancellation()
     diagnostic("asset-created")
     guard let videoTrack = try loadVideoTracks(asset).first else {
-      throw GifExportError.assetUnreadable("No video track was loaded.")
+      throw GifExportError.assetUnreadable(GifAssetFailure(stage: "no_video"))
     }
     diagnostic("video-track-loaded")
 
@@ -76,7 +88,7 @@ final class GifExportSession {
     let sourceWidth = abs(transformedSize.width)
     let sourceHeight = abs(transformedSize.height)
     guard sourceWidth > 0, sourceHeight > 0 else {
-      throw GifExportError.assetUnreadable("Video track has no usable dimensions.")
+      throw GifExportError.assetUnreadable(GifAssetFailure(stage: "dimensions"))
     }
     let targetWidth = request.width
     let targetHeight = max(1, Int((Double(targetWidth) * Double(sourceHeight / sourceWidth)).rounded()))
@@ -150,10 +162,15 @@ final class GifExportSession {
     asset.loadValuesAsynchronously(forKeys: ["tracks"]) {
       semaphore.signal()
     }
-    guard semaphore.wait(timeout: .now() + 60) == .success else {
-      diagnostic("video-track-load-timeout")
-      throw GifExportError.assetUnreadable("Timed out while loading video tracks.")
+    let deadline = Date().addingTimeInterval(60)
+    while semaphore.wait(timeout: .now() + .milliseconds(100)) != .success {
+      try checkCancellation()
+      if Date() >= deadline {
+        asset.cancelLoading()
+        throw GifExportError.assetUnreadable(GifAssetFailure(stage: "timeout"))
+      }
     }
+    try checkCancellation()
 
     var loadError: NSError?
     let status = asset.statusOfValue(forKey: "tracks", error: &loadError)
@@ -163,13 +180,11 @@ final class GifExportSession {
           "video-track-load-failed domain=\(loadError.domain) code=\(loadError.code)"
         )
         throw GifExportError.assetUnreadable(
-          "Video tracks failed to load (\(loadError.domain), \(loadError.code))."
+          GifAssetFailure(stage: "tracks", error: loadError)
         )
       }
       diagnostic("video-track-load-failed status=\(status.rawValue)")
-      throw GifExportError.assetUnreadable(
-        "Video tracks failed to load (status \(status.rawValue))."
-      )
+      throw GifExportError.assetUnreadable(GifAssetFailure(stage: "tracks"))
     }
     return asset.tracks(withMediaType: .video)
   }
@@ -259,7 +274,7 @@ private struct GifExportRequest {
 enum GifExportError: Error {
   case invalidArguments
   case cancelled
-  case assetUnreadable(String)
+  case assetUnreadable(GifAssetFailure)
   case outputCreation
   case frameGeneration(String)
   case outputFinalize
@@ -270,8 +285,8 @@ enum GifExportError: Error {
       return "invalid_arguments"
     case .cancelled:
       return "cancelled"
-    case .assetUnreadable(let message):
-      return "asset_unreadable message=\(message)"
+    case .assetUnreadable(let failure):
+      return "asset_unreadable stage=\(failure.stage)"
     case .outputCreation:
       return "output_creation_failed"
     case .frameGeneration(let message):
@@ -279,5 +294,36 @@ enum GifExportError: Error {
     case .outputFinalize:
       return "output_finalize_failed"
     }
+  }
+}
+
+/// Never forward NSError.userInfo/localizedDescription: they can contain signed
+/// source URLs. Only expose bounded stage names, known domains and numeric codes.
+struct GifAssetFailure {
+  let stage: String
+  let error: NSError?
+
+  init(stage: String, error: NSError? = nil) {
+    self.stage = stage
+    self.error = error
+  }
+
+  var details: [String: Any] {
+    var result: [String: Any] = ["stage": stage]
+    if let error {
+      result["domain"] = safeDomain(error.domain)
+      result["code"] = error.code
+      if let underlying = error.userInfo[NSUnderlyingErrorKey] as? NSError {
+        result["underlyingDomain"] = safeDomain(underlying.domain)
+        result["underlyingCode"] = underlying.code
+      }
+    }
+    return result
+  }
+
+  private func safeDomain(_ domain: String) -> String {
+    let allowed = ["NSURLErrorDomain", "AVFoundationErrorDomain",
+                   "NSOSStatusErrorDomain", "NSCocoaErrorDomain"]
+    return allowed.contains(domain) ? domain : "Other"
   }
 }

@@ -858,6 +858,7 @@
   "playerAnimatedScreenshot": "动态截图",
   "playerWebpPreset": "WebP 预设",
   "playerWebpCpuWarning": "生成动态截图会占用较多处理器资源",
+  "playerGifDownloadingSource": "正在下载临时视频（最多 128 MiB），可取消",
   "playerTranscodeFailedOrCanceled": "转码失败或已取消",
   "playerWebpPresetNone": "无",
   "playerWebpPresetPicture": "图片",

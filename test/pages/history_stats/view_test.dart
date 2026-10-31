@@ -1,14 +1,80 @@
+import 'package:ex_piliplus/http/loading_state.dart';
+import 'package:ex_piliplus/pages/history_stats/controller.dart';
+import 'package:get/get.dart';
 import 'package:ex_piliplus/l10n/app_localization_delegates.dart';
 import 'package:ex_piliplus/l10n/generated/app_localizations.dart';
 import 'package:ex_piliplus/models_new/history/history.dart';
 import 'package:ex_piliplus/models_new/history/list.dart';
 import 'package:ex_piliplus/pages/history_stats/statistics.dart';
 import 'package:ex_piliplus/pages/history_stats/view.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 
+class _ThemeTestController extends HistoryStatisticsController {
+  @override
+  void onInit() {}
+}
+
 void main() {
+  for (final brightness in Brightness.values) {
+    testWidgets('statistics loading, error and results inherit $brightness theme', (
+      tester,
+    ) async {
+      final theme = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xff218c74),
+          brightness: brightness,
+        ),
+        scaffoldBackgroundColor: const Color(0xff123456),
+        fontFamily: 'regression-font',
+      );
+      final controller = Get.put<HistoryStatisticsController>(
+        _ThemeTestController(),
+        tag: 'history-statistics',
+      );
+      addTearDown(Get.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: theme,
+          home: const HistoryStatisticsPage(),
+        ),
+      );
+      await tester.pump();
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      for (final state in <LoadingState<HistoryStatistics>>[
+        LoadingState.loading(),
+        Error('test error'),
+        Success(
+          HistoryStatisticsCalculator.calculate(
+            source: [],
+            now: DateTime(2026, 10, 31),
+          ),
+        ),
+      ]) {
+        controller.loadingState.value = state;
+        await tester.pump();
+        final scaffold = find.byType(Scaffold);
+        expect(scaffold, findsOneWidget);
+        expect(
+          Theme.of(tester.element(scaffold)).colorScheme,
+          theme.colorScheme,
+        );
+        expect(
+          tester
+              .widgetList<Material>(find.byType(Material))
+              .any((material) => material.color == theme.scaffoldBackgroundColor),
+          isTrue,
+        );
+        expect(tester.takeException(), isNull);
+      }
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+  }
+
   testWidgets('statistics dashboard fits compact layouts in every locale', (
     tester,
   ) async {
